@@ -35,14 +35,14 @@
     ]
   },
   "download": {
-    "directUrl": "",
+    "directUrl": "https://download1501.mediafire.com/73vhqgqaeyogjQ32lZnr8PsyxWCpRV2oK1GrCiR5jdNNANI8hps7VrUm2y49vLuq4XtH62Gi5peOy0taOPwcOnnjnmLIqUNsSUy3u6yOyZfoileQnOcJtpDf5s4mi6m7BQfZc_0q00e9LO6So-5Qt6DmBsonOq1nuyy-khTfrKFnD4Y/68jvzp857e43hgn/NANO-POS-Setup-1.0.7-x64.exe",
     "pageUrl": "https://www.mediafire.com/file/68jvzp857e43hgn/NANO-POS-Setup-1.0.7-x64.exe/file",
     "sha256": "827e897191e7c194d271c9b303096cbc20dc9bcddcf17bd3a501d5e8f9300e17",
     "fileName": "NANO-POS-Setup-1.0.7-x64.exe"
   },
   "notes": {
-    "ar": "تم نشر NANO POS v1.0.7. النسخة 1.0.6 ستتعرف على هذا الإصدار وتعرض مميزاته. رابط MediaFire الحالي هو رابط صفحة التحميل؛ يلزم رابط مباشر لتفعيل التنزيل والتثبيت التلقائي الكامل.",
-    "fr": "NANO POS v1.0.7 est publié. La version 1.0.6 détectera cette mise à jour et affichera ses nouveautés. Le lien MediaFire actuel est une page de téléchargement ; un lien direct est nécessaire pour le téléchargement et l’installation entièrement automatiques.",
-    "en": "NANO POS v1.0.7 is published. Version 1.0.6 will detect it and show its release notes. The current MediaFire URL is a download page; a direct URL is required for fully automatic download and installation."
+    "ar": "تم تفعيل التنزيل المباشر لـ NANO POS v1.0.7. يقوم البرنامج بتنزيل المثبت والتحقق من SHA-256 قبل تشغيله، مع إبقاء صفحة MediaFire كخيار احتياطي.",
+    "fr": "Le téléchargement direct de NANO POS v1.0.7 est activé. Le programme télécharge l’installateur et vérifie son SHA-256 avant exécution, avec la page MediaFire comme solution de secours.",
+    "en": "Direct download for NANO POS v1.0.7 is enabled. The app downloads the installer and verifies its SHA-256 before launching it, with the MediaFire page retained as fallback."
   }
 }
