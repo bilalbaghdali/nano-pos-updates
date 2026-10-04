@@ -3,46 +3,52 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "releaseDate": "2026-10-04",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.0",
   "features": {
     "ar": [
-      "إضافة «التحديثات» كعنصر مستقل في القائمة الجانبية ضمن قسم النظام.",
-      "عند الضغط على «التحديثات» يفتح مباشرة الإعدادات ← التحديثات.",
-      "عرض رقم الإصدار الحالي v1.0.7.",
-      "عرض آخر وقت تم فيه البحث عن تحديث.",
-      "عرض قناة التحديث Stable.",
-      "إظهار نقطة تنبيه حمراء بجانب «التحديثات» عند اكتشاف إصدار أحدث."
+      "إصلاح نظام اكتشاف التحديثات ليتم البحث عن تحديث جديد عند كل تشغيل.",
+      "إضافة إعادة محاولة تلقائية عند فشل فحص التحديث بسبب الاتصال.",
+      "إضافة وضع «عرض السعر» إلى تطبيق قارئ الباركود.",
+      "عند مسح الباركود في وضع عرض السعر يتم جلب اسم المنتج وسعره من قاعدة بيانات NANO POS دون إضافته إلى فاتورة البيع.",
+      "عرض مخزون المنتج مع معلومات السعر داخل تطبيق القارئ.",
+      "إضافة زر مستقل لتحميل تطبيق قارئ الباركود من قسم ربط الهاتف والأجهزة.",
+      "تضمين NANO POS Wireless Scanner v1.2.0 ضمن حزمة البرنامج.",
+      "تحسين الاستقرار والتوافق بين برنامج الكمبيوتر وتطبيق قارئ الباركود."
     ],
     "fr": [
-      "Ajout de « Mises à jour » comme élément مستقل dans le menu latéral, section Système.",
-      "Un clic sur « Mises à jour » ouvre directement Paramètres → Mises à jour.",
-      "Affichage de la version actuelle v1.0.7.",
-      "Affichage de la date et l’heure de la dernière recherche de mise à jour.",
-      "Affichage du canal de mise à jour Stable.",
-      "Affichage d’un point d’alerte rouge à côté de « Mises à jour » lorsqu’une nouvelle version est détectée."
+      "Correction de la détection des mises à jour avec une vérification à chaque démarrage.",
+      "Ajout d’une nouvelle tentative automatique si la vérification échoue à cause de la connexion.",
+      "Ajout du mode « Afficher le prix » dans l’application de lecture de codes-barres.",
+      "En mode prix, le scan récupère le nom et le prix du produit depuis la base NANO POS sans l’ajouter à la vente.",
+      "Affichage du stock du produit avec les informations de prix dans l’application scanner.",
+      "Ajout d’un bouton dédié pour télécharger l’application scanner depuis la section de liaison téléphone/appareils.",
+      "Intégration de NANO POS Wireless Scanner v1.2.0 dans le package du programme.",
+      "Amélioration de la stabilité et de la compatibilité entre l’application Desktop et le scanner."
     ],
     "en": [
-      "Added Updates as a standalone item in the sidebar under System.",
-      "Clicking Updates opens Settings → Updates directly.",
-      "Displays the current version v1.0.7.",
-      "Displays the last update-check time.",
-      "Displays the Stable update channel.",
-      "Shows a red notification dot next to Updates when a newer version is detected."
+      "Fixed update detection so the app checks for a newer version on every startup.",
+      "Added an automatic retry when update checking fails because of connectivity.",
+      "Added a Price Check mode to the wireless barcode scanner app.",
+      "In Price Check mode, scanning fetches the product name and price from the NANO POS database without adding it to a sale.",
+      "Displays product stock together with price information in the scanner app.",
+      "Added a dedicated barcode scanner download button in the phone/device linking section.",
+      "Bundled NANO POS Wireless Scanner v1.2.0 with the application package.",
+      "Improved stability and compatibility between the desktop app and wireless scanner."
     ]
   },
   "download": {
-    "directUrl": "https://download1501.mediafire.com/73vhqgqaeyogjQ32lZnr8PsyxWCpRV2oK1GrCiR5jdNNANI8hps7VrUm2y49vLuq4XtH62Gi5peOy0taOPwcOnnjnmLIqUNsSUy3u6yOyZfoileQnOcJtpDf5s4mi6m7BQfZc_0q00e9LO6So-5Qt6DmBsonOq1nuyy-khTfrKFnD4Y/68jvzp857e43hgn/NANO-POS-Setup-1.0.7-x64.exe",
-    "pageUrl": "https://www.mediafire.com/file/68jvzp857e43hgn/NANO-POS-Setup-1.0.7-x64.exe/file",
-    "sha256": "827e897191e7c194d271c9b303096cbc20dc9bcddcf17bd3a501d5e8f9300e17",
-    "fileName": "NANO-POS-Setup-1.0.7-x64.exe"
+    "directUrl": "https://download946.mediafire.com/ng9u6bf2b5ngunW5qM-jhQzWapdXV5HFBykJOHA6DHkG0f5P0wTHPlP2IV8atajT1iP4x1hVSNjkxINxZTX6KqJbo10u9s4PNfpqjeWo7hJGX9XCG4lkDusdfXBOzHkhRDy687GPNSe_8fwHn-XocDs38-z8HEJ-IGv89ePBWoLqgbU/pp9kw1t52d6j0qu/NANO-POS-Setup-1.0.9-x64.exe",
+    "pageUrl": "https://www.mediafire.com/file/pp9kw1t52d6j0qu/NANO-POS-Setup-1.0.9-x64.exe/file",
+    "sha256": "746637192a4322f73e6e7d83d86dd4ca1002d15d1792d247b9b155ca4ef72e55",
+    "fileName": "NANO-POS-Setup-1.0.9-x64.exe"
   },
   "notes": {
-    "ar": "تم تفعيل التنزيل المباشر لـ NANO POS v1.0.7. يقوم البرنامج بتنزيل المثبت والتحقق من SHA-256 قبل تشغيله، مع إبقاء صفحة MediaFire كخيار احتياطي.",
-    "fr": "Le téléchargement direct de NANO POS v1.0.7 est activé. Le programme télécharge l’installateur et vérifie son SHA-256 avant exécution, avec la page MediaFire comme solution de secours.",
-    "en": "Direct download for NANO POS v1.0.7 is enabled. The app downloads the installer and verifies its SHA-256 before launching it, with the MediaFire page retained as fallback."
+    "ar": "تم نشر NANO POS v1.0.9 في القناة المستقرة. يقوم البرنامج بتنزيل المثبت مباشرة والتحقق من SHA-256 قبل تشغيله، مع إبقاء صفحة MediaFire كخيار احتياطي.",
+    "fr": "NANO POS v1.0.9 est publié sur le canal Stable. Le programme télécharge directement l’installateur et vérifie son SHA-256 avant exécution, avec la page MediaFire comme solution de secours.",
+    "en": "NANO POS v1.0.9 is published on the Stable channel. The app downloads the installer directly and verifies its SHA-256 before launch, with the MediaFire page retained as fallback."
   }
 }
