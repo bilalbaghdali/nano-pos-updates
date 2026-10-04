@@ -43,12 +43,12 @@
   "download": {
     "directUrl": "",
     "pageUrl": "https://www.mediafire.com/file/4ivtx0mnrc5a0u2/NANO-POS-Setup-1.0.6-x64.exe/file",
-    "sha256": "375303ac588d3ed853641ce54df1d45d6ee6148a34a6396a3f74c1bc24e77a3a",
+    "sha256": "270949f7b8aeede7c98dfa52c91b7d7d0e789e0d068d6fe5e272ec24e49f899a",
     "fileName": "NANO-POS-Setup-1.0.6-x64.exe"
   },
   "notes": {
-    "ar": "تم نشر NANO POS v1.0.6. رابط MediaFire متاح للتنزيل اليدوي من داخل نافذة التحديث.",
-    "fr": "NANO POS v1.0.6 est publié. Le lien MediaFire est disponible pour le téléchargement manuel depuis la fenêtre de mise à jour.",
-    "en": "NANO POS v1.0.6 is published. The MediaFire page link is available for manual download from the update dialog."
+    "ar": "تم نشر NANO POS v1.0.6. تم تحديث بصمة SHA-256 الخاصة بملف التثبيت. رابط MediaFire متاح للتنزيل من نافذة التحديث.",
+    "fr": "NANO POS v1.0.6 est publié. L’empreinte SHA-256 de l’installateur a été mise à jour. Le lien MediaFire est disponible depuis la fenêtre de mise à jour.",
+    "en": "NANO POS v1.0.6 is published. The installer SHA-256 has been updated. The MediaFire link is available from the update dialog."
   }
 }
