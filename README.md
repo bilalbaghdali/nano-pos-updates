@@ -1,11 +1,25 @@
-# nano-pos-updates
+# NANO POS Updates
 
-Public **distribution-only** repository for NANO POS Windows partial updates.
+قناة التحديث الرسمية لبرنامج **NANO POS**.
 
-- Releases contain the signed `nano-pos-update.json` and changed application files only.
-- A cumulative manifest points unchanged files to their existing release assets; installed clients compare SHA-256 and download only changed files.
-- Source code and signing secrets stay in the private repository `bilalbaghdali/nanopos`, branch `desktop-stable-v8`.
-- GitHub Actions on that private branch publishes a new release only if tests pass and application files actually changed.
-- Never upload activation secrets, signing keys, customer databases, backup files or private code here.
+يقرأ برنامج الكمبيوتر الملف:
+`nano-pos-update.json`
 
-Current publication automation requires the owner to sync the desktop source to the private branch and configure its Actions secrets once.
+## دورة النشر
+
+1. ارفع مثبت Windows الجديد إلى MediaFire.
+2. ضع رقم الإصدار، المميزات، رابط MediaFire و SHA-256 في `nano-pos-update.json`.
+3. اترك `published: false` أثناء التحضير والاختبار.
+4. بعد التأكد من الملف غيّرها إلى `published: true`.
+5. سيكتشف NANO POS الإصدار الجديد تلقائيًا ويعرض مميزات التحديث للمستخدم.
+
+## روابط MediaFire
+
+- `download.directUrl`: رابط مباشر للملف. عند توفره يقوم NANO POS بالتنزيل داخليًا، يتحقق من SHA-256 ثم يشغل المثبت.
+- `download.pageUrl`: رابط صفحة MediaFire العادي. يستخدم كخيار احتياطي ويفتح في المتصفح.
+
+## الأمان
+
+يفضل دائمًا إدخال `download.sha256` للملف المنشور. إذا لم يطابق الملف القيمة الموجودة في manifest، يرفض NANO POS تشغيله.
+
+اسم المنتج الداخلي يبقى ثابتًا: **NANO POS**. رقم الإصدار مستقل ويتغير مع كل تحديث.
