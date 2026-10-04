@@ -41,14 +41,14 @@
     ]
   },
   "download": {
-    "directUrl": "",
+    "directUrl": "https://download1585.mediafire.com/ze9iwob1q22gSy_BfyL3oYrp8pQK1mm5eJb7yjSNlnh9Lxo0UfJn3vmoIZdytWnimNP0kjbznipXqKLQ5XEt_P3lHEcvOub88nD0pj_hhdmo6_IdApOFqUWU5SfGtfljPyfT80xuRelUjYxTtytv_5Nay3EQHHSmo7Cuo72u3pqk8A0/4ivtx0mnrc5a0u2/NANO-POS-Setup-1.0.6-x64.exe",
     "pageUrl": "https://www.mediafire.com/file/4ivtx0mnrc5a0u2/NANO-POS-Setup-1.0.6-x64.exe/file",
     "sha256": "270949f7b8aeede7c98dfa52c91b7d7d0e789e0d068d6fe5e272ec24e49f899a",
     "fileName": "NANO-POS-Setup-1.0.6-x64.exe"
   },
   "notes": {
-    "ar": "تم نشر NANO POS v1.0.6. تم تحديث بصمة SHA-256 الخاصة بملف التثبيت. رابط MediaFire متاح للتنزيل من نافذة التحديث.",
-    "fr": "NANO POS v1.0.6 est publié. L’empreinte SHA-256 de l’installateur a été mise à jour. Le lien MediaFire est disponible depuis la fenêtre de mise à jour.",
-    "en": "NANO POS v1.0.6 is published. The installer SHA-256 has been updated. The MediaFire link is available from the update dialog."
+    "ar": "تم نشر NANO POS v1.0.6 مع رابط تنزيل مباشر وSHA-256. إذا تعذر الرابط المباشر، يستخدم البرنامج صفحة MediaFire كخيار احتياطي.",
+    "fr": "NANO POS v1.0.6 est publié avec un lien de téléchargement direct et une vérification SHA-256. Si le lien direct échoue, la page MediaFire reste disponible comme solution de secours.",
+    "en": "NANO POS v1.0.6 is published with a direct download URL and SHA-256 verification. If the direct URL fails, the MediaFire page remains available as a fallback."
   }
 }
