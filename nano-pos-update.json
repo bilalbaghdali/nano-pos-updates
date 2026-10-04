@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "published": false,
+  "channel": "stable",
+  "product": "NANO POS",
+  "version": "1.0.5",
+  "releaseDate": "2026-10-04",
+  "mandatory": false,
+  "importance": "normal",
+  "minSupportedVersion": "1.0.0",
+  "features": {
+    "ar": [
+      "إضافة نظام تحديث تلقائي احترافي",
+      "عرض رقم الإصدار الجديد ومميزات التحديث قبل التنزيل",
+      "دعم التحديث الاختياري أو الإجباري",
+      "التحقق من SHA-256 قبل تشغيل ملف التحديث",
+      "دعم MediaFire برابط مباشر أو صفحة تحميل"
+    ],
+    "fr": [
+      "Ajout d’un système de mise à jour automatique professionnel",
+      "Affichage de la nouvelle version et des nouveautés avant téléchargement",
+      "Prise en charge des mises à jour facultatives ou obligatoires",
+      "Vérification SHA-256 avant l’exécution du programme d’installation",
+      "Prise en charge de MediaFire via lien direct ou page de téléchargement"
+    ],
+    "en": [
+      "Added a professional automatic update system",
+      "Shows the new version and release notes before download",
+      "Supports optional or mandatory updates",
+      "Verifies SHA-256 before launching the installer",
+      "Supports MediaFire direct links or download pages"
+    ]
+  },
+  "download": {
+    "directUrl": "",
+    "pageUrl": "",
+    "sha256": "",
+    "fileName": "NANO-POS-Setup-1.0.5-x64.exe"
+  },
+  "notes": {
+    "ar": "هذا الإصدار في وضع مسودة حتى يتم رفع ملف التثبيت إلى MediaFire.",
+    "fr": "Cette version reste en brouillon jusqu’à la publication de l’installateur sur MediaFire.",
+    "en": "This release remains a draft until the installer is published on MediaFire."
+  }
+}
