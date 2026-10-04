@@ -3,52 +3,46 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "releaseDate": "2026-10-04",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.0",
   "features": {
     "ar": [
-      "تحسين نظام التحديثات التلقائية وإظهار مميزات كل إصدار جديد قبل تثبيته.",
-      "إضافة التحقق الأمني من ملفات التحديث باستخدام SHA-256.",
-      "تحسين التوافق مع MediaFire لتنزيل التحديثات الجديدة.",
-      "تحسين نظام اللغة العربية والفرنسية والإنجليزية والعناصر الديناميكية داخل الواجهة.",
-      "تحسين قسم ربط الهاتف والأجهزة وإضافة زر مباشر لتحميل تطبيق NANO POS Mobile.",
-      "تحسين استقرار البرنامج وسرعة التنقل بين الأقسام.",
-      "تحسين نظام النسخ الاحتياطي المحلي للحفاظ على بيانات المتجر.",
-      "إصلاحات عامة لزيادة الاستقرار والأداء."
+      "إضافة «التحديثات» كعنصر مستقل في القائمة الجانبية ضمن قسم النظام.",
+      "عند الضغط على «التحديثات» يفتح مباشرة الإعدادات ← التحديثات.",
+      "عرض رقم الإصدار الحالي v1.0.7.",
+      "عرض آخر وقت تم فيه البحث عن تحديث.",
+      "عرض قناة التحديث Stable.",
+      "إظهار نقطة تنبيه حمراء بجانب «التحديثات» عند اكتشاف إصدار أحدث."
     ],
     "fr": [
-      "Amélioration du système de mise à jour automatique avec affichage des nouveautés avant installation.",
-      "Ajout de la vérification de sécurité SHA-256 pour les fichiers de mise à jour.",
-      "Amélioration de la compatibilité avec MediaFire pour le téléchargement des nouvelles mises à jour.",
-      "Amélioration du système de langues arabe, français et anglais ainsi que des éléments dynamiques de l’interface.",
-      "Amélioration de la liaison téléphone/appareils avec un bouton direct pour télécharger NANO POS Mobile.",
-      "Amélioration de la stabilité du programme et de la rapidité de navigation entre les sections.",
-      "Amélioration du système de sauvegarde locale pour protéger les données du magasin.",
-      "Corrections générales pour améliorer la stabilité et les performances."
+      "Ajout de « Mises à jour » comme élément مستقل dans le menu latéral, section Système.",
+      "Un clic sur « Mises à jour » ouvre directement Paramètres → Mises à jour.",
+      "Affichage de la version actuelle v1.0.7.",
+      "Affichage de la date et l’heure de la dernière recherche de mise à jour.",
+      "Affichage du canal de mise à jour Stable.",
+      "Affichage d’un point d’alerte rouge à côté de « Mises à jour » lorsqu’une nouvelle version est détectée."
     ],
     "en": [
-      "Improved automatic updates and display of release highlights before installation.",
-      "Added SHA-256 security verification for update files.",
-      "Improved MediaFire compatibility for downloading new updates.",
-      "Improved Arabic, French and English language support and dynamic interface elements.",
-      "Improved phone/device linking and added a direct NANO POS Mobile download button.",
-      "Improved application stability and navigation speed between sections.",
-      "Improved local backup system to protect store data.",
-      "General fixes to improve stability and performance."
+      "Added Updates as a standalone item in the sidebar under System.",
+      "Clicking Updates opens Settings → Updates directly.",
+      "Displays the current version v1.0.7.",
+      "Displays the last update-check time.",
+      "Displays the Stable update channel.",
+      "Shows a red notification dot next to Updates when a newer version is detected."
     ]
   },
   "download": {
-    "directUrl": "https://download1585.mediafire.com/ze9iwob1q22gSy_BfyL3oYrp8pQK1mm5eJb7yjSNlnh9Lxo0UfJn3vmoIZdytWnimNP0kjbznipXqKLQ5XEt_P3lHEcvOub88nD0pj_hhdmo6_IdApOFqUWU5SfGtfljPyfT80xuRelUjYxTtytv_5Nay3EQHHSmo7Cuo72u3pqk8A0/4ivtx0mnrc5a0u2/NANO-POS-Setup-1.0.6-x64.exe",
-    "pageUrl": "https://www.mediafire.com/file/4ivtx0mnrc5a0u2/NANO-POS-Setup-1.0.6-x64.exe/file",
-    "sha256": "270949f7b8aeede7c98dfa52c91b7d7d0e789e0d068d6fe5e272ec24e49f899a",
-    "fileName": "NANO-POS-Setup-1.0.6-x64.exe"
+    "directUrl": "",
+    "pageUrl": "https://www.mediafire.com/file/68jvzp857e43hgn/NANO-POS-Setup-1.0.7-x64.exe/file",
+    "sha256": "827e897191e7c194d271c9b303096cbc20dc9bcddcf17bd3a501d5e8f9300e17",
+    "fileName": "NANO-POS-Setup-1.0.7-x64.exe"
   },
   "notes": {
-    "ar": "تم نشر NANO POS v1.0.6 مع رابط تنزيل مباشر وSHA-256. إذا تعذر الرابط المباشر، يستخدم البرنامج صفحة MediaFire كخيار احتياطي.",
-    "fr": "NANO POS v1.0.6 est publié avec un lien de téléchargement direct et une vérification SHA-256. Si le lien direct échoue, la page MediaFire reste disponible comme solution de secours.",
-    "en": "NANO POS v1.0.6 is published with a direct download URL and SHA-256 verification. If the direct URL fails, the MediaFire page remains available as a fallback."
+    "ar": "تم نشر NANO POS v1.0.7. النسخة 1.0.6 ستتعرف على هذا الإصدار وتعرض مميزاته. رابط MediaFire الحالي هو رابط صفحة التحميل؛ يلزم رابط مباشر لتفعيل التنزيل والتثبيت التلقائي الكامل.",
+    "fr": "NANO POS v1.0.7 est publié. La version 1.0.6 détectera cette mise à jour et affichera ses nouveautés. Le lien MediaFire actuel est une page de téléchargement ; un lien direct est nécessaire pour le téléchargement et l’installation entièrement automatiques.",
+    "en": "NANO POS v1.0.7 is published. Version 1.0.6 will detect it and show its release notes. The current MediaFire URL is a download page; a direct URL is required for fully automatic download and installation."
   }
 }
