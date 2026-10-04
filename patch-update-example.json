@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "published": false,
+  "channel": "stable",
+  "product": "NANO POS",
+  "version": "1.0.12",
+  "releaseDate": "",
+  "mandatory": false,
+  "importance": "normal",
+  "patches": [
+    {
+      "fromVersion": "1.0.11",
+      "directUrl": "",
+      "pageUrl": "",
+      "sha256": "",
+      "appAsarSha256": "",
+      "fileName": "NANO-POS-Patch-1.0.11-to-1.0.12.zip",
+      "sizeBytes": 0
+    }
+  ],
+  "download": {
+    "directUrl": "",
+    "pageUrl": "",
+    "sha256": "",
+    "fileName": "NANO-POS-Setup-1.0.12-x64.exe"
+  }
+}
