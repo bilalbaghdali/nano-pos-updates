@@ -10,25 +10,34 @@
   "minSupportedVersion": "1.0.0",
   "features": {
     "ar": [
-      "إضافة زر تواصل مع الدعم ثابت أعلى البرنامج وفي جميع الأقسام",
-      "إضافة رقم الهاتف 0777003183 والبريد baghdalibilal@gmail.com داخل مركز الدعم",
-      "عرض إصدار البرنامج ومعرّف التثبيت داخل نافذة الدعم مع إمكانية النسخ",
-      "إضافة بيانات التواصل إلى شاشة التجربة المجانية لمدة 7 أيام",
-      "دعم نافذة الدعم بالعربية والفرنسية والإنجليزية"
+      "تحسين نظام التحديثات التلقائية وإظهار مميزات كل إصدار جديد قبل تثبيته.",
+      "إضافة التحقق الأمني من ملفات التحديث باستخدام SHA-256.",
+      "تحسين التوافق مع MediaFire لتنزيل التحديثات الجديدة.",
+      "تحسين نظام اللغة العربية والفرنسية والإنجليزية والعناصر الديناميكية داخل الواجهة.",
+      "تحسين قسم ربط الهاتف والأجهزة وإضافة زر مباشر لتحميل تطبيق NANO POS Mobile.",
+      "تحسين استقرار البرنامج وسرعة التنقل بين الأقسام.",
+      "تحسين نظام النسخ الاحتياطي المحلي للحفاظ على بيانات المتجر.",
+      "إصلاحات عامة لزيادة الاستقرار والأداء."
     ],
     "fr": [
-      "Ajout d’un bouton de support permanent en haut de toutes les sections",
-      "Ajout du téléphone 0777003183 et de l’e-mail baghdalibilal@gmail.com",
-      "Affichage de la version et de l’identifiant d’installation avec copie rapide",
-      "Ajout des coordonnées de support à l’écran d’essai gratuit de 7 jours",
-      "Support de la fenêtre d’assistance en arabe, français et anglais"
+      "Amélioration du système de mise à jour automatique avec affichage des nouveautés avant installation.",
+      "Ajout de la vérification de sécurité SHA-256 pour les fichiers de mise à jour.",
+      "Amélioration de la compatibilité avec MediaFire pour le téléchargement des nouvelles mises à jour.",
+      "Amélioration du système de langues arabe, français et anglais ainsi que des éléments dynamiques de l’interface.",
+      "Amélioration de la liaison téléphone/appareils avec un bouton direct pour télécharger NANO POS Mobile.",
+      "Amélioration de la stabilité du programme et de la rapidité de navigation entre les sections.",
+      "Amélioration du système de sauvegarde locale pour protéger les données du magasin.",
+      "Corrections générales pour améliorer la stabilité et les performances."
     ],
     "en": [
-      "Added a persistent Contact Support button across all sections",
-      "Added phone 0777003183 and email baghdalibilal@gmail.com to the support center",
-      "Shows app version and installation ID with quick copy",
-      "Added support contact details to the 7-day free trial screen",
-      "Support center is available in Arabic, French and English"
+      "Improved automatic updates and display of release highlights before installation.",
+      "Added SHA-256 security verification for update files.",
+      "Improved MediaFire compatibility for downloading new updates.",
+      "Improved Arabic, French and English language support and dynamic interface elements.",
+      "Improved phone/device linking and added a direct NANO POS Mobile download button.",
+      "Improved application stability and navigation speed between sections.",
+      "Improved local backup system to protect store data.",
+      "General fixes to improve stability and performance."
     ]
   },
   "download": {
@@ -38,8 +47,8 @@
     "fileName": "NANO-POS-Setup-1.0.6-x64.exe"
   },
   "notes": {
-    "ar": "الإصدار جاهز من ناحية المصدر، ويبقى في وضع مسودة حتى يتم رفع مثبت Windows إلى MediaFire.",
-    "fr": "Le code source est prêt. La version reste en brouillon jusqu’à la publication de l’installateur Windows sur MediaFire.",
-    "en": "The source is ready. This release remains a draft until the Windows installer is uploaded to MediaFire."
+    "ar": "هذه هي المميزات الرسمية للإصدار NANO POS v1.0.6. يبقى النشر معطلاً حتى يتم رفع مثبت Windows إلى MediaFire وإضافة الرابط وSHA-256.",
+    "fr": "Fonctionnalités officielles de NANO POS v1.0.6. La publication reste désactivée jusqu’à la mise en ligne de l’installateur Windows sur MediaFire avec son lien et son SHA-256.",
+    "en": "Official NANO POS v1.0.6 release highlights. Publishing remains disabled until the Windows installer is uploaded to MediaFire and its URL and SHA-256 are added."
   }
 }
