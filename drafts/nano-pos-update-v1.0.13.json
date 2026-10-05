@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "published": false,
+  "channel": "stable",
+  "product": "NANO POS",
+  "version": "1.0.13",
+  "releaseDate": "2026-10-05",
+  "mandatory": false,
+  "importance": "normal",
+  "minSupportedVersion": "1.0.12",
+  "features": {
+    "ar": [
+      "إصلاح تكرار رقم إصدار NANO POS في بعض الصفحات، خصوصًا قسم ربط الهاتف.",
+      "منع إضافة رقم إصدار سطح المكتب أكثر من مرة عند إعادة رسم الواجهة أو تغيير اللغة.",
+      "عدم دمج إصدار سطح المكتب مع أسماء NANO POS Mobile وNANO POS Wireless Scanner.",
+      "نشر الإصلاح كتحديث خفيف Patch مخصص للانتقال من v1.0.12 إلى v1.0.13."
+    ],
+    "fr": [
+      "Correction de la répétition du numéro de version NANO POS, notamment dans la section de liaison téléphone.",
+      "Empêche l’ajout multiple de la version Desktop lors du rafraîchissement de l’interface ou du changement de langue.",
+      "La version Desktop n’est plus fusionnée avec NANO POS Mobile ou NANO POS Wireless Scanner.",
+      "Correctif léger Patch prévu pour la mise à jour de v1.0.12 vers v1.0.13."
+    ],
+    "en": [
+      "Fixed repeated NANO POS version numbers, especially in the phone/device linking page.",
+      "Prevents the desktop version from being appended more than once during UI refreshes or language changes.",
+      "Desktop version is no longer merged into NANO POS Mobile or NANO POS Wireless Scanner names.",
+      "Lightweight Patch designed specifically for upgrading v1.0.12 to v1.0.13."
+    ]
+  },
+  "patches": [
+    {
+      "fromVersion": "1.0.12",
+      "directUrl": "",
+      "pageUrl": "",
+      "sha256": "0af768f5fc316faa00852ed369fa6fbb605437e678a0268fb067d6494a1e9428",
+      "appAsarSha256": "cd1f18e719cf9badaed04ac1da331a6e528d9cceff5f58d695cfeaab0a9402c1",
+      "fileName": "NANO-POS-Patch-1.0.12-to-1.0.13.zip",
+      "sizeBytes": 30373513,
+      "payloadType": "app-asar"
+    }
+  ],
+  "download": {
+    "directUrl": "",
+    "pageUrl": "",
+    "sha256": "",
+    "fileName": "NANO-POS-Setup-1.0.13-x64.exe"
+  },
+  "notes": {
+    "ar": "مسودة غير منشورة. أضف رابط MediaFire المباشر للـPatch ثم غيّر published إلى true. يفضّل إضافة مثبت كامل v1.0.13 كخيار احتياطي للإصدارات الأقدم.",
+    "fr": "Brouillon non publié. Ajoutez le lien direct MediaFire du Patch puis passez published à true. Un installateur complet v1.0.13 est recommandé en secours.",
+    "en": "Unpublished draft. Add the direct MediaFire Patch URL, then set published to true. A full v1.0.13 installer is recommended as fallback for older versions."
+  }
+}
