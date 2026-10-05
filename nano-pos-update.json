@@ -3,46 +3,43 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.10",
-  "releaseDate": "2026-10-04",
+  "version": "1.0.13",
+  "releaseDate": "2026-10-05",
   "mandatory": false,
   "importance": "normal",
-  "minSupportedVersion": "1.0.0",
+  "minSupportedVersion": "1.0.12",
   "features": {
     "ar": [
-      "تثبيت رمز QR في قسم ربط الهاتف ومنع تحديثه أو وميضه المتكرر.",
-      "إعادة توليد QR فقط عند تغيير عنوان الربط أو رمز الاقتران أو اللغة.",
-      "تخفيف معدل تحديث حالة الأجهزة لتحسين ثبات وسلاسة الواجهة.",
-      "إزالة تكرار رقم إصدار NANO POS من الصفحات والأزرار والعناصر الثانوية.",
-      "عرض رقم الإصدار مرة واحدة فقط في شاشة الدخول وفي صفحة التحديثات.",
-      "تحسين استقرار واجهة ربط الهاتف وتقليل إعادة الرسم غير الضرورية."
+      "تحسينات على الأداء."
     ],
     "fr": [
-      "Stabilisation du code QR dans la section de liaison téléphone afin d’éviter les rafraîchissements et clignotements répétés.",
-      "Le QR n’est régénéré qu’en cas de changement de l’adresse de connexion, du code d’appairage ou de la langue.",
-      "Réduction de la fréquence d’actualisation de l’état des appareils pour améliorer la stabilité de l’interface.",
-      "Suppression des répétitions du numéro de version NANO POS dans les pages, boutons et éléments secondaires.",
-      "Affichage du numéro de version une seule fois sur l’écran de connexion et dans la page des mises à jour.",
-      "Amélioration de la stabilité de l’interface de liaison téléphone et réduction des rendus inutiles."
+      "Améliorations des performances."
     ],
     "en": [
-      "Stabilized the QR code in the phone linking section to prevent frequent refresh and flicker.",
-      "QR is regenerated only when the connection address, pairing code, or language changes.",
-      "Reduced device-status refresh frequency to improve interface stability and smoothness.",
-      "Removed duplicate NANO POS version numbers from pages, buttons, and secondary UI elements.",
-      "Shows the version number only once on the login screen and updates page.",
-      "Improved phone-linking UI stability and reduced unnecessary re-rendering."
+      "Performance improvements."
     ]
   },
+  "patches": [
+    {
+      "fromVersion": "1.0.12",
+      "directUrl": "https://download1523.mediafire.com/ek7ey5jegnygCTwYLcYOBroH0um1H5tFasLKQTgL_zY9kq-0FTkVOjIEQnUscYce4HCa8cn45lZb-JoG0rRJichVJXoZ7VexJzxSgzHcNODCpTWUxJ1Hx9cPKD02FHR3SqsrLUXyesUazuGZH9f3yjiDDpyL4fpeZ5Psz2xL56t8y8I/vyk3132mrnjwdg0/NANO-POS-Patch-1.0.12-to-1.0.13.zip",
+      "pageUrl": "https://www.mediafire.com/file/vyk3132mrnjwdg0/NANO-POS-Patch-1.0.12-to-1.0.13.zip/file",
+      "sha256": "0af768f5fc316faa00852ed369fa6fbb605437e678a0268fb067d6494a1e9428",
+      "appAsarSha256": "cd1f18e719cf9badaed04ac1da331a6e528d9cceff5f58d695cfeaab0a9402c1",
+      "fileName": "NANO-POS-Patch-1.0.12-to-1.0.13.zip",
+      "sizeBytes": 30373513,
+      "payloadType": "app-asar"
+    }
+  ],
   "download": {
-    "directUrl": "https://download1072.mediafire.com/0yk9dogjyjtgotWbADCUG-eA9vB6Alzo6dsaUadvVq3KEaQIagr2RYqymPM_pREGX6Xxnj9N6CzEJepglRh5rZQoyi2KzegofEUSu0Wpe0Bi2moHyICs5iz9w20voeE-q2aznRHN1y6qxt6OPFqnvWQjXfYO-bP98nPvIId5b2xf-Vs/phfzlfptjewefqd/NANO-POS-Setup-1.0.10-x64.exe",
-    "pageUrl": "https://www.mediafire.com/file/phfzlfptjewefqd/NANO-POS-Setup-1.0.10-x64.exe/file",
-    "sha256": "07445ecc06a32d0501e5b6e453aa4fde781e12286a08b33a717f079bbdeef26c",
-    "fileName": "NANO-POS-Setup-1.0.10-x64.exe"
+    "directUrl": "",
+    "pageUrl": "",
+    "sha256": "",
+    "fileName": ""
   },
   "notes": {
-    "ar": "تم نشر NANO POS v1.0.10 في القناة المستقرة. يقوم البرنامج بتنزيل المثبت مباشرة والتحقق من SHA-256 قبل تشغيله، مع إبقاء صفحة MediaFire كخيار احتياطي.",
-    "fr": "NANO POS v1.0.10 est publié sur le canal Stable. Le programme télécharge directement l’installateur et vérifie son SHA-256 avant exécution, avec la page MediaFire comme solution de secours.",
-    "en": "NANO POS v1.0.10 is published on the Stable channel. The app downloads the installer directly and verifies its SHA-256 before launch, with the MediaFire page retained as fallback."
+    "ar": "تم نشر NANO POS v1.0.13 كتحديث خفيف مخصص للإصدار v1.0.12.",
+    "fr": "NANO POS v1.0.13 est publié sous forme de correctif léger destiné à la version v1.0.12.",
+    "en": "NANO POS v1.0.13 is published as a lightweight patch for v1.0.12."
   }
 }
