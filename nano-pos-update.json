@@ -3,31 +3,31 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "releaseDate": "2026-10-06",
   "mandatory": false,
   "importance": "normal",
-  "minSupportedVersion": "1.0.17",
+  "minSupportedVersion": "1.0.18",
   "features": {
     "ar": [
-      "إصلاح واجهة المتصفح: فتح صفحة اختيار المستخدم أولًا وإظهار الأقسام حسب صلاحيات المستخدم بعد تسجيل الدخول."
+      "توحيد رقم الإصدار في جميع الواجهات، تحسين عرض الأجهزة المتصلة عبر المتصفح باسم المستخدم، وتعزيز تطبيق صلاحيات المستخدم على الأقسام والبيانات والعمليات."
     ],
     "fr": [
-      "Correction de l’interface navigateur : ouverture d’abord sur la sélection de l’utilisateur et affichage des sections selon ses autorisations après connexion."
+      "Unification du numéro de version dans toutes les interfaces, amélioration de l’affichage des appareils connectés via le navigateur avec le nom de l’utilisateur, et renforcement de l’application des autorisations sur les sections, les données et les opérations."
     ],
     "en": [
-      "Fixed the browser interface: it now opens on user selection first and shows sections according to the signed-in user's permissions."
+      "Unified the version number across all interfaces, improved browser-connected device display using the signed-in user's name, and strengthened user permission enforcement across sections, data, and operations."
     ]
   },
   "patches": [
     {
-      "fromVersion": "1.0.17",
-      "directUrl": "https://download1528.mediafire.com/3ofec4euxcygFPrGIavFZzBF-CiqyH6ii7sm4CZPB_Jqc6ttskh7c1wnSCzdbJiSjZ0vSSMKdxNLfKMoGRtYixvrNv4qG4I1xrOCAn-aTMrL7TvESAfCMNgsPA3VDGQ4-3bVKTNaaIXtk9iW6QDksaG3PjfmuW49Vw0UDxd6jDuI_h4/ovtch9l6785vlzk/NANO-POS-Patch-1.0.17-to-1.0.18-BROWSER-USERS-SECTIONS-FIX.zip",
-      "pageUrl": "https://www.mediafire.com/file/ovtch9l6785vlzk/NANO-POS-Patch-1.0.17-to-1.0.18-BROWSER-USERS-SECTIONS-FIX.zip/file",
-      "sha256": "7824a414b92a4f03937315f1b405dc036adaa7e49fac2e7f6b7a349d0306e7bf",
-      "appAsarSha256": "a2fb1b46110b336e979a1faec5a053f616e84d45851a38b9683dfde54141db6f",
-      "fileName": "NANO-POS-Patch-1.0.17-to-1.0.18-BROWSER-USERS-SECTIONS-FIX.zip",
-      "sizeBytes": 30400879,
+      "fromVersion": "1.0.18",
+      "directUrl": "https://download1326.mediafire.com/8xbieruxe15gfw-0E6uD0-q78UPG-ziURcH7LDr-V8cp-zuxc_1_3yG7jZxS1Z9XaVlgTv4ggPNL5kT8crPTnMOFhdo7vxbextbj35sUn2_suJbr6FeZJhfeS8FPzUUKuHvqc2Tn01pbblgQvX5axUeu8h_MdsGgFEH9Y0I23rZIpOo/er197ravqf6u9m7/NANO-POS-Patch-1.0.18-to-1.0.19-VERSION-WEB-CLIENTS-PERMISSIONS.zip",
+      "pageUrl": "https://www.mediafire.com/file/er197ravqf6u9m7/NANO-POS-Patch-1.0.18-to-1.0.19-VERSION-WEB-CLIENTS-PERMISSIONS.zip/file",
+      "sha256": "ef195c095fe54c6ce681c21cd9480cf972d4df0fa59cd898c1c3d96b63b02443",
+      "appAsarSha256": "66a320f66c0e0b3b2ce99826d6567821dad4c6da80a0d604eebcb69c9f74b9fa",
+      "fileName": "NANO-POS-Patch-1.0.18-to-1.0.19-VERSION-WEB-CLIENTS-PERMISSIONS.zip",
+      "sizeBytes": 30460674,
       "payloadType": "app-asar"
     }
   ],
@@ -38,8 +38,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يتضمن NANO POS v1.0.18 إصلاح واجهة المتصفح بحيث تبدأ من اختيار المستخدم، ثم تُحمّل جلسة المستخدم وصلاحياته وتظهر الأقسام المتاحة له بشكل صحيح.",
-    "fr": "NANO POS v1.0.18 corrige l’interface navigateur afin de commencer par la sélection de l’utilisateur, puis de charger sa session et ses autorisations pour afficher correctement les sections disponibles.",
-    "en": "NANO POS v1.0.18 fixes the browser interface so it starts with user selection, then loads the user's session and permissions and displays the available sections correctly."
+    "ar": "يتضمن NANO POS v1.0.19 توحيد رقم الإصدار في جميع الواجهات، تحسين ظهور الأجهزة المتصلة عبر المتصفح باسم المستخدم، وتعزيز فرض صلاحيات المستخدم على مستوى الواجهة والخادم والبيانات والعمليات.",
+    "fr": "NANO POS v1.0.19 unifie le numéro de version dans toutes les interfaces, améliore l’affichage des appareils connectés via le navigateur avec le nom de l’utilisateur et renforce l’application des autorisations au niveau de l’interface, du serveur, des données et des opérations.",
+    "en": "NANO POS v1.0.19 unifies the version number across all interfaces, improves browser-connected device display using the user's name, and strengthens permission enforcement across the UI, server, data, and operations."
   }
 }
