@@ -3,31 +3,31 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "releaseDate": "2026-10-06",
   "mandatory": false,
   "importance": "normal",
-  "minSupportedVersion": "1.0.16",
+  "minSupportedVersion": "1.0.17",
   "features": {
     "ar": [
-      "إصلاح التحقق من التفعيل في المتصفح."
+      "إصلاح واجهة المتصفح: فتح صفحة اختيار المستخدم أولًا وإظهار الأقسام حسب صلاحيات المستخدم بعد تسجيل الدخول."
     ],
     "fr": [
-      "Correction de la vérification de l’activation dans le navigateur."
+      "Correction de l’interface navigateur : ouverture d’abord sur la sélection de l’utilisateur et affichage des sections selon ses autorisations après connexion."
     ],
     "en": [
-      "Fixed activation verification in the browser."
+      "Fixed the browser interface: it now opens on user selection first and shows sections according to the signed-in user's permissions."
     ]
   },
   "patches": [
     {
-      "fromVersion": "1.0.16",
-      "directUrl": "https://download1479.mediafire.com/pymjz7fmaojgUSZ7blGBPmU01RPW-_8MCSg3eax-e4nqbRh_-1dUOsNzkKvpaM1KcUpc4Bbx1eRa3lFf4IgpANxTlp3AcTSrYLPEnie9M6zI3crZbt7yHywdk5H76U2WR3TNSfexyIRKF4QUvrCzbVq7TD2q9n-A2TTyn5SKXqhsHkk/7ptp2alh86t71se/NANO-POS-Patch-1.0.16-to-1.0.17-BROWSER-LICENSE-FIX.zip",
-      "pageUrl": "https://www.mediafire.com/file/7ptp2alh86t71se/NANO-POS-Patch-1.0.16-to-1.0.17-BROWSER-LICENSE-FIX.zip/file",
-      "sha256": "12d41847a9c34c028cdadac383484f20766437216d9fd20ba7e39780969be005",
-      "appAsarSha256": "d0d660e1ec83bf444a1e46e45caec96dac7a462212fc525724b038e0d90fb593",
-      "fileName": "NANO-POS-Patch-1.0.16-to-1.0.17-BROWSER-LICENSE-FIX.zip",
-      "sizeBytes": 30384683,
+      "fromVersion": "1.0.17",
+      "directUrl": "https://download1528.mediafire.com/3ofec4euxcygFPrGIavFZzBF-CiqyH6ii7sm4CZPB_Jqc6ttskh7c1wnSCzdbJiSjZ0vSSMKdxNLfKMoGRtYixvrNv4qG4I1xrOCAn-aTMrL7TvESAfCMNgsPA3VDGQ4-3bVKTNaaIXtk9iW6QDksaG3PjfmuW49Vw0UDxd6jDuI_h4/ovtch9l6785vlzk/NANO-POS-Patch-1.0.17-to-1.0.18-BROWSER-USERS-SECTIONS-FIX.zip",
+      "pageUrl": "https://www.mediafire.com/file/ovtch9l6785vlzk/NANO-POS-Patch-1.0.17-to-1.0.18-BROWSER-USERS-SECTIONS-FIX.zip/file",
+      "sha256": "7824a414b92a4f03937315f1b405dc036adaa7e49fac2e7f6b7a349d0306e7bf",
+      "appAsarSha256": "a2fb1b46110b336e979a1faec5a053f616e84d45851a38b9683dfde54141db6f",
+      "fileName": "NANO-POS-Patch-1.0.17-to-1.0.18-BROWSER-USERS-SECTIONS-FIX.zip",
+      "sizeBytes": 30400879,
       "payloadType": "app-asar"
     }
   ],
@@ -38,8 +38,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يتضمن NANO POS v1.0.17 إصلاح التحقق من التفعيل والفترة التجريبية عند فتح البرنامج من المتصفح عبر الكمبيوتر الرئيسي.",
-    "fr": "NANO POS v1.0.17 corrige la vérification de l’activation et de la période d’essai lors de l’accès au programme depuis un navigateur via l’ordinateur principal.",
-    "en": "NANO POS v1.0.17 fixes activation and trial verification when accessing the program from a browser through the primary computer."
+    "ar": "يتضمن NANO POS v1.0.18 إصلاح واجهة المتصفح بحيث تبدأ من اختيار المستخدم، ثم تُحمّل جلسة المستخدم وصلاحياته وتظهر الأقسام المتاحة له بشكل صحيح.",
+    "fr": "NANO POS v1.0.18 corrige l’interface navigateur afin de commencer par la sélection de l’utilisateur, puis de charger sa session et ses autorisations pour afficher correctement les sections disponibles.",
+    "en": "NANO POS v1.0.18 fixes the browser interface so it starts with user selection, then loads the user's session and permissions and displays the available sections correctly."
   }
 }
