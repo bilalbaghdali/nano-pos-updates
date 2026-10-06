@@ -3,40 +3,37 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "releaseDate": "2026-10-06",
   "mandatory": false,
   "importance": "normal",
-  "minSupportedVersion": "1.0.13",
+  "minSupportedVersion": "1.0.14",
   "features": {
     "ar": [
-      "إضافة خاصية المزامنة بين الأجهزة المتصلة واعتماد بروتوكول سريع للمزامنة الفورية.",
-      "اعتماد الكمبيوتر الرئيسي كمرجع موحّد لقاعدة البيانات، مما يمنع إنشاء مبيعات متعارضة أو اختلاف كميات المخزون عند استعمال عدة نقاط بيع.",
-      "في حال انقطاع الاتصال بالكمبيوتر الرئيسي، يمنع الجهاز التابع إنشاء تغييرات جديدة قد تسبب تضاربًا لاحقًا، إلى أن تتم استعادة الاتصال.",
-      "استخدام Tailscale لتوفير اتصال خاص وآمن بين الأجهزة حتى لو كانت في شبكات أو أماكن مختلفة."
+      "من أي كمبيوتر آخر متصل بنفس شبكة Tailscale، افتح رابط الكمبيوتر الرئيسي في Chrome أو Edge. ستظهر واجهة NANO POS كاملة ويُطلب تسجيل الدخول بحساب البرنامج. لا يحتاج الجهاز التابع إلى تثبيت NANO POS؛ يحتاج فقط إلى Tailscale والمتصفح.",
+      "تم اعتماد قاعدة بيانات الكمبيوتر الرئيسي كمرجع وحيد، وتنفذ عمليات البيع والمخزون والعملاء والموردين والفواتير عليه مباشرة. كما تمت إضافة تحديث فوري للمتصفح؛ وإذا انقطع الكمبيوتر الرئيسي، لن يستطيع جهاز المتصفح إنشاء تغييرات قد تسبب تعارضًا.",
+      "الحماية أصبحت: Tailscale فقط + تسجيل دخول NANO POS + جلسة متصفح خاصة."
     ],
     "fr": [
-      "Ajout de la synchronisation entre les appareils connectés avec un protocole rapide pour une synchronisation instantanée.",
-      "L’ordinateur principal devient la référence unique de la base de données afin d’éviter les ventes conflictuelles et les écarts de stock entre plusieurs points de vente.",
-      "En cas de perte de connexion avec l’ordinateur principal, l’appareil secondaire bloque les nouvelles modifications susceptibles de créer des conflits jusqu’au rétablissement de la connexion.",
-      "Utilisation de Tailscale pour assurer une connexion privée et sécurisée entre les appareils, même s’ils se trouvent sur des réseaux ou dans des lieux différents."
+      "Depuis tout autre ordinateur connecté au même réseau Tailscale, ouvrez le lien de l’ordinateur principal dans Chrome ou Edge. L’interface complète de NANO POS s’affiche et demande une connexion avec un compte du programme. Aucun NANO POS n’est requis sur l’appareil secondaire : seuls Tailscale et un navigateur sont nécessaires.",
+      "La base de données de l’ordinateur principal est désormais la référence unique. Les ventes, le stock, les clients, les fournisseurs et les factures sont exécutés directement sur cette base. Le navigateur reçoit aussi les mises à jour instantanément ; si l’ordinateur principal est indisponible, le client Web ne peut pas créer de modifications susceptibles de provoquer des conflits.",
+      "La protection repose désormais sur : Tailscale + connexion NANO POS + session navigateur privée."
     ],
     "en": [
-      "Added synchronization between connected devices using a fast protocol for instant data sync.",
-      "The primary computer acts as the single source of truth for the database, preventing conflicting sales and inventory quantity differences across multiple POS terminals.",
-      "If the connection to the primary computer is lost, linked devices block new changes that could create conflicts until the connection is restored.",
-      "Tailscale provides private and secure connectivity between devices even when they are on different networks or in different locations."
+      "From any other computer connected to the same Tailscale network, open the primary computer link in Chrome or Edge. The full NANO POS interface appears and requires signing in with a NANO POS account. The secondary device does not need NANO POS installed; it only needs Tailscale and a web browser.",
+      "The primary computer database is now the single source of truth. Sales, inventory, customers, suppliers, and invoices are processed directly on it. The browser also receives instant updates; if the primary computer becomes unavailable, the Web client cannot create changes that could cause conflicts.",
+      "Security is now based on: Tailscale + NANO POS login + a private browser session."
     ]
   },
   "patches": [
     {
-      "fromVersion": "1.0.13",
-      "directUrl": "https://download1501.mediafire.com/lclb3no3djeg3XYJygCQT34VML-J7ecpTPqn7jeHq9Z_70qHLyxSO0-e6uDIbKplwyrmVI0oYculqIoMPjIp4cbi8JiIegRony5gBuqY2jV_FLjL-aP6xVBreZ5PP3BIUoZ_U4ilV60DEcHUeGxk82whRjz1d4SnyCu41MmalGb9lF0/l8qa7gg4lg2r7mc/NANO-POS-Patch-1.0.13-to-1.0.14-TAILSCALE-PC-SYNC.zip",
-      "pageUrl": "https://www.mediafire.com/file/l8qa7gg4lg2r7mc/NANO-POS-Patch-1.0.13-to-1.0.14-TAILSCALE-PC-SYNC.zip/file",
-      "sha256": "68684e09d980aad9e8269c6c2d680b793b65b61f1f8f7f8e33ff495e9f568898",
-      "appAsarSha256": "9d0d137d29063b3856c3c9b1f476d7459dc6e998e4db6e147482c3ed69519c1f",
-      "fileName": "NANO-POS-Patch-1.0.13-to-1.0.14-TAILSCALE-PC-SYNC.zip",
-      "sizeBytes": 30375799,
+      "fromVersion": "1.0.14",
+      "directUrl": "https://download1580.mediafire.com/3whxpd1w5hmgBJxLMxdvKaJAJlyOJXInEp37S4P0TCELp_fIzXiqKq7Rc4zBSEJti95P049ZZxWtxfmcXNlKKxhLgrayHbAo-lWYFZXssjAlTT4AYXWuOfZ2AFsG1sv90L9Y84YbgZ1swVyN-EAN3xhgkmGzb8NPl71nxfMym6o-Q8w/m6xonku2fi72b8m/NANO-POS-Patch-1.0.14-to-1.0.15-BROWSER-TAILSCALE.zip",
+      "pageUrl": "https://www.mediafire.com/file/m6xonku2fi72b8m/NANO-POS-Patch-1.0.14-to-1.0.15-BROWSER-TAILSCALE.zip/file",
+      "sha256": "159707fec15924cd4ca6387665d09fb644de2c683e5abfcc63940f29a56c30b2",
+      "appAsarSha256": "47c9ab4b60c57f1eac14a780ceb76b900bc0de92c7f08ea8753800b5f9c64fe6",
+      "fileName": "NANO-POS-Patch-1.0.14-to-1.0.15-BROWSER-TAILSCALE.zip",
+      "sizeBytes": 30380120,
       "payloadType": "app-asar"
     }
   ],
@@ -47,8 +44,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يتضمن NANO POS v1.0.14 مزامنة فورية وآمنة بين عدة أجهزة عبر Tailscale مع اعتماد الكمبيوتر الرئيسي كمرجع موحّد للبيانات.",
-    "fr": "NANO POS v1.0.14 ajoute une synchronisation instantanée et sécurisée entre plusieurs appareils via Tailscale, avec l’ordinateur principal comme référence unique des données.",
-    "en": "NANO POS v1.0.14 adds instant and secure multi-device synchronization over Tailscale, with the primary computer as the single source of truth."
+    "ar": "يضيف NANO POS v1.0.15 الوصول إلى النظام من الأجهزة التابعة مباشرة عبر المتصفح باستخدام عنوان Tailscale للكمبيوتر الرئيسي، مع اعتماد قاعدة بياناته كمصدر وحيد للبيانات وجلسة دخول محمية.",
+    "fr": "NANO POS v1.0.15 permet aux appareils secondaires d’accéder directement au système depuis un navigateur via l’adresse Tailscale de l’ordinateur principal, avec sa base de données comme source unique et une session protégée.",
+    "en": "NANO POS v1.0.15 lets linked devices access the system directly from a browser through the primary computer’s Tailscale address, using its database as the single source of truth with a protected login session."
   }
 }
