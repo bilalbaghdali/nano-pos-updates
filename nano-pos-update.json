@@ -3,30 +3,39 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "releaseDate": "2026-10-06",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "توحيد رقم الإصدار في جميع الواجهات، تحسين عرض الأجهزة المتصلة عبر المتصفح باسم المستخدم، وتعزيز تطبيق صلاحيات المستخدم على الأقسام والبيانات والعمليات."
+      "إزالة وميض رقم الإصدار وتحسين ثبات شاشة الدخول.",
+      "استعادة بطاقات الصفحة الرئيسية ومنع اختفائها.",
+      "تحسين الفصل بين صلاحيات المتصفح وواجهة الكمبيوتر الرئيسي.",
+      "تحسين استقرار وسلاسة الواجهة وتقليل إعادة الرسم غير الضرورية."
     ],
     "fr": [
-      "Unification du numéro de version dans toutes les interfaces, amélioration de l’affichage des appareils connectés via le navigateur avec le nom de l’utilisateur, et renforcement de l’application des autorisations sur les sections, les données et les opérations."
+      "Suppression du clignotement du numéro de version et amélioration de la stabilité de l’écran de connexion.",
+      "Restauration des cartes de la page d’accueil et prévention de leur disparition.",
+      "Amélioration de la séparation entre les autorisations du navigateur et l’interface de l’ordinateur principal.",
+      "Amélioration de la stabilité et de la fluidité de l’interface avec moins de rafraîchissements inutiles."
     ],
     "en": [
-      "Unified the version number across all interfaces, improved browser-connected device display using the signed-in user's name, and strengthened user permission enforcement across sections, data, and operations."
+      "Removed version-number flickering and improved login-screen stability.",
+      "Restored home-page cards and prevented them from disappearing.",
+      "Improved separation between browser permissions and the primary-computer interface.",
+      "Improved UI stability and smoothness by reducing unnecessary redraws."
     ]
   },
   "patches": [
     {
-      "directUrl": "https://download1326.mediafire.com/8xbieruxe15gfw-0E6uD0-q78UPG-ziURcH7LDr-V8cp-zuxc_1_3yG7jZxS1Z9XaVlgTv4ggPNL5kT8crPTnMOFhdo7vxbextbj35sUn2_suJbr6FeZJhfeS8FPzUUKuHvqc2Tn01pbblgQvX5axUeu8h_MdsGgFEH9Y0I23rZIpOo/er197ravqf6u9m7/NANO-POS-Patch-1.0.18-to-1.0.19-VERSION-WEB-CLIENTS-PERMISSIONS.zip",
-      "pageUrl": "https://www.mediafire.com/file/er197ravqf6u9m7/NANO-POS-Patch-1.0.18-to-1.0.19-VERSION-WEB-CLIENTS-PERMISSIONS.zip/file",
-      "sha256": "ef195c095fe54c6ce681c21cd9480cf972d4df0fa59cd898c1c3d96b63b02443",
-      "appAsarSha256": "66a320f66c0e0b3b2ce99826d6567821dad4c6da80a0d604eebcb69c9f74b9fa",
-      "fileName": "NANO-POS-Patch-1.0.18-to-1.0.19-VERSION-WEB-CLIENTS-PERMISSIONS.zip",
-      "sizeBytes": 30460674,
+      "directUrl": "https://download1652.mediafire.com/caao7v1b52jgcfKWXajpOynj2_CLxUUNkVlKxe81xnGPGjQYkD0qLtKAW6pzg3MQxd7u_qivpy_InKXSEITVn9C6OPhNyMs7NmpkVnbmlrdArtdmzP9wDUMc4Pr6sHHS6CDECLANuok1KD6IVZ-gK41iHwkM57D06kSfOxKyNk8UWjk/ucvm9bme9aa6tyo/NANO-POS-Patch-1.0.19-to-1.0.20-LOGIN-HOME-STABILITY-FIX.zip",
+      "pageUrl": "https://www.mediafire.com/file/ucvm9bme9aa6tyo/NANO-POS-Patch-1.0.19-to-1.0.20-LOGIN-HOME-STABILITY-FIX.zip/file",
+      "sha256": "abcd629f9ef3eade3fcc0835334e5091008f6ea6372bb63c755453e79a24226d",
+      "appAsarSha256": "fdf59b73873f0fc60c4e5509556bbc74959980e9f436a637515ee70498a369ee",
+      "fileName": "NANO-POS-Patch-1.0.19-to-1.0.20-LOGIN-HOME-STABILITY-FIX.zip",
+      "sizeBytes": 30404737,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -34,7 +43,8 @@
         "1.0.15",
         "1.0.16",
         "1.0.17",
-        "1.0.18"
+        "1.0.18",
+        "1.0.19"
       ]
     }
   ],
@@ -45,8 +55,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يتضمن NANO POS v1.0.19 توحيد رقم الإصدار في جميع الواجهات، تحسين ظهور الأجهزة المتصلة عبر المتصفح باسم المستخدم، وتعزيز فرض صلاحيات المستخدم على مستوى الواجهة والخادم والبيانات والعمليات. يمكن تثبيت هذا التحديث مباشرة من الإصدارات 1.0.13 حتى 1.0.18.",
-    "fr": "NANO POS v1.0.19 unifie le numéro de version dans toutes les interfaces, améliore l’affichage des appareils connectés via le navigateur avec le nom de l’utilisateur et renforce l’application des autorisations. Cette mise à jour peut être appliquée directement depuis les versions 1.0.13 à 1.0.18.",
-    "en": "NANO POS v1.0.19 unifies the version number across all interfaces, improves browser-connected device display using the user's name, and strengthens permission enforcement. This update can be applied directly from versions 1.0.13 through 1.0.18."
+    "ar": "يتضمن NANO POS v1.0.20 إصلاح وميض رقم الإصدار في شاشة الدخول، استعادة بطاقات الصفحة الرئيسية، تحسين الفصل بين صلاحيات المتصفح وواجهة الكمبيوتر الرئيسي، وتقليل عمليات إعادة الرسم غير الضرورية لتحسين استقرار الواجهة.",
+    "fr": "NANO POS v1.0.20 corrige le clignotement du numéro de version sur l’écran de connexion, restaure les cartes de la page d’accueil, améliore la séparation entre les autorisations du navigateur et l’interface principale, et réduit les rafraîchissements inutiles pour améliorer la stabilité.",
+    "en": "NANO POS v1.0.20 fixes version-number flickering on the login screen, restores home-page cards, improves separation between browser permissions and the primary interface, and reduces unnecessary redraws for better UI stability."
   }
 }
