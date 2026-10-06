@@ -3,37 +3,31 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "releaseDate": "2026-10-06",
   "mandatory": false,
   "importance": "normal",
-  "minSupportedVersion": "1.0.14",
+  "minSupportedVersion": "1.0.15",
   "features": {
     "ar": [
-      "من أي كمبيوتر آخر متصل بنفس شبكة Tailscale، افتح رابط الكمبيوتر الرئيسي في Chrome أو Edge. ستظهر واجهة NANO POS كاملة ويُطلب تسجيل الدخول بحساب البرنامج. لا يحتاج الجهاز التابع إلى تثبيت NANO POS؛ يحتاج فقط إلى Tailscale والمتصفح.",
-      "تم اعتماد قاعدة بيانات الكمبيوتر الرئيسي كمرجع وحيد، وتنفذ عمليات البيع والمخزون والعملاء والموردين والفواتير عليه مباشرة. كما تمت إضافة تحديث فوري للمتصفح؛ وإذا انقطع الكمبيوتر الرئيسي، لن يستطيع جهاز المتصفح إنشاء تغييرات قد تسبب تعارضًا.",
-      "الحماية أصبحت: Tailscale فقط + تسجيل دخول NANO POS + جلسة متصفح خاصة."
+      "تحسينات على الربط بين الأجهزة."
     ],
     "fr": [
-      "Depuis tout autre ordinateur connecté au même réseau Tailscale, ouvrez le lien de l’ordinateur principal dans Chrome ou Edge. L’interface complète de NANO POS s’affiche et demande une connexion avec un compte du programme. Aucun NANO POS n’est requis sur l’appareil secondaire : seuls Tailscale et un navigateur sont nécessaires.",
-      "La base de données de l’ordinateur principal est désormais la référence unique. Les ventes, le stock, les clients, les fournisseurs et les factures sont exécutés directement sur cette base. Le navigateur reçoit aussi les mises à jour instantanément ; si l’ordinateur principal est indisponible, le client Web ne peut pas créer de modifications susceptibles de provoquer des conflits.",
-      "La protection repose désormais sur : Tailscale + connexion NANO POS + session navigateur privée."
+      "Améliorations de la connexion entre les appareils."
     ],
     "en": [
-      "From any other computer connected to the same Tailscale network, open the primary computer link in Chrome or Edge. The full NANO POS interface appears and requires signing in with a NANO POS account. The secondary device does not need NANO POS installed; it only needs Tailscale and a web browser.",
-      "The primary computer database is now the single source of truth. Sales, inventory, customers, suppliers, and invoices are processed directly on it. The browser also receives instant updates; if the primary computer becomes unavailable, the Web client cannot create changes that could cause conflicts.",
-      "Security is now based on: Tailscale + NANO POS login + a private browser session."
+      "Improvements to device connectivity."
     ]
   },
   "patches": [
     {
-      "fromVersion": "1.0.14",
-      "directUrl": "https://download1580.mediafire.com/3whxpd1w5hmgBJxLMxdvKaJAJlyOJXInEp37S4P0TCELp_fIzXiqKq7Rc4zBSEJti95P049ZZxWtxfmcXNlKKxhLgrayHbAo-lWYFZXssjAlTT4AYXWuOfZ2AFsG1sv90L9Y84YbgZ1swVyN-EAN3xhgkmGzb8NPl71nxfMym6o-Q8w/m6xonku2fi72b8m/NANO-POS-Patch-1.0.14-to-1.0.15-BROWSER-TAILSCALE.zip",
-      "pageUrl": "https://www.mediafire.com/file/m6xonku2fi72b8m/NANO-POS-Patch-1.0.14-to-1.0.15-BROWSER-TAILSCALE.zip/file",
-      "sha256": "159707fec15924cd4ca6387665d09fb644de2c683e5abfcc63940f29a56c30b2",
-      "appAsarSha256": "47c9ab4b60c57f1eac14a780ceb76b900bc0de92c7f08ea8753800b5f9c64fe6",
-      "fileName": "NANO-POS-Patch-1.0.14-to-1.0.15-BROWSER-TAILSCALE.zip",
-      "sizeBytes": 30380120,
+      "fromVersion": "1.0.15",
+      "directUrl": "https://download939.mediafire.com/lr2c17i6wulg4gkDaORb-laQ608ytmtUnZeth98Fq6VyAOt-k5fIwXKiRUAUOG94NDKqN7ndNc5Oqr73kN1jc64Xb0q5ic8-6mdlYx1feT_PDA2vYbeQiTC8Fvz8Hb69wIUpyY9rBt-_0xSaF82Ot-y1F56IHmAOn-sB01kVLQq7e5o/yhpf47hvmc8ihep/NANO-POS-Patch-1.0.15-to-1.0.16-LAN-BROWSER.zip",
+      "pageUrl": "https://www.mediafire.com/file/yhpf47hvmc8ihep/NANO-POS-Patch-1.0.15-to-1.0.16-LAN-BROWSER.zip/file",
+      "sha256": "0af53e63368986724cf4b08f6df3820136e1951ef4f6d2fd3f30e62cb5307b65",
+      "appAsarSha256": "17c52def2f975aedf5fc100726ca7c544c05e8e2b101cf785ba4db82bdc55e14",
+      "fileName": "NANO-POS-Patch-1.0.15-to-1.0.16-LAN-BROWSER.zip",
+      "sizeBytes": 30396828,
       "payloadType": "app-asar"
     }
   ],
@@ -44,8 +38,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يضيف NANO POS v1.0.15 الوصول إلى النظام من الأجهزة التابعة مباشرة عبر المتصفح باستخدام عنوان Tailscale للكمبيوتر الرئيسي، مع اعتماد قاعدة بياناته كمصدر وحيد للبيانات وجلسة دخول محمية.",
-    "fr": "NANO POS v1.0.15 permet aux appareils secondaires d’accéder directement au système depuis un navigateur via l’adresse Tailscale de l’ordinateur principal, avec sa base de données comme source unique et une session protégée.",
-    "en": "NANO POS v1.0.15 lets linked devices access the system directly from a browser through the primary computer’s Tailscale address, using its database as the single source of truth with a protected login session."
+    "ar": "يتضمن NANO POS v1.0.16 تحسينات على الربط بين الأجهزة ودعم الوصول إلى الكمبيوتر الرئيسي عبر الشبكة المحلية.",
+    "fr": "NANO POS v1.0.16 améliore la connexion entre les appareils et prend en charge l’accès à l’ordinateur principal via le réseau local.",
+    "en": "NANO POS v1.0.16 improves device connectivity and supports access to the primary computer over the local network."
   }
 }
