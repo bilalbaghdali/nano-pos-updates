@@ -3,31 +3,40 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.13",
-  "releaseDate": "2026-10-05",
+  "version": "1.0.14",
+  "releaseDate": "2026-10-06",
   "mandatory": false,
   "importance": "normal",
-  "minSupportedVersion": "1.0.12",
+  "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "تحسينات على الأداء."
+      "إضافة ربط ومزامنة فورية بين كمبيوترين أو أكثر عبر Tailscale.",
+      "دعم وضع الكمبيوتر الرئيسي والأجهزة المرتبطة مع عرض حالة الاتصال لكل جهاز.",
+      "مزامنة مركزية فورية للمبيعات والمخزون والمنتجات والزبائن والموردين والفواتير.",
+      "الحفاظ على نظام ربط الهاتف الحالي دون تغييره."
     ],
     "fr": [
-      "Améliorations des performances."
+      "Ajout de la liaison et de la synchronisation instantanée entre deux ordinateurs ou plus via Tailscale.",
+      "Mode ordinateur principal et ordinateurs liés avec état de connexion par appareil.",
+      "Synchronisation centralisée instantanée des ventes, stocks, produits, clients, fournisseurs et factures.",
+      "Le système de liaison mobile existant est conservé."
     ],
     "en": [
-      "Performance improvements."
+      "Added instant synchronization between two or more computers over Tailscale.",
+      "Primary-computer and linked-computer modes with per-device connection status.",
+      "Instant centralized synchronization for sales, inventory, products, customers, suppliers, and invoices.",
+      "The existing phone-link system is preserved."
     ]
   },
   "patches": [
     {
-      "fromVersion": "1.0.12",
-      "directUrl": "https://download1523.mediafire.com/ek7ey5jegnygCTwYLcYOBroH0um1H5tFasLKQTgL_zY9kq-0FTkVOjIEQnUscYce4HCa8cn45lZb-JoG0rRJichVJXoZ7VexJzxSgzHcNODCpTWUxJ1Hx9cPKD02FHR3SqsrLUXyesUazuGZH9f3yjiDDpyL4fpeZ5Psz2xL56t8y8I/vyk3132mrnjwdg0/NANO-POS-Patch-1.0.12-to-1.0.13.zip",
-      "pageUrl": "https://www.mediafire.com/file/vyk3132mrnjwdg0/NANO-POS-Patch-1.0.12-to-1.0.13.zip/file",
-      "sha256": "0af768f5fc316faa00852ed369fa6fbb605437e678a0268fb067d6494a1e9428",
-      "appAsarSha256": "cd1f18e719cf9badaed04ac1da331a6e528d9cceff5f58d695cfeaab0a9402c1",
-      "fileName": "NANO-POS-Patch-1.0.12-to-1.0.13.zip",
-      "sizeBytes": 30373513,
+      "fromVersion": "1.0.13",
+      "directUrl": "https://download1501.mediafire.com/lclb3no3djeg3XYJygCQT34VML-J7ecpTPqn7jeHq9Z_70qHLyxSO0-e6uDIbKplwyrmVI0oYculqIoMPjIp4cbi8JiIegRony5gBuqY2jV_FLjL-aP6xVBreZ5PP3BIUoZ_U4ilV60DEcHUeGxk82whRjz1d4SnyCu41MmalGb9lF0/l8qa7gg4lg2r7mc/NANO-POS-Patch-1.0.13-to-1.0.14-TAILSCALE-PC-SYNC.zip",
+      "pageUrl": "https://www.mediafire.com/file/l8qa7gg4lg2r7mc/NANO-POS-Patch-1.0.13-to-1.0.14-TAILSCALE-PC-SYNC.zip/file",
+      "sha256": "68684e09d980aad9e8269c6c2d680b793b65b61f1f8f7f8e33ff495e9f568898",
+      "appAsarSha256": "9d0d137d29063b3856c3c9b1f476d7459dc6e998e4db6e147482c3ed69519c1f",
+      "fileName": "NANO-POS-Patch-1.0.13-to-1.0.14-TAILSCALE-PC-SYNC.zip",
+      "sizeBytes": 30375799,
       "payloadType": "app-asar"
     }
   ],
@@ -38,8 +47,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تم نشر NANO POS v1.0.13 كتحديث خفيف مخصص للإصدار v1.0.12.",
-    "fr": "NANO POS v1.0.13 est publié sous forme de correctif léger destiné à la version v1.0.12.",
-    "en": "NANO POS v1.0.13 is published as a lightweight patch for v1.0.12."
+    "ar": "تم نشر NANO POS v1.0.14 كتحديث خفيف مخصص للإصدار v1.0.13 لإضافة المزامنة الفورية متعددة الكمبيوترات عبر Tailscale.",
+    "fr": "NANO POS v1.0.14 est publié sous forme de correctif léger pour v1.0.13 afin d'ajouter la synchronisation instantanée multi-PC via Tailscale.",
+    "en": "NANO POS v1.0.14 is published as a lightweight patch for v1.0.13, adding instant multi-PC synchronization over Tailscale."
   }
 }
