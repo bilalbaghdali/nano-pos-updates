@@ -10,22 +10,22 @@
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "إضافة ربط ومزامنة فورية بين كمبيوترين أو أكثر عبر Tailscale.",
-      "دعم وضع الكمبيوتر الرئيسي والأجهزة المرتبطة مع عرض حالة الاتصال لكل جهاز.",
-      "مزامنة مركزية فورية للمبيعات والمخزون والمنتجات والزبائن والموردين والفواتير.",
-      "الحفاظ على نظام ربط الهاتف الحالي دون تغييره."
+      "إضافة خاصية المزامنة بين الأجهزة المتصلة واعتماد بروتوكول سريع للمزامنة الفورية.",
+      "اعتماد الكمبيوتر الرئيسي كمرجع موحّد لقاعدة البيانات، مما يمنع إنشاء مبيعات متعارضة أو اختلاف كميات المخزون عند استعمال عدة نقاط بيع.",
+      "في حال انقطاع الاتصال بالكمبيوتر الرئيسي، يمنع الجهاز التابع إنشاء تغييرات جديدة قد تسبب تضاربًا لاحقًا، إلى أن تتم استعادة الاتصال.",
+      "استخدام Tailscale لتوفير اتصال خاص وآمن بين الأجهزة حتى لو كانت في شبكات أو أماكن مختلفة."
     ],
     "fr": [
-      "Ajout de la liaison et de la synchronisation instantanée entre deux ordinateurs ou plus via Tailscale.",
-      "Mode ordinateur principal et ordinateurs liés avec état de connexion par appareil.",
-      "Synchronisation centralisée instantanée des ventes, stocks, produits, clients, fournisseurs et factures.",
-      "Le système de liaison mobile existant est conservé."
+      "Ajout de la synchronisation entre les appareils connectés avec un protocole rapide pour une synchronisation instantanée.",
+      "L’ordinateur principal devient la référence unique de la base de données afin d’éviter les ventes conflictuelles et les écarts de stock entre plusieurs points de vente.",
+      "En cas de perte de connexion avec l’ordinateur principal, l’appareil secondaire bloque les nouvelles modifications susceptibles de créer des conflits jusqu’au rétablissement de la connexion.",
+      "Utilisation de Tailscale pour assurer une connexion privée et sécurisée entre les appareils, même s’ils se trouvent sur des réseaux ou dans des lieux différents."
     ],
     "en": [
-      "Added instant synchronization between two or more computers over Tailscale.",
-      "Primary-computer and linked-computer modes with per-device connection status.",
-      "Instant centralized synchronization for sales, inventory, products, customers, suppliers, and invoices.",
-      "The existing phone-link system is preserved."
+      "Added synchronization between connected devices using a fast protocol for instant data sync.",
+      "The primary computer acts as the single source of truth for the database, preventing conflicting sales and inventory quantity differences across multiple POS terminals.",
+      "If the connection to the primary computer is lost, linked devices block new changes that could create conflicts until the connection is restored.",
+      "Tailscale provides private and secure connectivity between devices even when they are on different networks or in different locations."
     ]
   },
   "patches": [
@@ -47,8 +47,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تم نشر NANO POS v1.0.14 كتحديث خفيف مخصص للإصدار v1.0.13 لإضافة المزامنة الفورية متعددة الكمبيوترات عبر Tailscale.",
-    "fr": "NANO POS v1.0.14 est publié sous forme de correctif léger pour v1.0.13 afin d'ajouter la synchronisation instantanée multi-PC via Tailscale.",
-    "en": "NANO POS v1.0.14 is published as a lightweight patch for v1.0.13, adding instant multi-PC synchronization over Tailscale."
+    "ar": "يتضمن NANO POS v1.0.14 مزامنة فورية وآمنة بين عدة أجهزة عبر Tailscale مع اعتماد الكمبيوتر الرئيسي كمرجع موحّد للبيانات.",
+    "fr": "NANO POS v1.0.14 ajoute une synchronisation instantanée et sécurisée entre plusieurs appareils via Tailscale, avec l’ordinateur principal comme référence unique des données.",
+    "en": "NANO POS v1.0.14 adds instant and secure multi-device synchronization over Tailscale, with the primary computer as the single source of truth."
   }
 }
