@@ -18,6 +18,7 @@ jobs:
 
       - name: Rebuild exact v1.0.34 tool bundle
         run: |
+          sha256sum tools/.tmp-v134-bundle-00 tools/.tmp-v134-bundle-01 tools/.tmp-v134-bundle-02 tools/.tmp-v134-bundle-03
           cat tools/.tmp-v134-bundle-00 tools/.tmp-v134-bundle-01 tools/.tmp-v134-bundle-02 tools/.tmp-v134-bundle-03 > tools/v134-tools.tar.gz.b64
           echo "7280be4bf2cad0985bb060c264f179a295d552ad76f5c0c4ea15995a2deb0c18  tools/v134-tools.tar.gz.b64" | sha256sum -c -
           base64 -d tools/v134-tools.tar.gz.b64 > tools/v134-tools.tar.gz
