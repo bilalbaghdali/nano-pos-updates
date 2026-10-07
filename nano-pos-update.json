@@ -3,32 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "releaseDate": "2026-10-07",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "إصلاح مسار اختيار قالب الفاتورة فعليًا حسب لغة الطباعة.",
-      "العربية تستخدم القالب الاحترافي RTL، والفرنسية قالب LTR مستقل، والإنجليزية قالب مستقل.",
-      "إعادة توليد HTML كامل داخل نفس نافذة المعاينة عند تغيير لغة الطباعة.",
-      "إصلاح تغيير لغة الفاتورة المبدئية داخل نفس المعاينة بدل فتح معاينة جديدة.",
-      "فصل لغة الطباعة عن لغة واجهة البرنامج وتصحيح النصوص المتبقية داخل الوثيقة."
+      "إصلاح فعلي لمحرك تغيير لغة الفاتورة وليس الاتجاه فقط.",
+      "كل عناوين الفاتورة والحقول وطريقة الدفع والتاريخ ووحدة المنتج تتبع لغة الطباعة المختارة.",
+      "اسم المنتج يبقى كما هو دون ترجمة.",
+      "العربية والفرنسية والإنجليزية تستخدم قوالبها الاحترافية الحقيقية داخل PrintEngine.",
+      "إصلاح حقل IP في قسم ربط الكمبيوتر لمنع مسحه أو إعادة بنائه أثناء الكتابة."
     ],
     "fr": [
-      "Correction réelle du chemin de sélection du modèle selon la langue d’impression.",
-      "L’arabe utilise le modèle professionnel RTL, le français un modèle LTR distinct et l’anglais son propre modèle.",
-      "Régénération complète du HTML dans la même fenêtre d’aperçu lors du changement de langue.",
-      "Correction du changement de langue de la facture pro forma dans le même aperçu.",
-      "Séparation de la langue d’impression de la langue de l’interface et correction des libellés résiduels."
+      "Correction réelle du changement de langue de la facture, et pas seulement du sens d’affichage.",
+      "Tous les libellés, champs, modes de paiement, dates et unités suivent la langue d’impression choisie.",
+      "Le nom du produit reste inchangé et n’est pas traduit.",
+      "L’arabe, le français et l’anglais utilisent désormais leurs véritables modèles professionnels dans PrintEngine.",
+      "Correction du champ IP dans la liaison PC afin qu’il ne soit plus effacé pendant la saisie."
     ],
     "en": [
-      "Fixed the actual invoice-template selection path for each print language.",
-      "Arabic now uses the professional RTL template, French a distinct LTR template, and English its own template.",
-      "The full HTML document is regenerated inside the same preview when print language changes.",
-      "Fixed pro-forma language switching inside the same preview instead of opening a new preview.",
-      "Print language is separated from the app UI language, with residual document labels normalized."
+      "Fixed invoice language switching at the print-engine level, not just page direction.",
+      "All invoice labels, fields, payment methods, dates and units now follow the selected print language.",
+      "Product names remain unchanged and are never translated.",
+      "Arabic, French and English now use their actual professional templates inside PrintEngine.",
+      "Fixed the PC-link IP field so live refresh no longer clears or rebuilds it while typing."
     ]
   },
   "releaseHistory": {
@@ -152,16 +152,42 @@
           "Print language is separated from the app UI language, with residual document labels normalized."
         ]
       }
+    },
+    "1.0.33": {
+      "releaseDate": "2026-10-07",
+      "features": {
+        "ar": [
+          "إصلاح فعلي لمحرك تغيير لغة الفاتورة وليس الاتجاه فقط.",
+          "كل عناوين الفاتورة والحقول وطريقة الدفع والتاريخ ووحدة المنتج تتبع لغة الطباعة المختارة.",
+          "اسم المنتج يبقى كما هو دون ترجمة.",
+          "العربية والفرنسية والإنجليزية تستخدم قوالبها الاحترافية الحقيقية داخل PrintEngine.",
+          "إصلاح حقل IP في قسم ربط الكمبيوتر لمنع مسحه أو إعادة بنائه أثناء الكتابة."
+        ],
+        "fr": [
+          "Correction réelle du changement de langue de la facture, et pas seulement du sens d’affichage.",
+          "Tous les libellés, champs, modes de paiement, dates et unités suivent la langue d’impression choisie.",
+          "Le nom du produit reste inchangé et n’est pas traduit.",
+          "L’arabe, le français et l’anglais utilisent désormais leurs véritables modèles professionnels dans PrintEngine.",
+          "Correction du champ IP dans la liaison PC afin qu’il ne soit plus effacé pendant la saisie."
+        ],
+        "en": [
+          "Fixed invoice language switching at the print-engine level, not just page direction.",
+          "All invoice labels, fields, payment methods, dates and units now follow the selected print language.",
+          "Product names remain unchanged and are never translated.",
+          "Arabic, French and English now use their actual professional templates inside PrintEngine.",
+          "Fixed the PC-link IP field so live refresh no longer clears or rebuilds it while typing."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.32/NANO-POS-Patch-1.0.31-to-1.0.32-PRO-PRINT-ENGINE-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.32",
-      "sha256": "f176dde932872d914e93762029c153a87f1fac1e6722e89d1f61a89b766fef92",
-      "appAsarSha256": "be83d542760750e67416ba0d7f7125fdd580a862aaa2dccca0ca849cff75cff8",
-      "fileName": "NANO-POS-Patch-1.0.31-to-1.0.32-PRO-PRINT-ENGINE-FIX.zip",
-      "sizeBytes": 30419147,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.33/NANO-POS-Patch-1.0.32-to-1.0.33-FULL-INVOICE-LANGUAGE-PC-IP-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.33",
+      "sha256": "5cd690cb97acc94235ed8ebb42be66edce925dbb3db66058e76cb69ec346f8cc",
+      "appAsarSha256": "0d0022d87d8211f468aade66a3f7840f28a2982a90f030a13041ede521253819",
+      "fileName": "NANO-POS-Patch-1.0.32-to-1.0.33-FULL-INVOICE-LANGUAGE-PC-IP-FIX.zip",
+      "sizeBytes": 30421615,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -182,7 +208,8 @@
         "1.0.28",
         "1.0.29",
         "1.0.30",
-        "1.0.31"
+        "1.0.31",
+        "1.0.32"
       ]
     }
   ],
@@ -193,8 +220,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يعيد NANO POS v1.0.32 بناء مسار الطباعة متعدد اللغات بصورة صحيحة: اختيار اللغة داخل المعاينة يعيد توليد الوثيقة بالقالب الاحترافي الخاص بتلك اللغة، مع إصلاح الفاتورة المبدئية وفصل لغة الطباعة عن لغة واجهة البرنامج.",
-    "fr": "NANO POS v1.0.32 reconstruit correctement le flux d’impression multilingue : changer la langue dans l’aperçu régénère le document avec le modèle professionnel correspondant, corrige la facture pro forma et sépare la langue d’impression de celle de l’interface.",
-    "en": "NANO POS v1.0.32 rebuilds the multilingual print flow so changing language in preview regenerates the document with the correct professional template, fixes pro-forma switching, and separates print language from UI language."
+    "ar": "يصحح NANO POS v1.0.33 مسار الترجمة داخل محرك الطباعة نفسه. عند تغيير اللغة تتغير كل عناوين الفاتورة والحقول وطريقة الدفع والتاريخ والوحدة والقالب، بينما يبقى اسم المنتج كما هو. كما تم إصلاح حقل IP في قسم ربط الكمبيوتر بحيث لا تعيد المزامنة الحية رسم الحقل أثناء الكتابة.",
+    "fr": "NANO POS v1.0.33 corrige la traduction directement dans le moteur d’impression. Le changement de langue met à jour tous les libellés, champs, modes de paiement, dates, unités et le modèle, tandis que le nom du produit reste inchangé. Le champ IP de la liaison PC a également été corrigé.",
+    "en": "NANO POS v1.0.33 fixes translation inside the print engine itself. Changing print language updates all labels, fields, payment methods, dates, units and the template while leaving product names unchanged. The PC-link IP field has also been fixed."
   }
 }
