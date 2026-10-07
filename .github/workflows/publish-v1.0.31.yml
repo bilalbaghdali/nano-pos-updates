@@ -1,4 +1,4 @@
-name: Publish NANO POS v1.0.31
+name: Publish NANO POS v1.0.31\n# retry with verified release-notes payload
 
 on:
   push:
