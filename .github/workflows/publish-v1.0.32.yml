@@ -1,4 +1,5 @@
 name: Publish NANO POS v1.0.32
+# checksum retry
 
 on:
   push:
