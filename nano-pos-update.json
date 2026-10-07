@@ -3,32 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "releaseDate": "2026-10-07",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "إصلاح فعلي لمحرك تغيير لغة الفاتورة وليس الاتجاه فقط.",
-      "كل عناوين الفاتورة والحقول وطريقة الدفع والتاريخ ووحدة المنتج تتبع لغة الطباعة المختارة.",
-      "اسم المنتج يبقى كما هو دون ترجمة.",
-      "العربية والفرنسية والإنجليزية تستخدم قوالبها الاحترافية الحقيقية داخل PrintEngine.",
-      "إصلاح حقل IP في قسم ربط الكمبيوتر لمنع مسحه أو إعادة بنائه أثناء الكتابة."
+      "مركز طباعة موحد داخل المعاينة مع اختيار الطابعة وحجم الورق وعدد النسخ والطباعة الملونة أو بالأبيض والأسود.",
+      "حفظ آخر إعدادات الطباعة لكل نوع مستند مع زر اختبار طباعة مباشر.",
+      "اختبار اتصال الكمبيوتر قبل الربط مع عرض زمن الاستجابة ورقم إصدار NANO POS على الكمبيوتر.",
+      "نظام مركزي لتنسيق العملة تستخدمه الفواتير والوصول والباركود والملصقات.",
+      "تخصيص رمز العملة حسب اللغة وموضعه والمنازل العشرية وفاصل الآلاف وفاصل الكسور مع إمكانية إخفاء الأصفار غير الضرورية."
     ],
     "fr": [
-      "Correction réelle du changement de langue de la facture, et pas seulement du sens d’affichage.",
-      "Tous les libellés, champs, modes de paiement, dates et unités suivent la langue d’impression choisie.",
-      "Le nom du produit reste inchangé et n’est pas traduit.",
-      "L’arabe, le français et l’anglais utilisent désormais leurs véritables modèles professionnels dans PrintEngine.",
-      "Correction du champ IP dans la liaison PC afin qu’il ne soit plus effacé pendant la saisie."
+      "Centre d’impression unifié dans l’aperçu avec choix de l’imprimante, du format papier, du nombre de copies et du mode couleur.",
+      "Mémorisation des derniers réglages d’impression par type de document et bouton d’impression test.",
+      "Test de connexion au PC avant l’association avec affichage de la latence et de la version NANO POS du PC.",
+      "Système centralisé de formatage de devise pour factures, reçus, codes-barres et étiquettes.",
+      "Personnalisation du symbole par langue, de sa position, des décimales et des séparateurs avec masquage optionnel des zéros inutiles."
     ],
     "en": [
-      "Fixed invoice language switching at the print-engine level, not just page direction.",
-      "All invoice labels, fields, payment methods, dates and units now follow the selected print language.",
-      "Product names remain unchanged and are never translated.",
-      "Arabic, French and English now use their actual professional templates inside PrintEngine.",
-      "Fixed the PC-link IP field so live refresh no longer clears or rebuilds it while typing."
+      "Unified print center inside preview with printer, paper size, copy count and color/black-and-white controls.",
+      "Remembered print preferences per document type plus a direct test-print action.",
+      "PC connection test before pairing, showing latency and the remote NANO POS version.",
+      "Central currency formatter shared by invoices, receipts, barcodes and labels.",
+      "Per-language currency symbols, configurable position, decimals and separators, with optional trimming of unnecessary zero decimals."
     ]
   },
   "releaseHistory": {
@@ -178,16 +178,42 @@
           "Fixed the PC-link IP field so live refresh no longer clears or rebuilds it while typing."
         ]
       }
+    },
+    "1.0.34": {
+      "releaseDate": "2026-10-07",
+      "features": {
+        "ar": [
+          "مركز طباعة موحد داخل المعاينة مع اختيار الطابعة وحجم الورق وعدد النسخ والطباعة الملونة أو بالأبيض والأسود.",
+          "حفظ آخر إعدادات الطباعة لكل نوع مستند مع زر اختبار طباعة مباشر.",
+          "اختبار اتصال الكمبيوتر قبل الربط مع عرض زمن الاستجابة ورقم إصدار NANO POS على الكمبيوتر.",
+          "نظام مركزي لتنسيق العملة تستخدمه الفواتير والوصول والباركود والملصقات.",
+          "تخصيص رمز العملة حسب اللغة وموضعه والمنازل العشرية وفاصل الآلاف وفاصل الكسور مع إمكانية إخفاء الأصفار غير الضرورية."
+        ],
+        "fr": [
+          "Centre d’impression unifié dans l’aperçu avec choix de l’imprimante, du format papier, du nombre de copies et du mode couleur.",
+          "Mémorisation des derniers réglages d’impression par type de document et bouton d’impression test.",
+          "Test de connexion au PC avant l’association avec affichage de la latence et de la version NANO POS du PC.",
+          "Système centralisé de formatage de devise pour factures, reçus, codes-barres et étiquettes.",
+          "Personnalisation du symbole par langue, de sa position, des décimales et des séparateurs avec masquage optionnel des zéros inutiles."
+        ],
+        "en": [
+          "Unified print center inside preview with printer, paper size, copy count and color/black-and-white controls.",
+          "Remembered print preferences per document type plus a direct test-print action.",
+          "PC connection test before pairing, showing latency and the remote NANO POS version.",
+          "Central currency formatter shared by invoices, receipts, barcodes and labels.",
+          "Per-language currency symbols, configurable position, decimals and separators, with optional trimming of unnecessary zero decimals."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.33/NANO-POS-Patch-1.0.32-to-1.0.33-FULL-INVOICE-LANGUAGE-PC-IP-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.33",
-      "sha256": "5cd690cb97acc94235ed8ebb42be66edce925dbb3db66058e76cb69ec346f8cc",
-      "appAsarSha256": "0d0022d87d8211f468aade66a3f7840f28a2982a90f030a13041ede521253819",
-      "fileName": "NANO-POS-Patch-1.0.32-to-1.0.33-FULL-INVOICE-LANGUAGE-PC-IP-FIX.zip",
-      "sizeBytes": 30421615,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.34/NANO-POS-Patch-1.0.33-to-1.0.34-PRINT-SYNC-CURRENCY.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.34",
+      "sha256": "2ea92ed65a3964f3fedb24593c9553630f0ae93c5acb1b49d58457b72b15ea1c",
+      "appAsarSha256": "5c883d648c60c81468d1648e254ad0f65b8f71f9ab2d05ca657faba3c6160bc0",
+      "fileName": "NANO-POS-Patch-1.0.33-to-1.0.34-PRINT-SYNC-CURRENCY.zip",
+      "sizeBytes": 30433592,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -209,7 +235,8 @@
         "1.0.29",
         "1.0.30",
         "1.0.31",
-        "1.0.32"
+        "1.0.32",
+        "1.0.33"
       ]
     }
   ],
@@ -220,8 +247,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يصحح NANO POS v1.0.33 مسار الترجمة داخل محرك الطباعة نفسه. عند تغيير اللغة تتغير كل عناوين الفاتورة والحقول وطريقة الدفع والتاريخ والوحدة والقالب، بينما يبقى اسم المنتج كما هو. كما تم إصلاح حقل IP في قسم ربط الكمبيوتر بحيث لا تعيد المزامنة الحية رسم الحقل أثناء الكتابة.",
-    "fr": "NANO POS v1.0.33 corrige la traduction directement dans le moteur d’impression. Le changement de langue met à jour tous les libellés, champs, modes de paiement, dates, unités et le modèle, tandis que le nom du produit reste inchangé. Le champ IP de la liaison PC a également été corrigé.",
-    "en": "NANO POS v1.0.33 fixes translation inside the print engine itself. Changing print language updates all labels, fields, payment methods, dates, units and the template while leaving product names unchanged. The PC-link IP field has also been fixed."
+    "ar": "يضيف NANO POS v1.0.34 مركز طباعة موحد داخل المعاينة، واختبار اتصال حقيقي بالكمبيوتر قبل الربط، ونظامًا مركزيًا مرنًا لتنسيق العملة في المستندات والباركود والملصقات.",
+    "fr": "NANO POS v1.0.34 ajoute un centre d’impression unifié, un véritable test de connexion au PC avant l’association et un système central et configurable de formatage des devises.",
+    "en": "NANO POS v1.0.34 adds a unified print center, a real pre-pairing PC connection test, and a centralized configurable currency-formatting system."
   }
 }
