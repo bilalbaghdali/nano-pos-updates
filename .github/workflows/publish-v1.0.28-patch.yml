@@ -1,0 +1,35 @@
+name: Publish v1.0.28 patch asset
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/publish-v1.0.28-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p release
+          gh release download v1.0.28             --repo "$GITHUB_REPOSITORY"             --pattern "NANO-POS-v1.0.28-GITHUB-PUBLISH-BUNDLE.zip"             --dir release
+
+      - name: Extract patch
+        run: |
+          cd release
+          unzip -o NANO-POS-v1.0.28-GITHUB-PUBLISH-BUNDLE.zip
+          test -f NANO-POS-Patch-1.0.24-to-1.0.28.zip
+          echo "7e16d8a07c592e9fc1981cefbfa66928ab8190cc646b34485d909bc0351948b9  NANO-POS-Patch-1.0.24-to-1.0.28.zip" | sha256sum -c -
+
+      - name: Upload patch asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload v1.0.28             release/NANO-POS-Patch-1.0.24-to-1.0.28.zip             --repo "$GITHUB_REPOSITORY"             --clobber
