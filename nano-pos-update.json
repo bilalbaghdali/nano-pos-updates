@@ -3,39 +3,30 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.20",
-  "releaseDate": "2026-10-06",
+  "version": "1.0.21",
+  "releaseDate": "2026-10-07",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "إزالة وميض رقم الإصدار وتحسين ثبات شاشة الدخول.",
-      "استعادة بطاقات الصفحة الرئيسية ومنع اختفائها.",
-      "تحسين الفصل بين صلاحيات المتصفح وواجهة الكمبيوتر الرئيسي.",
-      "تحسين استقرار وسلاسة الواجهة وتقليل إعادة الرسم غير الضرورية."
+      "تحسينات على النظام."
     ],
     "fr": [
-      "Suppression du clignotement du numéro de version et amélioration de la stabilité de l’écran de connexion.",
-      "Restauration des cartes de la page d’accueil et prévention de leur disparition.",
-      "Amélioration de la séparation entre les autorisations du navigateur et l’interface de l’ordinateur principal.",
-      "Amélioration de la stabilité et de la fluidité de l’interface avec moins de rafraîchissements inutiles."
+      "Améliorations du système."
     ],
     "en": [
-      "Removed version-number flickering and improved login-screen stability.",
-      "Restored home-page cards and prevented them from disappearing.",
-      "Improved separation between browser permissions and the primary-computer interface.",
-      "Improved UI stability and smoothness by reducing unnecessary redraws."
+      "System improvements."
     ]
   },
   "patches": [
     {
-      "directUrl": "https://download1652.mediafire.com/caao7v1b52jgcfKWXajpOynj2_CLxUUNkVlKxe81xnGPGjQYkD0qLtKAW6pzg3MQxd7u_qivpy_InKXSEITVn9C6OPhNyMs7NmpkVnbmlrdArtdmzP9wDUMc4Pr6sHHS6CDECLANuok1KD6IVZ-gK41iHwkM57D06kSfOxKyNk8UWjk/ucvm9bme9aa6tyo/NANO-POS-Patch-1.0.19-to-1.0.20-LOGIN-HOME-STABILITY-FIX.zip",
-      "pageUrl": "https://www.mediafire.com/file/ucvm9bme9aa6tyo/NANO-POS-Patch-1.0.19-to-1.0.20-LOGIN-HOME-STABILITY-FIX.zip/file",
-      "sha256": "abcd629f9ef3eade3fcc0835334e5091008f6ea6372bb63c755453e79a24226d",
-      "appAsarSha256": "fdf59b73873f0fc60c4e5509556bbc74959980e9f436a637515ee70498a369ee",
-      "fileName": "NANO-POS-Patch-1.0.19-to-1.0.20-LOGIN-HOME-STABILITY-FIX.zip",
-      "sizeBytes": 30404737,
+      "directUrl": "https://download1073.mediafire.com/4murj908kfygEL2P4aHzE0Do7yrjnZV-bljHmtXsHDvSvCF2FnOotQvfz2KUlAGBFCroJ5L-4Xing0RrD5ZUG1gmA-wYaTuG2MXsfoC26sxPdDrKzTKj6fZ0WbXJzs-vrQyurtMrd3sM39jzCUnWfX0jEfotygrB-FIUjK4bRSE/con27sy89kbkj10/NANO-POS-Patch-1.0.20-to-1.0.21-LOGIN-HOME-FIX.zip",
+      "pageUrl": "https://www.mediafire.com/file/con27sy89kbkj10/NANO-POS-Patch-1.0.20-to-1.0.21-LOGIN-HOME-FIX.zip/file",
+      "sha256": "c05bcba645139222915254cbafc4b2ee3e316f92a9fca89d7ddb4401238bd48b",
+      "appAsarSha256": "8e9fae97ba929dcf45a1fe34b52e66eb971b6e4a0825b3d30bae6037e7aede98",
+      "fileName": "NANO-POS-Patch-1.0.20-to-1.0.21-LOGIN-HOME-FIX.zip",
+      "sizeBytes": 30461029,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -44,7 +35,8 @@
         "1.0.16",
         "1.0.17",
         "1.0.18",
-        "1.0.19"
+        "1.0.19",
+        "1.0.20"
       ]
     }
   ],
@@ -55,8 +47,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يتضمن NANO POS v1.0.20 إصلاح وميض رقم الإصدار في شاشة الدخول، استعادة بطاقات الصفحة الرئيسية، تحسين الفصل بين صلاحيات المتصفح وواجهة الكمبيوتر الرئيسي، وتقليل عمليات إعادة الرسم غير الضرورية لتحسين استقرار الواجهة.",
-    "fr": "NANO POS v1.0.20 corrige le clignotement du numéro de version sur l’écran de connexion, restaure les cartes de la page d’accueil, améliore la séparation entre les autorisations du navigateur et l’interface principale, et réduit les rafraîchissements inutiles pour améliorer la stabilité.",
-    "en": "NANO POS v1.0.20 fixes version-number flickering on the login screen, restores home-page cards, improves separation between browser permissions and the primary interface, and reduces unnecessary redraws for better UI stability."
+    "ar": "يتضمن NANO POS v1.0.21 تحسينات على النظام، مع تثبيت شاشة اختيار المستخدم ومنع إعادة تحميلها المتكرر، واستعادة بطاقات الصفحة الرئيسية على الكمبيوتر الرئيسي وتحسين استقرار الواجهة.",
+    "fr": "NANO POS v1.0.21 apporte des améliorations du système, stabilise l’écran de sélection de l’utilisateur en empêchant son rechargement répété, restaure les cartes de la page d’accueil sur l’ordinateur principal et améliore la stabilité de l’interface.",
+    "en": "NANO POS v1.0.21 includes system improvements, stabilizes the user-selection screen by preventing repeated reloads, restores home-page cards on the primary computer, and improves UI stability."
   }
 }
