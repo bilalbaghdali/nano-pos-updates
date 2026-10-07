@@ -3,30 +3,33 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "releaseDate": "2026-10-07",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "تحسينات على الأداء."
+      "تخطيط الشاشة الرئيسية.",
+      "تحسينات على النظام."
     ],
     "fr": [
-      "Améliorations des performances."
+      "Nouvelle disposition de l’écran principal.",
+      "Améliorations du système."
     ],
     "en": [
-      "Performance improvements."
+      "Updated home-screen layout.",
+      "System improvements."
     ]
   },
   "patches": [
     {
-      "directUrl": "https://download948.mediafire.com/j7xo5xgpqpzg-KPPCYRZan7MCH4KcE6CrZZpEv08j2okaf0KHX4Fqw8hzBof4TA-H0fhNh9Io4NizHBUtGWfeXBh06L0uJYud4T_aURYD-9F5p90D366ia6xFcF1lxQnpVMWmg2OcyAE0gfeXimcJ8kIDJ5Twlq2ClbsISHS3TYrbg/xuyg3uzi7o98clp/NANO-POS-Patch-1.0.22-to-1.0.23-NOMAD-HOME-DESIGN.zip",
-      "pageUrl": "https://www.mediafire.com/file/xuyg3uzi7o98clp/NANO-POS-Patch-1.0.22-to-1.0.23-NOMAD-HOME-DESIGN.zip/file",
-      "sha256": "fa315dbe46d94d7c40d5e5f860cecec481d2864d9cc7b4b790e750c0f1c96aef",
-      "appAsarSha256": "b31cfd5c8fae4380b0bbd55a6eff89d24e6f73b019faccea35d31b1d07bf4428",
-      "fileName": "NANO-POS-Patch-1.0.22-to-1.0.23-NOMAD-HOME-DESIGN.zip",
-      "sizeBytes": 30468328,
+      "directUrl": "https://download946.mediafire.com/1hqch7pl5vvgQvjCAsxFzDBzy4Urqc9np7rBBiuoGhVAgOPVw4K8T6tOezFh1qhZGeOaHOWC4-9STqLN9iOdY-dfCoy9Ps6TycktUZdVc9vtZbd1C2jBNBrqpfNtf5g5rCa41t40Ps7Ti00am_kuWjFSrv-rS7JYw-32Rjw9XZkBSw/scszg7wdmal85um/NANO-POS-Patch-1.0.23-to-1.0.24-HOME-DASHBOARD-LOGIN-VOICE.zip",
+      "pageUrl": "https://www.mediafire.com/file/scszg7wdmal85um/NANO-POS-Patch-1.0.23-to-1.0.24-HOME-DASHBOARD-LOGIN-VOICE.zip/file",
+      "sha256": "70eb61cbc58444ad5bc931b35a7d2b42f4481826eefd5d1a569ccfdfacee57af",
+      "appAsarSha256": "176cdea0b37447dd4602df2c07a0739858fcb2c1abd4b0581dd3f86b683a06e8",
+      "fileName": "NANO-POS-Patch-1.0.23-to-1.0.24-HOME-DASHBOARD-LOGIN-VOICE.zip",
+      "sizeBytes": 30414548,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -38,7 +41,8 @@
         "1.0.19",
         "1.0.20",
         "1.0.21",
-        "1.0.22"
+        "1.0.22",
+        "1.0.23"
       ]
     }
   ],
@@ -49,8 +53,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يتضمن NANO POS v1.0.23 تحسينات على الأداء وتجديد الشاشة الرئيسية بتخطيط عملي مشابه لـ NomadPOS، مع بطاقة ترحيب، بطاقات إحصائية سريعة، وشبكة أقسام منظمة مع الحفاظ على وظائف NANO POS وصلاحيات المتصفح.",
-    "fr": "NANO POS v1.0.23 apporte des améliorations de performances et renouvelle l’écran principal avec une disposition pratique inspirée de NomadPOS, comprenant une carte d’accueil, des statistiques rapides et une grille de sections organisée, tout en conservant les fonctions de NANO POS et les autorisations du navigateur.",
-    "en": "NANO POS v1.0.23 includes performance improvements and a refreshed home screen with a practical NomadPOS-inspired layout, including a welcome card, quick statistics, and an organized section grid while preserving NANO POS functionality and browser permissions."
+    "ar": "يتضمن NANO POS v1.0.24 تخطيطًا جديدًا للشاشة الرئيسية مع إحصائيات المبيعات وطلبيات التوصيل والأصناف والزبائن وديون الزبائن وديون الموردين، وربط بطاقات الأقسام بصفحاتها الفعلية، وإظهار اسم المستخدم ورقم النسخة المثبتة في الواجهة الترحيبية، وإضافة صفحة حول البرنامج، وتشغيل صوت «بسم الله، على بركة الله» بعد نجاح تسجيل الدخول.",
+    "fr": "NANO POS v1.0.24 propose une nouvelle disposition de l’écran principal avec les statistiques des ventes, commandes de livraison, articles, clients, créances clients et dettes fournisseurs, des cartes de sections reliées à leurs pages, l’affichage du nom de l’utilisateur et de la version installée, une page À propos et un message vocal après connexion.",
+    "en": "NANO POS v1.0.24 introduces a new home dashboard with sales, delivery orders, items, customers, customer debt and supplier debt statistics, section cards linked to their actual pages, a welcome area showing the signed-in user and installed version, an About page, and a login-success voice message."
   }
 }
