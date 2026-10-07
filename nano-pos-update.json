@@ -3,45 +3,136 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "releaseDate": "2026-10-07",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "إصلاح منطق اختيار قالب الفاتورة عند تغيير لغة الطباعة.",
-      "قالب عربي RTL احترافي مستقل بتوزيع عربي مناسب.",
-      "قالب فرنسي LTR احترافي مستقل يختلف فعليًا في التخطيط عن العربي.",
-      "تحديث شكل ومحتوى المعاينة فور تغيير اللغة.",
-      "تحسين قوالب الوصل والفاتورة المبدئية وربطها بلغة الطباعة.",
-      "إضافة دعم English للفاتورة المبدئية."
+      "ربط مميزات الإصدار برقم النسخة المثبتة بدل النص الثابت.",
+      "مزامنة مميزات كل إصدار مع سجل الإصدارات المنشور على GitHub.",
+      "إظهار مميزات النسخة المثبتة حتى عند توفر نسخة أحدث.",
+      "تحسين موثوقية عرض حالة الإصدار والتحديثات."
     ],
     "fr": [
-      "Correction de la sélection du modèle lors du changement de langue d’impression.",
-      "Modèle arabe RTL professionnel avec mise en page dédiée.",
-      "Modèle français LTR professionnel avec une mise en page réellement différente.",
-      "Actualisation immédiate de la forme et du contenu dans l’aperçu.",
-      "Amélioration des reçus et factures pro forma selon la langue d’impression.",
-      "Ajout de l’anglais pour la facture pro forma."
+      "Liaison des nouveautés au numéro de version réellement installé.",
+      "Synchronisation des nouveautés avec l’historique des versions publié sur GitHub.",
+      "Affichage des nouveautés de la version installée même lorsqu’une version plus récente existe.",
+      "Amélioration de la fiabilité de l’état de version et des mises à jour."
     ],
     "en": [
-      "Fixed invoice-template selection when changing print language.",
-      "Dedicated professional Arabic RTL invoice layout.",
-      "Dedicated professional French LTR invoice layout with a genuinely different structure.",
-      "Preview layout and language refresh immediately when the print language changes.",
-      "Improved receipt and pro-forma language-specific layouts.",
-      "Added English pro-forma support."
+      "Release highlights now follow the actually installed version.",
+      "Release highlights synchronize with the version history published on GitHub.",
+      "Installed-version highlights remain correct even when a newer update exists.",
+      "Improved reliability of version and update status display."
     ]
+  },
+  "releaseHistory": {
+    "1.0.28": {
+      "releaseDate": "2026-10-07",
+      "features": {
+        "ar": [
+          "إصلاح اختفاء عناصر الصفحة الرئيسية بعد الرجوع إليها.",
+          "إصلاح فتح نافذة معاينة وطباعة الفواتير والوصول داخل تطبيق سطح المكتب.",
+          "تحسين استقرار التنقل والطباعة."
+        ],
+        "fr": [
+          "Correction de la disparition des éléments de l’accueil après retour.",
+          "Correction de l’ouverture de l’aperçu et de la fenêtre d’impression.",
+          "Amélioration de la stabilité de la navigation et de l’impression."
+        ],
+        "en": [
+          "Fixed Home elements disappearing after returning to Home.",
+          "Fixed invoice and receipt preview/print window opening.",
+          "Improved navigation and printing stability."
+        ]
+      }
+    },
+    "1.0.29": {
+      "releaseDate": "2026-10-07",
+      "features": {
+        "ar": [
+          "معاينة إلزامية قبل طباعة الفاتورة والوصل والفاتورة المبدئية.",
+          "اختيار لغة الطباعة من داخل نافذة المعاينة.",
+          "تحديث المعاينة فور تغيير اللغة قبل تنفيذ الطباعة.",
+          "تطبيق نفس سلوك المعاينة على ملفات واجهة الكمبيوتر والهاتف."
+        ],
+        "fr": [
+          "Aperçu obligatoire avant l’impression.",
+          "Choix de la langue d’impression dans l’aperçu.",
+          "Actualisation immédiate de l’aperçu après changement de langue.",
+          "Même logique d’aperçu pour les interfaces PC et mobile."
+        ],
+        "en": [
+          "Mandatory preview before printing.",
+          "Print-language selection inside the preview.",
+          "Immediate preview refresh after language changes.",
+          "Same preview behavior for desktop and mobile interface files."
+        ]
+      }
+    },
+    "1.0.30": {
+      "releaseDate": "2026-10-07",
+      "features": {
+        "ar": [
+          "إصلاح منطق اختيار قالب الفاتورة عند تغيير لغة الطباعة.",
+          "قالب عربي RTL احترافي مستقل.",
+          "قالب فرنسي LTR احترافي مستقل يختلف فعليًا في التخطيط.",
+          "تحديث شكل ومحتوى المعاينة فور تغيير اللغة.",
+          "تحسين قوالب الوصل والفاتورة المبدئية وربطها بلغة الطباعة.",
+          "إضافة دعم English للفاتورة المبدئية."
+        ],
+        "fr": [
+          "Correction de la sélection du modèle selon la langue d’impression.",
+          "Modèle arabe RTL professionnel dédié.",
+          "Modèle français LTR professionnel distinct.",
+          "Actualisation immédiate de la mise en page et du contenu.",
+          "Amélioration des reçus et factures pro forma selon la langue.",
+          "Ajout de l’anglais pour la facture pro forma."
+        ],
+        "en": [
+          "Fixed template selection when changing print language.",
+          "Dedicated professional Arabic RTL layout.",
+          "Dedicated professional French LTR layout.",
+          "Immediate preview layout and content refresh.",
+          "Improved receipt and pro-forma language layouts.",
+          "Added English pro-forma support."
+        ]
+      }
+    },
+    "1.0.31": {
+      "releaseDate": "2026-10-07",
+      "features": {
+        "ar": [
+          "ربط مميزات الإصدار برقم النسخة المثبتة بدل النص الثابت.",
+          "مزامنة مميزات كل إصدار مع سجل الإصدارات المنشور على GitHub.",
+          "إظهار مميزات النسخة المثبتة حتى عند توفر نسخة أحدث.",
+          "تحسين موثوقية عرض حالة الإصدار والتحديثات."
+        ],
+        "fr": [
+          "Liaison des nouveautés au numéro de version réellement installé.",
+          "Synchronisation des nouveautés avec l’historique des versions publié sur GitHub.",
+          "Affichage des nouveautés de la version installée même lorsqu’une version plus récente existe.",
+          "Amélioration de la fiabilité de l’état de version et des mises à jour."
+        ],
+        "en": [
+          "Release highlights now follow the actually installed version.",
+          "Release highlights synchronize with the version history published on GitHub.",
+          "Installed-version highlights remain correct even when a newer update exists.",
+          "Improved reliability of version and update status display."
+        ]
+      }
+    }
   },
   "patches": [
     {
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.30/NANO-POS-Patch-1.0.29-to-1.0.30-PRO-PRINT-LANGUAGE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.30",
-      "sha256": "293bc1c8d9c7997d1e04515f8e2c01108677c601b0c3f6caf476069a8b951725",
-      "appAsarSha256": "063758a883bb5b69ce09f042c234f818b4a784166f545f16778d9c6dd894506c",
-      "fileName": "NANO-POS-Patch-1.0.29-to-1.0.30-PRO-PRINT-LANGUAGE.zip",
-      "sizeBytes": 30416864,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.31/NANO-POS-Patch-1.0.30-to-1.0.31-RELEASE-NOTES-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.31",
+      "sha256": "4315f916b51b042b258450fdb4d640163354dd31945b6f0a4fceb21b0bdebffe",
+      "appAsarSha256": "cc406ee8429e16a472096b4d90d62cd19b316d0c05c620ce6a8c49883288ef31",
+      "fileName": "NANO-POS-Patch-1.0.30-to-1.0.31-RELEASE-NOTES-FIX.zip",
+      "sizeBytes": 30416983,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -60,7 +151,8 @@
         "1.0.26",
         "1.0.27",
         "1.0.28",
-        "1.0.29"
+        "1.0.29",
+        "1.0.30"
       ]
     }
   ],
@@ -71,8 +163,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يقدم NANO POS v1.0.30 نظام طباعة متعدد اللغات أكثر احترافية. تغيير لغة الطباعة لم يعد يغيّر النص فقط؛ بل يغيّر قالب الفاتورة نفسه: العربية تستخدم تخطيط RTL مخصصًا، والفرنسية تستخدم تخطيط LTR مختلفًا، مع تحديث فوري داخل المعاينة قبل الطباعة أو حفظ PDF. كما تم تحسين الوصل والفاتورة المبدئية حسب اللغة.",
-    "fr": "NANO POS v1.0.30 introduit un système d’impression multilingue plus professionnel. Le changement de langue ne modifie plus seulement le texte : le modèle de facture change réellement. L’arabe utilise une mise en page RTL dédiée et le français une mise en page LTR distincte, avec actualisation immédiate dans l’aperçu avant impression ou export PDF.",
-    "en": "NANO POS v1.0.30 introduces a more professional multilingual printing system. Changing the print language now changes the invoice layout itself, not just the text: Arabic uses a dedicated RTL layout and French uses a distinct LTR layout, with immediate preview refresh before printing or PDF export."
+    "ar": "يصحح NANO POS v1.0.31 قسم «مميزات الإصدار الحالي». كانت المميزات ثابتة داخل البرنامج، أما الآن فأصبحت مرتبطة برقم النسخة المثبتة وتُزامن مع سجل الإصدارات المنشور على GitHub.",
+    "fr": "NANO POS v1.0.31 corrige la section «Nouveautés de la version actuelle». Les nouveautés ne sont plus figées dans l’application : elles correspondent désormais à la version installée et se synchronisent avec l’historique publié sur GitHub.",
+    "en": "NANO POS v1.0.31 fixes Current Release Highlights. Highlights are no longer hard-coded; they now match the installed version and synchronize with the release history published on GitHub."
   }
 }
