@@ -2,6 +2,7 @@ import struct,json,hashlib,base64
 from pathlib import Path
 p=Path("payload/app.asar")
 controller=base64.b64decode(Path("../tools/.tmp-controller-v1.0.32.b64").read_text().strip())
+print("controller_len",len(controller),"controller_sha",hashlib.sha256(controller).hexdigest())
 if hashlib.sha256(controller).hexdigest()!="f0a5e0e44ad3aaa4c68844308f699322f0b80ef9a45366665edeb4caf7aef29c":
     raise RuntimeError("controller checksum mismatch")
 with p.open("rb") as f:
