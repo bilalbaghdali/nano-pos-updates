@@ -1,0 +1,49 @@
+name: Publish NANO POS v1.0.32
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/publish-v1.0.32.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download v1.0.31 base
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work
+          gh release download v1.0.31 --repo "$GITHUB_REPOSITORY" --pattern "NANO-POS-Patch-1.0.30-to-1.0.31-RELEASE-NOTES-FIX.zip" --dir work
+          cd work
+          unzip -o NANO-POS-Patch-1.0.30-to-1.0.31-RELEASE-NOTES-FIX.zip
+          test -f payload/app.asar
+          echo "cc406ee8429e16a472096b4d90d62cd19b316d0c05c620ce6a8c49883288ef31  payload/app.asar" | sha256sum -c -
+
+      - name: Build v1.0.32 professional print fix
+        run: |
+          cp tools/.tmp-patch-v1.0.32.py work/patch.py
+          cd work
+          python patch.py
+          echo "be83d542760750e67416ba0d7f7125fdd580a862aaa2dccca0ca849cff75cff8  payload/app.asar" | sha256sum -c -
+          touch -t 202610071430 payload/app.asar
+          zip -X -9 NANO-POS-Patch-1.0.31-to-1.0.32-PRO-PRINT-ENGINE-FIX.zip payload/app.asar
+          echo "f176dde932872d914e93762029c153a87f1fac1e6722e89d1f61a89b766fef92  NANO-POS-Patch-1.0.31-to-1.0.32-PRO-PRINT-ENGINE-FIX.zip" | sha256sum -c -
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd work
+          if gh release view v1.0.32 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload v1.0.32 NANO-POS-Patch-1.0.31-to-1.0.32-PRO-PRINT-ENGINE-FIX.zip --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create v1.0.32 NANO-POS-Patch-1.0.31-to-1.0.32-PRO-PRINT-ENGINE-FIX.zip               --repo "$GITHUB_REPOSITORY" --target main --title "NANO POS v1.0.32"               --notes "إصلاح معماري لنظام الطباعة واللغة: ربط القوالب الاحترافية الفعلية بالعربية/الفرنسية/الإنجليزية، إعادة توليد المعاينة عند تغيير اللغة، وإصلاح تغيير لغة الفاتورة المبدئية داخل نفس المعاينة."
+          fi
