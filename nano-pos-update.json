@@ -3,36 +3,39 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "releaseDate": "2026-10-07",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "إصلاح اختفاء عناصر الصفحة الرئيسية بعد الرجوع إليها.",
-      "إصلاح فتح نافذة معاينة وطباعة الفواتير والوصول داخل تطبيق سطح المكتب.",
-      "تحسين استقرار التنقل والطباعة."
+      "معاينة إلزامية قبل طباعة الفاتورة والوصل والفاتورة المبدئية.",
+      "اختيار لغة الطباعة من داخل نافذة المعاينة.",
+      "تحديث المعاينة فور تغيير اللغة قبل تنفيذ الطباعة.",
+      "تطبيق نفس سلوك المعاينة على ملفات واجهة الكمبيوتر والهاتف."
     ],
     "fr": [
-      "Correction de la disparition des éléments de l’accueil après retour.",
-      "Correction de l’ouverture de l’aperçu et de la fenêtre d’impression dans l’application de bureau.",
-      "Amélioration de la stabilité de la navigation et de l’impression."
+      "Aperçu obligatoire avant l’impression des factures, reçus et factures pro forma.",
+      "Choix de la langue d’impression directement dans l’aperçu.",
+      "Actualisation immédiate de l’aperçu après changement de langue.",
+      "Même comportement d’aperçu appliqué aux interfaces PC et mobile."
     ],
     "en": [
-      "Fixed home-screen elements disappearing after returning to Home.",
-      "Fixed invoice and receipt print preview/window opening in the desktop app.",
-      "Improved navigation and printing stability."
+      "Mandatory preview before printing invoices, receipts and pro-forma invoices.",
+      "Print-language selection directly inside the preview.",
+      "Preview refreshes immediately when the language changes.",
+      "The same preview behavior is included for desktop and mobile interface files."
     ]
   },
   "patches": [
     {
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.28/NANO-POS-Patch-1.0.24-to-1.0.28.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.28",
-      "sha256": "7e16d8a07c592e9fc1981cefbfa66928ab8190cc646b34485d909bc0351948b9",
-      "appAsarSha256": "01c44055ff77b969f12643d6aeb801b54b998fbefb1719b31a55490b0fe3b63f",
-      "fileName": "NANO-POS-Patch-1.0.24-to-1.0.28.zip",
-      "sizeBytes": 30468234,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.29/NANO-POS-Patch-1.0.28-to-1.0.29-PREVIEW-LANGUAGE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.29",
+      "sha256": "1dc63e812084de19c5e5a971917b4f1d6ee6253f3dbbeb48ebec5ce244a62467",
+      "appAsarSha256": "555725fdf4e2fec01617ae92402ed3c3dd55b1485f5302b6f6253d34628d009d",
+      "fileName": "NANO-POS-Patch-1.0.28-to-1.0.29-PREVIEW-LANGUAGE.zip",
+      "sizeBytes": 30415468,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -49,7 +52,8 @@
         "1.0.24",
         "1.0.25",
         "1.0.26",
-        "1.0.27"
+        "1.0.27",
+        "1.0.28"
       ]
     }
   ],
@@ -60,8 +64,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يتضمن NANO POS v1.0.28 إصلاح اختفاء عناصر الصفحة الرئيسية بعد فتح قسم والرجوع إليها، وإصلاح نافذة معاينة/طباعة الفواتير والوصول داخل تطبيق Electron مع الإبقاء على حماية النوافذ الخارجية.",
-    "fr": "NANO POS v1.0.28 corrige la disparition des éléments de l’accueil après navigation et rétablit l’aperçu/l’impression des factures et reçus dans l’application Electron tout en conservant la protection des fenêtres externes.",
-    "en": "NANO POS v1.0.28 fixes disappearing Home elements after navigation and restores invoice/receipt preview and printing inside the Electron desktop app while retaining external-window protections."
+    "ar": "يضيف NANO POS v1.0.29 معاينة إلزامية قبل طباعة الفواتير والوصول والفواتير المبدئية. يمكن اختيار لغة الطباعة من داخل نافذة المعاينة (العربية / Français / English)، وتتحدث الوثيقة فورًا قبل الطباعة أو حفظ PDF.",
+    "fr": "NANO POS v1.0.29 impose un aperçu avant l’impression des factures, reçus et factures pro forma. La langue d’impression peut être choisie directement dans l’aperçu (العربية / Français / English), avec actualisation immédiate avant impression ou export PDF.",
+    "en": "NANO POS v1.0.29 adds a mandatory preview before printing invoices, receipts and pro-forma invoices. The print language can be selected directly in the preview (Arabic / French / English), with immediate refresh before printing or PDF export."
   }
 }
