@@ -3,39 +3,45 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "releaseDate": "2026-10-07",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "معاينة إلزامية قبل طباعة الفاتورة والوصل والفاتورة المبدئية.",
-      "اختيار لغة الطباعة من داخل نافذة المعاينة.",
-      "تحديث المعاينة فور تغيير اللغة قبل تنفيذ الطباعة.",
-      "تطبيق نفس سلوك المعاينة على ملفات واجهة الكمبيوتر والهاتف."
+      "إصلاح منطق اختيار قالب الفاتورة عند تغيير لغة الطباعة.",
+      "قالب عربي RTL احترافي مستقل بتوزيع عربي مناسب.",
+      "قالب فرنسي LTR احترافي مستقل يختلف فعليًا في التخطيط عن العربي.",
+      "تحديث شكل ومحتوى المعاينة فور تغيير اللغة.",
+      "تحسين قوالب الوصل والفاتورة المبدئية وربطها بلغة الطباعة.",
+      "إضافة دعم English للفاتورة المبدئية."
     ],
     "fr": [
-      "Aperçu obligatoire avant l’impression des factures, reçus et factures pro forma.",
-      "Choix de la langue d’impression directement dans l’aperçu.",
-      "Actualisation immédiate de l’aperçu après changement de langue.",
-      "Même comportement d’aperçu appliqué aux interfaces PC et mobile."
+      "Correction de la sélection du modèle lors du changement de langue d’impression.",
+      "Modèle arabe RTL professionnel avec mise en page dédiée.",
+      "Modèle français LTR professionnel avec une mise en page réellement différente.",
+      "Actualisation immédiate de la forme et du contenu dans l’aperçu.",
+      "Amélioration des reçus et factures pro forma selon la langue d’impression.",
+      "Ajout de l’anglais pour la facture pro forma."
     ],
     "en": [
-      "Mandatory preview before printing invoices, receipts and pro-forma invoices.",
-      "Print-language selection directly inside the preview.",
-      "Preview refreshes immediately when the language changes.",
-      "The same preview behavior is included for desktop and mobile interface files."
+      "Fixed invoice-template selection when changing print language.",
+      "Dedicated professional Arabic RTL invoice layout.",
+      "Dedicated professional French LTR invoice layout with a genuinely different structure.",
+      "Preview layout and language refresh immediately when the print language changes.",
+      "Improved receipt and pro-forma language-specific layouts.",
+      "Added English pro-forma support."
     ]
   },
   "patches": [
     {
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.29/NANO-POS-Patch-1.0.28-to-1.0.29-PREVIEW-LANGUAGE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.29",
-      "sha256": "1dc63e812084de19c5e5a971917b4f1d6ee6253f3dbbeb48ebec5ce244a62467",
-      "appAsarSha256": "555725fdf4e2fec01617ae92402ed3c3dd55b1485f5302b6f6253d34628d009d",
-      "fileName": "NANO-POS-Patch-1.0.28-to-1.0.29-PREVIEW-LANGUAGE.zip",
-      "sizeBytes": 30415468,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.30/NANO-POS-Patch-1.0.29-to-1.0.30-PRO-PRINT-LANGUAGE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.30",
+      "sha256": "293bc1c8d9c7997d1e04515f8e2c01108677c601b0c3f6caf476069a8b951725",
+      "appAsarSha256": "063758a883bb5b69ce09f042c234f818b4a784166f545f16778d9c6dd894506c",
+      "fileName": "NANO-POS-Patch-1.0.29-to-1.0.30-PRO-PRINT-LANGUAGE.zip",
+      "sizeBytes": 30416864,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -53,7 +59,8 @@
         "1.0.25",
         "1.0.26",
         "1.0.27",
-        "1.0.28"
+        "1.0.28",
+        "1.0.29"
       ]
     }
   ],
@@ -64,8 +71,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يضيف NANO POS v1.0.29 معاينة إلزامية قبل طباعة الفواتير والوصول والفواتير المبدئية. يمكن اختيار لغة الطباعة من داخل نافذة المعاينة (العربية / Français / English)، وتتحدث الوثيقة فورًا قبل الطباعة أو حفظ PDF.",
-    "fr": "NANO POS v1.0.29 impose un aperçu avant l’impression des factures, reçus et factures pro forma. La langue d’impression peut être choisie directement dans l’aperçu (العربية / Français / English), avec actualisation immédiate avant impression ou export PDF.",
-    "en": "NANO POS v1.0.29 adds a mandatory preview before printing invoices, receipts and pro-forma invoices. The print language can be selected directly in the preview (Arabic / French / English), with immediate refresh before printing or PDF export."
+    "ar": "يقدم NANO POS v1.0.30 نظام طباعة متعدد اللغات أكثر احترافية. تغيير لغة الطباعة لم يعد يغيّر النص فقط؛ بل يغيّر قالب الفاتورة نفسه: العربية تستخدم تخطيط RTL مخصصًا، والفرنسية تستخدم تخطيط LTR مختلفًا، مع تحديث فوري داخل المعاينة قبل الطباعة أو حفظ PDF. كما تم تحسين الوصل والفاتورة المبدئية حسب اللغة.",
+    "fr": "NANO POS v1.0.30 introduit un système d’impression multilingue plus professionnel. Le changement de langue ne modifie plus seulement le texte : le modèle de facture change réellement. L’arabe utilise une mise en page RTL dédiée et le français une mise en page LTR distincte, avec actualisation immédiate dans l’aperçu avant impression ou export PDF.",
+    "en": "NANO POS v1.0.30 introduces a more professional multilingual printing system. Changing the print language now changes the invoice layout itself, not just the text: Arabic uses a dedicated RTL layout and French uses a distinct LTR layout, with immediate preview refresh before printing or PDF export."
   }
 }
