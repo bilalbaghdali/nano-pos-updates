@@ -18,8 +18,12 @@ jobs:
 
       - name: Rebuild exact v1.0.34 tool bundle
         run: |
-          sha256sum tools/.tmp-v134-bundle-00 tools/.tmp-v134-bundle-01 tools/.tmp-v134-bundle-02 tools/.tmp-v134-bundle-03
-          cat tools/.tmp-v134-bundle-00 tools/.tmp-v134-bundle-01 tools/.tmp-v134-bundle-02 tools/.tmp-v134-bundle-03 > tools/v134-tools.tar.gz.b64
+          echo "4438fe1e91f8f82688cdc3f15f3e2e6b5661c51022143b29b9fcdb410dd028b6  tools/.tmp-v134-bundle-00a" | sha256sum -c -
+          echo "1b21e8a488ac3c88dea92658fb73d5840a687f4cccdc080a64207b06284a188b  tools/.tmp-v134-bundle-00b" | sha256sum -c -
+          echo "791726e4dc35a9d3cddf80cb9ea651e5fcc9d4c5828d334f383dd171e4d0c05c  tools/.tmp-v134-bundle-01" | sha256sum -c -
+          echo "b41f4bf050c3539fadc2b49feb4e50b09decff28640830cb7ef1a995e553608a  tools/.tmp-v134-bundle-02" | sha256sum -c -
+          echo "7f0a14657616d562b4f8994313c2d1475eff51c9289461939744a71000070ae9  tools/.tmp-v134-bundle-03" | sha256sum -c -
+          cat tools/.tmp-v134-bundle-00a tools/.tmp-v134-bundle-00b tools/.tmp-v134-bundle-01 tools/.tmp-v134-bundle-02 tools/.tmp-v134-bundle-03 > tools/v134-tools.tar.gz.b64
           echo "7280be4bf2cad0985bb060c264f179a295d552ad76f5c0c4ea15995a2deb0c18  tools/v134-tools.tar.gz.b64" | sha256sum -c -
           base64 -d tools/v134-tools.tar.gz.b64 > tools/v134-tools.tar.gz
           echo "fbafa1a0d11f002fde960e974a07a51d54687474fc74abd464acac90588fd3e1  tools/v134-tools.tar.gz" | sha256sum -c -
