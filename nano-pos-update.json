@@ -3,33 +3,36 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.24",
+  "version": "1.0.28",
   "releaseDate": "2026-10-07",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "تخطيط الشاشة الرئيسية.",
-      "تحسينات على النظام."
+      "إصلاح اختفاء عناصر الصفحة الرئيسية بعد الرجوع إليها.",
+      "إصلاح فتح نافذة معاينة وطباعة الفواتير والوصول داخل تطبيق سطح المكتب.",
+      "تحسين استقرار التنقل والطباعة."
     ],
     "fr": [
-      "Nouvelle disposition de l’écran principal.",
-      "Améliorations du système."
+      "Correction de la disparition des éléments de l’accueil après retour.",
+      "Correction de l’ouverture de l’aperçu et de la fenêtre d’impression dans l’application de bureau.",
+      "Amélioration de la stabilité de la navigation et de l’impression."
     ],
     "en": [
-      "Updated home-screen layout.",
-      "System improvements."
+      "Fixed home-screen elements disappearing after returning to Home.",
+      "Fixed invoice and receipt print preview/window opening in the desktop app.",
+      "Improved navigation and printing stability."
     ]
   },
   "patches": [
     {
-      "directUrl": "https://download946.mediafire.com/1hqch7pl5vvgQvjCAsxFzDBzy4Urqc9np7rBBiuoGhVAgOPVw4K8T6tOezFh1qhZGeOaHOWC4-9STqLN9iOdY-dfCoy9Ps6TycktUZdVc9vtZbd1C2jBNBrqpfNtf5g5rCa41t40Ps7Ti00am_kuWjFSrv-rS7JYw-32Rjw9XZkBSw/scszg7wdmal85um/NANO-POS-Patch-1.0.23-to-1.0.24-HOME-DASHBOARD-LOGIN-VOICE.zip",
-      "pageUrl": "https://www.mediafire.com/file/scszg7wdmal85um/NANO-POS-Patch-1.0.23-to-1.0.24-HOME-DASHBOARD-LOGIN-VOICE.zip/file",
-      "sha256": "70eb61cbc58444ad5bc931b35a7d2b42f4481826eefd5d1a569ccfdfacee57af",
-      "appAsarSha256": "176cdea0b37447dd4602df2c07a0739858fcb2c1abd4b0581dd3f86b683a06e8",
-      "fileName": "NANO-POS-Patch-1.0.23-to-1.0.24-HOME-DASHBOARD-LOGIN-VOICE.zip",
-      "sizeBytes": 30414548,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.28/NANO-POS-Patch-1.0.24-to-1.0.28.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.28",
+      "sha256": "7e16d8a07c592e9fc1981cefbfa66928ab8190cc646b34485d909bc0351948b9",
+      "appAsarSha256": "01c44055ff77b969f12643d6aeb801b54b998fbefb1719b31a55490b0fe3b63f",
+      "fileName": "NANO-POS-Patch-1.0.24-to-1.0.28.zip",
+      "sizeBytes": 30468234,
       "payloadType": "app-asar",
       "fromVersions": [
         "1.0.13",
@@ -42,7 +45,11 @@
         "1.0.20",
         "1.0.21",
         "1.0.22",
-        "1.0.23"
+        "1.0.23",
+        "1.0.24",
+        "1.0.25",
+        "1.0.26",
+        "1.0.27"
       ]
     }
   ],
@@ -53,8 +60,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يتضمن NANO POS v1.0.24 تخطيطًا جديدًا للشاشة الرئيسية مع إحصائيات المبيعات وطلبيات التوصيل والأصناف والزبائن وديون الزبائن وديون الموردين، وربط بطاقات الأقسام بصفحاتها الفعلية، وإظهار اسم المستخدم ورقم النسخة المثبتة في الواجهة الترحيبية، وإضافة صفحة حول البرنامج، وتشغيل صوت «بسم الله، على بركة الله» بعد نجاح تسجيل الدخول.",
-    "fr": "NANO POS v1.0.24 propose une nouvelle disposition de l’écran principal avec les statistiques des ventes, commandes de livraison, articles, clients, créances clients et dettes fournisseurs, des cartes de sections reliées à leurs pages, l’affichage du nom de l’utilisateur et de la version installée, une page À propos et un message vocal après connexion.",
-    "en": "NANO POS v1.0.24 introduces a new home dashboard with sales, delivery orders, items, customers, customer debt and supplier debt statistics, section cards linked to their actual pages, a welcome area showing the signed-in user and installed version, an About page, and a login-success voice message."
+    "ar": "يتضمن NANO POS v1.0.28 إصلاح اختفاء عناصر الصفحة الرئيسية بعد فتح قسم والرجوع إليها، وإصلاح نافذة معاينة/طباعة الفواتير والوصول داخل تطبيق Electron مع الإبقاء على حماية النوافذ الخارجية.",
+    "fr": "NANO POS v1.0.28 corrige la disparition des éléments de l’accueil après navigation et rétablit l’aperçu/l’impression des factures et reçus dans l’application Electron tout en conservant la protection des fenêtres externes.",
+    "en": "NANO POS v1.0.28 fixes disappearing Home elements after navigation and restores invoice/receipt preview and printing inside the Electron desktop app while retaining external-window protections."
   }
 }
