@@ -1,0 +1,49 @@
+name: Publish verified NANO POS 1.0.35 patch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.35.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out update repository
+        uses: actions/checkout@v4
+      - name: Rebuild and verify app.asar and patch
+        run: python3 build/v1.0.35/rebuild_patch.py
+      - name: Create GitHub Release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET="NANO-POS-Patch-1.0.34-to-1.0.35-AUTO.zip"
+          if gh release view v1.0.35 >/dev/null 2>&1; then
+            gh release upload v1.0.35 "$ASSET" --clobber
+          else
+            gh release create v1.0.35 "$ASSET" --title "NANO POS v1.0.35" --target main --notes "Optional update from v1.0.34: print-preview fix, configurable print styles, verified backups, remote-operation deduplication, sales and inventory validation, dashboard and financial overview. Protect existing data and back up before updating. Hardware printing and multi-device Windows tests are still pending."
+          fi
+      - name: Verify hosted release asset SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.35 --pattern 'NANO-POS-Patch-1.0.34-to-1.0.35-AUTO.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json; print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.34-to-1.0.35-AUTO.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+          echo "Verified hosted patch SHA-256: $ACTUAL"
+      - name: Upload manifest-ready checksums as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: v1.0.35-patch-metadata
+          path: build-result.json
