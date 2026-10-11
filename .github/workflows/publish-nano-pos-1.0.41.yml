@@ -1,0 +1,50 @@
+name: Publish NANO POS v1.0.41 MEGA Restore
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.41.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and test MEGA restore
+        run: python3 build/v1.0.41/build-release.py
+      - name: Publish optional GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE='NANO-POS-Patch-1.0.40-to-1.0.41-MEGA-RESTORE.zip'
+          if gh release view v1.0.41 >/dev/null 2>&1; then
+            gh release upload v1.0.41 "$FILE" --clobber
+          else
+            gh release create v1.0.41 "$FILE" --target main --title 'NANO POS v1.0.41 — MEGA Restore' --notes 'Optional update from v1.0.40. Adds restore from MEGA into the primary PC with backup preview, two user confirmations, SHA-256 verification, and a verified local rollback snapshot before changes. Keeps download-only action. Do not restore while other terminals are selling. Test on a copy before restoring production data; Windows+live-MEGA UI testing is pending.'
+          fi
+      - name: Verify published asset checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.41 --pattern 'NANO-POS-Patch-1.0.40-to-1.0.41-MEGA-RESTORE.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.40-to-1.0.41-MEGA-RESTORE.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Export release metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.41-restore-checksums
+          path: build-result.json
