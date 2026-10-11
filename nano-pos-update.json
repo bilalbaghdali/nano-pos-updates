@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.40",
-  "releaseDate": "2026-10-11",
-  "mandatory": true,
-  "importance": "critical",
+  "version": "1.0.41",
+  "releaseDate": "2026-10-12",
+  "mandatory": false,
+  "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "اقتراح المنتجات المطابقة بعد كتابة أربعة أحرف على الأقل من اسم المنتج.",
-      "اختيار منتج موجود من القائمة المنسدلة بدل إنشاء منتج مكرر.",
-      "إظهار اقتراحات المنتجات في حقول البحث والإضافة، بما فيها البيع والشراء والمخزون والعروض.",
-      "إظهار اقتراحات الزبائن والموردين المسجلين في حقول الأسماء والبحث الخاصة بهم."
+      "استرداد نسخة احتياطية من MEGA مباشرة إلى بيانات NANO POS مع اختيار النسخة المطلوبة.",
+      "معاينة عدد المنتجات والزبائن والموردين والفواتير في النسخة قبل تأكيد الاسترداد.",
+      "إنشاء نسخة أمان محلية من البيانات الحالية قبل الاسترداد والتحقق من سلامة الملف السحابي.",
+      "الإبقاء على تنزيل نسخة MEGA دون استعادتها؛ الاسترداد الفعلي متاح على الكمبيوتر الرئيسي فقط."
     ],
     "fr": [
-      "Suggestions de produits correspondants à partir de quatre caractères du nom.",
-      "Choix d’un produit déjà enregistré dans la liste déroulante pour éviter les doublons.",
-      "Suggestions de produits dans les champs de recherche et de création, dont ventes, achats, stock et promotions.",
-      "Suggestions de clients et fournisseurs enregistrés dans leurs champs de nom et recherche."
+      "Restaurer une sauvegarde MEGA sélectionnée directement dans NANO POS.",
+      "Aperçu des produits, clients, fournisseurs et factures avant confirmation.",
+      "Sauvegarde locale vérifiée des données actuelles avant restauration et vérification de l’archive MEGA.",
+      "Téléchargement seul toujours disponible ; restauration complète réservée au PC principal."
     ],
     "en": [
-      "Matching product suggestions after typing at least four characters of the product name.",
-      "Choose a registered product from the dropdown instead of creating a duplicate.",
-      "Product suggestions in search and creation fields, including sales, purchasing, inventory and promotions.",
-      "Suggestions for registered customers and suppliers in their name and search fields."
+      "Restore a selected MEGA backup directly into NANO POS.",
+      "Preview product, customer, supplier and invoice counts before confirming.",
+      "Save a verified local safety backup before restoration and verify cloud archive integrity.",
+      "Keep the separate download-only option; full restore is available only on the primary PC."
     ]
   },
   "releaseHistory": {
@@ -372,25 +372,49 @@
           "Suggestions for registered customers and suppliers in their name and search fields."
         ]
       }
+    },
+    "1.0.41": {
+      "releaseDate": "2026-10-12",
+      "features": {
+        "ar": [
+          "استرداد نسخة احتياطية من MEGA مباشرة إلى بيانات NANO POS مع اختيار النسخة المطلوبة.",
+          "معاينة عدد المنتجات والزبائن والموردين والفواتير في النسخة قبل تأكيد الاسترداد.",
+          "إنشاء نسخة أمان محلية من البيانات الحالية قبل الاسترداد والتحقق من سلامة الملف السحابي.",
+          "الإبقاء على تنزيل نسخة MEGA دون استعادتها؛ الاسترداد الفعلي متاح على الكمبيوتر الرئيسي فقط."
+        ],
+        "fr": [
+          "Restaurer une sauvegarde MEGA sélectionnée directement dans NANO POS.",
+          "Aperçu des produits, clients, fournisseurs et factures avant confirmation.",
+          "Sauvegarde locale vérifiée des données actuelles avant restauration et vérification de l’archive MEGA.",
+          "Téléchargement seul toujours disponible ; restauration complète réservée au PC principal."
+        ],
+        "en": [
+          "Restore a selected MEGA backup directly into NANO POS.",
+          "Preview product, customer, supplier and invoice counts before confirming.",
+          "Save a verified local safety backup before restoration and verify cloud archive integrity.",
+          "Keep the separate download-only option; full restore is available only on the primary PC."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.40-improvements",
+      "id": "nano-pos-v1.0.41-mega-restore",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
         "1.0.36",
         "1.0.37",
         "1.0.38",
-        "1.0.39"
+        "1.0.39",
+        "1.0.40"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.40/NANO-POS-Patch-1.0.39-to-1.0.40-IMPROVEMENTS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.40",
-      "sha256": "b9a7cd8318a5e94a2ed46ff07fb965dc798972ede15336c0cd4241f4dd6dd363",
-      "appAsarSha256": "a1059a3d516296febe84e3695bab35017b48a3bbe7c67306e9dc4358fcd158fb",
-      "fileName": "NANO-POS-Patch-1.0.39-to-1.0.40-IMPROVEMENTS.zip",
-      "sizeBytes": 30783073,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.41/NANO-POS-Patch-1.0.40-to-1.0.41-MEGA-RESTORE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.41",
+      "sha256": "76c54c7263fc91a063eaf1f6e946a155c046853e46c97af1ffd908bf4bbe6527",
+      "appAsarSha256": "d34b38fd2389dd2a558d211afb8573471af41072f192703e04b76e81422eaa59",
+      "fileName": "NANO-POS-Patch-1.0.40-to-1.0.41-MEGA-RESTORE.zip",
+      "sizeBytes": 30785911,
       "payloadType": "app-asar"
     }
   ],
@@ -401,8 +425,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات",
-    "fr": "Améliorations",
-    "en": "Improvements"
+    "ar": "تحسينات: إضافة خيار استرداد نسخة MEGA إلى بيانات البرنامج بعد المعاينة والتأكيد، مع حفظ نسخة أمان محلية من البيانات الحالية. اختبر الاسترداد على نسخة تجريبية أولًا قبل تطبيقه على متجر حقيقي.",
+    "fr": "Améliorations : restauration directe d’une sauvegarde MEGA avec aperçu, confirmations et sauvegarde de sécurité locale. Tester sur une copie avant utilisation en production.",
+    "en": "Improvements: restore a MEGA backup directly with preview, confirmations, and an automatic local safety backup. Test against a copy before restoring real store data."
   }
 }
