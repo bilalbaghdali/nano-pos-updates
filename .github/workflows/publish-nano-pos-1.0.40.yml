@@ -1,0 +1,51 @@
+name: Publish NANO POS 1.0.40 Improvements
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.40.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and test exact app.asar patch
+        run: python3 build/v1.0.40/build-release.py
+      - name: Publish NANO POS v1.0.40
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.39-to-1.0.40-IMPROVEMENTS.zip'
+          if gh release view v1.0.40 >/dev/null 2>&1; then
+            gh release upload v1.0.40 "$ASSET" --clobber
+          else
+            gh release create v1.0.40 "$ASSET" --target main --title 'NANO POS v1.0.40 — تحسينات' --notes $'تحسينات\n\n- اقتراح المنتجات المطابقة عند كتابة أربعة أحرف أو أكثر من الاسم.\n- اختيار المنتج الموجود من القائمة المنسدلة بدل إنشاء منتج مكرر.\n- إتاحة الاقتراحات عند البحث والإضافة في البيع والشراء والمخزون والأقسام الأخرى.\n- إظهار الأسماء المطابقة للزبائن والموردين عند البحث والإضافة.'
+          fi
+      - name: Confirm downloadable update integrity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p checked
+          gh release download v1.0.40 --pattern 'NANO-POS-Patch-1.0.39-to-1.0.40-IMPROVEMENTS.zip' --dir checked
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum checked/NANO-POS-Patch-1.0.39-to-1.0.40-IMPROVEMENTS.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+          echo "Checked SHA256: $ACTUAL"
+      - name: Export release metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.40-checksums
+          path: build-result.json
