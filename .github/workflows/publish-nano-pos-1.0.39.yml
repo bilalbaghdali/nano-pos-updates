@@ -51,3 +51,4 @@ jobs:
         with:
           name: nano-pos-v1.0.39-manifest-data
           path: build-result.json
+# Restart after committing the full deterministic builder script.
