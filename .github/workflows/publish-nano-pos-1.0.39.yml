@@ -1,0 +1,53 @@
+name: Publish verified NANO POS 1.0.39 stability update
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.39.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild and validate app.asar from verified v1.0.38
+        run: python3 build/v1.0.39/build_release.py
+      - name: Publish optional update as GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE='NANO-POS-Patch-1.0.38-to-1.0.39-SYSTEM-STABILITY.zip'
+          if gh release view v1.0.39 >/dev/null 2>&1; then
+            gh release upload v1.0.39 "$FILE" --clobber
+          else
+            gh release create v1.0.39 "$FILE" --target main --title 'NANO POS v1.0.39 — System Stability Improvements' --notes 'Optional system-stability update: new customers become available in sales invoices immediately, new suppliers in purchase invoices without restarting, and after successfully adding a new product the add-product dialog stays open with a cleared form ready for the next entry. Keeps existing product edit behavior, sales/purchase data and MEGA backups. Source-level automated checks passed; still requires Windows UI testing.'
+          fi
+      - name: Download published release to verify SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          FILE='NANO-POS-Patch-1.0.38-to-1.0.39-SYSTEM-STABILITY.zip'
+          gh release download v1.0.39 --pattern "$FILE" --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum "verified/$FILE" | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Save checksum metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.39-manifest-data
+          path: build-result.json
