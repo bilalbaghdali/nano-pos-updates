@@ -3,35 +3,35 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "releaseDate": "2026-10-11",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إزالة نافذة التقارير المالية المتقدمة المكررة، مع إبقاء إحصائيات الشاشة الرئيسية وجميع التقارير الأصلية.",
-      "إضافة إدارة النسخ الاحتياطية السحابية عبر MEGA داخل الإعدادات ← إدارة البيانات.",
-      "إمكانية رفع أحدث نسخة محلية متحقَّق منها إلى MEGA، ورفع النسخ التلقائية كل ساعة عند تفعيل الخيار.",
-      "عرض النسخ الموجودة في MEGA وتنزيل نسخة مع فحص SHA-256 دون استبدال بيانات المحل تلقائيًا.",
-      "حماية الخصوصية: تسجيل الدخول عبر MEGAcmd، دون حفظ كلمة مرور MEGA في NANO POS.",
-      "الحفاظ على النسخ الاحتياطية المحلية واختصارات التنقل ووظائف البيع والطباعة السابقة."
+      "إضافة حقول بريد MEGA وكلمة المرور ورمز المصادقة الثنائية في قسم النسخ الاحتياطي.",
+      "بدء رفع أول نسخة احتياطية متحقق منها مباشرة بعد نجاح تسجيل الدخول.",
+      "تفعيل النسخ الاحتياطي السحابي كل ساعة بعد الربط مع إبقاء النسخ المحلية.",
+      "الاحتفاظ بجلسة تسجيل الدخول عبر MEGAcmd بحيث لا يتطلب فتح NANO POS إعادة إدخال المعلومات.",
+      "لا تُحفظ كلمة مرور MEGA أو رمز التحقق في ملفات إعدادات NANO POS.",
+      "الاحتفاظ بالصفحة الرئيسية والتقارير الأصلية وإصلاحات البيع والطباعة السابقة."
     ],
     "fr": [
-      "Suppression de l’onglet financier supplémentaire redondant, en conservant les statistiques d’accueil et les rapports existants.",
-      "Sauvegardes cloud MEGA intégrées dans Paramètres → Gestion des données.",
-      "Téléversement manuel des sauvegardes vérifiées et option d’envoi automatique toutes les heures.",
-      "Liste et téléchargement des archives MEGA avec vérification SHA-256, sans écraser automatiquement les données actives.",
-      "Connexion via MEGAcmd ; aucun mot de passe MEGA enregistré dans NANO POS.",
-      "Sauvegardes locales, raccourcis et fonctions de caisse/impression conservés."
+      "Champs e-mail, mot de passe et code MFA MEGA ajoutés aux paramètres de sauvegarde.",
+      "Envoi immédiat de la première sauvegarde vérifiée après authentification.",
+      "Sauvegarde cloud horaire activée après la connexion, sans supprimer les copies locales.",
+      "Session MEGAcmd persistante, sans ressaisir les identifiants à chaque ouverture.",
+      "Aucun mot de passe ou code MFA conservé dans la configuration NANO POS.",
+      "Statistiques d’accueil, rapports existants et corrections précédentes conservés."
     ],
     "en": [
-      "Removed redundant advanced financial overlay, keeping Home statistics and existing built-in reports.",
-      "Added MEGA cloud backups inside Settings → Data Management.",
-      "Manual upload of a verified local backup, with opt-in hourly uploads.",
-      "List and download remote backups with SHA-256 verification and no automatic overwrite of live data.",
-      "Uses an authenticated MEGAcmd session without storing a MEGA password in NANO POS.",
-      "Preserves local backups, navigation shortcuts, sales and printing features."
+      "Added MEGA email, password and optional MFA fields next to backup controls.",
+      "Immediately uploads the first verified backup after a successful sign-in.",
+      "Enables hourly cloud backups after connection while preserving local copies.",
+      "MEGAcmd remembers the account session, so credentials do not need repeated entry.",
+      "NANO POS does not persist the MEGA password or one-time MFA code.",
+      "Retains original dashboard/reports and previous sales/printing fixes."
     ]
   },
   "releaseHistory": {
@@ -271,21 +271,51 @@
           "Preserves local backups, navigation shortcuts, sales and printing features."
         ]
       }
+    },
+    "1.0.37": {
+      "releaseDate": "2026-10-11",
+      "features": {
+        "ar": [
+          "إضافة حقول بريد MEGA وكلمة المرور ورمز المصادقة الثنائية في قسم النسخ الاحتياطي.",
+          "بدء رفع أول نسخة احتياطية متحقق منها مباشرة بعد نجاح تسجيل الدخول.",
+          "تفعيل النسخ الاحتياطي السحابي كل ساعة بعد الربط مع إبقاء النسخ المحلية.",
+          "الاحتفاظ بجلسة تسجيل الدخول عبر MEGAcmd بحيث لا يتطلب فتح NANO POS إعادة إدخال المعلومات.",
+          "لا تُحفظ كلمة مرور MEGA أو رمز التحقق في ملفات إعدادات NANO POS.",
+          "الاحتفاظ بالصفحة الرئيسية والتقارير الأصلية وإصلاحات البيع والطباعة السابقة."
+        ],
+        "fr": [
+          "Champs e-mail, mot de passe et code MFA MEGA ajoutés aux paramètres de sauvegarde.",
+          "Envoi immédiat de la première sauvegarde vérifiée après authentification.",
+          "Sauvegarde cloud horaire activée après la connexion, sans supprimer les copies locales.",
+          "Session MEGAcmd persistante, sans ressaisir les identifiants à chaque ouverture.",
+          "Aucun mot de passe ou code MFA conservé dans la configuration NANO POS.",
+          "Statistiques d’accueil, rapports existants et corrections précédentes conservés."
+        ],
+        "en": [
+          "Added MEGA email, password and optional MFA fields next to backup controls.",
+          "Immediately uploads the first verified backup after a successful sign-in.",
+          "Enables hourly cloud backups after connection while preserving local copies.",
+          "MEGAcmd remembers the account session, so credentials do not need repeated entry.",
+          "NANO POS does not persist the MEGA password or one-time MFA code.",
+          "Retains original dashboard/reports and previous sales/printing fixes."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.36-mega-cloud-backup",
+      "id": "nano-pos-v1.0.37-mega-login",
       "fromVersions": [
         "1.0.34",
-        "1.0.35"
+        "1.0.35",
+        "1.0.36"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.36/NANO-POS-Patch-1.0.35-to-1.0.36-MEGA.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.36",
-      "sha256": "4f850bba6ab53842763673ee2493cfe3c1b8172973339038c849878798c98e16",
-      "appAsarSha256": "ad8ab6edb01620cd3970fa9eca64ed5b844e599adfe4111d905d338315401fc4",
-      "fileName": "NANO-POS-Patch-1.0.35-to-1.0.36-MEGA.zip",
-      "sizeBytes": 30485594,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.37/NANO-POS-Patch-1.0.36-to-1.0.37-MEGA-LOGIN.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.37",
+      "sha256": "a47e2584b948b34f232dc5c2931a393cf68e522637d087d382fa41ff5259b81a",
+      "appAsarSha256": "174187656df21a5cffd3d4bd8a977d1e551bbbd1b1f9a3ab56b26d84587026e7",
+      "fileName": "NANO-POS-Patch-1.0.36-to-1.0.37-MEGA-LOGIN.zip",
+      "sizeBytes": 30488145,
       "payloadType": "app-asar"
     }
   ],
@@ -296,8 +326,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحديث اختياري لإزالة التقارير المكررة وإضافة نسخ MEGA. يجب تثبيت MEGAcmd وتسجيل الدخول من جهاز Windows، ثم تفعيل النسخ السحابي يدويًا؛ لا يؤثر على النسخ المحلية. لم يخضع الربط مع حساب MEGA الحقيقي للاختبار الميداني حتى الآن. احفظ نسخة احتياطية مستقلة قبل التحديث.",
-    "fr": "Mise à jour facultative : retrait des rapports redondants et sauvegardes MEGA. Installez MEGAcmd et connectez-vous sous Windows ; activez le cloud manuellement. La connexion réelle à MEGA n’a pas été testée en situation réelle. Gardez une sauvegarde indépendante.",
-    "en": "Optional update: removes duplicate financial reports and adds MEGA backups. Install and sign in to MEGAcmd on Windows, then opt in to cloud upload. Live MEGA account integration has not been field-tested. Keep an independent backup before updating."
+    "ar": "تحديث اختياري: أدخل بيانات MEGA مرة واحدة من إدارة البيانات لبدء أول رفع والنسخ التلقائي. يحتفظ MEGAcmd بالجلسة دون تخزين كلمة المرور في NANO POS. يتطلب تثبيت MEGAcmd. لم يتم التحقق من تسجيل الدخول بهذه الطريقة على Windows بحساب فعلي؛ عند فشله يمكن تسجيل الدخول عبر MEGAcmd Shell ثم استخدام فحص الاتصال. احتفظ بنسخة احتياطية مستقلة.",
+    "fr": "Mise à jour facultative : connexion MEGA depuis NANO POS et sauvegarde immédiate. La session est conservée par MEGAcmd, sans stockage du mot de passe. MEGAcmd requis. Authentification depuis NANO POS non testée sur un compte Windows réel. Sauvegardez vos données avant l'installation.",
+    "en": "Optional update: sign in to MEGA from backup settings, upload immediately, and retain the MEGAcmd session without storing the password in NANO POS. MEGAcmd required. Windows in-app login with a real MEGA account has not been field-tested; MEGAcmd Shell login remains a fallback. Back up data before installing."
   }
 }
