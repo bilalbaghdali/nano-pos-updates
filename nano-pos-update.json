@@ -3,35 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.38",
+  "version": "1.0.39",
   "releaseDate": "2026-10-11",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "الاتصال مباشرة بحساب MEGA دون تثبيت MEGAcmd أو أي برنامج خارجي.",
-      "دمج مكتبة MEGAJS الإصدار 1.3.10 داخل تطبيق NANO POS وإضافة دعم رمز المصادقة الثنائية.",
-      "حفظ جلسة حساب MEGA بتشفير Windows DPAPI بحيث لا يطلب تسجيل الدخول بعد إعادة تشغيل البرنامج ما دامت الجلسة صالحة.",
-      "رفع أحدث نسخة احتياطية سليمة مباشرة بعد ربط الحساب واستمرار النسخ التلقائي كل ساعة.",
-      "التحقق من سلامة النسخة الاحتياطية قبل رفعها وبعد تنزيلها، مع عدم استبدال قاعدة بيانات المتجر تلقائيًا.",
-      "إضافة زر فصل حساب MEGA والإبقاء على النسخ المحلية والإحصائيات الأصلية دون تغيير."
+      "تحسينات استقرار النظام: ظهور الزبون الجديد في فاتورة البيع مباشرة دون إعادة تشغيل البرنامج.",
+      "تحديث الموردين فور إضافتهم أو تعديلهم وإظهارهم مباشرة في فاتورة الشراء.",
+      "تجديد قوائم الزبائن والموردين عند استخدامها لمنع ظهور بيانات قديمة، مع الحفاظ على المورد المحدد أثناء تحديث فاتورة الشراء.",
+      "بعد حفظ منتج جديد بنجاح تبقى نافذة إضافة المنتج مفتوحة، وتُفرّغ الحقول وتُجهّز لإضافة المنتج التالي.",
+      "الحفاظ على طريقة تعديل المنتجات الحالية وكل بيانات البيع والشراء والمخزون والنسخ الاحتياطية دون تغيير."
     ],
     "fr": [
-      "Connexion directe au compte MEGA sans installation de MEGAcmd ni d'outil externe.",
-      "Bibliothèque MEGAJS 1.3.10 intégrée, avec authentification à deux facteurs.",
-      "Session chiffrée via Windows DPAPI et restaurée après redémarrage.",
-      "Téléversement immédiat d'une sauvegarde locale vérifiée, puis sauvegarde automatique horaire.",
-      "Vérification d'intégrité avant envoi et après téléchargement, sans écraser les données en cours.",
-      "Bouton Déconnecter MEGA ; conservation des sauvegardes locales et des statistiques actuelles."
+      "Améliorations de stabilité du système : les nouveaux clients apparaissent immédiatement dans les factures de vente sans redémarrage.",
+      "Les fournisseurs ajoutés ou modifiés sont disponibles immédiatement dans les factures d’achat.",
+      "Actualisation des listes clients/fournisseurs à leur utilisation, sans perdre le fournisseur sélectionné lors d’une mise à jour.",
+      "Après ajout réussi, la fenêtre d’ajout de produit reste ouverte et le formulaire est réinitialisé pour l’article suivant.",
+      "Comportement de modification des produits existants, ventes, achats, stock et sauvegardes préservés."
     ],
     "en": [
-      "Connect directly to MEGA without installing MEGAcmd or external tools.",
-      "Bundles MEGAJS 1.3.10 and supports two-factor authentication.",
-      "Encrypts the persistent account session using Windows DPAPI for seamless restarts.",
-      "Uploads the latest verified backup after sign-in, followed by hourly automatic backups.",
-      "Validates backup integrity before upload and after download; never overwrites live shop data automatically.",
-      "Adds MEGA disconnect and preserves local backups and existing dashboard statistics."
+      "System stability improvements: newly added customers become available in sales invoices immediately without restarting.",
+      "New and edited suppliers appear immediately in purchase invoices.",
+      "Customer and supplier selection lists refresh when used, while preserving a supplier selected in an in-progress purchase invoice.",
+      "After a successful new product save, the Add Product window stays open with a cleared form ready for the next item.",
+      "Existing product editing behavior, sales, purchases, inventory and backups are preserved."
     ]
   },
   "releaseHistory": {
@@ -329,23 +326,50 @@
           "Adds MEGA disconnect and preserves local backups and existing dashboard statistics."
         ]
       }
+    },
+    "1.0.39": {
+      "releaseDate": "2026-10-11",
+      "features": {
+        "ar": [
+          "تحسينات استقرار النظام: ظهور الزبون الجديد في فاتورة البيع مباشرة دون إعادة تشغيل البرنامج.",
+          "تحديث الموردين فور إضافتهم أو تعديلهم وإظهارهم مباشرة في فاتورة الشراء.",
+          "تجديد قوائم الزبائن والموردين عند استخدامها لمنع ظهور بيانات قديمة، مع الحفاظ على المورد المحدد أثناء تحديث فاتورة الشراء.",
+          "بعد حفظ منتج جديد بنجاح تبقى نافذة إضافة المنتج مفتوحة، وتُفرّغ الحقول وتُجهّز لإضافة المنتج التالي.",
+          "الحفاظ على طريقة تعديل المنتجات الحالية وكل بيانات البيع والشراء والمخزون والنسخ الاحتياطية دون تغيير."
+        ],
+        "fr": [
+          "Améliorations de stabilité du système : les nouveaux clients apparaissent immédiatement dans les factures de vente sans redémarrage.",
+          "Les fournisseurs ajoutés ou modifiés sont disponibles immédiatement dans les factures d’achat.",
+          "Actualisation des listes clients/fournisseurs à leur utilisation, sans perdre le fournisseur sélectionné lors d’une mise à jour.",
+          "Après ajout réussi, la fenêtre d’ajout de produit reste ouverte et le formulaire est réinitialisé pour l’article suivant.",
+          "Comportement de modification des produits existants, ventes, achats, stock et sauvegardes préservés."
+        ],
+        "en": [
+          "System stability improvements: newly added customers become available in sales invoices immediately without restarting.",
+          "New and edited suppliers appear immediately in purchase invoices.",
+          "Customer and supplier selection lists refresh when used, while preserving a supplier selected in an in-progress purchase invoice.",
+          "After a successful new product save, the Add Product window stays open with a cleared form ready for the next item.",
+          "Existing product editing behavior, sales, purchases, inventory and backups are preserved."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.38-mega-direct-sdk",
+      "id": "nano-pos-v1.0.39-system-stability",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
         "1.0.36",
-        "1.0.37"
+        "1.0.37",
+        "1.0.38"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.38/NANO-POS-Patch-1.0.37-to-1.0.38-DIRECT-MEGA.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.38",
-      "sha256": "66154b4fe0798a899ff64aa716e789f0991918f2e87812fb2800af5d7844237d",
-      "appAsarSha256": "132166cfb0773597c4d348bb922f59cb865463f95caf4c845e7539e1d4e546f7",
-      "fileName": "NANO-POS-Patch-1.0.37-to-1.0.38-DIRECT-MEGA.zip",
-      "sizeBytes": 30780128,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.39/NANO-POS-Patch-1.0.38-to-1.0.39-SYSTEM-STABILITY.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.39",
+      "sha256": "92fce0ec5be0364ca0118089b965a6265ec99b77c369841a89b83aeb94077f30",
+      "appAsarSha256": "3798b58ea46f5b4d01a51e85dac07f6db8f1478213f2dbf7fb1dd1397ca76489",
+      "fileName": "NANO-POS-Patch-1.0.38-to-1.0.39-SYSTEM-STABILITY.zip",
+      "sizeBytes": 30780066,
       "payloadType": "app-asar"
     }
   ],
@@ -356,8 +380,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحديث اختياري: اتصال مباشر بـ MEGA دون MEGAcmd مع جلسة مشفرة بواسطة Windows، والتحقق من سلامة النسخ الاحتياطية. احفظ نسخة محلية مستقلة قبل التحديث. تم التحقق من المكتبة والبناء على GitHub واختبار المنطق بمحاكاة حساب، لكن لم تتم تجربة تسجيل الدخول إلى MEGA بحساب حقيقي على Windows بعد.",
-    "fr": "Mise à jour facultative : sauvegardes MEGA directes, sans MEGAcmd, session Windows chiffrée. Conservez une sauvegarde locale indépendante. Intégration et construction vérifiées, mais tests sur un compte MEGA réel sous Windows non terminés.",
-    "en": "Optional direct MEGA integration without MEGAcmd, with OS-encrypted session. Keep an independent local backup. Build, bundled dependencies and mocked backups tested; real MEGA account login on Windows has not been field-tested."
+    "ar": "إصدار اختياري مخصص لتحسينات استقرار النظام: تحديث قوائم الزبائن والموردين فور الحفظ في الفواتير، وإبقاء نافذة إضافة المنتج مفتوحة وفارغة للمنتج التالي. تحققنا من بناء GitHub وصحة ملف التحديث واختبارات ثابتة للكود، ولم تختبر التغييرات بعد ميدانيًا على واجهة Windows. يوصى بأخذ نسخة احتياطية قبل التحديث.",
+    "fr": "Mise à jour facultative de stabilité : actualisation immédiate des clients et fournisseurs dans les factures, et formulaire d’ajout de produit maintenu ouvert pour saisir l’article suivant. Vérifications de source, construction et SHA-256 réussies ; tests Windows UI sur appareil réel non terminés.",
+    "en": "Optional system stability update: instant customer/supplier refresh in invoices and persistent Add Product window for repeated entry. Source checks and GitHub release checksum passed; actual Windows UI testing remains pending. Back up shop data before updating."
   }
 }
