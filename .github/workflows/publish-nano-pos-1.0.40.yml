@@ -49,3 +49,4 @@ jobs:
         with:
           name: nano-pos-v1.0.40-checksums
           path: build-result.json
+# Re-run from complete staged build sources.
