@@ -3,35 +3,35 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "releaseDate": "2026-10-11",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة حقول بريد MEGA وكلمة المرور ورمز المصادقة الثنائية في قسم النسخ الاحتياطي.",
-      "بدء رفع أول نسخة احتياطية متحقق منها مباشرة بعد نجاح تسجيل الدخول.",
-      "تفعيل النسخ الاحتياطي السحابي كل ساعة بعد الربط مع إبقاء النسخ المحلية.",
-      "الاحتفاظ بجلسة تسجيل الدخول عبر MEGAcmd بحيث لا يتطلب فتح NANO POS إعادة إدخال المعلومات.",
-      "لا تُحفظ كلمة مرور MEGA أو رمز التحقق في ملفات إعدادات NANO POS.",
-      "الاحتفاظ بالصفحة الرئيسية والتقارير الأصلية وإصلاحات البيع والطباعة السابقة."
+      "الاتصال مباشرة بحساب MEGA دون تثبيت MEGAcmd أو أي برنامج خارجي.",
+      "دمج مكتبة MEGAJS الإصدار 1.3.10 داخل تطبيق NANO POS وإضافة دعم رمز المصادقة الثنائية.",
+      "حفظ جلسة حساب MEGA بتشفير Windows DPAPI بحيث لا يطلب تسجيل الدخول بعد إعادة تشغيل البرنامج ما دامت الجلسة صالحة.",
+      "رفع أحدث نسخة احتياطية سليمة مباشرة بعد ربط الحساب واستمرار النسخ التلقائي كل ساعة.",
+      "التحقق من سلامة النسخة الاحتياطية قبل رفعها وبعد تنزيلها، مع عدم استبدال قاعدة بيانات المتجر تلقائيًا.",
+      "إضافة زر فصل حساب MEGA والإبقاء على النسخ المحلية والإحصائيات الأصلية دون تغيير."
     ],
     "fr": [
-      "Champs e-mail, mot de passe et code MFA MEGA ajoutés aux paramètres de sauvegarde.",
-      "Envoi immédiat de la première sauvegarde vérifiée après authentification.",
-      "Sauvegarde cloud horaire activée après la connexion, sans supprimer les copies locales.",
-      "Session MEGAcmd persistante, sans ressaisir les identifiants à chaque ouverture.",
-      "Aucun mot de passe ou code MFA conservé dans la configuration NANO POS.",
-      "Statistiques d’accueil, rapports existants et corrections précédentes conservés."
+      "Connexion directe au compte MEGA sans installation de MEGAcmd ni d'outil externe.",
+      "Bibliothèque MEGAJS 1.3.10 intégrée, avec authentification à deux facteurs.",
+      "Session chiffrée via Windows DPAPI et restaurée après redémarrage.",
+      "Téléversement immédiat d'une sauvegarde locale vérifiée, puis sauvegarde automatique horaire.",
+      "Vérification d'intégrité avant envoi et après téléchargement, sans écraser les données en cours.",
+      "Bouton Déconnecter MEGA ; conservation des sauvegardes locales et des statistiques actuelles."
     ],
     "en": [
-      "Added MEGA email, password and optional MFA fields next to backup controls.",
-      "Immediately uploads the first verified backup after a successful sign-in.",
-      "Enables hourly cloud backups after connection while preserving local copies.",
-      "MEGAcmd remembers the account session, so credentials do not need repeated entry.",
-      "NANO POS does not persist the MEGA password or one-time MFA code.",
-      "Retains original dashboard/reports and previous sales/printing fixes."
+      "Connect directly to MEGA without installing MEGAcmd or external tools.",
+      "Bundles MEGAJS 1.3.10 and supports two-factor authentication.",
+      "Encrypts the persistent account session using Windows DPAPI for seamless restarts.",
+      "Uploads the latest verified backup after sign-in, followed by hourly automatic backups.",
+      "Validates backup integrity before upload and after download; never overwrites live shop data automatically.",
+      "Adds MEGA disconnect and preserves local backups and existing dashboard statistics."
     ]
   },
   "releaseHistory": {
@@ -300,22 +300,52 @@
           "Retains original dashboard/reports and previous sales/printing fixes."
         ]
       }
+    },
+    "1.0.38": {
+      "releaseDate": "2026-10-11",
+      "features": {
+        "ar": [
+          "الاتصال مباشرة بحساب MEGA دون تثبيت MEGAcmd أو أي برنامج خارجي.",
+          "دمج مكتبة MEGAJS الإصدار 1.3.10 داخل تطبيق NANO POS وإضافة دعم رمز المصادقة الثنائية.",
+          "حفظ جلسة حساب MEGA بتشفير Windows DPAPI بحيث لا يطلب تسجيل الدخول بعد إعادة تشغيل البرنامج ما دامت الجلسة صالحة.",
+          "رفع أحدث نسخة احتياطية سليمة مباشرة بعد ربط الحساب واستمرار النسخ التلقائي كل ساعة.",
+          "التحقق من سلامة النسخة الاحتياطية قبل رفعها وبعد تنزيلها، مع عدم استبدال قاعدة بيانات المتجر تلقائيًا.",
+          "إضافة زر فصل حساب MEGA والإبقاء على النسخ المحلية والإحصائيات الأصلية دون تغيير."
+        ],
+        "fr": [
+          "Connexion directe au compte MEGA sans installation de MEGAcmd ni d'outil externe.",
+          "Bibliothèque MEGAJS 1.3.10 intégrée, avec authentification à deux facteurs.",
+          "Session chiffrée via Windows DPAPI et restaurée après redémarrage.",
+          "Téléversement immédiat d'une sauvegarde locale vérifiée, puis sauvegarde automatique horaire.",
+          "Vérification d'intégrité avant envoi et après téléchargement, sans écraser les données en cours.",
+          "Bouton Déconnecter MEGA ; conservation des sauvegardes locales et des statistiques actuelles."
+        ],
+        "en": [
+          "Connect directly to MEGA without installing MEGAcmd or external tools.",
+          "Bundles MEGAJS 1.3.10 and supports two-factor authentication.",
+          "Encrypts the persistent account session using Windows DPAPI for seamless restarts.",
+          "Uploads the latest verified backup after sign-in, followed by hourly automatic backups.",
+          "Validates backup integrity before upload and after download; never overwrites live shop data automatically.",
+          "Adds MEGA disconnect and preserves local backups and existing dashboard statistics."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.37-mega-login",
+      "id": "nano-pos-v1.0.38-mega-direct-sdk",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
-        "1.0.36"
+        "1.0.36",
+        "1.0.37"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.37/NANO-POS-Patch-1.0.36-to-1.0.37-MEGA-LOGIN.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.37",
-      "sha256": "a47e2584b948b34f232dc5c2931a393cf68e522637d087d382fa41ff5259b81a",
-      "appAsarSha256": "174187656df21a5cffd3d4bd8a977d1e551bbbd1b1f9a3ab56b26d84587026e7",
-      "fileName": "NANO-POS-Patch-1.0.36-to-1.0.37-MEGA-LOGIN.zip",
-      "sizeBytes": 30488145,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.38/NANO-POS-Patch-1.0.37-to-1.0.38-DIRECT-MEGA.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.38",
+      "sha256": "66154b4fe0798a899ff64aa716e789f0991918f2e87812fb2800af5d7844237d",
+      "appAsarSha256": "132166cfb0773597c4d348bb922f59cb865463f95caf4c845e7539e1d4e546f7",
+      "fileName": "NANO-POS-Patch-1.0.37-to-1.0.38-DIRECT-MEGA.zip",
+      "sizeBytes": 30780128,
       "payloadType": "app-asar"
     }
   ],
@@ -326,8 +356,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحديث اختياري: أدخل بيانات MEGA مرة واحدة من إدارة البيانات لبدء أول رفع والنسخ التلقائي. يحتفظ MEGAcmd بالجلسة دون تخزين كلمة المرور في NANO POS. يتطلب تثبيت MEGAcmd. لم يتم التحقق من تسجيل الدخول بهذه الطريقة على Windows بحساب فعلي؛ عند فشله يمكن تسجيل الدخول عبر MEGAcmd Shell ثم استخدام فحص الاتصال. احتفظ بنسخة احتياطية مستقلة.",
-    "fr": "Mise à jour facultative : connexion MEGA depuis NANO POS et sauvegarde immédiate. La session est conservée par MEGAcmd, sans stockage du mot de passe. MEGAcmd requis. Authentification depuis NANO POS non testée sur un compte Windows réel. Sauvegardez vos données avant l'installation.",
-    "en": "Optional update: sign in to MEGA from backup settings, upload immediately, and retain the MEGAcmd session without storing the password in NANO POS. MEGAcmd required. Windows in-app login with a real MEGA account has not been field-tested; MEGAcmd Shell login remains a fallback. Back up data before installing."
+    "ar": "تحديث اختياري: اتصال مباشر بـ MEGA دون MEGAcmd مع جلسة مشفرة بواسطة Windows، والتحقق من سلامة النسخ الاحتياطية. احفظ نسخة محلية مستقلة قبل التحديث. تم التحقق من المكتبة والبناء على GitHub واختبار المنطق بمحاكاة حساب، لكن لم تتم تجربة تسجيل الدخول إلى MEGA بحساب حقيقي على Windows بعد.",
+    "fr": "Mise à jour facultative : sauvegardes MEGA directes, sans MEGAcmd, session Windows chiffrée. Conservez une sauvegarde locale indépendante. Intégration et construction vérifiées, mais tests sur un compte MEGA réel sous Windows non terminés.",
+    "en": "Optional direct MEGA integration without MEGAcmd, with OS-encrypted session. Keep an independent local backup. Build, bundled dependencies and mocked backups tested; real MEGA account login on Windows has not been field-tested."
   }
 }
