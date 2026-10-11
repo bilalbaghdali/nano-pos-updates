@@ -1,0 +1,61 @@
+name: Publish verified NANO POS 1.0.38 direct MEGA update
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.38.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout update repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned MEGAJS and production dependencies (no application installer)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/v1.0.38/deps
+          cd build/v1.0.38/deps
+          printf '{"name":"nano-mega-vendor","version":"1.0.0","private":true,"dependencies":{"megajs":"1.3.10"}}\n' > package.json
+          npm install --omit=dev --ignore-scripts --no-audit --no-fund
+          node -e "const m=require('megajs'); if(typeof m.Storage.fromJSON!=='function')process.exit(1)"
+      - name: Build and verify complete Electron app.asar with MEGAJS
+        run: python3 build/v1.0.38/rebuild_patch.py
+      - name: Publish optional GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.37-to-1.0.38-DIRECT-MEGA.zip'
+          if gh release view v1.0.38 >/dev/null 2>&1; then
+            gh release upload v1.0.38 "$ASSET" --clobber
+          else
+            gh release create v1.0.38 "$ASSET" --target main --title 'NANO POS v1.0.38 — MEGA direct backup' --notes 'Optional patch: direct MEGA cloud backup integration using bundled MEGAJS (no MEGAcmd installation), MFA, Windows DPAPI encrypted session, immediate verified backup upload after connecting, hourly opt-in remote backups and safe restore downloads. Keep a separate local backup before updating. Live Windows+MEGA account tests are pending.'
+          fi
+      - name: Verify downloaded GitHub Release bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.38 --pattern 'NANO-POS-Patch-1.0.37-to-1.0.38-DIRECT-MEGA.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.37-to-1.0.38-DIRECT-MEGA.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Export manifest-ready checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.38-checksums
+          path: build-result.json
