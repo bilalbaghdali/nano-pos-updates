@@ -1,0 +1,48 @@
+name: Publish verified NANO POS 1.0.36 patch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.36.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Rebuild and verify asar from previous release
+        run: python3 build/v1.0.36/rebuild_patch.py
+      - name: Create new GitHub Release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET="NANO-POS-Patch-1.0.35-to-1.0.36-MEGA.zip"
+          if gh release view v1.0.36 >/dev/null 2>&1; then
+            gh release upload v1.0.36 "$ASSET" --clobber
+          else
+            gh release create v1.0.36 "$ASSET" --title "NANO POS v1.0.36 — MEGA Backups" --target main --notes "Optional update from v1.0.35. Removes redundant financial report overlay while retaining original Home reports. Adds opt-in MEGA cloud backup via separately installed and signed-in MEGAcmd: upload verified local backups, optional hourly backup sync, list remote backups, and download safely without automatic live data replacement. MEGAcmd integration on Windows is not field-tested; keep independent backups. Not mandatory."
+          fi
+      - name: Verify downloaded release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.36 --pattern 'NANO-POS-Patch-1.0.35-to-1.0.36-MEGA.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json; print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.35-to-1.0.36-MEGA.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Archive checksum metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.36-metadata
+          path: build-result.json
