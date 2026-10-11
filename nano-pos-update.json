@@ -3,32 +3,41 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.34",
-  "releaseDate": "2026-10-07",
+  "version": "1.0.35",
+  "releaseDate": "2026-10-11",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.13",
   "features": {
     "ar": [
-      "مركز طباعة موحد داخل المعاينة مع اختيار الطابعة وحجم الورق وعدد النسخ والطباعة الملونة أو بالأبيض والأسود.",
-      "حفظ آخر إعدادات الطباعة لكل نوع مستند مع زر اختبار طباعة مباشر.",
-      "اختبار اتصال الكمبيوتر قبل الربط مع عرض زمن الاستجابة ورقم إصدار NANO POS على الكمبيوتر.",
-      "نظام مركزي لتنسيق العملة تستخدمه الفواتير والوصول والباركود والملصقات.",
-      "تخصيص رمز العملة حسب اللغة وموضعه والمنازل العشرية وفاصل الآلاف وفاصل الكسور مع إمكانية إخفاء الأصفار غير الضرورية."
+      "إصلاح فتح نافذة معاينة الطباعة وتحسين ثباتها.",
+      "إضافة أنماط طباعة كلاسيكي وعصري ومضغوط مع تذييل قابل للتخصيص.",
+      "تعزيز حماية بيانات المتجر وإيقاف أي تهيئة قد تمسح السجلات القديمة.",
+      "نسخ احتياطي تلقائي كل ساعة عند توفر البيانات مع فحص سلامة SHA-256.",
+      "تقليل تكرار طلبات المزامنة وحفظ ترتيب تنفيذ عمليات الأجهزة المتصلة ضمن جلسة الخادم.",
+      "فحص الكميات والأسعار ورصيد الدفعة قبل خصم المخزون أثناء البيع.",
+      "إضافة لوحة تقارير مالية وإحصائيات المبيعات والديون وتنبيهات المخزون وتصدير CSV.",
+      "اختصارات لوحة مفاتيح للتنقل السريع والبحث عن المنتجات."
     ],
     "fr": [
-      "Centre d’impression unifié dans l’aperçu avec choix de l’imprimante, du format papier, du nombre de copies et du mode couleur.",
-      "Mémorisation des derniers réglages d’impression par type de document et bouton d’impression test.",
-      "Test de connexion au PC avant l’association avec affichage de la latence et de la version NANO POS du PC.",
-      "Système centralisé de formatage de devise pour factures, reçus, codes-barres et étiquettes.",
-      "Personnalisation du symbole par langue, de sa position, des décimales et des séparateurs avec masquage optionnel des zéros inutiles."
+      "Correction de l’ouverture de l’aperçu avant impression.",
+      "Trois styles d’impression (classique, moderne et compact), avec pied de page personnalisable.",
+      "Protection des données existantes et suppression des comportements de réinitialisation risqués.",
+      "Sauvegardes horaires si des données récentes sont disponibles, avec contrôle SHA-256.",
+      "Réduction des soumissions en double et exécution séquentielle des opérations connectées pendant la session serveur.",
+      "Vérification de la quantité, du prix et du stock avant la validation d’une vente.",
+      "Tableau de bord financier (ventes, dettes, alertes stock, export CSV).",
+      "Raccourcis clavier pour navigation et recherche des produits."
     ],
     "en": [
-      "Unified print center inside preview with printer, paper size, copy count and color/black-and-white controls.",
-      "Remembered print preferences per document type plus a direct test-print action.",
-      "PC connection test before pairing, showing latency and the remote NANO POS version.",
-      "Central currency formatter shared by invoices, receipts, barcodes and labels.",
-      "Per-language currency symbols, configurable position, decimals and separators, with optional trimming of unnecessary zero decimals."
+      "Fixed print preview opening and stability.",
+      "Three print styles (classic, modern, compact) and customizable footer.",
+      "Protected existing store records from unsafe initialization/reset behaviors.",
+      "Hourly backups when recent data is available, with SHA-256 integrity verification.",
+      "Reduced duplicate remote requests and serialized connected-device operations during the current server session.",
+      "Validated quantity, price, and batch stock before sale deduction.",
+      "Financial overview with sales, debts, low-stock alerts, and CSV export.",
+      "Keyboard shortcuts for navigation and product search."
     ]
   },
   "releaseHistory": {
@@ -204,40 +213,56 @@
           "Per-language currency symbols, configurable position, decimals and separators, with optional trimming of unnecessary zero decimals."
         ]
       }
+    },
+    "1.0.35": {
+      "releaseDate": "2026-10-11",
+      "features": {
+        "ar": [
+          "إصلاح فتح نافذة معاينة الطباعة وتحسين ثباتها.",
+          "إضافة أنماط طباعة كلاسيكي وعصري ومضغوط مع تذييل قابل للتخصيص.",
+          "تعزيز حماية بيانات المتجر وإيقاف أي تهيئة قد تمسح السجلات القديمة.",
+          "نسخ احتياطي تلقائي كل ساعة عند توفر البيانات مع فحص سلامة SHA-256.",
+          "تقليل تكرار طلبات المزامنة وحفظ ترتيب تنفيذ عمليات الأجهزة المتصلة ضمن جلسة الخادم.",
+          "فحص الكميات والأسعار ورصيد الدفعة قبل خصم المخزون أثناء البيع.",
+          "إضافة لوحة تقارير مالية وإحصائيات المبيعات والديون وتنبيهات المخزون وتصدير CSV.",
+          "اختصارات لوحة مفاتيح للتنقل السريع والبحث عن المنتجات."
+        ],
+        "fr": [
+          "Correction de l’ouverture de l’aperçu avant impression.",
+          "Trois styles d’impression (classique, moderne et compact), avec pied de page personnalisable.",
+          "Protection des données existantes et suppression des comportements de réinitialisation risqués.",
+          "Sauvegardes horaires si des données récentes sont disponibles, avec contrôle SHA-256.",
+          "Réduction des soumissions en double et exécution séquentielle des opérations connectées pendant la session serveur.",
+          "Vérification de la quantité, du prix et du stock avant la validation d’une vente.",
+          "Tableau de bord financier (ventes, dettes, alertes stock, export CSV).",
+          "Raccourcis clavier pour navigation et recherche des produits."
+        ],
+        "en": [
+          "Fixed print preview opening and stability.",
+          "Three print styles (classic, modern, compact) and customizable footer.",
+          "Protected existing store records from unsafe initialization/reset behaviors.",
+          "Hourly backups when recent data is available, with SHA-256 integrity verification.",
+          "Reduced duplicate remote requests and serialized connected-device operations during the current server session.",
+          "Validated quantity, price, and batch stock before sale deduction.",
+          "Financial overview with sales, debts, low-stock alerts, and CSV export.",
+          "Keyboard shortcuts for navigation and product search."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.34/NANO-POS-Patch-1.0.33-to-1.0.34-PRINT-SYNC-CURRENCY.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.34",
-      "sha256": "2ea92ed65a3964f3fedb24593c9553630f0ae93c5acb1b49d58457b72b15ea1c",
-      "appAsarSha256": "5c883d648c60c81468d1648e254ad0f65b8f71f9ab2d05ca657faba3c6160bc0",
-      "fileName": "NANO-POS-Patch-1.0.33-to-1.0.34-PRINT-SYNC-CURRENCY.zip",
-      "sizeBytes": 30433592,
-      "payloadType": "app-asar",
+      "id": "nano-pos-v1.0.35-from-v1.0.34",
       "fromVersions": [
-        "1.0.13",
-        "1.0.14",
-        "1.0.15",
-        "1.0.16",
-        "1.0.17",
-        "1.0.18",
-        "1.0.19",
-        "1.0.20",
-        "1.0.21",
-        "1.0.22",
-        "1.0.23",
-        "1.0.24",
-        "1.0.25",
-        "1.0.26",
-        "1.0.27",
-        "1.0.28",
-        "1.0.29",
-        "1.0.30",
-        "1.0.31",
-        "1.0.32",
-        "1.0.33"
-      ]
+        "1.0.34"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.35/NANO-POS-Patch-1.0.34-to-1.0.35-AUTO.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.35",
+      "sha256": "8215a93b898b82b425e9a9a0db8f37e79f44f953303d56f12a02e41b3811549a",
+      "appAsarSha256": "485d5662f9e53cbbbc52fb22a72a9616950224d7aea34a07dab23c42ee73d73c",
+      "fileName": "NANO-POS-Patch-1.0.34-to-1.0.35-AUTO.zip",
+      "sizeBytes": 30482809,
+      "payloadType": "app-asar"
     }
   ],
   "download": {
@@ -247,8 +272,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "يضيف NANO POS v1.0.34 مركز طباعة موحد داخل المعاينة، واختبار اتصال حقيقي بالكمبيوتر قبل الربط، ونظامًا مركزيًا مرنًا لتنسيق العملة في المستندات والباركود والملصقات.",
-    "fr": "NANO POS v1.0.34 ajoute un centre d’impression unifié, un véritable test de connexion au PC avant l’association et un système central et configurable de formatage des devises.",
-    "en": "NANO POS v1.0.34 adds a unified print center, a real pre-pairing PC connection test, and a centralized configurable currency-formatting system."
+    "ar": "تحديث اختياري من 1.0.34. يُنصح بأخذ نسخة احتياطية مستقلة قبل التحديث. لم يكتمل بعد الاختبار على جميع طابعات Windows وسيناريوهات المزامنة متعددة الأجهزة.",
+    "fr": "Mise à jour facultative depuis la version 1.0.34. Effectuez une sauvegarde indépendante avant la mise à jour. Les tests de toutes les imprimantes Windows et de la synchronisation multi-appareils restent à finaliser.",
+    "en": "Optional update from 1.0.34. Back up store data before updating. Full Windows printer and multi-device synchronization testing remains outstanding."
   }
 }
