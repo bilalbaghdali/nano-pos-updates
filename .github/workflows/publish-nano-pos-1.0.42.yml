@@ -1,0 +1,50 @@
+name: Publish verified NANO POS 1.0.42 login hotfix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.42.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout verified update repository
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild 1.0.42 and verify login fix
+        run: python3 build/v1.0.42/build-release.py
+      - name: Publish GitHub release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.41-to-1.0.42-LOGIN-INPUT-FIX.zip'
+          if gh release view v1.0.42 >/dev/null 2>&1; then
+            gh release upload v1.0.42 "$ASSET" --clobber
+          else
+            gh release create v1.0.42 "$ASSET" --target main --title 'NANO POS v1.0.42 — Login Repair' --notes 'Fixes inability to type username/password in login after update; prevents stale startup or lock overlays and global keyboard shortcuts from stealing login input. No store data, activation, or credentials changed. Important recovery update, field testing on installed Windows pending.'
+          fi
+      - name: Verify downloaded release archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.42 --pattern 'NANO-POS-Patch-1.0.41-to-1.0.42-LOGIN-INPUT-FIX.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.41-to-1.0.42-LOGIN-INPUT-FIX.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Export checksum metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.42-checksums
+          path: build-result.json
