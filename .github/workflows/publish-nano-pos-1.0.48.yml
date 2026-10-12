@@ -1,0 +1,50 @@
+name: Publish NANO POS v1.0.48 shop logo and currency update
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.48.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out release scripts
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild source and run currency/logo security tests
+        run: python3 build/v1.0.48/build-release.py
+      - name: Publish optional patch to GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.47-to-1.0.48-SHOP-LOGO-CURRENCY.zip'
+          if gh release view v1.0.48 >/dev/null 2>&1; then
+            gh release upload v1.0.48 "$ASSET" --clobber
+          else
+            gh release create v1.0.48 "$ASSET" --target main --title 'NANO POS v1.0.48 — Improvements' --notes 'Optional: associate Windows caption icon with the shop logo saved in settings; use a blank icon when absent. Improve shared currency number/symbol formatting in barcode labels and printable documents. Accounting values remain unchanged. Real Windows end-to-end tests pending.'
+          fi
+      - name: Confirm published ZIP integrity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.48 --pattern 'NANO-POS-Patch-1.0.47-to-1.0.48-SHOP-LOGO-CURRENCY.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.47-to-1.0.48-SHOP-LOGO-CURRENCY.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Keep checksum artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.48-manifest-data
+          path: build-result.json
