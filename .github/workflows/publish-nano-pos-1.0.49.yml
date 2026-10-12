@@ -1,0 +1,53 @@
+name: Publish NANO POS v1.0.49 barcode currency correction
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.49.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout update repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Patch barcode value and run regression tests
+        run: python3 build/v1.0.49/build-release.py
+      - name: Publish release asset
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.48-to-1.0.49-BARCODE-CURRENCY-FIX.zip'
+          if gh release view v1.0.49 >/dev/null 2>&1; then
+            # Do not overwrite a previously published file without explicit verification.
+            echo 'Release already exists; refusing to overwrite asset.' >&2
+            exit 1
+          fi
+          gh release create v1.0.49 "$ASSET" --target main --title 'NANO POS v1.0.49 — Improvements' --notes 'Optional: correct barcode price label currency duplication in preview, printing, and PDF by keeping the amount numeric and displaying the configured currency symbol exactly once. Stored product prices and shop records remain unchanged. Windows printer hardware testing pending.'
+      - name: Verify published download checksum
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.49 --pattern 'NANO-POS-Patch-1.0.48-to-1.0.49-BARCODE-CURRENCY-FIX.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.48-to-1.0.49-BARCODE-CURRENCY-FIX.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Upload manifest checksum metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.49-checksum
+          path: build-result.json
