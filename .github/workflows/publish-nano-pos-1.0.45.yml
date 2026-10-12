@@ -1,0 +1,54 @@
+name: Publish NANO POS 1.0.45 Actual Modern Login Fix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.45.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout verified update sources
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild and verify app.asar with actual-login fix
+        run: python3 build/v1.0.45/build-release.py
+      - name: Publish optional release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.44-to-1.0.45-ACTUAL-LOGIN-FIX.zip'
+          if gh release view v1.0.45 >/dev/null 2>&1; then
+            gh release upload v1.0.45 "$ASSET" --clobber
+          else
+            gh release create v1.0.45 "$ASSET" --target main \
+              --title 'NANO POS v1.0.45 — Modern Login' \
+              --notes 'Optional fix: the desktop login created by browser-ui.js (nanoLocalLoginOverlay) now displays the same two-panel modern layout as the existing NANO POS login design. Preserves the actual local/remote authentication handlers, users, activation, data and prior cloud backup features. Browser UI smoke tests passed; physical Windows shop validation pending.'
+          fi
+      - name: Verify published asset checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.45 --pattern 'NANO-POS-Patch-1.0.44-to-1.0.45-ACTUAL-LOGIN-FIX.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.44-to-1.0.45-ACTUAL-LOGIN-FIX.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Export verified metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.45-metadata
+          path: build-result.json
