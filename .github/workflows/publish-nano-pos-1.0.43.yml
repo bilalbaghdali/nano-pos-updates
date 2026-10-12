@@ -1,0 +1,52 @@
+name: Publish NANO POS 1.0.43 Modern Login Fix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.43.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild and verify pinned modern login
+        run: python3 build/v1.0.43/build-release.py
+      - name: Publish optional patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.42-to-1.0.43-MODERN-LOGIN.zip'
+          if gh release view v1.0.43 >/dev/null 2>&1; then
+            gh release upload v1.0.43 "$ASSET" --clobber
+          else
+            gh release create v1.0.43 "$ASSET" --target main --title 'NANO POS v1.0.43 — Modern Login Stability' --notes 'Optional login hotfix: keep the original modern split-screen login instead of the simple fallback; preserve username/password inputs and authentication/activation logic. No changes to store data. Run a local backup before updating. Browser smoke-tested, actual Windows usage still pending.'
+          fi
+      - name: Verify published ZIP checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.43 --pattern 'NANO-POS-Patch-1.0.42-to-1.0.43-MODERN-LOGIN.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json; print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.42-to-1.0.43-MODERN-LOGIN.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Export release checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.43-checksums
+          path: build-result.json
