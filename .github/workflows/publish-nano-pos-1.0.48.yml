@@ -48,3 +48,4 @@ jobs:
         with:
           name: nano-pos-v1.0.48-manifest-data
           path: build-result.json
+# Retry after matching the Electron import layout in the published app.
