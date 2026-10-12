@@ -3,20 +3,23 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.47",
+  "version": "1.0.48",
   "releaseDate": "2026-10-12",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إخفاء الشعار الصغير بجانب اسم المتجر في شريط عنوان نافذة Windows."
+      "عرض شعار المتجر الذي تحفظه من الإعدادات بجانب اسمه في شريط عنوان Windows، وإزالة الرمز عند حذف الشعار.",
+      "تحسين عرض فواصل الأرقام العشرية والآلاف ورمز العملة في ملصقات الأسعار والطباعة التي تستخدم تنسيق العملة المشترك."
     ],
     "fr": [
-      "Masquer le petit logo à côté du nom du magasin dans la barre de titre Windows."
+      "Le logo du magasin enregistré dans les paramètres remplace la petite icône devant son nom dans la barre de titre Windows ; absence de logo = emplacement vide.",
+      "Amélioration des séparateurs décimaux, des milliers et du symbole monétaire dans les étiquettes et impressions utilisant le format monétaire partagé."
     ],
     "en": [
-      "Hide the small icon next to the shop name in the Windows title bar."
+      "Show the store logo saved in settings next to the shop name in the Windows title bar, with a blank icon when none is saved.",
+      "Improve decimal grouping and currency symbol placement in price labels and prints that use the shared money formatter."
     ]
   },
   "releaseHistory": {
@@ -494,11 +497,28 @@
           "Hide the small icon next to the shop name in the Windows title bar."
         ]
       }
+    },
+    "1.0.48": {
+      "releaseDate": "2026-10-12",
+      "features": {
+        "ar": [
+          "عرض شعار المتجر الذي تحفظه من الإعدادات بجانب اسمه في شريط عنوان Windows، وإزالة الرمز عند حذف الشعار.",
+          "تحسين عرض فواصل الأرقام العشرية والآلاف ورمز العملة في ملصقات الأسعار والطباعة التي تستخدم تنسيق العملة المشترك."
+        ],
+        "fr": [
+          "Le logo du magasin enregistré dans les paramètres remplace la petite icône devant son nom dans la barre de titre Windows ; absence de logo = emplacement vide.",
+          "Amélioration des séparateurs décimaux, des milliers et du symbole monétaire dans les étiquettes et impressions utilisant le format monétaire partagé."
+        ],
+        "en": [
+          "Show the store logo saved in settings next to the shop name in the Windows title bar, with a blank icon when none is saved.",
+          "Improve decimal grouping and currency symbol placement in price labels and prints that use the shared money formatter."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.47-hide-shop-caption-icon",
+      "id": "nano-pos-v1.0.48-shop-logo-currency",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -512,14 +532,15 @@
         "1.0.43",
         "1.0.44",
         "1.0.45",
-        "1.0.46"
+        "1.0.46",
+        "1.0.47"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.47/NANO-POS-Patch-1.0.46-to-1.0.47-TITLE-LOGO.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.47",
-      "sha256": "0c7cb9bbe6421a814c786768191fbaeebfadfda4f07e0d5a2795a7257cfd3b0c",
-      "appAsarSha256": "73ef5b9f664973f49ac721c4dd28780504d124fe39225ca485f58a1595bd9c22",
-      "fileName": "NANO-POS-Patch-1.0.46-to-1.0.47-TITLE-LOGO.zip",
-      "sizeBytes": 30929748,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.48/NANO-POS-Patch-1.0.47-to-1.0.48-SHOP-LOGO-CURRENCY.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.48",
+      "sha256": "78472184370f8fc64baa422daa8a7485c6fffb309fa279631aa413dbaf32c948",
+      "appAsarSha256": "0bee160c82abda3dd27e3a1610638179acc9804f60d92743f7ecb636aaaec4e1",
+      "fileName": "NANO-POS-Patch-1.0.47-to-1.0.48-SHOP-LOGO-CURRENCY.zip",
+      "sizeBytes": 30933196,
       "payloadType": "app-asar"
     }
   ],
@@ -530,8 +551,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات: إخفاء الأيقونة الصغيرة بجانب اسم المتجر في شريط عنوان Windows. سيبقى مكان الرمز محجوزًا من Windows، وقد تتأثر أيقونة النافذة في شريط المهام أيضًا. لم يُختبر العرض على جهاز Windows حقيقي بعد.",
-    "fr": "Améliorations : cacher la petite icône avant le nom du magasin dans la barre de titre Windows. L'espace reste réservé et l'icône dans la barre des tâches peut être affectée. Essai réel sur Windows en attente.",
-    "en": "Improvements: hide the small icon beside the shop name in the native Windows title bar. Windows retains the icon gutter and the taskbar icon may also be affected. Real-device testing pending."
+    "ar": "تحسينات: ربط أيقونة عنوان Windows بشعار المتجر المحفوظ في الإعدادات، وتوحيد عرض العملات في المواضع التي تستخدم منسق الأسعار المشترك. النسخة لا تغير بيانات المحل ولا تنسيق كل الواجهات القديمة. يُرجى اختبار عمل العملة والشعار على Windows بعد التحديث.",
+    "fr": "Améliorations : logo du magasin dans la barre Windows et formatage monétaire partagé des impressions/étiquettes. Les montants stockés restent inchangés. Tester sur Windows.",
+    "en": "Improvements: use saved shop logo as Windows caption icon and consistent shared formatter for printed and barcode-label currency amounts. Stored monetary values unchanged; real Windows check pending."
   }
 }
