@@ -3,26 +3,23 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "releaseDate": "2026-10-12",
   "mandatory": false,
   "importance": "high",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تغيير شعار NANO POS وأيقونة نافذة البرنامج إلى تصميم N الأزرق الجديد.",
-      "تثبيت شاشة الدخول العصرية بالقسم الأبيض على اليسار والقسم الأزرق الداكن على اليمين، مع رسومات المبيعات والمخزون.",
-      "إبقاء حقلي اسم المستخدم وكلمة المرور وزر الدخول وأزرار AR وFR وEN ظاهرة وقابلة للاستخدام."
+      "إظهار واجهة الدخول العصرية بالقسم الأبيض على اليسار والقسم الأزرق الداكن للمبيعات والمخزون على اليمين بدل شاشة الدخول البسيطة.",
+      "توفير شعار NANO POS وأزرار اللغات AR وFR وEN في شاشة الدخول الفعلية، مع الحفاظ على حقول اسم المستخدم وكلمة المرور."
     ],
     "fr": [
-      "Nouveau logo N bleu de NANO POS dans la fenêtre et l'écran de connexion.",
-      "Écran de connexion moderne en deux parties : formulaire blanc à gauche, illustrations bleu foncé à droite.",
-      "Champs utilisateur et mot de passe, bouton de connexion et choix AR/FR/EN conservés."
+      "Affichage réel de l’écran de connexion moderne : formulaire blanc à gauche et visuel bleu foncé des ventes et du stock à droite.",
+      "Logo NANO POS, choix AR/FR/EN et champs utilisateur/mot de passe maintenus."
     ],
     "en": [
-      "New blue N logo for the NANO POS application window and login.",
-      "Two-panel modern login with the white form on the left and dark-blue sales/inventory visual on the right.",
-      "Username and password fields, sign-in button, and AR/FR/EN selectors remain accessible."
+      "Display the actual modern login screen, with the white form on the left and dark-blue sales/inventory visual on the right.",
+      "Show the NANO POS logo and AR/FR/EN language controls while preserving the working username/password form."
     ]
   },
   "releaseHistory": {
@@ -446,11 +443,28 @@
           "Username and password fields, sign-in button, and AR/FR/EN selectors remain accessible."
         ]
       }
+    },
+    "1.0.45": {
+      "releaseDate": "2026-10-12",
+      "features": {
+        "ar": [
+          "إظهار واجهة الدخول العصرية بالقسم الأبيض على اليسار والقسم الأزرق الداكن للمبيعات والمخزون على اليمين بدل شاشة الدخول البسيطة.",
+          "توفير شعار NANO POS وأزرار اللغات AR وFR وEN في شاشة الدخول الفعلية، مع الحفاظ على حقول اسم المستخدم وكلمة المرور."
+        ],
+        "fr": [
+          "Affichage réel de l’écran de connexion moderne : formulaire blanc à gauche et visuel bleu foncé des ventes et du stock à droite.",
+          "Logo NANO POS, choix AR/FR/EN et champs utilisateur/mot de passe maintenus."
+        ],
+        "en": [
+          "Display the actual modern login screen, with the white form on the left and dark-blue sales/inventory visual on the right.",
+          "Show the NANO POS logo and AR/FR/EN language controls while preserving the working username/password form."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.44-modern-login-branding",
+      "id": "nano-pos-v1.0.45-actual-modern-login",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -461,14 +475,15 @@
         "1.0.40",
         "1.0.41",
         "1.0.42",
-        "1.0.43"
+        "1.0.43",
+        "1.0.44"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.44/NANO-POS-Patch-1.0.43-to-1.0.44-LOGIN-BRANDING.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.44",
-      "sha256": "18790f78db99f75f066a79c51647804526c90f51a029bcab6bfc846654b0d947",
-      "appAsarSha256": "452d9c1033fabb1dbba9b24078d5029c6ed6d1e28882a77dc655d52e28249815",
-      "fileName": "NANO-POS-Patch-1.0.43-to-1.0.44-LOGIN-BRANDING.zip",
-      "sizeBytes": 30924684,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.45/NANO-POS-Patch-1.0.44-to-1.0.45-ACTUAL-LOGIN-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.45",
+      "sha256": "d78ced6ff90b8df547bf44aaf5e7c5863a3abc62fa0f37f8bd855e0d6f7ac708",
+      "appAsarSha256": "9496a1382a8db8bddaa7cb24fd43bcf1ef5b577a50bab44c0c40844882386c03",
+      "fileName": "NANO-POS-Patch-1.0.44-to-1.0.45-ACTUAL-LOGIN-FIX.zip",
+      "sizeBytes": 30925572,
       "payloadType": "app-asar"
     }
   ],
@@ -479,8 +494,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات: شعار NANO POS الجديد وثبات شاشة الدخول العصرية على الكمبيوتر؛ المحافظة على عملية تسجيل الدخول الحالية. تتغير أيقونة نافذة البرنامج، أما أيقونة ملف EXE واختصار Windows القديم فتحتاج إلى إعادة تثبيت من حزمة مزودة بالأيقونة الجديدة.",
-    "fr": "Améliorations : nouvelle identité visuelle et connexion moderne stable. L’icône du fichier EXE ou du raccourci Windows installé nécessite une nouvelle installation.",
-    "en": "Improvements: new logo and permanent split modern login. Updating an existing EXE resource or Windows desktop shortcut icon requires an installer rebuild."
+    "ar": "تحسينات: إصلاح السبب الفعلي لظهور شاشة الدخول البسيطة بدل الواجهة العصرية؛ أصبحت شاشة الدخول المستخدمة للمصادقة تعرض التصميم ذي الجزأين، مع الاحتفاظ بحسابات المستخدمين واللغات. تم اختبار التصميم في Chromium وبناء الحزمة على GitHub، ويتبقى التحقق من التشغيل على Windows.",
+    "fr": "Améliorations : l'écran d’authentification réellement utilisé affiche le design moderne à deux panneaux, avec les comptes et langues conservés. Vérifications Chromium/GitHub réussies ; test Windows réel à confirmer.",
+    "en": "Improvements: the actual desktop authentication overlay now presents the modern split login instead of the simple screen. User accounts and language selections remain. Chromium and GitHub build checks passed; Windows on-device confirmation is pending."
   }
 }
