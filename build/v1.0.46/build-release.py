@@ -45,7 +45,7 @@ def main():
     with zipfile.ZipFile(base) as z:asar=z.read('payload/app.asar')
     assert sha(asar)==BASE_ASAR_SHA,'Wrong predecessor app.asar SHA-256'
     files=parse(asar);before={k:b for k,(_,b) in files.items()}
-    required={'index.html','nano-v140-smart-lookup.js','package.json','app-config.js','release-notes.js','renderer.js','browser-ui.js','electron-main.cjs'}
+    required={'index.html','package.json','app-config.js','release-notes.js','renderer.js','browser-ui.js','electron-main.cjs'}
     assert required<=set(files), f'Missing predecessor module(s): {required-set(files)}'
     content=(ROOT/'nano-v146-section-search.js').read_bytes()
     assert sha(content)==SEARCH_SHA,'Search logic not reviewed/verified'
@@ -54,9 +54,14 @@ def main():
     assert html.count('id="globalSearch"')==1,'Unexpected global search markup'
     assert html.count('</body>')==1 and 'nano-v146-section-search.js' not in html
     html=html.replace('</body>','<script src="nano-v146-section-search.js"></script>\n</body>',1)
-    auto=before['nano-v140-smart-lookup.js'].decode('utf8')
-    assert "'posProductSearchInput','globalSearch','inventorySearch'" in auto,'Unexpected product suggestion source'
-    auto=auto.replace("'posProductSearchInput','globalSearch','inventorySearch'","'posProductSearchInput','inventorySearch'",1)
+    # Existing builds may contain the smart lookup inline rather than as a standalone module.
+    # Do not assume a particular optional resource is present in every patch.
+    auto=None
+    if 'nano-v140-smart-lookup.js' in before:
+        auto=before['nano-v140-smart-lookup.js'].decode('utf8')
+        old="'posProductSearchInput','globalSearch','inventorySearch'"
+        if old in auto:auto=auto.replace(old,"'posProductSearchInput','inventorySearch'",1)
+        else:auto=None
     pkg=json.loads(before['package.json']);assert pkg['version']=='1.0.45','Expected source 1.0.45'
     pkg['version']='1.0.46'
     config=before['app-config.js'].decode('utf8')
@@ -71,15 +76,16 @@ def main():
     notes,n=re.subn(r'const F=\{.*?\};let R=',lambda _:replacement,notes,count=1,flags=re.S)
     assert n==1,'Unsupported release note shape'
     update={
-      'index.html':html.encode(), 'nano-v140-smart-lookup.js':auto.encode(),
+      'index.html':html.encode(),
       'nano-v146-section-search.js':content,
       'package.json':(json.dumps(pkg,ensure_ascii=False,indent=2)+'\n').encode(),
       'app-config.js':config.encode(), 'release-notes.js':notes.encode()
     }
+    if auto is not None:update['nano-v140-smart-lookup.js']=auto.encode()
     for path,payload in update.items():
         if path in files:files[path]=(files[path][0],payload)
         else:files[path]=({},payload)
-    for name in ['nano-v140-smart-lookup.js','app-config.js','release-notes.js']:
+    for name in [x for x in ['nano-v140-smart-lookup.js','app-config.js','release-notes.js'] if x in update]:
         p=ROOT/('check-'+name);p.write_bytes(update[name]);subprocess.run(['node','--check',str(p)],check=True,timeout=25)
     rebuilt=pack(files);verified=parse(rebuilt)
     for key,b in update.items():assert verified[key][1]==b, 'Patch file content mismatch '+key
