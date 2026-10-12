@@ -1,0 +1,82 @@
+/* Fixes the desktop/localhost login that actually handles authentication.
+   The modern login #loginOverlay is only a visual template on this path. */
+#nanoLocalLoginOverlay.nano-v145-modern-login {
+  position:fixed !important;inset:0 !important;width:100vw !important;height:100dvh !important;
+  padding:0 !important;margin:0 !important;overflow-x:hidden !important;overflow-y:auto !important;
+  background:#061d32 !important;z-index:2147482000 !important;
+  align-items:stretch !important;justify-content:stretch !important;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login[style*="display: flex"] {display:block !important;}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-login-orb {display:none !important;}
+#nanoLocalLoginOverlay.nano-v145-modern-login > .nano-v145-login-layout {
+  display:grid !important;direction:rtl !important;
+  grid-template-columns:minmax(0,59fr) minmax(420px,41fr) !important;
+  align-items:stretch !important;width:100% !important;min-height:100dvh !important;
+  max-width:none !important;position:relative !important;gap:0 !important;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-commerce-visual {
+  display:flex !important;visibility:visible !important;position:relative !important;
+  flex-direction:column !important;align-items:stretch !important;justify-content:space-around !important;
+  background:radial-gradient(circle at 87% 9%,#124b80 0%,transparent 39%),linear-gradient(135deg,#061a30,#073859) !important;
+  min-width:0 !important;min-height:100dvh !important;padding:38px clamp(20px,3.5vw,62px) !important;
+  color:#e8f8ff !important;overflow:hidden !important;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-login-side {
+  display:flex !important;visibility:visible !important;position:relative !important;
+  flex-direction:column !important;align-items:center !important;justify-content:center !important;
+  min-width:0 !important;min-height:100dvh !important;
+  padding:clamp(20px,3vw,50px) !important;
+  background:linear-gradient(160deg,#f7fbff,#e9f3f9) !important;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-login-card {
+  display:flex !important;visibility:visible !important;position:relative !important;
+  flex-direction:column !important;align-items:stretch !important;
+  width:min(450px,100%) !important;max-width:none !important;
+  margin:0 !important;padding:clamp(24px,3vw,36px) !important;
+  background:#fff !important;border:1px solid #d5e7f2 !important;border-radius:26px !important;
+  box-shadow:0 20px 65px rgba(10,58,91,.13) !important;text-align:start !important;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-identity {
+  display:flex;direction:ltr;align-items:center;justify-content:flex-start;gap:14px;margin-bottom:24px;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-brand-icon {
+  flex:0 0 68px;width:68px;height:68px;object-fit:contain;border-radius:16px;
+  filter:drop-shadow(0 7px 11px rgba(0,78,145,.17));
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-brand-text {display:flex;flex-direction:column;gap:4px;text-align:left;}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-brand-text strong {
+  font:900 clamp(21px,2vw,27px)/1.15 system-ui,sans-serif;letter-spacing:.02em;color:#073762;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-brand-text small {
+  font:700 9px/1.5 system-ui,sans-serif;letter-spacing:.12em;color:#6d849c;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-login-title {
+  color:#082f52 !important;font-size:clamp(25px,2.2vw,31px) !important;line-height:1.25 !important;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-login-subtitle {color:#6c8198 !important;}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-login-form {
+  display:flex !important;flex-direction:column !important;gap:12px !important;width:100% !important;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-field,
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-input-wrap,
+#nanoLocalLoginOverlay.nano-v145-modern-login #nanoLoginUsername,
+#nanoLocalLoginOverlay.nano-v145-modern-login #nanoLoginPassword {width:100% !important;max-width:100% !important;pointer-events:auto !important;}
+#nanoLocalLoginOverlay.nano-v145-modern-login #nanoLoginUsername,
+#nanoLocalLoginOverlay.nano-v145-modern-login #nanoLoginPassword {user-select:text !important;}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-languages {display:flex;direction:ltr;gap:8px;align-self:flex-start;margin:5px 0;}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-languages button {
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:37px;min-height:32px;padding:4px 8px;border:1px solid #d6e6f5;border-radius:9px;
+  background:#f6faff;color:#285279;font:800 11px system-ui,sans-serif;cursor:pointer;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-languages button:hover {background:#e2f2ff;color:#0364d6;}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-login-submit {
+  width:100% !important;min-height:50px !important;pointer-events:auto !important;
+  background:linear-gradient(100deg,#0d6ee9,#20cddd) !important;color:#fff !important;
+}
+#nanoLocalLoginOverlay.nano-v145-modern-login .nano-login-hint {color:#889cb0 !important;}
+@media (max-width:980px) {
+  #nanoLocalLoginOverlay.nano-v145-modern-login > .nano-v145-login-layout {display:flex !important;flex-direction:column !important;}
+  #nanoLocalLoginOverlay.nano-v145-modern-login .nano-commerce-visual {display:none !important;}
+  #nanoLocalLoginOverlay.nano-v145-modern-login .nano-v145-login-side {flex:1 !important;min-height:100dvh !important;}
+}
