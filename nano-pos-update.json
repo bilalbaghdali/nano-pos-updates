@@ -3,23 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.45",
+  "version": "1.0.46",
   "releaseDate": "2026-10-12",
   "mandatory": false,
-  "importance": "high",
+  "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إظهار واجهة الدخول العصرية بالقسم الأبيض على اليسار والقسم الأزرق الداكن للمبيعات والمخزون على اليمين بدل شاشة الدخول البسيطة.",
-      "توفير شعار NANO POS وأزرار اللغات AR وFR وEN في شاشة الدخول الفعلية، مع الحفاظ على حقول اسم المستخدم وكلمة المرور."
+      "أصبح شريط البحث العلوي يبحث في القسم المفتوح فقط بدل البحث العام عن المنتجات.",
+      "البحث في الموردين والزبائن والمخزون مباشرة من شريط البحث العلوي باستخدام نتائج القسم نفسه.",
+      "إضافة بحث داخل السجلات المعروضة في فواتير البيع والشراء والطلبيات والعروض والحزم والتقارير والمستخدمين.",
+      "البحث عن الخيارات والأوامر داخل الأقسام الأخرى، وتصفير البحث تلقائيًا عند الانتقال إلى قسم جديد."
     ],
     "fr": [
-      "Affichage réel de l’écran de connexion moderne : formulaire blanc à gauche et visuel bleu foncé des ventes et du stock à droite.",
-      "Logo NANO POS, choix AR/FR/EN et champs utilisateur/mot de passe maintenus."
+      "La recherche supérieure se limite désormais à la rubrique ouverte.",
+      "Recherchez fournisseurs, clients et stock depuis le champ principal de la page.",
+      "Recherche dans les lignes affichées des ventes, achats, commandes, promotions, lots, rapports et utilisateurs.",
+      "Recherche d’options dans les autres rubriques et réinitialisation automatique au changement de section."
     ],
     "en": [
-      "Display the actual modern login screen, with the white form on the left and dark-blue sales/inventory visual on the right.",
-      "Show the NANO POS logo and AR/FR/EN language controls while preserving the working username/password form."
+      "The top search bar now searches only the open section.",
+      "Search suppliers, customers, and inventory using the section's existing search.",
+      "Search displayed records in sales, purchases, orders, promotions, bundles, reports and users.",
+      "Find options in other sections and reset the search automatically when switching sections."
     ]
   },
   "releaseHistory": {
@@ -460,11 +466,34 @@
           "Show the NANO POS logo and AR/FR/EN language controls while preserving the working username/password form."
         ]
       }
+    },
+    "1.0.46": {
+      "releaseDate": "2026-10-12",
+      "features": {
+        "ar": [
+          "أصبح شريط البحث العلوي يبحث في القسم المفتوح فقط بدل البحث العام عن المنتجات.",
+          "البحث في الموردين والزبائن والمخزون مباشرة من شريط البحث العلوي باستخدام نتائج القسم نفسه.",
+          "إضافة بحث داخل السجلات المعروضة في فواتير البيع والشراء والطلبيات والعروض والحزم والتقارير والمستخدمين.",
+          "البحث عن الخيارات والأوامر داخل الأقسام الأخرى، وتصفير البحث تلقائيًا عند الانتقال إلى قسم جديد."
+        ],
+        "fr": [
+          "La recherche supérieure se limite désormais à la rubrique ouverte.",
+          "Recherchez fournisseurs, clients et stock depuis le champ principal de la page.",
+          "Recherche dans les lignes affichées des ventes, achats, commandes, promotions, lots, rapports et utilisateurs.",
+          "Recherche d’options dans les autres rubriques et réinitialisation automatique au changement de section."
+        ],
+        "en": [
+          "The top search bar now searches only the open section.",
+          "Search suppliers, customers, and inventory using the section's existing search.",
+          "Search displayed records in sales, purchases, orders, promotions, bundles, reports and users.",
+          "Find options in other sections and reset the search automatically when switching sections."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.45-actual-modern-login",
+      "id": "nano-pos-v1.0.46-section-scoped-search",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -476,14 +505,15 @@
         "1.0.41",
         "1.0.42",
         "1.0.43",
-        "1.0.44"
+        "1.0.44",
+        "1.0.45"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.45/NANO-POS-Patch-1.0.44-to-1.0.45-ACTUAL-LOGIN-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.45",
-      "sha256": "d78ced6ff90b8df547bf44aaf5e7c5863a3abc62fa0f37f8bd855e0d6f7ac708",
-      "appAsarSha256": "9496a1382a8db8bddaa7cb24fd43bcf1ef5b577a50bab44c0c40844882386c03",
-      "fileName": "NANO-POS-Patch-1.0.44-to-1.0.45-ACTUAL-LOGIN-FIX.zip",
-      "sizeBytes": 30925572,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.46/NANO-POS-Patch-1.0.45-to-1.0.46-SECTION-SEARCH.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.46",
+      "sha256": "84502693aedb4b705790d6ed71363ee5f6ef861b7c4ce0faba2b5322b116ee20",
+      "appAsarSha256": "03e973037a569d7f8fc7bb88e496ba2b1d254bd8130445e0fc32776b2acb8c99",
+      "fileName": "NANO-POS-Patch-1.0.45-to-1.0.46-SECTION-SEARCH.zip",
+      "sizeBytes": 30929971,
       "payloadType": "app-asar"
     }
   ],
@@ -494,8 +524,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات: إصلاح السبب الفعلي لظهور شاشة الدخول البسيطة بدل الواجهة العصرية؛ أصبحت شاشة الدخول المستخدمة للمصادقة تعرض التصميم ذي الجزأين، مع الاحتفاظ بحسابات المستخدمين واللغات. تم اختبار التصميم في Chromium وبناء الحزمة على GitHub، ويتبقى التحقق من التشغيل على Windows.",
-    "fr": "Améliorations : l'écran d’authentification réellement utilisé affiche le design moderne à deux panneaux, avec les comptes et langues conservés. Vérifications Chromium/GitHub réussies ; test Windows réel à confirmer.",
-    "en": "Improvements: the actual desktop authentication overlay now presents the modern split login instead of the simple screen. User accounts and language selections remain. Chromium and GitHub build checks passed; Windows on-device confirmation is pending."
+    "ar": "تحسينات: البحث العلوي مرتبط بالقسم المفتوح؛ الموردون في الموردين، والزبائن في الزبائن، والمنتجات في المخزون. تُصفّى السجلات الظاهرة في بعض الأقسام حسب الصفحة المحملة، ويُعاد ضبط البحث عند التنقل. لم يُختبر بعد على Windows الفعلي.",
+    "fr": "Améliorations : recherche limitée à la rubrique active. Les recherches dans certains tableaux portent sur les lignes actuellement affichées. Test Windows réel en attente.",
+    "en": "Improvements: top search is scoped to the active section. Some table searches filter currently displayed records only. Actual Windows end-to-end testing remains pending."
   }
 }
