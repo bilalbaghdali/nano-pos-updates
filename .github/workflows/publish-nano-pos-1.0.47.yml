@@ -1,0 +1,52 @@
+name: Publish NANO POS v1.0.47 caption logo update
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.47.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild Windows caption logo patch from verified predecessor
+        run: python3 build/v1.0.47/build-release.py
+      - name: Publish optional v1.0.47 patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE='NANO-POS-Patch-1.0.46-to-1.0.47-TITLE-LOGO.zip'
+          if gh release view v1.0.47 >/dev/null 2>&1; then
+            gh release upload v1.0.47 "$FILE" --clobber
+          else
+            gh release create v1.0.47 "$FILE" --target main --title 'NANO POS v1.0.47 — Improvements' --notes 'Optional update: visually hide the small window caption icon before the shop name on Windows while keeping the shop name, sign-in screen, Windows installer icon and store records unchanged. Native Windows still reserves the title-icon spacing. Since Windows may use the window icon for the taskbar as well, check how the taskbar icon looks after updating. Field-testing on a real Windows store PC is pending.'
+          fi
+      - name: Confirm published asset bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.47 --pattern 'NANO-POS-Patch-1.0.46-to-1.0.47-TITLE-LOGO.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.46-to-1.0.47-TITLE-LOGO.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Preserve release digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.47-metadata
+          path: build-result.json
