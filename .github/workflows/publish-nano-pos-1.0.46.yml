@@ -46,3 +46,4 @@ jobs:
         with:
           name: nano-pos-v1.0.46-hashes
           path: build-result.json
+# Retry from corrected resource inventory.
