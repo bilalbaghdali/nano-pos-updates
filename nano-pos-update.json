@@ -3,23 +3,20 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.48",
+  "version": "1.0.49",
   "releaseDate": "2026-10-12",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "عرض شعار المتجر الذي تحفظه من الإعدادات بجانب اسمه في شريط عنوان Windows، وإزالة الرمز عند حذف الشعار.",
-      "تحسين عرض فواصل الأرقام العشرية والآلاف ورمز العملة في ملصقات الأسعار والطباعة التي تستخدم تنسيق العملة المشترك."
+      "إصلاح تكرار رمز العملة في معاينة ملصقات الباركود وطباعتها وتصديرها إلى PDF."
     ],
     "fr": [
-      "Le logo du magasin enregistré dans les paramètres remplace la petite icône devant son nom dans la barre de titre Windows ; absence de logo = emplacement vide.",
-      "Amélioration des séparateurs décimaux, des milliers et du symbole monétaire dans les étiquettes et impressions utilisant le format monétaire partagé."
+      "Correction du symbole monétaire affiché deux fois sur les étiquettes à code-barres, dans l’aperçu, l’impression et le PDF."
     ],
     "en": [
-      "Show the store logo saved in settings next to the shop name in the Windows title bar, with a blank icon when none is saved.",
-      "Improve decimal grouping and currency symbol placement in price labels and prints that use the shared money formatter."
+      "Fix the duplicated currency symbol in barcode label preview, printing, and PDF export."
     ]
   },
   "releaseHistory": {
@@ -514,11 +511,25 @@
           "Improve decimal grouping and currency symbol placement in price labels and prints that use the shared money formatter."
         ]
       }
+    },
+    "1.0.49": {
+      "releaseDate": "2026-10-12",
+      "features": {
+        "ar": [
+          "إصلاح تكرار رمز العملة في معاينة ملصقات الباركود وطباعتها وتصديرها إلى PDF."
+        ],
+        "fr": [
+          "Correction du symbole monétaire affiché deux fois sur les étiquettes à code-barres, dans l’aperçu, l’impression et le PDF."
+        ],
+        "en": [
+          "Fix the duplicated currency symbol in barcode label preview, printing, and PDF export."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.48-shop-logo-currency",
+      "id": "nano-pos-v1.0.49-barcode-currency-deduplication",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -533,14 +544,15 @@
         "1.0.44",
         "1.0.45",
         "1.0.46",
-        "1.0.47"
+        "1.0.47",
+        "1.0.48"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.48/NANO-POS-Patch-1.0.47-to-1.0.48-SHOP-LOGO-CURRENCY.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.48",
-      "sha256": "d358d001ce68e7b959e7bb5069820fdede337962e95223962b866c28845cb4cd",
-      "appAsarSha256": "0bee160c82abda3dd27e3a1610638179acc9804f60d92743f7ecb636aaaec4e1",
-      "fileName": "NANO-POS-Patch-1.0.47-to-1.0.48-SHOP-LOGO-CURRENCY.zip",
-      "sizeBytes": 30933196,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.49/NANO-POS-Patch-1.0.48-to-1.0.49-BARCODE-CURRENCY-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.49",
+      "sha256": "b7fbb70e96521d92a487d57d3a4455bc1ad2cc4425f6d11c397005fcf8cd3bd0",
+      "appAsarSha256": "77e7402bccbbe25928de8c3a5f99021900a1bf5557a240e18d3d4235dff2ed5a",
+      "fileName": "NANO-POS-Patch-1.0.48-to-1.0.49-BARCODE-CURRENCY-FIX.zip",
+      "sizeBytes": 30932893,
       "payloadType": "app-asar"
     }
   ],
@@ -551,8 +563,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات: ربط أيقونة عنوان Windows بشعار المتجر المحفوظ في الإعدادات، وتوحيد عرض العملات في المواضع التي تستخدم منسق الأسعار المشترك. النسخة لا تغير بيانات المحل ولا تنسيق كل الواجهات القديمة. يُرجى اختبار عمل العملة والشعار على Windows بعد التحديث.",
-    "fr": "Améliorations : logo du magasin dans la barre Windows et formatage monétaire partagé des impressions/étiquettes. Les montants stockés restent inchangés. Tester sur Windows.",
-    "en": "Improvements: use saved shop logo as Windows caption icon and consistent shared formatter for printed and barcode-label currency amounts. Stored monetary values unchanged; real Windows check pending."
+    "ar": "تحسينات",
+    "fr": "Améliorations",
+    "en": "Improvements"
   }
 }
