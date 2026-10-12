@@ -1,0 +1,73 @@
+name: Publish NANO POS 1.0.44 Login Branding
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.44.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source metadata
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source and build branded ASAR
+        run: python3 build/v1.0.44/build-release.py
+      - name: Check packaged icon files and login CSS
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, zipfile, struct
+          d=json.loads(pathlib.Path('build-result.json').read_text())
+          with zipfile.ZipFile(d['fileName']) as f: data=f.read('payload/app.asar')
+          h=json.loads(data[16:16+struct.unpack_from('<I',data,12)[0]])
+          def get(path):
+            node=h
+            for seg in path.split('/'):node=node['files'][seg]
+            base=8+struct.unpack_from('<I',data,4)[0]
+            return data[base+int(node['offset']):base+int(node['offset'])+node['size']]
+          assert get('assets/branding/nano-pos-icon.png').startswith(b'\x89PNG')
+          assert get('assets/branding/nano-pos-icon.ico')[:4]==b'\x00\x00\x01\x00'
+          html=get('index.html').decode()
+          css=get('nano-v144-brand-login.css').decode()
+          assert html.count('nano-commerce-brand-icon')==1
+          assert 'grid-template-columns:minmax(0, 59fr) minmax(420px, 41fr)' in css
+          assert all(x in html for x in ["setLanguage('ar')","setLanguage('fr')","setLanguage('en')"])
+          print('Branded login checks passed')
+          PY
+      - name: Upload GitHub Release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE='NANO-POS-Patch-1.0.43-to-1.0.44-LOGIN-BRANDING.zip'
+          if gh release view v1.0.44 >/dev/null 2>&1; then
+            gh release upload v1.0.44 "$FILE" --clobber
+          else
+            gh release create v1.0.44 "$FILE" --target main --title 'NANO POS v1.0.44 — Modern Login & Brand Icon' --notes 'Optional branding update: new blue N logo in Windows application window and login, new installer icon asset, and permanent two-column login screen with white left form and dark blue sales/inventory panel, retaining AR/FR/EN and original sign-in logic. The installed EXE and pinned Windows shortcuts need a fresh installer for a full icon change. Back up data before updating.'
+          fi
+      - name: Verify hosted archive SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.44 --pattern 'NANO-POS-Patch-1.0.43-to-1.0.44-LOGIN-BRANDING.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.43-to-1.0.44-LOGIN-BRANDING.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Save release metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.44-metadata
+          path: build-result.json
