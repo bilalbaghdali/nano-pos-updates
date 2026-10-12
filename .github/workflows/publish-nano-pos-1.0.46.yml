@@ -1,0 +1,48 @@
+name: Publish verified NANO POS 1.0.46 scoped search
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.46.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and check scoped search from verified predecessor
+        run: python3 build/v1.0.46/build-release.py
+      - name: Publish update as optional release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.45-to-1.0.46-SECTION-SEARCH.zip'
+          if gh release view v1.0.46 >/dev/null 2>&1; then
+            gh release upload v1.0.46 "$ASSET" --clobber
+          else
+            gh release create v1.0.46 "$ASSET" --title 'NANO POS v1.0.46 — تحسينات' --target main --notes 'Optional update: top search searches only the active section, such as suppliers or customers, filters displayed invoice/order records, and resets between sections. Current-page table filters cover displayed records; test on Windows before production use.'
+          fi
+      - name: Verify published download bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.46 --pattern 'NANO-POS-Patch-1.0.45-to-1.0.46-SECTION-SEARCH.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.45-to-1.0.46-SECTION-SEARCH.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Store release hashes
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.46-hashes
+          path: build-result.json
