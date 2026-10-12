@@ -3,29 +3,23 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "releaseDate": "2026-10-12",
   "mandatory": false,
-  "importance": "normal",
+  "importance": "high",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "استرداد نسخة احتياطية من MEGA مباشرة إلى بيانات NANO POS مع اختيار النسخة المطلوبة.",
-      "معاينة عدد المنتجات والزبائن والموردين والفواتير في النسخة قبل تأكيد الاسترداد.",
-      "إنشاء نسخة أمان محلية من البيانات الحالية قبل الاسترداد والتحقق من سلامة الملف السحابي.",
-      "الإبقاء على تنزيل نسخة MEGA دون استعادتها؛ الاسترداد الفعلي متاح على الكمبيوتر الرئيسي فقط."
+      "إصلاح إمكانية كتابة اسم المستخدم وكلمة المرور في شاشة الدخول.",
+      "منع طبقات القفل والتحميل من حجب حقول الدخول أو اعتراض النقر عليها."
     ],
     "fr": [
-      "Restaurer une sauvegarde MEGA sélectionnée directement dans NANO POS.",
-      "Aperçu des produits, clients, fournisseurs et factures avant confirmation.",
-      "Sauvegarde locale vérifiée des données actuelles avant restauration et vérification de l’archive MEGA.",
-      "Téléchargement seul toujours disponible ; restauration complète réservée au PC principal."
+      "Correction de la saisie du nom d’utilisateur et du mot de passe à la connexion.",
+      "Empêche les écrans de verrouillage et de chargement de bloquer les champs de connexion."
     ],
     "en": [
-      "Restore a selected MEGA backup directly into NANO POS.",
-      "Preview product, customer, supplier and invoice counts before confirming.",
-      "Save a verified local safety backup before restoration and verify cloud archive integrity.",
-      "Keep the separate download-only option; full restore is available only on the primary PC."
+      "Fixed username and password keyboard input on the login screen.",
+      "Prevented lock and startup overlays from intercepting login field clicks."
     ]
   },
   "releaseHistory": {
@@ -395,11 +389,28 @@
           "Keep the separate download-only option; full restore is available only on the primary PC."
         ]
       }
+    },
+    "1.0.42": {
+      "releaseDate": "2026-10-12",
+      "features": {
+        "ar": [
+          "إصلاح إمكانية كتابة اسم المستخدم وكلمة المرور في شاشة الدخول.",
+          "منع طبقات القفل والتحميل من حجب حقول الدخول أو اعتراض النقر عليها."
+        ],
+        "fr": [
+          "Correction de la saisie du nom d’utilisateur et du mot de passe à la connexion.",
+          "Empêche les écrans de verrouillage et de chargement de bloquer les champs de connexion."
+        ],
+        "en": [
+          "Fixed username and password keyboard input on the login screen.",
+          "Prevented lock and startup overlays from intercepting login field clicks."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.41-mega-restore",
+      "id": "nano-pos-v1.0.42-login-input-fix",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -407,14 +418,15 @@
         "1.0.37",
         "1.0.38",
         "1.0.39",
-        "1.0.40"
+        "1.0.40",
+        "1.0.41"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.41/NANO-POS-Patch-1.0.40-to-1.0.41-MEGA-RESTORE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.41",
-      "sha256": "76c54c7263fc91a063eaf1f6e946a155c046853e46c97af1ffd908bf4bbe6527",
-      "appAsarSha256": "d34b38fd2389dd2a558d211afb8573471af41072f192703e04b76e81422eaa59",
-      "fileName": "NANO-POS-Patch-1.0.40-to-1.0.41-MEGA-RESTORE.zip",
-      "sizeBytes": 30785911,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.42/NANO-POS-Patch-1.0.41-to-1.0.42-LOGIN-INPUT-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.42",
+      "sha256": "1a477a8fdb963b2c1af1d54f27396d51e7f93eaf22cfb66060dd7c01ae93fcc7",
+      "appAsarSha256": "236a89a8113d418f59488370746fbf3189aa62e7b3ddc2326e1a5bd34adc9fe4",
+      "fileName": "NANO-POS-Patch-1.0.41-to-1.0.42-LOGIN-INPUT-FIX.zip",
+      "sizeBytes": 30786503,
       "payloadType": "app-asar"
     }
   ],
@@ -425,8 +437,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات: إضافة خيار استرداد نسخة MEGA إلى بيانات البرنامج بعد المعاينة والتأكيد، مع حفظ نسخة أمان محلية من البيانات الحالية. اختبر الاسترداد على نسخة تجريبية أولًا قبل تطبيقه على متجر حقيقي.",
-    "fr": "Améliorations : restauration directe d’une sauvegarde MEGA avec aperçu, confirmations et sauvegarde de sécurité locale. Tester sur une copie avant utilisation en production.",
-    "en": "Improvements: restore a MEGA backup directly with preview, confirmations, and an automatic local safety backup. Test against a copy before restoring real store data."
+    "ar": "تحسينات: إصلاح حقول تسجيل الدخول والتفاعل معها عند بدء تشغيل البرنامج. أُبقيت بيانات المستخدمين والترخيص دون تعديل. لم يجر اختبار على جهاز Windows فعلي حتى الآن.",
+    "fr": "Améliorations : correction des champs de connexion et des interactions au démarrage. Les comptes et licences ne sont pas modifiés. Test Windows réel en attente.",
+    "en": "Improvements: login fields accept typing and clicks even with stale startup/lock overlays. User accounts and licenses are unchanged. Real Windows field testing pending."
   }
 }
