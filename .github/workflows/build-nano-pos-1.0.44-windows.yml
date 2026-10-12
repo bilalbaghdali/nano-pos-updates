@@ -1,0 +1,77 @@
+name: Build Windows NANO POS 1.0.44 with New Icon
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-nano-pos-1.0.44-windows.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  windows-package:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout update scripts
+        uses: actions/checkout@v4
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download published v1.0.44 source bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path .\stage -Force | Out-Null
+          gh release download v1.0.44 --pattern 'NANO-POS-Patch-1.0.43-to-1.0.44-LOGIN-BRANDING.zip' --dir stage
+          $archive = '.\stage\NANO-POS-Patch-1.0.43-to-1.0.44-LOGIN-BRANDING.zip'
+          $expected = '18790f78db99f75f066a79c51647804526c90f51a029bcab6bfc846654b0d947'
+          $actual = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) {throw 'Source ZIP hash mismatch'}
+          Expand-Archive -Path $archive -DestinationPath .\stage\extracted -Force
+          if (-not (Test-Path .\stage\extracted\payload\app.asar)) { throw 'Missing app.asar'}
+      - name: Extract application source from verified ASAR
+        shell: pwsh
+        run: |
+          npm install --global '@electron/asar@3.4.1' --no-fund --no-audit
+          asar extract .\stage\extracted\payload\app.asar .\stage\app
+          if (-not (Test-Path .\stage\app\assets\branding\nano-pos-icon.ico)) {throw 'New Windows icon missing'}
+          $package = Get-Content .\stage\app\package.json -Raw | ConvertFrom-Json
+          if ($package.version -ne '1.0.44') { throw 'Incorrect app version'}
+          if ($package.build.win.icon -ne 'assets/branding/nano-pos-icon.ico') {throw 'Unconfigured Windows executable icon'}
+      - name: Install build dependencies
+        shell: pwsh
+        working-directory: stage/app
+        run: |
+          npm install --no-audit --no-fund
+      - name: Build Windows installer and portable executable
+        shell: pwsh
+        working-directory: stage/app
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          npx electron-builder --win nsis portable --x64 --publish never
+      - name: Verify executable outputs and rename
+        shell: pwsh
+        run: |
+          $found = @(Get-ChildItem .\stage\app\dist -Filter '*.exe' -File)
+          if ($found.Count -lt 2) {throw 'Expected NSIS installer and portable EXE'}
+          New-Item -ItemType Directory -Path .\publish -Force | Out-Null
+          $installer = $found | Where-Object { $_.Name -match 'Setup|Installer' } | Select-Object -First 1
+          if (-not $installer) {throw 'NSIS installer not found'}
+          $portable = $found | Where-Object { $_.FullName -ne $installer.FullName } | Select-Object -First 1
+          Copy-Item $installer.FullName .\publish\NANO-POS-v1.0.44-Setup-x64.exe
+          Copy-Item $portable.FullName .\publish\NANO-POS-v1.0.44-Portable-x64.exe
+          Get-ChildItem .\publish | Get-FileHash -Algorithm SHA256 | Format-Table
+      - name: Upload executable assets to GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          gh release upload v1.0.44 .\publish\NANO-POS-v1.0.44-Setup-x64.exe .\publish\NANO-POS-v1.0.44-Portable-x64.exe --clobber
+      - name: Save executables as workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-1.0.44-windows-programs
+          path: publish/*.exe
