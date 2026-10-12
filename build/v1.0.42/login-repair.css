@@ -1,0 +1,35 @@
+/* NANO POS 1.0.42 — login input interaction hotfix.
+   Raise *visible* login UI above stale boot/lock/datalist overlays, but NOT
+   above the licensed-access gate (z-index 2147483647). */
+#loginOverlay:not(.hidden) {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483640 !important;
+  pointer-events: auto !important;
+}
+#loginOverlay:not(.hidden) .nano-commerce-login-backdrop,
+#loginOverlay:not(.hidden)::before,
+#loginOverlay:not(.hidden)::after,
+#loginOverlay:not(.hidden) .nano-grid-lines,
+#loginOverlay:not(.hidden) .nano-glow {
+  pointer-events: none !important;
+}
+#loginOverlay:not(.hidden) .nano-commerce-login-layout,
+#loginOverlay:not(.hidden) .nano-commerce-login-side,
+#loginOverlay:not(.hidden) .nano-commerce-login-card,
+#loginOverlay:not(.hidden) #loginForm {
+  position: relative;
+  pointer-events: auto !important;
+}
+#loginOverlay:not(.hidden) #loginForm input#loginUsername,
+#loginOverlay:not(.hidden) #loginForm input#loginPassword {
+  pointer-events: auto !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  cursor: text !important;
+  opacity: 1 !important;
+  touch-action: manipulation;
+}
+#loginOverlay:not(.hidden) .nano-commerce-field > .material-symbols-outlined {
+  pointer-events: none !important;
+}
