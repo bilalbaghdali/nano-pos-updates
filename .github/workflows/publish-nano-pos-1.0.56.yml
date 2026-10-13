@@ -1,0 +1,51 @@
+name: Publish NANO POS v1.0.56 Debt Statistics Synchronization
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.56.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout update code
+        uses: actions/checkout@v4
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build from published v1.0.55 and test both debt views and accounting
+        run: |
+          set -euo pipefail
+          python3 build/v1.0.56/build.py
+      - name: Publish optional update only if all tests pass
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='build/v1.0.56/NANO-POS-Patch-1.0.55-to-1.0.56-DEBT-STATS-SYNC.zip'
+          if gh release view v1.0.56 >/dev/null 2>&1; then
+            echo 'Release already exists; do not silently replace.'; exit 1
+          fi
+          gh release create v1.0.56 "$ASSET" --target main --title 'NANO POS v1.0.56 — System Stability Improvements' --notes 'Optional desktop + paired-mobile debt statistics repair. Reconciles live customer/supplier balances and unpaid invoices with the Statistics view, preserving previous valid numbers on disconnected sources and avoiding double-counting account and invoice debt. Builds from SHA-pinned v1.0.55 and retains the customer Sales and Debts window fix. Read-only statistics code; no database migration, invoice rewrite, or customer/supplier payment adjustment. Automated regression and release SHA checks run in CI. Test on a Windows PC and connected phone before production.'
+      - name: Download published update and verify SHA256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.56 --pattern 'NANO-POS-Patch-1.0.55-to-1.0.56-DEBT-STATS-SYNC.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build/v1.0.56/build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.55-to-1.0.56-DEBT-STATS-SYNC.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Archive update metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.56-release-metadata
+          path: build/v1.0.56/build-result.json
