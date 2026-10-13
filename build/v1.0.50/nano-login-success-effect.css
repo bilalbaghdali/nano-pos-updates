@@ -1,0 +1,21 @@
+/* NANO POS v1.0.40 — post-authentication transition (visual only). */
+#nano-auth-success-veil {position:fixed;inset:0;z-index:2147480000;display:grid;place-items:center;padding:24px;background:rgba(244,246,252,.93);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px);direction:rtl;animation:nano-auth-veil-in .2s ease-out both}
+#nano-auth-success-veil .nano-auth-card {box-sizing:border-box;width:min(100%,370px);min-height:294px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:34px 28px;background:#fff;border:1px solid #eef0f7;border-radius:22px;box-shadow:0 20px 70px rgba(40,45,97,.12);text-align:center;color:#20263a;transition:border-color .35s,box-shadow .35s}
+#nano-auth-success-veil .nano-auth-card[data-stage="granted"] {border-color:rgba(16,185,129,.36);box-shadow:0 25px 75px rgba(16,185,129,.16)}
+#nano-auth-success-veil .nano-auth-title {font-size:23px;font-weight:800;letter-spacing:0;line-height:1.35;margin:0 0 2px}
+#nano-auth-success-veil .nano-auth-sub {font-size:12px;color:#8e98a9;margin:0 0 25px;line-height:1.5}
+#nano-auth-success-veil .nano-auth-meter {position:relative;display:grid;place-items:center;width:106px;height:106px}
+#nano-auth-success-veil svg {width:106px;height:106px;overflow:visible;transform:rotate(-90deg)}
+#nano-auth-success-veil .nano-auth-track {fill:none;stroke:#f0f1f7;stroke-width:6}
+#nano-auth-success-veil .nano-auth-progress {fill:none;stroke:#7773e9;stroke-width:6;stroke-linecap:round;stroke-dasharray:239;stroke-dashoffset:239;transition:stroke-dashoffset .12s linear}
+#nano-auth-success-veil .nano-auth-percent {position:absolute;font-weight:850;font-size:18px;color:#5551d4;font-variant-numeric:tabular-nums}
+#nano-auth-success-veil .nano-auth-tick {display:none;align-items:center;justify-content:center;width:74px;height:74px;border-radius:50%;font-size:40px;font-weight:900;color:white;background:linear-gradient(135deg,#50ddae,#00ae80);box-shadow:0 0 0 11px #e5fcf2,0 12px 30px rgba(16,185,129,.3);margin:15px 0 9px;animation:nano-auth-pop .3s ease-out both}
+#nano-auth-success-veil .nano-auth-stamp {display:none;color:white;background:#0dbd86;border-radius:8px;letter-spacing:.08em;font-weight:800;padding:5px 13px;font-size:10px;margin-top:10px}
+#nano-auth-success-veil .nano-auth-card[data-stage="granted"] .nano-auth-meter {display:none}
+#nano-auth-success-veil .nano-auth-card[data-stage="granted"] .nano-auth-tick {display:flex}
+#nano-auth-success-veil .nano-auth-card[data-stage="granted"] .nano-auth-stamp {display:inline-block}
+#nano-auth-success-veil.nano-auth-out {animation:nano-auth-veil-out .3s ease-in both;pointer-events:none}
+@keyframes nano-auth-pop {from{opacity:0;transform:scale(.65)}to{opacity:1;transform:scale(1)}}
+@keyframes nano-auth-veil-in {from{opacity:0}to{opacity:1}}
+@keyframes nano-auth-veil-out {from{opacity:1}to{opacity:0}}
+@media (prefers-reduced-motion:reduce) {#nano-auth-success-veil,#nano-auth-success-veil .nano-auth-tick,#nano-auth-success-veil.nano-auth-out {animation:none!important}#nano-auth-success-veil .nano-auth-progress {transition:none}}
