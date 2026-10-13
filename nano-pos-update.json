@@ -3,7 +3,7 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.51",
+  "version": "1.0.52",
   "releaseDate": "2026-10-13",
   "mandatory": false,
   "importance": "normal",
@@ -553,11 +553,25 @@
           "System stability improvements."
         ]
       }
+    },
+    "1.0.52": {
+      "releaseDate": "2026-10-13",
+      "features": {
+        "ar": [
+          "تحسينات استقرار النظام."
+        ],
+        "fr": [
+          "Améliorations de la stabilité du système."
+        ],
+        "en": [
+          "System stability improvements."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.51-login-success-effect-fix",
+      "id": "nano-pos-v1.0.52-auth-animation-login-gate",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -575,14 +589,15 @@
         "1.0.47",
         "1.0.48",
         "1.0.49",
-        "1.0.50"
+        "1.0.50",
+        "1.0.51"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.51/NANO-POS-Patch-1.0.50-to-1.0.51-LOGIN-EFFECT-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.51",
-      "sha256": "a5ba6460f3f2682f1e00cf47bb2efdcc13a9fdccd27aea544683efda573cceeb",
-      "appAsarSha256": "4fd2e71feba617e069daa80d4cc120cfa9c0cbe6a4f0e46c636c44ea79c49f4e",
-      "fileName": "NANO-POS-Patch-1.0.50-to-1.0.51-LOGIN-EFFECT-FIX.zip",
-      "sizeBytes": 30935167,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.52/NANO-POS-Patch-1.0.51-to-1.0.52-LOGIN-GATE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.52",
+      "sha256": "ac19741214cde85b597ecc5bfb12819fb11cfc8af92317064211be16066d99ba",
+      "appAsarSha256": "67cff5a6d45d0dcbc900654db32dba169b0ee86c92cb302be5e0f0eef3f82e55",
+      "fileName": "NANO-POS-Patch-1.0.51-to-1.0.52-LOGIN-GATE.zip",
+      "sizeBytes": 30935040,
       "payloadType": "app-asar"
     }
   ],
@@ -593,8 +608,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات استقرار النظام. تحديث اختياري يعالج تشغيل التأثير بعد نجاح تسجيل الدخول. نجح بناء ملف التحديث وفحوصات السلوك، ولم تتم بعد تجربة العرض على جهاز Windows فعلي.",
-    "fr": "Améliorations de la stabilité du système. Mise à jour facultative corrigeant le retour visuel après connexion réussie. Build et tests réussis; vérification réelle sous Windows encore en attente.",
-    "en": "System stability improvements. Optional update fixes missing success animation after authenticated login. Build and behavior tests passed; live Windows display verification remains pending."
+    "ar": "تحسينات استقرار النظام. يتحقق البرنامج من بيانات المستخدم أولًا، ثم ينتظر ظهور تأثير تأكيد الدخول كاملًا قبل حفظ الجلسة وفتح الصفحة الرئيسية. لا يمكن تجاوز التأثير إذا تعذر تحميله. تم اختبار المنطق والبناء على GitHub، لكن العرض الحقيقي على Windows لم يُختبر ميدانيًا بعد.",
+    "fr": "Améliorations de stabilité. Authentification, puis animation complète, puis ouverture de l'accueil. Si l'animation échoue, la connexion reste affichée. Tests automatisés et build réussis; validation visuelle Windows à effectuer.",
+    "en": "System stability improvements. Validate credentials, show complete success animation, then persist session and open Home. Missing or failed animation keeps the login screen visible. Automated tests and GitHub build passed; live Windows display verification remains pending."
   }
 }
