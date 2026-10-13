@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.54",
+  "version": "1.0.55",
   "releaseDate": "2026-10-13",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات استقرار النظام: إصلاح خطأ جلب بيانات الزبون على الهاتف عند وصول استجابة غير مكتملة.",
-      "إعادة محاولة القراءة من بيانات الكمبيوتر الرئيسي عند فشل الطلب المعتاد، مع احترام صلاحيات جهاز الهاتف.",
-      "منع ظهور قوائم زبائن قديمة أو غير مؤكدة عند البيع بالكريدي، مع رسالة خطأ مفهومة وإمكانية إعادة المحاولة.",
-      "الحفاظ على الدفع الجزئي وتسديد الديون وإحصائيات الزبائن والموردين دون تغيير المنطق المحاسبي."
+      "تحسينات استقرار النظام: إصلاح خطأ «عرض المبيعات والديون» عند فتح تفاصيل الزبون على NANO POS للكمبيوتر.",
+      "توحيد بيانات سجل الزبون (الفواتير والتسديدات وبيانات الزبون) بدل استجابة ناقصة كانت تتسبب في خطأ length.",
+      "إظهار سجل الزبون حتى إذا لم تكن لديه مبيعات أو مدفوعات، مع التحقق من صلاحية المبالغ والبيانات قبل عرضها.",
+      "الإبقاء على الفواتير والأرصدة المخزنة وعمليات البيع والشراء والتسديد دون تعديل."
     ],
     "fr": [
-      "Stabilité : correction de l’erreur de récupération des clients sur mobile quand la réponse du PC est incomplète.",
-      "Nouvelle lecture de secours sur le PC principal, sans contournement des autorisations de l’appareil.",
-      "Pas de liste clients périmée pour les ventes à crédit ; message clair si le serveur ne confirme pas les données.",
-      "Paiement partiel, soldes et statistiques des clients/fournisseurs conservés."
+      "Améliorations de la stabilité du système : réparation de l’affichage des ventes et dettes dans la fiche client du NANO POS Windows.",
+      "Réponse unifiée des ventes, paiements et fiche client, évitant une erreur lors de la lecture de length.",
+      "Affichage correct des historiques vides et vérification des montants avant leur présentation.",
+      "Aucune modification des données clients, factures ou soldes persistants."
     ],
     "en": [
-      "Stability: fixes mobile customer lookup when the desktop sends an incomplete response.",
-      "Retries via a PC-local authorized customer snapshot if the normal customer call fails.",
-      "Avoids stale or unverified customers for mobile credit sales; clear message and retry option.",
-      "Preserves partial payments, customer/supplier ledgers and related analytics."
+      "System stability improvements: fixes View Sales and Debts in customer details on NANO POS desktop.",
+      "Aligns customer details responses to sales, payments and customer instead of an incomplete array.",
+      "Handles empty customer histories and checks monetary fields before display.",
+      "Preserves existing stored invoices, debt balances and payment data."
     ]
   },
   "releaseHistory": {
@@ -622,11 +622,34 @@
           "Preserves partial payments, customer/supplier ledgers and related analytics."
         ]
       }
+    },
+    "1.0.55": {
+      "releaseDate": "2026-10-13",
+      "features": {
+        "ar": [
+          "تحسينات استقرار النظام: إصلاح خطأ «عرض المبيعات والديون» عند فتح تفاصيل الزبون على NANO POS للكمبيوتر.",
+          "توحيد بيانات سجل الزبون (الفواتير والتسديدات وبيانات الزبون) بدل استجابة ناقصة كانت تتسبب في خطأ length.",
+          "إظهار سجل الزبون حتى إذا لم تكن لديه مبيعات أو مدفوعات، مع التحقق من صلاحية المبالغ والبيانات قبل عرضها.",
+          "الإبقاء على الفواتير والأرصدة المخزنة وعمليات البيع والشراء والتسديد دون تعديل."
+        ],
+        "fr": [
+          "Améliorations de la stabilité du système : réparation de l’affichage des ventes et dettes dans la fiche client du NANO POS Windows.",
+          "Réponse unifiée des ventes, paiements et fiche client, évitant une erreur lors de la lecture de length.",
+          "Affichage correct des historiques vides et vérification des montants avant leur présentation.",
+          "Aucune modification des données clients, factures ou soldes persistants."
+        ],
+        "en": [
+          "System stability improvements: fixes View Sales and Debts in customer details on NANO POS desktop.",
+          "Aligns customer details responses to sales, payments and customer instead of an incomplete array.",
+          "Handles empty customer histories and checks monetary fields before display.",
+          "Preserves existing stored invoices, debt balances and payment data."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.54-customer-list-recovery",
+      "id": "nano-pos-v1.0.55-customer-sales-debts-view-repair",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -647,14 +670,15 @@
         "1.0.50",
         "1.0.51",
         "1.0.52",
-        "1.0.53"
+        "1.0.53",
+        "1.0.54"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.54/NANO-POS-Patch-1.0.53-to-1.0.54-CUSTOMER-FETCH-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.54",
-      "sha256": "91fd9cb683747b693a323f48b04142deb4ddf423999d1924ac9b02f5a80663fe",
-      "appAsarSha256": "de8a0f89a838dc8f66718ce27ae66601bd12e7bfae10e5844416345d1242a65b",
-      "fileName": "NANO-POS-Patch-1.0.53-to-1.0.54-CUSTOMER-FETCH-FIX.zip",
-      "sizeBytes": 30944717,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.55/NANO-POS-Patch-1.0.54-to-1.0.55-CUSTOMER-SALES-DEBTS-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.55",
+      "sha256": "738f02ac450ceddc57dfe187cb49301670a9bd3e90708f5a5e2ff48303933410",
+      "appAsarSha256": "398b66542519a7bb2ec52a39fb2ed71956036f231f1ef2d804995bb949f5a2ef",
+      "fileName": "NANO-POS-Patch-1.0.54-to-1.0.55-CUSTOMER-SALES-DEBTS-FIX.zip",
+      "sizeBytes": 30946089,
       "payloadType": "app-asar"
     }
   ],
@@ -665,8 +689,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحديث اختياري لإصلاح جلب بيانات الزبائن من الكمبيوتر إلى الهاتف. تتحقق الخدمة من رد الزبائن، وتحاول استرجاع القائمة المصرّح بها من الكمبيوتر عند فشل الطلب الأصلي. لن يعتمد الهاتف على زبائن قدامى أو يواصل البيع بالكريدي دون قائمة مؤكدة. نجحت الاختبارات البرمجية واختبارات المعاملات المالية وفحص الحزمة، لكن استخدامه مع هاتف وكمبيوتر فعليين ما زال يحتاج تحققًا ميدانيًا؛ خذ نسخة احتياطية مستقلة قبل التثبيت.",
-    "fr": "Mise à jour facultative : correction de la lecture des clients du PC vers le téléphone, avec récupération autorisée et validation des réponses. Tests automatisés réussis, mais validation sur téléphone/Windows réel encore nécessaire.",
-    "en": "Optional mobile customer lookup repair with authorization-checked recovery and response validation. Automated and financial regression tests passed; live phone/Windows validation remains pending."
+    "ar": "تحديث اختياري لإصلاح نافذة «عرض المبيعات والديون» داخل قسم الزبائن على الكمبيوتر. كان التطبيق يتوقع حقول sales وpayments وcustomer بينما أعاد بعض مسارات الجسر قائمة مبيعات فقط؛ تم إصلاح التوافق وعرض البيانات القديمة والفارغة مع الحفاظ على سجلات الفواتير والمدفوعات. نجحت اختبارات السلوك والمحاسبة وبناء GitHub وفحص SHA-256؛ التحقق من واجهة Windows ببيانات محل فعلية ما زال مطلوبًا. خذ نسخة احتياطية قبل التثبيت.",
+    "fr": "Mise à jour facultative : corrige la consultation des ventes et dettes des clients sur Windows. La forme de réponse des données est maintenant cohérente. Tests et vérification SHA réussis ; essai sur un vrai PC Windows recommandé.",
+    "en": "Optional update fixes desktop Customer → View Sales and Debts response mismatch. Automated UI-contract and accounting tests passed, and GitHub release SHA-256 verified. Real Windows field validation pending."
   }
 }
