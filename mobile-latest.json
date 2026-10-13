@@ -2,11 +2,10 @@
   "schema": 1,
   "product": "NANO POS Mobile",
   "channel": "stable",
-  "published": false,
-  "version": null,
-  "downloadUrl": null,
-  "pageUrl": null,
-  "sha256": null,
-  "publishedAt": null,
-  "note": "The private mobile build uploads a public APK and updates this manifest once the publishing token is configured."
+  "published": true,
+  "version": "1.3.7",
+  "downloadUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/mobile-v1.3.7/NANO-POS-Mobile-v1.3.7.apk",
+  "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/mobile-v1.3.7",
+  "sha256": "49503c07f39d941e308005df40b7de3243e1a379704b042ef1f7bd7e2bd6174c",
+  "publishedAt": "2026-10-13T17:41:38Z"
 }
