@@ -1,0 +1,52 @@
+name: Publish verified NANO POS 1.0.50 Login Success Effect
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.50.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout update repository
+        uses: actions/checkout@v4
+      - name: Set up Node for source syntax checks
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild from verified v1.0.49 and validate authenticated-login hook
+        run: python3 build/v1.0.50/build.py
+      - name: Publish optional GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='NANO-POS-Patch-1.0.49-to-1.0.50-LOGIN-EFFECT.zip'
+          if gh release view v1.0.50 >/dev/null 2>&1; then
+            echo 'Release already exists: do not overwrite without reviewing.'
+            exit 1
+          fi
+          gh release create v1.0.50 "$ASSET" --target main --title 'NANO POS v1.0.50 — System Stability Improvements' --notes 'Optional update from v1.0.49. Adds a short animated progress ring and green Access Granted confirmation after actual successful NANO POS credentials authentication only. Invalid credentials never trigger the effect. Keeps login inputs and existing home, sales, inventories, backups, MEGA and printing behavior unchanged. Build verified from checksum-pinned v1.0.49. Real Windows/Electron display test remains pending.'
+      - name: Check downloaded GitHub asset SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.50 --pattern 'NANO-POS-Patch-1.0.49-to-1.0.50-LOGIN-EFFECT.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.49-to-1.0.50-LOGIN-EFFECT.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Store release metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.50-metadata
+          path: build-result.json
