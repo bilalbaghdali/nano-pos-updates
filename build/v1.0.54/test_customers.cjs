@@ -1,0 +1,20 @@
+'use strict';
+const assert = require('node:assert/strict');
+const {extractCustomerRows,resolveCustomerRows} = require('./nano-customer-contract.cjs');
+(async()=>{
+  assert.deepEqual(extractCustomerRows(undefined),null);
+  assert.deepEqual(extractCustomerRows({}),null);
+  assert.deepEqual(extractCustomerRows({result:{customers:[{id:1,name:'Ali'}]}}),[{id:1,name:'Ali'}]);
+  assert.deepEqual(extractCustomerRows({snapshot:{data:{customers:[]}}}),[]);
+  let calls=[];
+  let customers=await resolveCustomerRows(async(ch)=>{calls.push(ch);if(ch==='get-customers')return [{id:10,name:'A'}];throw Error('unexpected');});
+  assert.equal(customers[0].id,10);assert.deepEqual(calls,['get-customers'],'Do not fetch snapshot for successful direct lookup');
+  calls=[];
+  customers=await resolveCustomerRows(async(ch)=>{calls.push(ch);if(ch==='get-customers')throw new TypeError("Cannot read properties of undefined (reading 'length')");return {data:{customers:[{id:11,name:'B'}]}};});
+  assert.equal(customers[0].id,11);assert.deepEqual(calls,['get-customers','__nano-pc-export-snapshot']);
+  customers=await resolveCustomerRows(async(ch)=>ch==='get-customers'?undefined:{snapshot:{customers:[]}});
+  assert.deepEqual(customers,[],'A verified empty customer list is valid');
+  await assert.rejects(resolveCustomerRows(async()=>undefined),/تعذر قراءة قائمة الزبائن/);
+  await assert.rejects(resolveCustomerRows(async()=>{throw new TypeError('length');}),e=>e.code==='CUSTOMER_LIST_UNAVAILABLE'&&e.statusCode===503);
+  console.log('PASS: direct customer list, nested valid response, thrown undefined.length recovery via authoritative snapshot, clear fail-closed error.');
+})().catch(e=>{console.error(e);process.exitCode=1;});
