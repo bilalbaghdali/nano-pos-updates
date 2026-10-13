@@ -1,0 +1,52 @@
+name: Inspect v1.0.55 Debt Analytics Paths
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-nano-debt-analytics-v155.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect SHA pinned published NANO POS package
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import urllib.request,io,zipfile,struct,json,hashlib,re
+          u='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.55/NANO-POS-Patch-1.0.54-to-1.0.55-CUSTOMER-SALES-DEBTS-FIX.zip'
+          with urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'NANO-debt-audit'}),timeout=180) as r: b=r.read()
+          assert hashlib.sha256(b).hexdigest()=='738f02ac450ceddc57dfe187cb49301670a9bd3e90708f5a5e2ff48303933410'
+          with zipfile.ZipFile(io.BytesIO(b)) as z:a=z.read('payload/app.asar')
+          ln=struct.unpack('<I',a[12:16])[0];root=json.loads(a[16:16+ln]);head=8+struct.unpack('<I',a[4:8])[0]
+          def walk(node,path=''):
+            for name,entry in node['files'].items():
+              p=path+name
+              if 'files' in entry:yield from walk(entry,p+'/')
+              else:
+                o=head+int(entry['offset'])
+                yield p,a[o:o+entry['size']]
+          files=dict(walk(root))
+          terms={
+            'browser-bridge.js':['get-analytics','get-customers-debt','get-customer-credit-summary','customerVisibleDebt','supplierDebts','customerDebts','get-sales-summary'],
+            'mobile/www/browser-bridge.js':['get-analytics','get-customers-debt','get-customer-credit-summary','customerVisibleDebt','supplierDebts','customerDebts'],
+            'renderer.js':['getAnalytics','loadAnalytics','totalCustomerDebt','totalSupplierDebt','customerDebts','supplierDebts','total_debt','debtsTable'],
+            'mobile/www/renderer.js':['getAnalytics','loadAnalytics','totalCustomerDebt','totalSupplierDebt','customerDebts','supplierDebts'],
+            'browser-preload.js':['getAnalytics','getCustomersDebt','getSupplierDebts','getSuppliersDebts'],
+            'pc-sync-service.cjs':['__nano-pc-export-snapshot','dispatchRpc'],
+            'electron-main.cjs':['get-analytics','ipcMain.handle','nano-pc-export-snapshot']
+          }
+          for filename,patterns in terms.items():
+            raw=files.get(filename)
+            if raw is None:print('MISSING',filename);continue
+            src=raw.decode('utf8','replace')
+            print('\n### FILE',filename,'LEN',len(src))
+            for term in patterns:
+              hits=[m.start() for m in re.finditer(re.escape(term),src)]
+              print('TERM',term,'COUNT',len(hits))
+              for i in hits[:2]:
+                before=600 if filename.endswith('bridge.js') else 270
+                after=2100 if filename.endswith('bridge.js') else 600
+                print('SNIP',term,'POS',i,repr(src[max(0,i-before):i+after]))
+          PY
