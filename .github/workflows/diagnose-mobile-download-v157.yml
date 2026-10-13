@@ -57,6 +57,10 @@ jobs:
                     if p=='index.html':
                       pos=txt.find('lumina.fikradevs.com/download')
                       if pos!=-1: print('HTML AROUND',txt[pos-250:pos+600])
+                      marker=txt.find('appDownloadSection')
+                      print('MOBILE APP SECTION',txt[marker-150:marker+3500])
+                      for q in ['download','apk','nano-pos-mobile','mobileapp']:
+                        print('TOKEN count',q,txt.lower().count(q))
                     if p=='server.cjs':print('SERVER HEADER',txt[:400])
               except Exception as e: print('ASAR read fail',str(e))
           PY
