@@ -1,0 +1,55 @@
+name: Build NANO POS v1.0.53 Mobile Credit and Debt Fixes
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.53.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node for integration tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild from pinned v1.0.52 and run monetary integration tests
+        working-directory: build/v1.0.53
+        run: |
+          set -euo pipefail
+          python3 build_v153.py
+      - name: Publish optional patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='build/v1.0.53/NANO-POS-Patch-1.0.52-to-1.0.53-MOBILE-CREDIT-DEBTS.zip'
+          if gh release view v1.0.53 >/dev/null 2>&1; then
+            echo "Existing release detected; refusing overwrite."
+            exit 1
+          fi
+          gh release create v1.0.53 "$ASSET" --target main --title "NANO POS v1.0.53 — System Stability Improvements" --notes "Optional stability update for paired NANO POS phone WebView: customer lookup from PC, explicit credit and partial payments, unpaid balance linked to customer, updated customers/suppliers analytics after payments and purchases, and fail-closed financial network errors to reduce double postings. Includes initial-cash-receipt correction and tests of source ledgers. Does not update databases in the ZIP. Verify on Windows and Android before production."
+      - name: Verify GitHub downloaded release SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.53 --pattern 'NANO-POS-Patch-1.0.52-to-1.0.53-MOBILE-CREDIT-DEBTS.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json; print(json.load(open("build/v1.0.53/build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.52-to-1.0.53-MOBILE-CREDIT-DEBTS.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Archive verified metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.53-metadata
+          path: build/v1.0.53/build-result.json
