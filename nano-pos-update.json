@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.56",
+  "version": "1.0.57",
   "releaseDate": "2026-10-13",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات استقرار النظام: إظهار ديون الزبائن والموردين في إحصائيات الكمبيوتر مع قراءة الأرصدة الحالية من السجلات.",
-      "مزامنة عرض الديون في إحصائيات واجهة الهاتف المرتبطة بالكمبيوتر، بما فيها البيع الجزئي والتسديدات.",
-      "توحيد إجماليات الديون مع قوائم الزبائن والموردين والفواتير غير المسددة، مع منع احتساب الدين نفسه مرتين.",
-      "الحفاظ على القيم الصحيحة عند فشل الاتصال أو وصول رد غير مكتمل، دون تعديل بيانات الفواتير والمدفوعات."
+      "إضافة تنبيه بجوار رابط تطبيق الهاتف في الإعدادات، مع رقم أحدث إصدار APK منشور.",
+      "ربط أيقونة التحميل مباشرة بآخر نسخة رسمية منشورة من NANO POS Mobile على GitHub.",
+      "إضافة نسخ رابط التحميل وتحديث حالة الإصدار، مع رسالة عند تعذر الوصول للملف.",
+      "الإبقاء على وظائف البيع، الديون، المزامنة، البيانات والتفعيل دون تعديل."
     ],
     "fr": [
-      "Stabilité : affichage des créances clients et dettes fournisseurs réelles dans les statistiques du PC.",
-      "Synchronisation des montants dans les statistiques du téléphone lié, après paiements partiels et règlements.",
-      "Réconciliation des soldes avec les factures impayées, sans compter deux fois la même dette.",
-      "Conservation des statistiques valides lors d'une réponse incomplète ; aucune mutation des factures ou paiements."
+      "Notification et numéro de version de la dernière application Android dans les paramètres.",
+      "Téléchargement de l’APK NANO POS Mobile publié sur GitHub depuis le bouton dédié.",
+      "Copie du lien et actualisation du statut, avec message si le fichier est indisponible.",
+      "Aucune modification des ventes, dettes, synchronisation, données ou activation."
     ],
     "en": [
-      "System stability: show current customer receivables and supplier payables in the PC Statistics view.",
-      "Synchronize debt totals in the paired-phone Statistics view after sales, purchases and settlements.",
-      "Reconcile account balances with open invoices without double-counting the same debt.",
-      "Preserve valid figures when a source is unavailable; no invoice or payment data changes."
+      "Show an Android download notice and the latest published APK version.",
+      "Connect the download icon to the newest verified NANO POS Mobile GitHub release.",
+      "Copyable download link and refreshable availability status.",
+      "Preserve sales, debts, synchronization, stored data, and licensing."
     ]
   },
   "releaseHistory": {
@@ -668,11 +668,34 @@
           "Preserve valid figures when a source is unavailable; no invoice or payment data changes."
         ]
       }
+    },
+    "1.0.57": {
+      "releaseDate": "2026-10-13",
+      "features": {
+        "ar": [
+          "إضافة تنبيه بجوار رابط تطبيق الهاتف في الإعدادات، مع رقم أحدث إصدار APK منشور.",
+          "ربط أيقونة التحميل مباشرة بآخر نسخة رسمية منشورة من NANO POS Mobile على GitHub.",
+          "إضافة نسخ رابط التحميل وتحديث حالة الإصدار، مع رسالة عند تعذر الوصول للملف.",
+          "الإبقاء على وظائف البيع، الديون، المزامنة، البيانات والتفعيل دون تعديل."
+        ],
+        "fr": [
+          "Notification et numéro de version de la dernière application Android dans les paramètres.",
+          "Téléchargement de l’APK NANO POS Mobile publié sur GitHub depuis le bouton dédié.",
+          "Copie du lien et actualisation du statut, avec message si le fichier est indisponible.",
+          "Aucune modification des ventes, dettes, synchronisation, données ou activation."
+        ],
+        "en": [
+          "Show an Android download notice and the latest published APK version.",
+          "Connect the download icon to the newest verified NANO POS Mobile GitHub release.",
+          "Copyable download link and refreshable availability status.",
+          "Preserve sales, debts, synchronization, stored data, and licensing."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.56-debt-stats-sync",
+      "id": "nano-pos-v1.0.57-mobile-download",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -695,14 +718,15 @@
         "1.0.52",
         "1.0.53",
         "1.0.54",
-        "1.0.55"
+        "1.0.55",
+        "1.0.56"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.56/NANO-POS-Patch-1.0.55-to-1.0.56-DEBT-STATS-SYNC.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.56",
-      "sha256": "00eef6932622feb3d7821fb2e81f284d3f7c36608b61af627b625771d8100e80",
-      "appAsarSha256": "71e08afb9d579118af990f1c90a97ac35710c7c2416d768c8c816c13aad5b0a4",
-      "fileName": "NANO-POS-Patch-1.0.55-to-1.0.56-DEBT-STATS-SYNC.zip",
-      "sizeBytes": 30949160,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.57/NANO-POS-Patch-1.0.56-to-1.0.57-MOBILE-DOWNLOAD.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.57",
+      "sha256": "7178acac99c3901023a5d6c50f21b2c39ef7da58ac91e1706f6281e2c0862758",
+      "appAsarSha256": "727ced84eee4a881209340b998cdef55ee41f2e1d4eacf693270bd6390ff6df9",
+      "fileName": "NANO-POS-Patch-1.0.56-to-1.0.57-MOBILE-DOWNLOAD.zip",
+      "sizeBytes": 30953927,
       "payloadType": "app-asar"
     }
   ],
@@ -713,8 +737,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحديث اختياري: تحسينات استقرار النظام لإظهار ديون الزبائن والموردين ومزامنة إحصائيات الكمبيوتر والهاتف بعد البيع والشراء والتسديدات. يحتفظ التحديث بقواعد البيانات وسجلات الفواتير دون تعديل. نجحت اختبارات المحاسبة والبناء والتحقق من SHA-256، ولم يُختبر بعد بصريًا على Windows وهاتف متصل ببيانات متجر فعلية؛ خذ نسخة احتياطية قبل التحديث.",
-    "fr": "Mise à jour facultative : harmonisation des créances clients et fournisseurs dans les statistiques PC et mobile. Testée en simulation et sur les artefacts, pas encore sur Windows et Android avec données réelles. Sauvegarde conseillée.",
-    "en": "Optional update: reconciles customer/supplier debts in desktop and paired-phone statistics without rewriting records. Automated accounting and release checksum tests passed; real Windows/Android testing remains pending. Back up business data first."
+    "ar": "تحديث رابط تنزيل تطبيق NANO POS Mobile والإشعار بآخر نسخة منشورة؛ بدون تغيير بيانات المتجر أو الفواتير.",
+    "fr": "Mise à jour du téléchargement mobile et de la notification; sans modification des données du magasin.",
+    "en": "Mobile APK download link and release notification update; no store-data changes."
   }
 }
