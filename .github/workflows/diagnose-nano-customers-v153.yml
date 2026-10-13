@@ -1,0 +1,47 @@
+name: Diagnose v1.0.53 mobile customer fetch
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/diagnose-nano-customers-v153.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect published customer RPC implementation and error boundaries
+        run: |
+          python3 - <<'PY'
+          import io,zipfile,urllib.request,struct,json,re
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.53/NANO-POS-Patch-1.0.52-to-1.0.53-MOBILE-CREDIT-DEBTS.zip'
+          with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'nano-diagnostics'}),timeout=180) as r: z=r.read()
+          with zipfile.ZipFile(io.BytesIO(z)) as a: asar=a.read('payload/app.asar')
+          size=struct.unpack('<I',asar[12:16])[0];h=json.loads(asar[16:16+size]);start=8+struct.unpack('<I',asar[4:8])[0]
+          def at(path):
+            branch=h
+            for part in path.split('/'):branch=branch['files'][part]
+            offset=start+int(branch['offset'])
+            return asar[offset:offset+branch['size']].decode('utf8')
+          def clips(source,term,n=7,span=260):
+            pos=0
+            for i in range(min(n,source.count(term))):
+              j=source.find(term,pos)
+              print(f'  {term}[{i}] = '+repr(source[max(0,j-span):j+len(term)+span]))
+              pos=j+len(term)
+          for name,terms in [
+             ('mobile/www/nano-mobile-credit.js',['fetchCustomers','getCustomers','customers =']),
+             ('mobile/www/mobile-sync-bridge.js',['sendRemoteCall','return body.result','return result']),
+             ('mobile/www/browser-bridge.js',["get-customers","customers: () =>"]),
+             ('pc-sync-service.cjs',["/nano-sync/call","get-customers","result ="]),
+             ('electron-main.cjs',["get-customers","__nano-pc"]),
+             ('mobile/www/browser-preload.js',["getCustomers"]),
+             ('mobile/www/index.html',["nano-mobile-credit.js"])]:
+            try:
+              source=at(name)
+              print('\\nFILE:',name,'LEN',len(source))
+              for term in terms:clips(source,term,n=4,span=170)
+            except Exception as e:print('INSPECTION ERROR',name,str(e))
+          PY
