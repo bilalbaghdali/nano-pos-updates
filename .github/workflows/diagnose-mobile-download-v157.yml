@@ -41,7 +41,7 @@ jobs:
                 print('ASAR TOP LEVEL',list(header.get('files',{}).keys())[:80])
                 files=header['files']
                 for p in ['index.html','server.cjs','package.json','mobile-download.js','mobile/index.html']:
-                  node=files
+                  node=header
                   try:
                     for part in p.split('/'): node=node['files'][part]
                   except Exception as e:
