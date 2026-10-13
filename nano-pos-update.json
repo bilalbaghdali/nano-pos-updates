@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.55",
+  "version": "1.0.56",
   "releaseDate": "2026-10-13",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات استقرار النظام: إصلاح خطأ «عرض المبيعات والديون» عند فتح تفاصيل الزبون على NANO POS للكمبيوتر.",
-      "توحيد بيانات سجل الزبون (الفواتير والتسديدات وبيانات الزبون) بدل استجابة ناقصة كانت تتسبب في خطأ length.",
-      "إظهار سجل الزبون حتى إذا لم تكن لديه مبيعات أو مدفوعات، مع التحقق من صلاحية المبالغ والبيانات قبل عرضها.",
-      "الإبقاء على الفواتير والأرصدة المخزنة وعمليات البيع والشراء والتسديد دون تعديل."
+      "تحسينات استقرار النظام: إظهار ديون الزبائن والموردين في إحصائيات الكمبيوتر مع قراءة الأرصدة الحالية من السجلات.",
+      "مزامنة عرض الديون في إحصائيات واجهة الهاتف المرتبطة بالكمبيوتر، بما فيها البيع الجزئي والتسديدات.",
+      "توحيد إجماليات الديون مع قوائم الزبائن والموردين والفواتير غير المسددة، مع منع احتساب الدين نفسه مرتين.",
+      "الحفاظ على القيم الصحيحة عند فشل الاتصال أو وصول رد غير مكتمل، دون تعديل بيانات الفواتير والمدفوعات."
     ],
     "fr": [
-      "Améliorations de la stabilité du système : réparation de l’affichage des ventes et dettes dans la fiche client du NANO POS Windows.",
-      "Réponse unifiée des ventes, paiements et fiche client, évitant une erreur lors de la lecture de length.",
-      "Affichage correct des historiques vides et vérification des montants avant leur présentation.",
-      "Aucune modification des données clients, factures ou soldes persistants."
+      "Stabilité : affichage des créances clients et dettes fournisseurs réelles dans les statistiques du PC.",
+      "Synchronisation des montants dans les statistiques du téléphone lié, après paiements partiels et règlements.",
+      "Réconciliation des soldes avec les factures impayées, sans compter deux fois la même dette.",
+      "Conservation des statistiques valides lors d'une réponse incomplète ; aucune mutation des factures ou paiements."
     ],
     "en": [
-      "System stability improvements: fixes View Sales and Debts in customer details on NANO POS desktop.",
-      "Aligns customer details responses to sales, payments and customer instead of an incomplete array.",
-      "Handles empty customer histories and checks monetary fields before display.",
-      "Preserves existing stored invoices, debt balances and payment data."
+      "System stability: show current customer receivables and supplier payables in the PC Statistics view.",
+      "Synchronize debt totals in the paired-phone Statistics view after sales, purchases and settlements.",
+      "Reconcile account balances with open invoices without double-counting the same debt.",
+      "Preserve valid figures when a source is unavailable; no invoice or payment data changes."
     ]
   },
   "releaseHistory": {
@@ -645,11 +645,34 @@
           "Preserves existing stored invoices, debt balances and payment data."
         ]
       }
+    },
+    "1.0.56": {
+      "releaseDate": "2026-10-13",
+      "features": {
+        "ar": [
+          "تحسينات استقرار النظام: إظهار ديون الزبائن والموردين في إحصائيات الكمبيوتر مع قراءة الأرصدة الحالية من السجلات.",
+          "مزامنة عرض الديون في إحصائيات واجهة الهاتف المرتبطة بالكمبيوتر، بما فيها البيع الجزئي والتسديدات.",
+          "توحيد إجماليات الديون مع قوائم الزبائن والموردين والفواتير غير المسددة، مع منع احتساب الدين نفسه مرتين.",
+          "الحفاظ على القيم الصحيحة عند فشل الاتصال أو وصول رد غير مكتمل، دون تعديل بيانات الفواتير والمدفوعات."
+        ],
+        "fr": [
+          "Stabilité : affichage des créances clients et dettes fournisseurs réelles dans les statistiques du PC.",
+          "Synchronisation des montants dans les statistiques du téléphone lié, après paiements partiels et règlements.",
+          "Réconciliation des soldes avec les factures impayées, sans compter deux fois la même dette.",
+          "Conservation des statistiques valides lors d'une réponse incomplète ; aucune mutation des factures ou paiements."
+        ],
+        "en": [
+          "System stability: show current customer receivables and supplier payables in the PC Statistics view.",
+          "Synchronize debt totals in the paired-phone Statistics view after sales, purchases and settlements.",
+          "Reconcile account balances with open invoices without double-counting the same debt.",
+          "Preserve valid figures when a source is unavailable; no invoice or payment data changes."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.55-customer-sales-debts-view-repair",
+      "id": "nano-pos-v1.0.56-debt-stats-sync",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -671,14 +694,15 @@
         "1.0.51",
         "1.0.52",
         "1.0.53",
-        "1.0.54"
+        "1.0.54",
+        "1.0.55"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.55/NANO-POS-Patch-1.0.54-to-1.0.55-CUSTOMER-SALES-DEBTS-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.55",
-      "sha256": "738f02ac450ceddc57dfe187cb49301670a9bd3e90708f5a5e2ff48303933410",
-      "appAsarSha256": "398b66542519a7bb2ec52a39fb2ed71956036f231f1ef2d804995bb949f5a2ef",
-      "fileName": "NANO-POS-Patch-1.0.54-to-1.0.55-CUSTOMER-SALES-DEBTS-FIX.zip",
-      "sizeBytes": 30946089,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.56/NANO-POS-Patch-1.0.55-to-1.0.56-DEBT-STATS-SYNC.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.56",
+      "sha256": "00eef6932622feb3d7821fb2e81f284d3f7c36608b61af627b625771d8100e80",
+      "appAsarSha256": "71e08afb9d579118af990f1c90a97ac35710c7c2416d768c8c816c13aad5b0a4",
+      "fileName": "NANO-POS-Patch-1.0.55-to-1.0.56-DEBT-STATS-SYNC.zip",
+      "sizeBytes": 30949160,
       "payloadType": "app-asar"
     }
   ],
@@ -689,8 +713,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحديث اختياري لإصلاح نافذة «عرض المبيعات والديون» داخل قسم الزبائن على الكمبيوتر. كان التطبيق يتوقع حقول sales وpayments وcustomer بينما أعاد بعض مسارات الجسر قائمة مبيعات فقط؛ تم إصلاح التوافق وعرض البيانات القديمة والفارغة مع الحفاظ على سجلات الفواتير والمدفوعات. نجحت اختبارات السلوك والمحاسبة وبناء GitHub وفحص SHA-256؛ التحقق من واجهة Windows ببيانات محل فعلية ما زال مطلوبًا. خذ نسخة احتياطية قبل التثبيت.",
-    "fr": "Mise à jour facultative : corrige la consultation des ventes et dettes des clients sur Windows. La forme de réponse des données est maintenant cohérente. Tests et vérification SHA réussis ; essai sur un vrai PC Windows recommandé.",
-    "en": "Optional update fixes desktop Customer → View Sales and Debts response mismatch. Automated UI-contract and accounting tests passed, and GitHub release SHA-256 verified. Real Windows field validation pending."
+    "ar": "تحديث اختياري: تحسينات استقرار النظام لإظهار ديون الزبائن والموردين ومزامنة إحصائيات الكمبيوتر والهاتف بعد البيع والشراء والتسديدات. يحتفظ التحديث بقواعد البيانات وسجلات الفواتير دون تعديل. نجحت اختبارات المحاسبة والبناء والتحقق من SHA-256، ولم يُختبر بعد بصريًا على Windows وهاتف متصل ببيانات متجر فعلية؛ خذ نسخة احتياطية قبل التحديث.",
+    "fr": "Mise à jour facultative : harmonisation des créances clients et fournisseurs dans les statistiques PC et mobile. Testée en simulation et sur les artefacts, pas encore sur Windows et Android avec données réelles. Sauvegarde conseillée.",
+    "en": "Optional update: reconciles customer/supplier debts in desktop and paired-phone statistics without rewriting records. Automated accounting and release checksum tests passed; real Windows/Android testing remains pending. Back up business data first."
   }
 }
