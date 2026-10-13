@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "product": "NANO POS Mobile",
+  "channel": "stable",
+  "published": false,
+  "version": null,
+  "downloadUrl": null,
+  "pageUrl": null,
+  "sha256": null,
+  "publishedAt": null,
+  "note": "The private mobile build uploads a public APK and updates this manifest once the publishing token is configured."
+}
