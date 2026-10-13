@@ -1,0 +1,55 @@
+name: Publish NANO POS v1.0.54 customer lookup repair
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.54.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout updates repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Copy existing v1.0.53 accounting regression suite
+        run: cp build/v1.0.53/test_finance.cjs build/v1.0.54/test_finance.cjs
+      - name: Build SHA-verified customer lookup repair and run regression tests
+        working-directory: build/v1.0.54
+        run: |
+          set -euo pipefail
+          python3 build_v154.py
+      - name: Create optional GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='build/v1.0.54/NANO-POS-Patch-1.0.53-to-1.0.54-CUSTOMER-FETCH-FIX.zip'
+          if gh release view v1.0.54 >/dev/null 2>&1; then
+            echo 'A release already exists. Refusing overwrite.'
+            exit 1
+          fi
+          gh release create v1.0.54 "$ASSET" --target main --title 'NANO POS v1.0.54 — System Stability Improvements' --notes 'Optional update: repairs undefined.length failures while fetching customers from a paired phone. The authorized primary PC now verifies the customer-list RPC response and may recover it through a PC-local snapshot if necessary. The mobile UI rejects invalid responses rather than showing stale or empty customers. Preserves credit and partial-payment ledger behavior from v1.0.53. Backup data before updating. Live Android/Windows tests remain pending.'
+      - name: Verify the GitHub-published ZIP SHA256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.54 --pattern 'NANO-POS-Patch-1.0.53-to-1.0.54-CUSTOMER-FETCH-FIX.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build/v1.0.54/build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.53-to-1.0.54-CUSTOMER-FETCH-FIX.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Upload build metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.54-verified-metadata
+          path: build/v1.0.54/build-result.json
