@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.53",
+  "version": "1.0.54",
   "releaseDate": "2026-10-13",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات استقرار النظام: دعم دفع جزء من فاتورة البيع على الهاتف مع تسجيل المبلغ المتبقي دينًا على الزبون.",
-      "جلب الزبون المسجّل من قسم الزبائن مباشرة عند البيع بالكريدي أو الدفع الجزئي.",
-      "تحديث أرصدة وديون الزبائن والموردين وإحصائيات المبيعات والمشتريات بعد تسديد الفواتير.",
-      "تحسين أمان تأكيد العمليات المالية عند فقد الاتصال بالكمبيوتر للحد من تكرار الفواتير والمدفوعات."
+      "تحسينات استقرار النظام: إصلاح خطأ جلب بيانات الزبون على الهاتف عند وصول استجابة غير مكتملة.",
+      "إعادة محاولة القراءة من بيانات الكمبيوتر الرئيسي عند فشل الطلب المعتاد، مع احترام صلاحيات جهاز الهاتف.",
+      "منع ظهور قوائم زبائن قديمة أو غير مؤكدة عند البيع بالكريدي، مع رسالة خطأ مفهومة وإمكانية إعادة المحاولة.",
+      "الحفاظ على الدفع الجزئي وتسديد الديون وإحصائيات الزبائن والموردين دون تغيير المنطق المحاسبي."
     ],
     "fr": [
-      "Stabilité : paiement partiel des ventes sur téléphone et enregistrement du solde client.",
-      "Sélection directe des clients enregistrés pour les ventes à crédit.",
-      "Mise à jour des dettes et soldes clients/fournisseurs et des statistiques après les paiements.",
-      "Refus de considérer une opération financière comme confirmée si la connexion au PC est interrompue."
+      "Stabilité : correction de l’erreur de récupération des clients sur mobile quand la réponse du PC est incomplète.",
+      "Nouvelle lecture de secours sur le PC principal, sans contournement des autorisations de l’appareil.",
+      "Pas de liste clients périmée pour les ventes à crédit ; message clair si le serveur ne confirme pas les données.",
+      "Paiement partiel, soldes et statistiques des clients/fournisseurs conservés."
     ],
     "en": [
-      "Stability: partial mobile sales payments with outstanding customer debt.",
-      "Choose registered customers directly for mobile credit sales.",
-      "Keep customer/supplier balances and related sales/purchase analytics in sync with settlements.",
-      "Do not treat financial operations as completed when their confirmation from the PC is lost."
+      "Stability: fixes mobile customer lookup when the desktop sends an incomplete response.",
+      "Retries via a PC-local authorized customer snapshot if the normal customer call fails.",
+      "Avoids stale or unverified customers for mobile credit sales; clear message and retry option.",
+      "Preserves partial payments, customer/supplier ledgers and related analytics."
     ]
   },
   "releaseHistory": {
@@ -599,11 +599,34 @@
           "Do not treat financial operations as completed when their confirmation from the PC is lost."
         ]
       }
+    },
+    "1.0.54": {
+      "releaseDate": "2026-10-13",
+      "features": {
+        "ar": [
+          "تحسينات استقرار النظام: إصلاح خطأ جلب بيانات الزبون على الهاتف عند وصول استجابة غير مكتملة.",
+          "إعادة محاولة القراءة من بيانات الكمبيوتر الرئيسي عند فشل الطلب المعتاد، مع احترام صلاحيات جهاز الهاتف.",
+          "منع ظهور قوائم زبائن قديمة أو غير مؤكدة عند البيع بالكريدي، مع رسالة خطأ مفهومة وإمكانية إعادة المحاولة.",
+          "الحفاظ على الدفع الجزئي وتسديد الديون وإحصائيات الزبائن والموردين دون تغيير المنطق المحاسبي."
+        ],
+        "fr": [
+          "Stabilité : correction de l’erreur de récupération des clients sur mobile quand la réponse du PC est incomplète.",
+          "Nouvelle lecture de secours sur le PC principal, sans contournement des autorisations de l’appareil.",
+          "Pas de liste clients périmée pour les ventes à crédit ; message clair si le serveur ne confirme pas les données.",
+          "Paiement partiel, soldes et statistiques des clients/fournisseurs conservés."
+        ],
+        "en": [
+          "Stability: fixes mobile customer lookup when the desktop sends an incomplete response.",
+          "Retries via a PC-local authorized customer snapshot if the normal customer call fails.",
+          "Avoids stale or unverified customers for mobile credit sales; clear message and retry option.",
+          "Preserves partial payments, customer/supplier ledgers and related analytics."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.53-mobile-credit-debts",
+      "id": "nano-pos-v1.0.54-customer-list-recovery",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -623,14 +646,15 @@
         "1.0.49",
         "1.0.50",
         "1.0.51",
-        "1.0.52"
+        "1.0.52",
+        "1.0.53"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.53/NANO-POS-Patch-1.0.52-to-1.0.53-MOBILE-CREDIT-DEBTS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.53",
-      "sha256": "f37fcff274d031b308ac36e8363a7ef3bc815bbd2070eca2e26d130f77788a23",
-      "appAsarSha256": "790d58cd46d315bd903334de5c09d00198e4aa9c61557a4ff979e057ebc622de",
-      "fileName": "NANO-POS-Patch-1.0.52-to-1.0.53-MOBILE-CREDIT-DEBTS.zip",
-      "sizeBytes": 30942151,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.54/NANO-POS-Patch-1.0.53-to-1.0.54-CUSTOMER-FETCH-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.54",
+      "sha256": "91fd9cb683747b693a323f48b04142deb4ddf423999d1924ac9b02f5a80663fe",
+      "appAsarSha256": "de8a0f89a838dc8f66718ce27ae66601bd12e7bfae10e5844416345d1242a65b",
+      "fileName": "NANO-POS-Patch-1.0.53-to-1.0.54-CUSTOMER-FETCH-FIX.zip",
+      "sizeBytes": 30944717,
       "payloadType": "app-asar"
     }
   ],
@@ -641,8 +665,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات استقرار النظام: دعم البيع بالكريدي والدفع الجزئي واختيار الزبائن المسجلين من الهاتف، ومزامنة تسديدات الزبائن والموردين مع أرصدة الفواتير والإحصائيات. تأكد من وجود اتصال بالكمبيوتر أثناء البيع. نجحت اختبارات محاسبية والبناء والتحقق من تنزيل الحزمة على GitHub، لكن اختبار جهاز هاتف حقيقي وبيانات متجر حقيقية لم يكتمل. خذ نسخة احتياطية مستقلة أولًا.",
-    "fr": "Améliorations de stabilité: crédit et paiement partiel mobile, sélection des clients, cohérence des dettes et statistiques. Connexion au PC requise pour confirmer une opération. Tests automatisés et intégrité de la mise à jour validés ; validation mobile/Windows réelle en attente.",
-    "en": "System stability update: mobile credit/partial payments, customer selection and consistent debts and reports. PC connection is required for confirming financial transactions. Automated accounting and release integrity checks passed; live phone/Windows testing remains pending."
+    "ar": "تحديث اختياري لإصلاح جلب بيانات الزبائن من الكمبيوتر إلى الهاتف. تتحقق الخدمة من رد الزبائن، وتحاول استرجاع القائمة المصرّح بها من الكمبيوتر عند فشل الطلب الأصلي. لن يعتمد الهاتف على زبائن قدامى أو يواصل البيع بالكريدي دون قائمة مؤكدة. نجحت الاختبارات البرمجية واختبارات المعاملات المالية وفحص الحزمة، لكن استخدامه مع هاتف وكمبيوتر فعليين ما زال يحتاج تحققًا ميدانيًا؛ خذ نسخة احتياطية مستقلة قبل التثبيت.",
+    "fr": "Mise à jour facultative : correction de la lecture des clients du PC vers le téléphone, avec récupération autorisée et validation des réponses. Tests automatisés réussis, mais validation sur téléphone/Windows réel encore nécessaire.",
+    "en": "Optional mobile customer lookup repair with authorization-checked recovery and response validation. Automated and financial regression tests passed; live phone/Windows validation remains pending."
   }
 }
