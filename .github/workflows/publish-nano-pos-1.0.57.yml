@@ -1,0 +1,86 @@
+name: Publish NANO POS v1.0.57 Mobile APK Download
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.57.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout public update sources
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify and build from the published v1.0.56 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 build/v1.0.57/build.py
+      - name: Verify change scope and manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path('build/v1.0.57/build-result.json').read_text())
+          doc=json.loads(Path('build/v1.0.57/nano-pos-update-v157.json').read_text())
+          assert m['toVersion']=='1.0.57' and m['dataFilesModified'] is False
+          assert 'renderer.js' not in m['changedFiles']
+          assert 'browser-bridge.js' not in m['changedFiles']
+          assert doc['version']=='1.0.57'
+          assert doc['patches'][0]['sha256']==m['sha256']
+          assert doc['patches'][0]['appAsarSha256']==m['appAsarSha256']
+          assert doc['patches'][0]['directUrl'].endswith(m['fileName'])
+          assert '1.0.56' in doc['patches'][0]['fromVersions']
+          print('Validated mobile download-only release.')
+          PY
+      - name: Publish verified optional NANO POS v1.0.57 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET="build/v1.0.57/NANO-POS-Patch-1.0.56-to-1.0.57-MOBILE-DOWNLOAD.zip"
+          if gh release view v1.0.57 >/dev/null 2>&1; then
+            echo 'Release exists; refusing overwrite.' >&2
+            exit 1
+          fi
+          gh release create v1.0.57 "$ASSET" --target main \
+            --title 'NANO POS v1.0.57 — Mobile App Download Link' \
+            --notes 'Optional desktop update based on verified v1.0.56. Adds a visible Android app download notice, latest APK version label, copy link, refresh, and official download icon pointing to the published NANO POS Mobile release. Leaves sales, credit/debts, products, synchronization, customer data, activation, databases and backup files unchanged. Android APK v1.3.7 is published separately at the mobile-v1.3.7 release. Validate on one test PC before rolling out broadly.'
+      - name: Verify published archive SHA256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.57 --pattern 'NANO-POS-Patch-1.0.56-to-1.0.57-MOBILE-DOWNLOAD.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build/v1.0.57/build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.56-to-1.0.57-MOBILE-DOWNLOAD.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Publish checked desktop updater manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.57/nano-pos-update-v157.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+            -f message='Publish NANO POS Desktop v1.0.57 update notification' \
+            -f sha="$SHA" -f content="$CONTENT" >/dev/null
+      - name: Upload release integrity metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.57-verified-metadata
+          path: build/v1.0.57/build-result.json
+          retention-days: 30
