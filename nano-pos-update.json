@@ -3,20 +3,20 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.49",
-  "releaseDate": "2026-10-12",
+  "version": "1.0.50",
+  "releaseDate": "2026-10-13",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح تكرار رمز العملة في معاينة ملصقات الباركود وطباعتها وتصديرها إلى PDF."
+      "تحسينات استقرار النظام: تأثير مرئي سلس بعد نجاح تسجيل الدخول والانتقال إلى الصفحة الرئيسية."
     ],
     "fr": [
-      "Correction du symbole monétaire affiché deux fois sur les étiquettes à code-barres, dans l’aperçu, l’impression et le PDF."
+      "Améliorations de la stabilité du système : transition animée après authentification réussie."
     ],
     "en": [
-      "Fix the duplicated currency symbol in barcode label preview, printing, and PDF export."
+      "System stability improvements: smooth visual confirmation after a successful sign-in."
     ]
   },
   "releaseHistory": {
@@ -525,11 +525,25 @@
           "Fix the duplicated currency symbol in barcode label preview, printing, and PDF export."
         ]
       }
+    },
+    "1.0.50": {
+      "releaseDate": "2026-10-13",
+      "features": {
+        "ar": [
+          "تحسينات استقرار النظام: تأثير مرئي سلس بعد نجاح تسجيل الدخول والانتقال إلى الصفحة الرئيسية."
+        ],
+        "fr": [
+          "Améliorations de la stabilité du système : transition animée après authentification réussie."
+        ],
+        "en": [
+          "System stability improvements: smooth visual confirmation after a successful sign-in."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.49-barcode-currency-deduplication",
+      "id": "nano-pos-v1.0.50-login-success-animation",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -545,14 +559,15 @@
         "1.0.45",
         "1.0.46",
         "1.0.47",
-        "1.0.48"
+        "1.0.48",
+        "1.0.49"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.49/NANO-POS-Patch-1.0.48-to-1.0.49-BARCODE-CURRENCY-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.49",
-      "sha256": "b7fbb70e96521d92a487d57d3a4455bc1ad2cc4425f6d11c397005fcf8cd3bd0",
-      "appAsarSha256": "77e7402bccbbe25928de8c3a5f99021900a1bf5557a240e18d3d4235dff2ed5a",
-      "fileName": "NANO-POS-Patch-1.0.48-to-1.0.49-BARCODE-CURRENCY-FIX.zip",
-      "sizeBytes": 30932893,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.50/NANO-POS-Patch-1.0.49-to-1.0.50-LOGIN-EFFECT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.50",
+      "sha256": "e165cfa63480c0346034f21620e1bc87fbcb4a49c69c56423f280c7d2b78b0ce",
+      "appAsarSha256": "613fb99fa44f2ff8f5b4de3c036c3623172cee3d392fa414943203ed30a0b26f",
+      "fileName": "NANO-POS-Patch-1.0.49-to-1.0.50-LOGIN-EFFECT.zip",
+      "sizeBytes": 30934842,
       "payloadType": "app-asar"
     }
   ],
@@ -563,8 +578,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات",
-    "fr": "Améliorations",
-    "en": "Improvements"
+    "ar": "تحسينات استقرار النظام في شاشة الدخول: تظهر دائرة تحقق متحركة ثم علامة نجاح خضراء بعد مصادقة صحيحة فقط، دون تغيير اسم المستخدم أو كلمة المرور أو الواجهة الأساسية. تحديث اختياري؛ تم التحقق من البناء والملف المنشور، ولم يُختبر عرض التأثير بعد على جهاز Windows فعلي.",
+    "fr": "Améliorations de stabilité : animation de validation et confirmation verte après identification réussie uniquement. Mise à jour facultative, construite et vérifiée ; test visuel Windows réel en attente.",
+    "en": "System stability improvements: animated progress and green success confirmation only after authentication succeeds. Optional update with verified build and download, pending live Windows UI testing."
   }
 }
