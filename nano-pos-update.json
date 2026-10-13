@@ -3,20 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.52",
+  "version": "1.0.53",
   "releaseDate": "2026-10-13",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات استقرار النظام."
+      "تحسينات استقرار النظام: دعم دفع جزء من فاتورة البيع على الهاتف مع تسجيل المبلغ المتبقي دينًا على الزبون.",
+      "جلب الزبون المسجّل من قسم الزبائن مباشرة عند البيع بالكريدي أو الدفع الجزئي.",
+      "تحديث أرصدة وديون الزبائن والموردين وإحصائيات المبيعات والمشتريات بعد تسديد الفواتير.",
+      "تحسين أمان تأكيد العمليات المالية عند فقد الاتصال بالكمبيوتر للحد من تكرار الفواتير والمدفوعات."
     ],
     "fr": [
-      "Améliorations de la stabilité du système."
+      "Stabilité : paiement partiel des ventes sur téléphone et enregistrement du solde client.",
+      "Sélection directe des clients enregistrés pour les ventes à crédit.",
+      "Mise à jour des dettes et soldes clients/fournisseurs et des statistiques après les paiements.",
+      "Refus de considérer une opération financière comme confirmée si la connexion au PC est interrompue."
     ],
     "en": [
-      "System stability improvements."
+      "Stability: partial mobile sales payments with outstanding customer debt.",
+      "Choose registered customers directly for mobile credit sales.",
+      "Keep customer/supplier balances and related sales/purchase analytics in sync with settlements.",
+      "Do not treat financial operations as completed when their confirmation from the PC is lost."
     ]
   },
   "releaseHistory": {
@@ -567,11 +576,34 @@
           "System stability improvements."
         ]
       }
+    },
+    "1.0.53": {
+      "releaseDate": "2026-10-13",
+      "features": {
+        "ar": [
+          "تحسينات استقرار النظام: دعم دفع جزء من فاتورة البيع على الهاتف مع تسجيل المبلغ المتبقي دينًا على الزبون.",
+          "جلب الزبون المسجّل من قسم الزبائن مباشرة عند البيع بالكريدي أو الدفع الجزئي.",
+          "تحديث أرصدة وديون الزبائن والموردين وإحصائيات المبيعات والمشتريات بعد تسديد الفواتير.",
+          "تحسين أمان تأكيد العمليات المالية عند فقد الاتصال بالكمبيوتر للحد من تكرار الفواتير والمدفوعات."
+        ],
+        "fr": [
+          "Stabilité : paiement partiel des ventes sur téléphone et enregistrement du solde client.",
+          "Sélection directe des clients enregistrés pour les ventes à crédit.",
+          "Mise à jour des dettes et soldes clients/fournisseurs et des statistiques après les paiements.",
+          "Refus de considérer une opération financière comme confirmée si la connexion au PC est interrompue."
+        ],
+        "en": [
+          "Stability: partial mobile sales payments with outstanding customer debt.",
+          "Choose registered customers directly for mobile credit sales.",
+          "Keep customer/supplier balances and related sales/purchase analytics in sync with settlements.",
+          "Do not treat financial operations as completed when their confirmation from the PC is lost."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.52-auth-animation-login-gate",
+      "id": "nano-pos-v1.0.53-mobile-credit-debts",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -590,14 +622,15 @@
         "1.0.48",
         "1.0.49",
         "1.0.50",
-        "1.0.51"
+        "1.0.51",
+        "1.0.52"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.52/NANO-POS-Patch-1.0.51-to-1.0.52-LOGIN-GATE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.52",
-      "sha256": "ac19741214cde85b597ecc5bfb12819fb11cfc8af92317064211be16066d99ba",
-      "appAsarSha256": "67cff5a6d45d0dcbc900654db32dba169b0ee86c92cb302be5e0f0eef3f82e55",
-      "fileName": "NANO-POS-Patch-1.0.51-to-1.0.52-LOGIN-GATE.zip",
-      "sizeBytes": 30935040,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.53/NANO-POS-Patch-1.0.52-to-1.0.53-MOBILE-CREDIT-DEBTS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.53",
+      "sha256": "f37fcff274d031b308ac36e8363a7ef3bc815bbd2070eca2e26d130f77788a23",
+      "appAsarSha256": "790d58cd46d315bd903334de5c09d00198e4aa9c61557a4ff979e057ebc622de",
+      "fileName": "NANO-POS-Patch-1.0.52-to-1.0.53-MOBILE-CREDIT-DEBTS.zip",
+      "sizeBytes": 30942151,
       "payloadType": "app-asar"
     }
   ],
@@ -608,8 +641,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات استقرار النظام. يتحقق البرنامج من بيانات المستخدم أولًا، ثم ينتظر ظهور تأثير تأكيد الدخول كاملًا قبل حفظ الجلسة وفتح الصفحة الرئيسية. لا يمكن تجاوز التأثير إذا تعذر تحميله. تم اختبار المنطق والبناء على GitHub، لكن العرض الحقيقي على Windows لم يُختبر ميدانيًا بعد.",
-    "fr": "Améliorations de stabilité. Authentification, puis animation complète, puis ouverture de l'accueil. Si l'animation échoue, la connexion reste affichée. Tests automatisés et build réussis; validation visuelle Windows à effectuer.",
-    "en": "System stability improvements. Validate credentials, show complete success animation, then persist session and open Home. Missing or failed animation keeps the login screen visible. Automated tests and GitHub build passed; live Windows display verification remains pending."
+    "ar": "تحسينات استقرار النظام: دعم البيع بالكريدي والدفع الجزئي واختيار الزبائن المسجلين من الهاتف، ومزامنة تسديدات الزبائن والموردين مع أرصدة الفواتير والإحصائيات. تأكد من وجود اتصال بالكمبيوتر أثناء البيع. نجحت اختبارات محاسبية والبناء والتحقق من تنزيل الحزمة على GitHub، لكن اختبار جهاز هاتف حقيقي وبيانات متجر حقيقية لم يكتمل. خذ نسخة احتياطية مستقلة أولًا.",
+    "fr": "Améliorations de stabilité: crédit et paiement partiel mobile, sélection des clients, cohérence des dettes et statistiques. Connexion au PC requise pour confirmer une opération. Tests automatisés et intégrité de la mise à jour validés ; validation mobile/Windows réelle en attente.",
+    "en": "System stability update: mobile credit/partial payments, customer selection and consistent debts and reports. PC connection is required for confirming financial transactions. Automated accounting and release integrity checks passed; live phone/Windows testing remains pending."
   }
 }
