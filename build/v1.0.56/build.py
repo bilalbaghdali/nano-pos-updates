@@ -79,6 +79,10 @@ def rebuild(original):
   put('release-notes.js',notes[:a]+'const F='+json.dumps(features,ensure_ascii=False,separators=(',',':'))+notes[b:])
  subprocess.run(['node','--check',str(ROOT/'nano-debt-stats-fix.js')],check=True,timeout=20)
  subprocess.run(['node',str(ROOT/'test_debt_stats.cjs')],check=True,timeout=30)
+ for name in ('browser-bridge.js','mobile/www/browser-bridge.js'):
+  check=ROOT/('original-'+name.replace('/','_'))
+  check.write_bytes(files[name][1]);subprocess.run(['node','--check',str(check)],check=True,timeout=25)
+ subprocess.run(['node',str(ROOT/'../v1.0.53/test_finance.cjs'),str(ROOT/'original-browser-bridge.js'),str(ROOT/'original-mobile_www_browser-bridge.js')],check=True,timeout=30)
  changed=[name for name in files if name not in original or files[name][1]!=original[name][1]]
  allowed={'renderer.js','mobile/www/renderer.js','index.html','mobile/www/index.html',
           'nano-debt-stats-fix.js','mobile/www/nano-debt-stats-fix.js',
