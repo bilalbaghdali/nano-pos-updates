@@ -1,0 +1,54 @@
+name: Publish NANO POS v1.0.55 Desktop Customer Details Fix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.55.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout verified update source
+        uses: actions/checkout@v4
+      - name: Set up Node for UI and accounting tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild v1.0.55 from published v1.0.54 and run customer and finance tests
+        run: |
+          set -euo pipefail
+          python3 build/v1.0.55/build_v155.py
+      - name: Publish optional update
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE="build/v1.0.55/NANO-POS-Patch-1.0.54-to-1.0.55-CUSTOMER-SALES-DEBTS-FIX.zip"
+          if gh release view v1.0.55 >/dev/null 2>&1; then
+            echo "v1.0.55 is already published; refusing overwrite"
+            exit 1
+          fi
+          gh release create v1.0.55 "$FILE" --target main --title 'NANO POS v1.0.55 — System Stability Improvements' --notes 'Optional fix for Customers → View Sales and Debts: desktop/browser customer sales response now includes {sales,payments,customer} rather than an array. Handles legacy responses, empty histories and invalid server responses gracefully. Does not change invoices, debt balances or customer data. Customer detail and existing accounting tests passed. Full Windows UI field testing remains pending.'
+      - name: Download and verify published GitHub Release checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.55 --pattern 'NANO-POS-Patch-1.0.54-to-1.0.55-CUSTOMER-SALES-DEBTS-FIX.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build/v1.0.55/build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.54-to-1.0.55-CUSTOMER-SALES-DEBTS-FIX.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Archive release checksums and changed-file manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.55-build-metadata
+          path: build/v1.0.55/build-result.json
