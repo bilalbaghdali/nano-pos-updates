@@ -1,0 +1,62 @@
+name: Publish verified NANO POS 1.0.52 login gate fix
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.52.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout update repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run authentication animation and gating regression tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node build/v1.0.52/test_effect.cjs
+          node build/v1.0.52/test_gate.cjs
+      - name: Reconstruct app.asar from SHA-verified published v1.0.51
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd build/v1.0.52
+          python3 build_v152.py
+      - name: Publish optional v1.0.52 patch without overwriting existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ASSET='build/v1.0.52/NANO-POS-Patch-1.0.51-to-1.0.52-LOGIN-GATE.zip'
+          if gh release view v1.0.52 >/dev/null 2>&1; then
+            echo 'Refusing to replace an existing v1.0.52 release.'
+            exit 1
+          fi
+          gh release create v1.0.52 "$ASSET" --target main --title 'NANO POS v1.0.52 — System Stability Improvements' --notes 'Optional login gating fix. After successful credential validation, NANO POS must visibly play the complete verification animation before persisting the authenticated user, dismissing the login overlay, or opening Home. On wrong credentials, the effect never appears. When the animation fails or is absent, the login overlay stays visible instead of silently entering Home. Packaged from verified v1.0.51 with only login flow and version metadata changed. Automated tests passed; live Windows UI validation remains pending.'
+      - name: Verify hosted release SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.52 --pattern 'NANO-POS-Patch-1.0.51-to-1.0.52-LOGIN-GATE.zip' --dir verified
+          EXPECTED="$(python3 -c 'import json;print(json.load(open("build/v1.0.52/build-result.json"))["sha256"])')"
+          ACTUAL="$(sha256sum verified/NANO-POS-Patch-1.0.51-to-1.0.52-LOGIN-GATE.zip | cut -d' ' -f1)"
+          test "$EXPECTED" = "$ACTUAL"
+      - name: Archive version and integrity metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.52-release-metadata
+          path: build/v1.0.52/build-result.json
