@@ -68,7 +68,7 @@
       try {
         const url = new URL(endpoint);
         if (!['http:', 'https:'].includes(url.protocol)) return '';
-        if (/^(127\\.|localhost$|0\\.0\\.0\\.0$)/i.test(url.hostname)) return '';
+        if (/^(127\.|localhost$|0\.0\.0\.0$)/i.test(url.hostname)) return '';
         return url.origin + LOCAL_PATH;
       } catch { return ''; }
     }
