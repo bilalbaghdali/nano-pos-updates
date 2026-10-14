@@ -92,3 +92,5 @@ jobs:
           name: nano-pos-v1.0.60-verified-manifest
           path: build/v1.0.60/build-result.json
           retention-days: 30
+
+# Verifiable v1.0.60 release workflow; building only from the pinned production ASAR.
