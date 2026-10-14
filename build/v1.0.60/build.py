@@ -13,7 +13,7 @@ from datetime import date
 ROOT = pathlib.Path(__file__).resolve().parent
 REPO = ROOT.parent.parent
 ASSET = "NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip"
-BASE_URL = "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.58/NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip"
+BASE_URL = "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.59/NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip"
 BASE_SHA = "1826b7e4ce852610a732336a09e1981c66fbbb148cad82b907f00ac7295395ab"
 BASE_ASAR_SHA = "4ea2b86e928adf3a4e4b90d21660ddf1f05358537b2b047e3541cbc7cde6bb26"
 
