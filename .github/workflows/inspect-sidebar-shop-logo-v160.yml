@@ -49,6 +49,15 @@ jobs:
             print('N',len(matches))
             for k,off,s in matches[:13]:
               print('MATCH',k,'OFFSET',off,'CONTEXT',s.replace('\n','\\n'))
+          print('##SIDEBAR EXACT LOGO MATCHES')
+          import re
+          logo=re.compile(r'<div\s+class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-200 dark:shadow-none">\s*<span class="material-symbols-outlined"\s*style="font-variation-settings: \'FILL\' 1;">deployed_code</span>\s*</div>')
+          for key in ['index.html','mobile/www/index.html']:
+            s=files.get(key,'')
+            matches=list(logo.finditer(s))
+            print('COUNT',key,len(matches))
+            for m in matches[:5]:
+              print('CONTEXT',s[max(0,m.start()-450):m.end()+550].replace('\n','\\n'))
           print('##INDEX INITIAL SIDEBAR')
           s=files.get('index.html','')
           for term in ['<aside','id="sidebar"','id="shopName','id="sidebar','shop-caption','sidebar-header','id="shopLogo']:
