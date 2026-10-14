@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.59",
+  "version": "1.0.60",
   "releaseDate": "2026-10-14",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إزالة زر MediaFire القديم لتنزيل تطبيق الهاتف من مركز الأجهزة.",
-      "الإبقاء على زر تحميل محلي واحد لتطبيق NANO POS Mobile المضمّن بجوار قارئ الباركود.",
-      "حفظ APK محليًا من الكمبيوتر دون إنترنت، مع الإبقاء على خدمة تنزيله عبر الشبكة المحلية.",
-      "عدم تغيير بيانات المتجر والتفعيل والمبيعات والديون والمزامنة وقارئ الباركود."
+      "حذف الأيقونة الزرقاء بجانب اسم المتجر في رأس القائمة الجانبية للكمبيوتر.",
+      "إزالة الأيقونة نفسها من واجهة القائمة الجانبية التي تُفتح من المتصفح المحلي.",
+      "الإبقاء على اسم المتجر ونص العنوان والقوائم كما هي دون تغيير.",
+      "عدم تعديل شعار المتجر في الإعدادات والفواتير والطباعة أو بيانات البيع والتفعيل والمزامنة."
     ],
     "fr": [
-      "Suppression du bouton de téléchargement MediaFire obsolète.",
-      "Un seul bouton local pour l’APK NANO POS Mobile, à côté du lecteur de codes-barres.",
-      "Enregistrement hors ligne depuis Windows; lien LAN de téléchargement conservé.",
-      "Données, activation, ventes, dettes, synchronisation et lecteur de codes-barres inchangés."
+      "Suppression de l’icône bleue à côté du nom du magasin dans la barre latérale.",
+      "Même correction dans la barre latérale de l’interface locale.",
+      "Nom du magasin et menu inchangés.",
+      "Conservation des logos sur les factures et dans les paramètres, des données et de la synchronisation."
     ],
     "en": [
-      "Remove the outdated MediaFire mobile download action.",
-      "Place the single local NANO POS Mobile APK download next to Barcode Scanner.",
-      "Save the bundled APK without Internet; retain local network download functionality.",
-      "Preserve business data, activation, sales, debts, sync and scanner."
+      "Remove the blue icon directly beside the store heading in the desktop sidebar.",
+      "Apply the same change to the local browser sidebar.",
+      "Preserve store name, heading text and navigation.",
+      "Keep business logos in settings/receipts, sales data, activation and synchronization intact."
     ]
   },
   "releaseHistory": {
@@ -737,11 +737,34 @@
           "Preserve business data, activation, sales, debts, sync and scanner."
         ]
       }
+    },
+    "1.0.60": {
+      "releaseDate": "2026-10-14",
+      "features": {
+        "ar": [
+          "حذف الأيقونة الزرقاء بجانب اسم المتجر في رأس القائمة الجانبية للكمبيوتر.",
+          "إزالة الأيقونة نفسها من واجهة القائمة الجانبية التي تُفتح من المتصفح المحلي.",
+          "الإبقاء على اسم المتجر ونص العنوان والقوائم كما هي دون تغيير.",
+          "عدم تعديل شعار المتجر في الإعدادات والفواتير والطباعة أو بيانات البيع والتفعيل والمزامنة."
+        ],
+        "fr": [
+          "Suppression de l’icône bleue à côté du nom du magasin dans la barre latérale.",
+          "Même correction dans la barre latérale de l’interface locale.",
+          "Nom du magasin et menu inchangés.",
+          "Conservation des logos sur les factures et dans les paramètres, des données et de la synchronisation."
+        ],
+        "en": [
+          "Remove the blue icon directly beside the store heading in the desktop sidebar.",
+          "Apply the same change to the local browser sidebar.",
+          "Preserve store name, heading text and navigation.",
+          "Keep business logos in settings/receipts, sales data, activation and synchronization intact."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.59-one-local-mobile-button",
+      "id": "nano-pos-v1.0.60-sidebar-logo-only",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -767,14 +790,15 @@
         "1.0.55",
         "1.0.56",
         "1.0.57",
-        "1.0.58"
+        "1.0.58",
+        "1.0.59"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.59/NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.59",
-      "sha256": "1826b7e4ce852610a732336a09e1981c66fbbb148cad82b907f00ac7295395ab",
-      "appAsarSha256": "4ea2b86e928adf3a4e4b90d21660ddf1f05358537b2b047e3541cbc7cde6bb26",
-      "fileName": "NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip",
-      "sizeBytes": 31308716,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.60/NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.60",
+      "sha256": "3cc83f02536ff92eed93004d7e2bc2fa1db6520265811a958fe7ed6ecdb832c9",
+      "appAsarSha256": "dc52c487cd99c1e5b86f3726211e063f5c75dc5b4b71a2e809dab66217fe8d70",
+      "fileName": "NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip",
+      "sizeBytes": 31308990,
       "payloadType": "app-asar"
     }
   ],
@@ -785,8 +809,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "إزالة تحميل الهاتف من MediaFire والاكتفاء بتحميل APK المحلي بجوار زر قارئ الباركود.",
-    "fr": "Suppression du bouton MediaFire; téléchargement APK local à côté du lecteur code-barres.",
-    "en": "Remove MediaFire button; keep only offline mobile APK download alongside the barcode scanner."
+    "ar": "إزالة الشعار الأزرق بجانب اسم المتجر داخل رأس القائمة الجانبية فقط.",
+    "fr": "Suppression de l’icône à côté du nom du magasin dans la barre latérale.",
+    "en": "Remove only the blue sidebar logo beside the shop heading."
   }
 }
