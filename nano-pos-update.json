@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.58",
+  "version": "1.0.59",
   "releaseDate": "2026-10-14",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تضمين ملف NANO POS Mobile v1.3.7 بصيغة APK داخل تطبيق الكمبيوتر دون الحاجة إلى الإنترنت.",
-      "زر لحفظ APK من برنامج الكمبيوتر مباشرة مع اختيار مجلد الحفظ.",
-      "رابط تنزيل محلي للهاتف عبر الشبكة المحلية أو Tailscale من الكمبيوتر الرئيسي.",
-      "التحقق من بصمة SHA-256 للتطبيق قبل تقديمه، مع الحفاظ على المبيعات والديون والمزامنة والبيانات والتفعيل."
+      "إزالة زر MediaFire القديم لتنزيل تطبيق الهاتف من مركز الأجهزة.",
+      "الإبقاء على زر تحميل محلي واحد لتطبيق NANO POS Mobile المضمّن بجوار قارئ الباركود.",
+      "حفظ APK محليًا من الكمبيوتر دون إنترنت، مع الإبقاء على خدمة تنزيله عبر الشبكة المحلية.",
+      "عدم تغيير بيانات المتجر والتفعيل والمبيعات والديون والمزامنة وقارئ الباركود."
     ],
     "fr": [
-      "APK NANO POS Mobile v1.3.7 intégré au programme PC, hors ligne.",
-      "Bouton pour enregistrer directement l’APK depuis le logiciel Windows.",
-      "Adresse locale de téléchargement depuis le PC sur le LAN ou via Tailscale.",
-      "Vérification SHA-256, sans toucher aux ventes, dettes, synchronisation, données et activation."
+      "Suppression du bouton de téléchargement MediaFire obsolète.",
+      "Un seul bouton local pour l’APK NANO POS Mobile, à côté du lecteur de codes-barres.",
+      "Enregistrement hors ligne depuis Windows; lien LAN de téléchargement conservé.",
+      "Données, activation, ventes, dettes, synchronisation et lecteur de codes-barres inchangés."
     ],
     "en": [
-      "Bundle NANO POS Mobile v1.3.7 APK directly inside the Windows desktop app for offline use.",
-      "Save the bundled APK to disk using the built-in Windows save dialog.",
-      "LAN/Tailscale URL to download the Android APK directly from the PC.",
-      "SHA-256 integrity verification; leave sales, debts, sync, stored data and activation unchanged."
+      "Remove the outdated MediaFire mobile download action.",
+      "Place the single local NANO POS Mobile APK download next to Barcode Scanner.",
+      "Save the bundled APK without Internet; retain local network download functionality.",
+      "Preserve business data, activation, sales, debts, sync and scanner."
     ]
   },
   "releaseHistory": {
@@ -714,11 +714,34 @@
           "SHA-256 integrity verification; leave sales, debts, sync, stored data and activation unchanged."
         ]
       }
+    },
+    "1.0.59": {
+      "releaseDate": "2026-10-14",
+      "features": {
+        "ar": [
+          "إزالة زر MediaFire القديم لتنزيل تطبيق الهاتف من مركز الأجهزة.",
+          "الإبقاء على زر تحميل محلي واحد لتطبيق NANO POS Mobile المضمّن بجوار قارئ الباركود.",
+          "حفظ APK محليًا من الكمبيوتر دون إنترنت، مع الإبقاء على خدمة تنزيله عبر الشبكة المحلية.",
+          "عدم تغيير بيانات المتجر والتفعيل والمبيعات والديون والمزامنة وقارئ الباركود."
+        ],
+        "fr": [
+          "Suppression du bouton de téléchargement MediaFire obsolète.",
+          "Un seul bouton local pour l’APK NANO POS Mobile, à côté du lecteur de codes-barres.",
+          "Enregistrement hors ligne depuis Windows; lien LAN de téléchargement conservé.",
+          "Données, activation, ventes, dettes, synchronisation et lecteur de codes-barres inchangés."
+        ],
+        "en": [
+          "Remove the outdated MediaFire mobile download action.",
+          "Place the single local NANO POS Mobile APK download next to Barcode Scanner.",
+          "Save the bundled APK without Internet; retain local network download functionality.",
+          "Preserve business data, activation, sales, debts, sync and scanner."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.58-bundled-mobile-apk",
+      "id": "nano-pos-v1.0.59-one-local-mobile-button",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -743,14 +766,15 @@
         "1.0.54",
         "1.0.55",
         "1.0.56",
-        "1.0.57"
+        "1.0.57",
+        "1.0.58"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.58/NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.58",
-      "sha256": "d0425eac64239ddc25c6e9a6a52b04baa666d6c8b9c96463fad6707c6bec0ced",
-      "appAsarSha256": "a99626b1b8fc73465e195774dc56b7ce4957fc6b240a6cdbe0f28b475a7f027e",
-      "fileName": "NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip",
-      "sizeBytes": 31312371,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.59/NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.59",
+      "sha256": "1826b7e4ce852610a732336a09e1981c66fbbb148cad82b907f00ac7295395ab",
+      "appAsarSha256": "4ea2b86e928adf3a4e4b90d21660ddf1f05358537b2b047e3541cbc7cde6bb26",
+      "fileName": "NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip",
+      "sizeBytes": 31308716,
       "payloadType": "app-asar"
     }
   ],
@@ -761,8 +785,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "إدراج تطبيق الهاتف APK داخل NANO POS للكمبيوتر مع تحميل محلي دون إنترنت وعبر شبكة الكمبيوتر.",
-    "fr": "APK Android intégré au programme PC, accessible hors ligne et sur le réseau local.",
-    "en": "Android APK embedded in the desktop application, with offline extraction and LAN download."
+    "ar": "إزالة تحميل الهاتف من MediaFire والاكتفاء بتحميل APK المحلي بجوار زر قارئ الباركود.",
+    "fr": "Suppression du bouton MediaFire; téléchargement APK local à côté du lecteur code-barres.",
+    "en": "Remove MediaFire button; keep only offline mobile APK download alongside the barcode scanner."
   }
 }
