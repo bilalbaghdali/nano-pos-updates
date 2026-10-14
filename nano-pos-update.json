@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.57",
-  "releaseDate": "2026-10-13",
+  "version": "1.0.58",
+  "releaseDate": "2026-10-14",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة تنبيه بجوار رابط تطبيق الهاتف في الإعدادات، مع رقم أحدث إصدار APK منشور.",
-      "ربط أيقونة التحميل مباشرة بآخر نسخة رسمية منشورة من NANO POS Mobile على GitHub.",
-      "إضافة نسخ رابط التحميل وتحديث حالة الإصدار، مع رسالة عند تعذر الوصول للملف.",
-      "الإبقاء على وظائف البيع، الديون، المزامنة، البيانات والتفعيل دون تعديل."
+      "تضمين ملف NANO POS Mobile v1.3.7 بصيغة APK داخل تطبيق الكمبيوتر دون الحاجة إلى الإنترنت.",
+      "زر لحفظ APK من برنامج الكمبيوتر مباشرة مع اختيار مجلد الحفظ.",
+      "رابط تنزيل محلي للهاتف عبر الشبكة المحلية أو Tailscale من الكمبيوتر الرئيسي.",
+      "التحقق من بصمة SHA-256 للتطبيق قبل تقديمه، مع الحفاظ على المبيعات والديون والمزامنة والبيانات والتفعيل."
     ],
     "fr": [
-      "Notification et numéro de version de la dernière application Android dans les paramètres.",
-      "Téléchargement de l’APK NANO POS Mobile publié sur GitHub depuis le bouton dédié.",
-      "Copie du lien et actualisation du statut, avec message si le fichier est indisponible.",
-      "Aucune modification des ventes, dettes, synchronisation, données ou activation."
+      "APK NANO POS Mobile v1.3.7 intégré au programme PC, hors ligne.",
+      "Bouton pour enregistrer directement l’APK depuis le logiciel Windows.",
+      "Adresse locale de téléchargement depuis le PC sur le LAN ou via Tailscale.",
+      "Vérification SHA-256, sans toucher aux ventes, dettes, synchronisation, données et activation."
     ],
     "en": [
-      "Show an Android download notice and the latest published APK version.",
-      "Connect the download icon to the newest verified NANO POS Mobile GitHub release.",
-      "Copyable download link and refreshable availability status.",
-      "Preserve sales, debts, synchronization, stored data, and licensing."
+      "Bundle NANO POS Mobile v1.3.7 APK directly inside the Windows desktop app for offline use.",
+      "Save the bundled APK to disk using the built-in Windows save dialog.",
+      "LAN/Tailscale URL to download the Android APK directly from the PC.",
+      "SHA-256 integrity verification; leave sales, debts, sync, stored data and activation unchanged."
     ]
   },
   "releaseHistory": {
@@ -691,11 +691,34 @@
           "Preserve sales, debts, synchronization, stored data, and licensing."
         ]
       }
+    },
+    "1.0.58": {
+      "releaseDate": "2026-10-14",
+      "features": {
+        "ar": [
+          "تضمين ملف NANO POS Mobile v1.3.7 بصيغة APK داخل تطبيق الكمبيوتر دون الحاجة إلى الإنترنت.",
+          "زر لحفظ APK من برنامج الكمبيوتر مباشرة مع اختيار مجلد الحفظ.",
+          "رابط تنزيل محلي للهاتف عبر الشبكة المحلية أو Tailscale من الكمبيوتر الرئيسي.",
+          "التحقق من بصمة SHA-256 للتطبيق قبل تقديمه، مع الحفاظ على المبيعات والديون والمزامنة والبيانات والتفعيل."
+        ],
+        "fr": [
+          "APK NANO POS Mobile v1.3.7 intégré au programme PC, hors ligne.",
+          "Bouton pour enregistrer directement l’APK depuis le logiciel Windows.",
+          "Adresse locale de téléchargement depuis le PC sur le LAN ou via Tailscale.",
+          "Vérification SHA-256, sans toucher aux ventes, dettes, synchronisation, données et activation."
+        ],
+        "en": [
+          "Bundle NANO POS Mobile v1.3.7 APK directly inside the Windows desktop app for offline use.",
+          "Save the bundled APK to disk using the built-in Windows save dialog.",
+          "LAN/Tailscale URL to download the Android APK directly from the PC.",
+          "SHA-256 integrity verification; leave sales, debts, sync, stored data and activation unchanged."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.57-mobile-download",
+      "id": "nano-pos-v1.0.58-bundled-mobile-apk",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -719,14 +742,15 @@
         "1.0.53",
         "1.0.54",
         "1.0.55",
-        "1.0.56"
+        "1.0.56",
+        "1.0.57"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.57/NANO-POS-Patch-1.0.56-to-1.0.57-MOBILE-DOWNLOAD.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.57",
-      "sha256": "7178acac99c3901023a5d6c50f21b2c39ef7da58ac91e1706f6281e2c0862758",
-      "appAsarSha256": "727ced84eee4a881209340b998cdef55ee41f2e1d4eacf693270bd6390ff6df9",
-      "fileName": "NANO-POS-Patch-1.0.56-to-1.0.57-MOBILE-DOWNLOAD.zip",
-      "sizeBytes": 30953927,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.58/NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.58",
+      "sha256": "d0425eac64239ddc25c6e9a6a52b04baa666d6c8b9c96463fad6707c6bec0ced",
+      "appAsarSha256": "a99626b1b8fc73465e195774dc56b7ce4957fc6b240a6cdbe0f28b475a7f027e",
+      "fileName": "NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip",
+      "sizeBytes": 31312371,
       "payloadType": "app-asar"
     }
   ],
@@ -737,8 +761,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحديث رابط تنزيل تطبيق NANO POS Mobile والإشعار بآخر نسخة منشورة؛ بدون تغيير بيانات المتجر أو الفواتير.",
-    "fr": "Mise à jour du téléchargement mobile et de la notification; sans modification des données du magasin.",
-    "en": "Mobile APK download link and release notification update; no store-data changes."
+    "ar": "إدراج تطبيق الهاتف APK داخل NANO POS للكمبيوتر مع تحميل محلي دون إنترنت وعبر شبكة الكمبيوتر.",
+    "fr": "APK Android intégré au programme PC, accessible hors ligne et sur le réseau local.",
+    "en": "Android APK embedded in the desktop application, with offline extraction and LAN download."
   }
 }
