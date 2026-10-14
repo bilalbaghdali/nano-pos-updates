@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Build from SHA-pinned v1.0.59 desktop
+      - name: Build from correct SHA-pinned v1.0.59 desktop
         run: |
           set -euo pipefail
           python3 build/v1.0.60/build.py
