@@ -36,7 +36,7 @@ jobs:
             for i in found[:limit]:
               print('--- lines',i+1,'----')
               for no in range(max(0,i-before),min(len(lines),i+after)):print(f'{no+1}: {lines[no][:400]}')
-          for path in ['electron-main.cjs','electron-native-preload.cjs','server.cjs','desktop-sync-server.js','desktop-sync-server.cjs','browser-bridge.js','index.html','nano-mobile-download.js','mobile/www/index.html','package.json']:
+          for path in ['electron-main.cjs','electron-native-preload.cjs','server.cjs','mobile-sync-server.cjs','browser-bridge.js','index.html','nano-mobile-download.js','mobile/www/index.html','package.json']:
             try: s=get(path)
             except:continue
             print('### FILE',path,'LEN',len(s),'LINES',len(s.splitlines()))
@@ -49,6 +49,9 @@ jobs:
               excerpt(s,'appDownloadSection',4,9,2)
             elif path=='nano-mobile-download.js':
               print(s[:9000])
+            elif path=='mobile-sync-server.cjs':
+              print('HEAD',s[:11000])
+              for term in ['http.createServer','createServer(','listen(',"url.pathname",'req.url','mobile/index.html','mobile/www','bind','host','port','return {']:excerpt(s,term,5,15,5)
             elif path=='browser-bridge.js':
               for term in ['ipcRenderer','saveDialog','download','server','writeFile']:excerpt(s,term,2,5,2)
             elif path=='package.json':print(s[:2500])
