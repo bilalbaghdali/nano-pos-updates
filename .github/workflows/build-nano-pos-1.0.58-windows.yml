@@ -25,7 +25,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Path .\stage -Force | Out-Null
           gh release download v1.0.58 --pattern 'NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip' --dir stage
-          $archive = '.\stage\NANO-POS-Patch-1.0.44-to-1.0.58-ACTUAL-LOGIN-FIX.zip'
+          $archive = '.\stage\NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip'
           $expected = 'd0425eac64239ddc25c6e9a6a52b04baa666d6c8b9c96463fad6707c6bec0ced'
           $actual = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
           if ($actual -ne $expected) {throw 'Source ZIP hash mismatch'}
@@ -84,9 +84,8 @@ jobs:
           $installedAsar = '.\\stage\\app\\dist\\win-unpacked\\resources\\app.asar'
           if (-not (Test-Path $installedAsar)) {throw 'Packaged Windows app.asar missing'}
           $pkgFile = '.\\stage\\app\\dist\\win-unpacked\\resources\\app.asar'
-          npx --yes '@electron/asar@3.4.1' list $pkgFile | Select-String 'downloads/NANO-POS-Mobile-v1.3.7.apk' | Out-Host
-          asar extract-file $pkgFile 'downloads/NANO-POS-Mobile-v1.3.7.apk' > '.\\stage\\verify-bundled.apk'
-          $hash = (Get-FileHash '.\\stage\\verify-bundled.apk' -Algorithm SHA256).Hash.ToLowerInvariant()
+          asar extract $pkgFile '.\\stage\\verify-build'
+          $hash = (Get-FileHash '.\\stage\\verify-build\\downloads\\NANO-POS-Mobile-v1.3.7.apk' -Algorithm SHA256).Hash.ToLowerInvariant()
           if ($hash -ne '49503c07f39d941e308005df40b7de3243e1a379704b042ef1f7bd7e2bd6174c') {throw 'Built installer lost or changed the APK'}
       - name: Verify executable outputs and rename
         shell: pwsh
