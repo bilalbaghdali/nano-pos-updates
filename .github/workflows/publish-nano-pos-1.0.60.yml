@@ -1,0 +1,94 @@
+name: Publish NANO POS v1.0.60 Sidebar Logo Removal
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.60.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build from SHA-pinned v1.0.59 desktop
+        run: |
+          set -euo pipefail
+          python3 build/v1.0.60/build.py
+      - name: Verify sidebar icon removed with all features preserved
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,json,struct,hashlib,re
+          r=Path('build/v1.0.60')
+          info=json.loads((r/'build-result.json').read_text())
+          with zipfile.ZipFile(r/info['fileName']) as z:
+            assert z.testzip() is None
+            data=z.read('payload/app.asar')
+          header=json.loads(data[16:16+struct.unpack_from('<I',data,12)[0]])
+          start=8+struct.unpack_from('<I',data,4)[0]
+          def get(name):
+            node=header
+            for part in name.split('/'):node=node['files'][part]
+            return data[start+int(node['offset']):start+int(node['offset'])+int(node['size'])]
+          for n in ['index.html','mobile/www/index.html']:
+            txt=get(n).decode()
+            sidebar=txt.split('<!-- Sidebar -->',1)[1].split('<nav class="flex-1 overflow-y-auto',1)[0]
+            assert 'deployed_code' not in sidebar,n
+            assert 'data-i18n="app_title"' in sidebar,n
+            assert '<h1' in sidebar,n
+            assert 'sidebarToggleIcon' in sidebar,n
+          assert hashlib.sha256(get('downloads/NANO-POS-Mobile-v1.3.7.apk')).hexdigest()==info['mobileApkSha256']
+          assert b'data-download-scanner' in get('desktop-sync-ui.js')
+          assert b'data-download-mobile' in get('desktop-sync-ui.js')
+          assert b'nano-local-app-scanner-downloads' in get('desktop-sync-ui.js')
+          assert set(info['changedFiles']).issubset({'index.html','mobile/www/index.html','package.json','package-lock.json','app-config.js','release-notes.js'})
+          assert info['dataFilesModified'] is False
+          assert info['toVersion']=='1.0.60'
+          man=json.loads((r/'nano-pos-update-v160.json').read_text())
+          assert man['patches'][0]['sha256']==info['sha256']
+          assert man['patches'][0]['appAsarSha256']==info['appAsarSha256']
+          print('VERIFIED: sidebar blue logos removed, store titles, local download buttons, scanner, data preserved')
+          PY
+      - name: Publish versioned v1.0.60 patch without replacing prior release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          FILE='build/v1.0.60/NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip'
+          if gh release view v1.0.60 >/dev/null 2>&1; then echo 'Release already exists'; exit 1; fi
+          gh release create v1.0.60 "$FILE" --target main \
+            --title 'NANO POS v1.0.60 — Remove Blue Sidebar Logo' \
+            --notes 'Optional desktop-only update built from verified v1.0.59. Removes the blue deployed_code tile beside the shop/application heading in the sidebar in desktop and locally served mobile-web interface. Preserves store heading text, shop logos in receipts and settings, Android APK, offline download, barcode reader, sales, debts, inventory, activation and data. Test on your Windows PC before deploying broadly.'
+      - name: Verify published ZIP digest against manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.60 --pattern 'NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip' --dir verified
+          WANT="$(python3 -c 'import json;print(json.load(open("build/v1.0.60/build-result.json"))["sha256"])')"
+          GOT="$(sha256sum verified/NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip | cut -d' ' -f1)"
+          test "$WANT" = "$GOT"
+      - name: Update cloud updater only after release SHA verification
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CUR="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.60/nano-pos-update-v160.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+             -f message='Publish NANO POS Desktop v1.0.60 remove sidebar shop logo' \
+             -f sha="$CUR" -f content="$CONTENT" >/dev/null
+      - name: Save release build record
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.60-verified-manifest
+          path: build/v1.0.60/build-result.json
+          retention-days: 30
