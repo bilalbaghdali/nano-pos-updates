@@ -34,16 +34,15 @@ jobs:
                 b=raw[off+int(v['offset']):off+int(v['offset'])+int(v['size'])]
                 found[p]=b.decode('utf8','replace')
           walk(h)
-          terms=['mediafire','قارئ الباركود','تطبيق الباركود','wireless-scanner.apk','NANO-POS-Wireless-Scanner','تحميل تطبيق الهاتف','تنزيل تطبيق الهاتف','nanoOfflineApkCard','nanoOfflineSave','appDownloadSection','nano-mobile.apk']
-          for term in terms:
-            hits=[]
-            for p,s in found.items():
-              locs=[m.start() for m in re.finditer(re.escape(term),s,re.I)]
-              if locs:
-                for loc in locs[:6]:
-                  hits.append((p,loc,s[max(0,loc-800):min(len(s),loc+1300)]))
-            print('========== TERM',repr(term),'MATCHES',len(hits))
-            for p,loc,excerpt in hits[:15]:
-              print('FILE',p,'OFFSET',loc)
-              print('TEXT',excerpt.replace('\n','\\n'))
+          p='desktop-sync-ui.js'
+          s=found[p]
+          for token in ['MOBILE_APP_DOWNLOAD_URL','WIRELESS_SCANNER_DOWNLOAD_PATH','downloadAppDesc','scannerDownload','downloadApp','mobileDownload','desktopSync']:
+            locs=[m.start() for m in re.finditer(re.escape(token),s,re.I)]
+            print('TOKEN',token,'count',len(locs))
+            for loc in locs[-8:]:
+              print('OFFSET',loc,'SNIPPET',s[max(0,loc-1100):min(len(s),loc+1550)].replace('\n','\\n'))
+          p='nano-mobile-offline-ui.js'
+          s=found[p]
+          print('OFFLINE-UI-JS',s[:12000])
+
           PY
