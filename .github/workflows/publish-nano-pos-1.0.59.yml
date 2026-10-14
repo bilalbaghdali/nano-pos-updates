@@ -1,0 +1,95 @@
+name: Publish NANO POS v1.0.59 Single Local Mobile Download
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.59.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build from verified desktop v1.0.58
+        run: |
+          set -euo pipefail
+          python3 build/v1.0.59/build.py
+      - name: Validate one button, position, no MediaFire and preserved APK/scanner
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,json,struct,re,hashlib
+          root=Path('build/v1.0.59')
+          result=json.loads((root/'build-result.json').read_text())
+          z=root/result['fileName']
+          with zipfile.ZipFile(z) as arc:
+            assert arc.testzip() is None
+            data=arc.read('payload/app.asar')
+          h=json.loads(data[16:16+struct.unpack_from('<I',data,12)[0]])
+          off=8+struct.unpack_from('<I',data,4)[0]
+          def unpack(path):
+            node=h
+            for part in path.split('/'):node=node['files'][part]
+            return data[off+int(node['offset']):off+int(node['offset'])+node['size']]
+          js=unpack('desktop-sync-ui.js').decode()
+          html=unpack('index.html').decode()
+          assert not re.search('mediafire',js,re.I)
+          assert 'nano-mobile-offline-ui.js"></script>' not in html
+          assert js.count('data-download-mobile')==1
+          assert js.count('data-download-scanner')==1
+          assert js.count('saveEmbeddedMobileApk()')==1
+          assert re.search(r'id="nano-local-app-scanner-downloads".+?data-download-mobile.+?data-download-scanner',js,re.S)
+          assert hashlib.sha256(unpack('downloads/NANO-POS-Mobile-v1.3.7.apk')).hexdigest()==result['apkSha256']
+          assert result['dataFilesModified'] is False
+          assert 'mobile-sync-server.cjs' not in result['changedFiles']
+          assert result['apkVersion']=='1.3.7'
+          manifest=json.loads((root/'nano-pos-update-v159.json').read_text())
+          assert manifest['patches'][0]['sha256']==result['sha256']
+          assert manifest['patches'][0]['appAsarSha256']==result['appAsarSha256']
+          print('PASS: single local APK button next to scanner, old MediaFire removed, APK and scanner preserved.')
+          PY
+      - name: Publish new optional v1.0.59 release (no overwrite)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          FILE='build/v1.0.59/NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip'
+          if gh release view v1.0.59 >/dev/null 2>&1; then
+             echo 'Release exists, refusing overwrite'; exit 1
+          fi
+          gh release create v1.0.59 "$FILE" --target main \
+             --title 'NANO POS v1.0.59 — One Local Android Download Button' \
+             --notes 'Optional desktop-only update based on SHA-verified v1.0.58. Removes old MediaFire Android-app button, consolidates the single offline-download control next to Barcode Scanner inside Mobile Device Center. Existing embedded NANO POS Mobile v1.3.7, local serving, Windows Save dialog and separate wireless-scanner control are retained. No changes to sales, debts, inventory, database, activation, backups or synchronization. Test the Windows app before production.'
+      - name: Download published archive and verify SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.59 --pattern 'NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip' --dir verified
+          WANT="$(python3 -c 'import json;print(json.load(open("build/v1.0.59/build-result.json"))["sha256"])')"
+          GOT="$(sha256sum verified/NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip | cut -d' ' -f1)"
+          test "$WANT" = "$GOT"
+      - name: Publish checked updater manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.59/nano-pos-update-v159.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+             -f message='Publish NANO POS Desktop v1.0.59 single offline APK download update' \
+             -f sha="$CURRENT" -f content="$CONTENT" >/dev/null
+      - name: Archive build metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.59-release-meta
+          path: build/v1.0.59/build-result.json
+          retention-days: 30
