@@ -1,0 +1,57 @@
+name: Inspect Sidebar Shop Branding v1.0.59
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-sidebar-shop-logo-v160.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect actual sidebar HTML and branding scripts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p tmp
+          gh release download v1.0.59 --pattern 'NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip' --dir tmp
+          python3 - <<'PY'
+          import struct,json,re,zipfile
+          from pathlib import Path
+          z=next(Path('tmp').glob('*.zip'))
+          with zipfile.ZipFile(z) as archive: data=archive.read('payload/app.asar')
+          h=json.loads(data[16:16+struct.unpack_from('<I',data,12)[0]]);start=8+struct.unpack_from('<I',data,4)[0]
+          files={}
+          def walk(node,prefix=''):
+            for k,v in node['files'].items():
+              key=prefix+k
+              if 'files' in v:walk(v,key+'/')
+              elif key.endswith(('.html','.css','.js','.cjs')) and not key.startswith('node_modules/'):
+                files[key]=data[start+int(v['offset']):start+int(v['offset'])+int(v['size'])].decode('utf8','replace')
+          walk(h)
+          search=[
+           'shopName','shopLogo','storeName','storeLogo','sidebarLogo','sidebarBrand',
+           'shopCaptionLogo','nanoSidebar','store-name','shop-name','brandLogo',
+           'shopCaption','shop-name-display','sidebar-header','shopTitle',
+           'shop-name-header','store_name','اسم المتجر'
+          ]
+          for term in search:
+            print('##TERM',term)
+            matches=[]
+            for k,s in files.items():
+              if not k.startswith(('index.html','renderer.js','nano-','sidebar','app-config','branding','store','desktop')):
+                continue
+              for m in list(re.finditer(re.escape(term),s,re.I))[:7]:
+                startm=m.start();matches.append((k,startm,s[max(0,startm-280):startm+420]))
+            print('N',len(matches))
+            for k,off,s in matches[:13]:
+              print('MATCH',k,'OFFSET',off,'CONTEXT',s.replace('\n','\\n'))
+          print('##INDEX INITIAL SIDEBAR')
+          s=files.get('index.html','')
+          for term in ['<aside','id="sidebar"','id="shopName','id="sidebar','shop-caption','sidebar-header','id="shopLogo']:
+            m=s.find(term)
+            if m>=0:print('HTML',term,'LOCATION',m,'TEXT',s[max(0,m-300):m+2500].replace('\n','\\n'))
+          PY
