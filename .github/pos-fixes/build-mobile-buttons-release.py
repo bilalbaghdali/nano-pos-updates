@@ -87,8 +87,12 @@ def main(source_zip):
         raise SystemExit('Desktop interface structure unrecognized')
     if not all(s in ui for s in ('data-download-mobile', 'data-download-scanner')):
         raise SystemExit('Existing phone/scanner buttons unrecognized')
-    if '1.3.7' not in ui and '1.3.7' not in html:
-        raise SystemExit('Latest mobile 1.3.7 download not detected; old link will not be removed')
+    mobile_meta = json.loads((ROOT / 'mobile-latest.json').read_text(encoding='utf8'))
+    latest_ids = ('mobileApkDownloadButton', 'mobileApkSaveButton', 'nanoMobileDownloadLatest', 'downloadLatestMobileApk', 'saveMobileApkButton')
+    if mobile_meta.get('version') != '1.3.7' or mobile_meta.get('published') is not True:
+        raise SystemExit('Stable mobile 1.3.7 release is not published')
+    if not any(s in html for s in latest_ids) and '1.3.7' not in html and '1.3.7' not in ui:
+        raise SystemExit('Latest Mobile download button not found; refusing to remove old button')
     script = (ROOT / '.github/pos-fixes/mobile-buttons-fix.js').read_text(encoding='utf8')
     if '__nanoMobileButtonsFixInstalled' in html:
         raise SystemExit('Hotfix already embedded; refusing duplicate update')
