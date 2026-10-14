@@ -50,7 +50,8 @@ function serve(req, res) {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'
     });
-    return void res.end(JSON.stringify(status())) || true;
+    res.end(JSON.stringify(status()));
+    return true;
   }
 
   if (pathname === '/api/nano-mobile-apk') {
