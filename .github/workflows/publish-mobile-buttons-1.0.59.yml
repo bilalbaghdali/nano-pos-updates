@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/publish-mobile-buttons-1.0.59.yml'
+      - '.github/pos-fixes/build-mobile-buttons-release.py'
+      - '.github/pos-fixes/mobile-buttons-fix.js'
   workflow_dispatch:
 
 permissions:
