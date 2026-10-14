@@ -1,0 +1,66 @@
+name: Publish NANO POS v1.0.59 mobile button fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-mobile-buttons-1.0.59.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nano-pos-v1.0.59-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify that v1.0.59 is not already published
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view v1.0.59 >/dev/null 2>&1; then
+            echo "Release v1.0.59 already exists. Refusing accidental overwrite."
+            exit 1
+          fi
+
+      - name: Download the published v1.0.58 patch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p _release_build/source
+          gh release download v1.0.58 \
+            --pattern 'NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip' \
+            --dir _release_build/source
+          test -s _release_build/source/NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip
+
+      - name: Build and validate an app.asar-only update
+        run: |
+          python3 .github/pos-fixes/build-mobile-buttons-release.py \
+            _release_build/source/NANO-POS-Patch-1.0.57-to-1.0.58-EMBEDDED-APK.zip
+          python3 -m json.tool nano-pos-update.json >/dev/null
+          unzip -l _release_build/NANO-POS-Patch-1.0.58-to-1.0.59-MOBILE-BUTTONS-FIX.zip
+
+      - name: Create GitHub release v1.0.59
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v1.0.59 \
+            _release_build/NANO-POS-Patch-1.0.58-to-1.0.59-MOBILE-BUTTONS-FIX.zip \
+            --title 'NANO POS v1.0.59 - Mobile download buttons' \
+            --notes-file _release_build/RELEASE_NOTES.md \
+            --latest
+
+      - name: Publish manifest only after the release exists
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'Publish verified NANO POS v1.0.59 mobile-button fix'
+          git push origin HEAD:main
