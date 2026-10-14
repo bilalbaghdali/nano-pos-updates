@@ -1,0 +1,121 @@
+name: Build Windows NANO POS 1.0.59 with Bundled Offline Android APK
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-nano-pos-1.0.59-windows.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  windows-package:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout update scripts
+        uses: actions/checkout@v4
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download published v1.0.59 source bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path .\stage -Force | Out-Null
+          gh release download v1.0.59 --pattern 'NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip' --dir stage
+          $archive = '.\stage\NANO-POS-Patch-1.0.58-to-1.0.59-ONE-LOCAL-MOBILE-BUTTON.zip'
+          $expected = '1826b7e4ce852610a732336a09e1981c66fbbb148cad82b907f00ac7295395ab'
+          $actual = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) {throw 'Source ZIP hash mismatch'}
+          Expand-Archive -Path $archive -DestinationPath .\stage\extracted -Force
+          if (-not (Test-Path .\stage\extracted\payload\app.asar)) { throw 'Missing app.asar'}
+      - name: Extract application source from verified ASAR
+        shell: pwsh
+        run: |
+          npm install --global '@electron/asar@3.4.1' --no-fund --no-audit
+          asar extract .\stage\extracted\payload\app.asar .\stage\app
+          if (-not (Test-Path .\stage\app\assets\branding\nano-pos-icon.ico)) {throw 'New Windows icon missing'}
+          $apk = '.\stage\app\downloads\NANO-POS-Mobile-v1.3.7.apk'
+          if (-not (Test-Path $apk)) { throw 'Bundled mobile APK is missing' }
+          $sha = (Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($sha -ne '49503c07f39d941e308005df40b7de3243e1a379704b042ef1f7bd7e2bd6174c') { throw 'Invalid embedded APK integrity' }
+          if (-not (Test-Path '.\stage\app\nano-embedded-apk.cjs')) {throw 'Missing embedded APK server code'}
+          if (-not (Test-Path '.\stage\app\nano-mobile-offline-ui.js')) {throw 'Missing offline desktop UI'}
+          $package = Get-Content .\stage\app\package.json -Raw | ConvertFrom-Json
+          if ($package.version -ne '1.0.59') { throw 'Incorrect app version'}
+          if ($package.build.win.icon -ne 'assets/branding/nano-pos-icon.ico') {throw 'Unconfigured Windows executable icon'}
+      - name: Verify mobile button layout and old download URL removal
+        shell: pwsh
+        run: |
+          $ui = Get-Content '.\stage\app\desktop-sync-ui.js' -Raw
+          $html = Get-Content '.\stage\app\index.html' -Raw
+          if ($ui -match 'mediafire') { throw 'Outdated MediaFire download still present' }
+          if ($ui -notmatch 'nano-local-app-scanner-downloads') { throw 'Mobile/scanner layout not present' }
+          if ($ui -notmatch 'saveEmbeddedMobileApk') { throw 'Native APK Save action missing' }
+          if ($html -match '<script defer src="nano-mobile-offline-ui.js"') { throw 'Duplicate local APK download card still loaded' }
+      - name: Install clean Windows packaging tools while retaining MEGA modules
+        shell: pwsh
+        working-directory: stage/app
+        run: |
+          # The 1.0.43 asar contains an obsolete npm lock entry which points
+          # to a deleted tarball; source packages are still fully verified.
+          if (Test-Path .\package-lock.json) { Remove-Item .\package-lock.json -Force }
+          if (Test-Path .\node_modules) { Move-Item .\node_modules ..\vendored-node-modules }
+          npm install --no-audit --no-fund --package-lock=false --legacy-peer-deps
+          $vendor = '..\vendored-node-modules'
+          if (Test-Path $vendor) {
+            foreach ($entry in Get-ChildItem $vendor) {
+              $target = Join-Path .\node_modules $entry.Name
+              if ($entry.Name.StartsWith('@')) {
+                New-Item -ItemType Directory -Path $target -Force | Out-Null
+                foreach ($pkg in Get-ChildItem $entry.FullName) {
+                  $dest = Join-Path $target $pkg.Name
+                  if (-not (Test-Path $dest)) { Copy-Item $pkg.FullName $dest -Recurse }
+                }
+              } elseif (-not (Test-Path $target)) {
+                Copy-Item $entry.FullName $target -Recurse
+              }
+            }
+          }
+          if (-not (Test-Path .\node_modules\megajs\package.json)) { throw 'MEGA integration disappeared' }
+      - name: Build Windows installer and portable executable
+        shell: pwsh
+        working-directory: stage/app
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          npx electron-builder --win nsis portable --x64 --publish never
+      - name: Verify offline APK was packed into final Windows app
+        shell: pwsh
+        run: |
+          $installedAsar = '.\\stage\\app\\dist\\win-unpacked\\resources\\app.asar'
+          if (-not (Test-Path $installedAsar)) {throw 'Packaged Windows app.asar missing'}
+          $pkgFile = '.\\stage\\app\\dist\\win-unpacked\\resources\\app.asar'
+          asar extract $pkgFile '.\\stage\\verify-build'
+          $hash = (Get-FileHash '.\\stage\\verify-build\\downloads\\NANO-POS-Mobile-v1.3.7.apk' -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($hash -ne '49503c07f39d941e308005df40b7de3243e1a379704b042ef1f7bd7e2bd6174c') {throw 'Built installer lost or changed the APK'}
+      - name: Verify executable outputs and rename
+        shell: pwsh
+        run: |
+          $found = @(Get-ChildItem .\stage\app\dist -Filter '*.exe' -File)
+          if ($found.Count -lt 2) {throw 'Expected NSIS installer and portable EXE'}
+          New-Item -ItemType Directory -Path .\publish -Force | Out-Null
+          $installer = $found | Where-Object { $_.Name -match 'Setup|Installer' } | Select-Object -First 1
+          if (-not $installer) {throw 'NSIS installer not found'}
+          $portable = $found | Where-Object { $_.FullName -ne $installer.FullName } | Select-Object -First 1
+          Copy-Item $installer.FullName .\publish\NANO-POS-v1.0.59-Setup-x64.exe
+          Copy-Item $portable.FullName .\publish\NANO-POS-v1.0.59-Portable-x64.exe
+          Get-ChildItem .\publish | Get-FileHash -Algorithm SHA256 | Format-Table
+      - name: Upload executable assets to GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          gh release upload v1.0.59 .\publish\NANO-POS-v1.0.59-Setup-x64.exe .\publish\NANO-POS-v1.0.59-Portable-x64.exe 
+      - name: Save executables as workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-1.0.59-windows-programs
+          path: publish/*.exe
