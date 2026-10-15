@@ -1,0 +1,51 @@
+name: Inspect v164 finance state transitions
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-nano-v165-finance.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect verified app state changes and native trust boundaries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p in
+          gh release download v1.0.64 --pattern 'NANO-POS-Patch-1.0.63-to-1.0.64-FINANCIAL-REVIEW.zip' --dir in
+          python3 - <<'PY'
+          import zipfile,json,struct,pathlib,hashlib,re
+          m=json.loads(pathlib.Path('nano-pos-update.json').read_text());assert m['version']=='1.0.64'
+          patch=m['patches'][0]
+          with zipfile.ZipFile(pathlib.Path('in')/patch['fileName']) as z:raw=z.read('payload/app.asar')
+          assert hashlib.sha256(raw).hexdigest()==patch['appAsarSha256']
+          h=json.loads(raw[16:16+struct.unpack_from('<I',raw,12)[0]])
+          off=8+struct.unpack_from('<I',raw,4)[0]
+          def file(path):
+            node=h
+            for x in path.split('/'): node=node['files'][x]
+            return raw[off+int(node['offset']):off+int(node['offset'])+node['size']].decode('utf8','replace')
+          for f in ['browser-bridge.js','mobile/www/browser-bridge.js','electron-main.cjs','electron-native-preload.cjs','pc-sync-service.cjs','mobile-sync-server.cjs','nano-financial-review.js','stocktake/stocktake-guard.js','mobile/www/stocktake/stocktake-guard.js']:
+            s=file(f)
+            print('MODULE',f,'SIZE',len(s),'HASH',hashlib.sha256(s.encode()).hexdigest())
+            if f.endswith('browser-bridge.js'):
+              for key in ["const KEY =","let db =","function save(", "function ids(", "function normalize(", "async function", "function salesFor(", "const salesFor", "function activeCaisseSession(", "function caisseSessionSummary(", "function purchaseDebt(", "function invoiceDebt(",
+                "channel === 'get-analytics'","channel === 'get-sales'","channel === 'save-sale'","channel === 'add-sale'","channel === 'return-sale'","channel === 'issue-credit-note'",
+                "channel === 'open-caisse-session'","channel === 'close-caisse-session'","channel === 'get-session-details'","channel === 'get-caisse-summary'",
+                "channel === 'get-promotions'","channel === 'add-promotion'","channel === 'save-promotion'","channel === 'get-stocktake'","channel === 'save-stocktake'","channel === 'adjust-stocktake'","channel === 'get-products'","channel === 'save-product'","channel === 'get-audit-log'",
+                "channel === 'get-users'","channel === 'update-user'","channel === 'delete-sale'","channel === 'delete-purchase'",'const ipc =','const handle=','const api=']:
+                i=s.find(key)
+                if i>=0:
+                  n=2700 if any(t in key for t in ['return','credit-note','close-caisse','get-stocktake','save-stocktake','save-sale','add-sale','get-promotions','save-promotion','get-analytics']) else 850
+                  print('FIND',f,key,i,repr(s[max(0,i-90):i+n]))
+            else:
+              for key in ["ipcMain.handle","nanoNative","new BrowserWindow","pcSyncRoute","open-caisse-session","return-sale","save-stocktake","audit","get-analytics","get-sales","get-stocktake","add-sale","get-notifications"]:
+                i=s.find(key)
+                if i>=0:print('FIND',f,key,i,repr(s[max(0,i-120):i+750]))
+          print('INSPECT_END')
+          PY
