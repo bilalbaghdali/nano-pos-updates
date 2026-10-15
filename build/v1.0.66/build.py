@@ -98,6 +98,9 @@ def main():
     assert b'NANO_RETURN_PLAN_166' in addon and b'function post(' in addon
     files['nano-return-plan.js']=({},addon)
     files['mobile/www/nano-return-plan.js']=({},addon)
+    ui=(ROOT/'nano-return-ui.js').read_bytes()
+    files['nano-return-ui.js']=({},ui)
+    files['mobile/www/nano-return-ui.js']=({},ui)
     for path in ('index.html','mobile/www/index.html'):
         html=get(path)
         assert html.count('src="browser-bridge.js"')==1
@@ -105,6 +108,8 @@ def main():
         html=html.replace('src="browser-bridge.js"',
                           'src="nano-return-plan.js"></script>\n  <script src="browser-bridge.js"',1)
         assert html.index('src="nano-return-plan.js"')<html.index('src="browser-bridge.js"')
+        assert html.count('</body>')==1
+        html=html.replace('</body>','<script defer src="nano-return-ui.js"></script>\n</body>',1)
         put(path,html)
 
     for path in ('browser-bridge.js','mobile/www/browser-bridge.js'):
@@ -200,7 +205,7 @@ def main():
         put('release-notes.js',note[:a]+'const F='+json.dumps(features,ensure_ascii=False,separators=(',',':'))+note[b:])
 
     changed=[n for n in files if n not in original or files[n][1]!=original[n][1]]
-    allowed={'nano-return-plan.js','mobile/www/nano-return-plan.js',
+    allowed={'nano-return-plan.js','mobile/www/nano-return-plan.js','nano-return-ui.js','mobile/www/nano-return-ui.js',
              'browser-bridge.js','mobile/www/browser-bridge.js','index.html','mobile/www/index.html',
              'package.json','package-lock.json','app-config.js','release-notes.js'}
     assert set(changed).issubset(allowed),changed
@@ -210,7 +215,7 @@ def main():
               'nano-debt-stats-fix.js','print-engine.js','nano-transaction-guards.js','mobile/www/nano-transaction-guards.js'):
         assert original[n][1]==files[n][1],('Protected subsystem unexpectedly modified',n)
     assert sha(files[BUNDLED_APK][1])==BUNDLED_APK_SHA
-    for name in ('browser-bridge.js','mobile/www/browser-bridge.js','nano-return-plan.js'):
+    for name in ('browser-bridge.js','mobile/www/browser-bridge.js','nano-return-plan.js','nano-return-ui.js'):
         t=ROOT/('check-'+name.replace('/','-'))
         t.write_bytes(files[name][1])
         subprocess.run(['node','--check',str(t)],check=True,timeout=30)
