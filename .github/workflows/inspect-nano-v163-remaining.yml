@@ -1,0 +1,54 @@
+name: Inspect POS v1.0.62 remaining feature contracts
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-nano-v163-remaining.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect actual packaged modules and available controls
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p in
+          gh release download v1.0.62 --pattern 'NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip' --dir in
+          python3 - <<'PY'
+          import re,zipfile,json,struct,pathlib,hashlib
+          m=json.loads(pathlib.Path('nano-pos-update.json').read_text());p=m['patches'][0]
+          with zipfile.ZipFile(pathlib.Path('in')/p['fileName']) as z:a=z.read('payload/app.asar')
+          assert hashlib.sha256(a).hexdigest()==p['appAsarSha256']
+          h=json.loads(a[16:16+struct.unpack_from('<I',a,12)[0]])
+          start=8+struct.unpack_from('<I',a,4)[0]
+          files={}
+          def walk(n,pre=''):
+            for k,v in n['files'].items():
+              path=pre+k
+              if 'files' in v: walk(v,path+'/')
+              elif path.endswith(('.html','.js','.cjs','.css')) and not path.startswith('node_modules/') and v['size']<3500000:
+                files[path]=a[start+int(v['offset']):start+int(v['offset'])+v['size']].decode('utf8','replace')
+          walk(h)
+          pattern=r'cash|shift|caisse|return|refund|exchange|wholesale|promotion|audit|activity|stocktake|profit|margin|notification|alert'
+          print('MATCH_MODULE_PATHS',sorted(x for x in files if re.search(pattern,x,re.I)))
+          for f in ['index.html','mobile/www/index.html']:
+            s=files[f]
+            for pat in ['id="cash','id="shift','id="returns','id="return','id="reportsSection"','id="analyticsSection"','id="stocktake','id="notification','id="posCustomerSelect"','id="salesSection"','id="productsSection"']:
+              ms=list(re.finditer(re.escape(pat),s,re.I))
+              print('HTML_ID',f,pat,len(ms))
+              for match in ms[:2]:print('CTX',repr(s[max(0,match.start()-150):match.start()+420]))
+            for x in ['nano-restock-assistant.js','notification','audit','caisse','stocktake']:
+              print('TERM',f,x,s.lower().count(x.lower()))
+          for f in ['electron-native-preload.cjs','browser-bridge.js','mobile/www/browser-bridge.js','pc-sync-service.cjs','electron-main.cjs']:
+            s=files.get(f,'')
+            print('CORE',f,'length',len(s))
+            for pat in ['getNotifications','getAnalytics','getSales','getPurchases','getProducts','getCash','shift','returnSale','getReturns','createReturn','audit','getAudit','getStocktake','stocktake','getCashDrawer','getDailyReport']:
+              ms=list(re.finditer(re.escape(pat),s,re.I))
+              if ms:
+                print('API',f,pat,len(ms),repr(s[max(0,ms[0].start()-100):ms[0].start()+300]))
+          print('DONE')
+          PY
