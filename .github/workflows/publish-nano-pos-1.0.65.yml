@@ -1,0 +1,99 @@
+name: Publish NANO POS v1.0.65 Transaction Safety
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.65.yml'
+      - 'build/v1.0.65/build.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-v165-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build strictly from SHA-verified v1.0.60 production package
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.65/build.py
+          python3 build/v1.0.65/build.py
+      - name: Test real local browser bridge transactions and verify protected files
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,zipfile,struct,hashlib,pathlib
+          d=pathlib.Path('build/v1.0.65')
+          m=json.loads((d/'build-result.json').read_text())
+          with zipfile.ZipFile(d/m['fileName']) as z:
+              assert z.testzip() is None
+              asar=z.read('payload/app.asar')
+          h=json.loads(asar[16:16+struct.unpack_from('<I',asar,12)[0]])
+          off=8+struct.unpack_from('<I',asar,4)[0]
+          def content(name):
+              n=h
+              for k in name.split('/'):n=n['files'][k]
+              return asar[off+int(n['offset']):off+int(n['offset'])+int(n['size'])]
+          assert content('nano-transaction-guards.js')==content('mobile/www/nano-transaction-guards.js')
+          for f in ['browser-bridge.js','mobile/www/browser-bridge.js']:
+              b=content(f)
+              assert b'window.NANO_TX_GUARD_165.stocktake(db.products, rows)' in b
+              assert b'window.NANO_TX_GUARD_165.close(s,' in b
+              assert b'nano-get-financial-action-log' in b
+              assert b'لا يمكن إصدار مرتجع مالي' in b
+          for f in ['index.html','mobile/www/index.html']:
+              doc=content(f)
+              assert doc.index(b'src="nano-transaction-guards.js"')<doc.index(b'src="browser-bridge.js"')
+          assert hashlib.sha256(content('downloads/NANO-POS-Mobile-v1.3.7.apk')).hexdigest()==m['mobileApkSha256']
+          assert m['dataFilesModified'] is False
+          assert json.loads(content('package.json'))['version']=='1.0.65'
+          out=json.loads((d/'nano-pos-update-v165.json').read_text())
+          assert out['version']=='1.0.65'
+          assert out['patches'][0]['sha256']==m['sha256']
+          assert out['patches'][0]['appAsarSha256']==m['appAsarSha256']
+          print('PASS: financial safety, verified ZIP and embedded APK preservation')
+          PY
+      - name: Publish optional patch v1.0.65, never overwrite old release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          FILE='build/v1.0.65/NANO-POS-Patch-1.0.64-to-1.0.65-FINANCE-SAFETY.zip'
+          if gh release view v1.0.65 >/dev/null 2>&1; then
+            echo 'Release v1.0.65 already exists - will not overwrite'; exit 1
+          fi
+          gh release create v1.0.65 "$FILE" --target main \
+            --title 'NANO POS v1.0.65 — Shift and Stocktake Safety Guards' \
+            --notes 'Incremental verified NANO POS patch: shift close prevents invalid/repeated closing; stocktake rejects stale stock, duplicate batches and invalid counts; unposted credit notes no longer falsely report success. Includes read-only retail/wholesale quote and a local action log for new shift closures and stocktakes. Existing financial ledger, license, desktop activation, MEGA sync and bundled Android APK are unchanged. Full transaction-safe customer returns, promotions, immutable audit and phone stocktake approval are NOT complete. Test on backup copy before production.'
+      - name: Re-download ZIP to verify published SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.65 --pattern 'NANO-POS-Patch-1.0.64-to-1.0.65-FINANCE-SAFETY.zip' --dir verified
+          WANT="$(python3 -c 'import json;print(json.load(open("build/v1.0.65/build-result.json"))["sha256"])')"
+          GOT="$(sha256sum verified/NANO-POS-Patch-1.0.64-to-1.0.65-FINANCE-SAFETY.zip | cut -d' ' -f1)"
+          test "$WANT" = "$GOT"
+      - name: Update cloud updater manifest only after verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.65/nano-pos-update-v165.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+             -f message='Publish NANO POS v1.0.65 shift stocktake financial guard update' \
+             -f sha="$CURRENT" -f content="$CONTENT" >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.65-verified-metadata
+          path: build/v1.0.65/build-result.json
+          retention-days: 30
