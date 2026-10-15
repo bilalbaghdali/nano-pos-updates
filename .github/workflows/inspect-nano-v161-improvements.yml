@@ -62,4 +62,22 @@ jobs:
                   if len(found)>=12:break
               print('TERM',term,'COUNT',len(found))
               for row in found[:10]:print(' ',repr(row))
+          for path in sorted(docs):
+              if re.search('^nano-|^desktop-|^mega-|^document-print|^mobile-sync|^pc-sync|^backup-',path):
+                  print('MODULE',path,len(docs[path]))
+          for path,terms in {
+              'desktop-sync-ui.js':['function ensureGlobalStatusChip','nanoMobileSyncGlobalStatus','function ensureHeaderDevicesBadge','function openConnectedDevices','function renderStatus','ensureGlobalStatusChip()'],
+              'mega-backup-ui.js':['function','backup_only_on_primary_pc','nano-mega'],
+              'index.html':['<!-- Status Footer -->','id="connectedDevicesBadge"','id="invPaid"','id="salesSection"'],
+              'nano-mobile-credit.js':['function','credit','partial'],
+              'nano-home-dashboard.js':['function'],
+              'nano-debt-analytics-v155.js':['function'],
+              'nano-customer-details-fix.js':['function'],
+          }.items():
+              if path not in docs:continue
+              body=docs[path]
+              for term in terms:
+                  at=body.find(term)
+                  if at<0:continue
+                  print('FOCUSED',path,term,'POSITION',at,'TEXT',repr(body[max(0,at-200):at+3200]))
           PY
