@@ -1,0 +1,39 @@
+name: Inspect v166 authoritative stocktake API
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-nano-v167-server.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect actual remote write gates from SHA verified v166
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p x
+          gh release download v1.0.66 --pattern 'NANO-POS-Patch-1.0.65-to-1.0.66-SALE-RETURNS.zip' --dir x
+          python3 - <<'PY'
+          import zipfile,pathlib,json,hashlib,struct,re
+          m=json.loads(pathlib.Path('nano-pos-update.json').read_text());assert m['version']=='1.0.66'
+          p=m['patches'][0]
+          with zipfile.ZipFile(pathlib.Path('x')/p['fileName']) as z:asr=z.read('payload/app.asar')
+          assert hashlib.sha256(asr).hexdigest()==p['appAsarSha256']
+          h=json.loads(asr[16:16+struct.unpack_from('<I',asr,12)[0]]);off=8+struct.unpack_from('<I',asr,4)[0]
+          def read(name):
+            n=h
+            for t in name.split('/'):n=n['files'][t]
+            return asr[off+int(n['offset']):off+int(n['offset'])+int(n['size'])].decode('utf8','replace')
+          for file in ['pc-sync-service.cjs','mobile-sync-server.cjs','browser-bridge.js']:
+            s=read(file)
+            print('MODULE',file,len(s))
+            for key in ['/nano-pc-sync/call','/nano-web/call','/nano-sync/rpc','/nano-sync/call','const channel','channel =','body.channel','const localOnly','get-stocktake','create-stocktake','if (req.method ===','handler(', 'routeBusiness', 'rpc', 'permission_denied']:
+              at=s.find(key)
+              if at>=0:print('FOCUS',file,key,at,repr(s[max(0,at-220):at+1800]))
+          print('END')
+          PY
