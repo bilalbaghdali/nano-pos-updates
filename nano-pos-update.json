@@ -3,29 +3,30 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.64",
+  "version": "1.0.65",
   "releaseDate": "2026-10-15",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة مراجعة مالية للقراءة فقط تعرض الإيرادات وتكلفة البضاعة والربح الإجمالي والمصاريف وصافيًا تقديريًا.",
-      "إضافة سجل مرجعي لآخر فواتير البيع والشراء المتاحة، مرتب حسب تاريخ المعاملة والمستخدم المسجل إن توفر.",
-      "إظهار تحذير واضح من احتمال عدم احتساب بعض المرتجعات ومصاريف الصندوق؛ لا يُقدّم التقرير بوصفه حساب ربح نهائي.",
-      "عدم تعديل فواتير المتجر والمخزون والمزامنة والتفعيل أو قواعد البيانات."
+      "التحقق من إغلاق المناوبة: منع إغلاق مناوبة مغلقة ورفض المبالغ السالبة أو غير الصالحة.",
+      "فحص اختلاف كميات الجرد عن المخزون الحالي قبل تطبيق أي تسوية، مع رفض الدفعات المكررة.",
+      "إلغاء رسالة النجاح الوهمية عند إنشاء إشعار دائن دون حفظ أثره المالي الفعلي.",
+      "إضافة عرض سعر جملة/تجزئة من البيانات المسجلة دون تغيير أسعار الفواتير.",
+      "تسجيل بيانات إغلاق المناوبات والجرد الجديد في سجل عمليات محلي؛ لا يُعد سجلًا غير قابل للتعديل."
     ],
     "fr": [
-      "Revue financière en lecture seule: recettes, coût des ventes, marge brute et résultat provisoire.",
-      "Chronologie des ventes et achats enregistrés avec date et utilisateur disponible.",
-      "Avertissement explicite: retours et dépenses de caisse peuvent être incomplets.",
-      "Aucune modification des factures, données, licences ou synchronisation."
+      "Contrôle de fermeture des caisses et rejet des montants incorrects.",
+      "Validation de cohérence et doublons des lots lors de l’inventaire.",
+      "Suppression du faux succès des avoirs non enregistrés.",
+      "Devis prix de gros/détail en lecture seule et journal local de clôture/inventaire."
     ],
     "en": [
-      "Read-only financial review for revenue, cost of goods, gross margin and provisional net estimate.",
-      "Recorded sales and purchases timeline with date and available recorded username.",
-      "Explicit warning that returns and cash expenses may be incomplete, so this is not certified net profit.",
-      "No modifications to invoices, inventory, activation, data or sync."
+      "Validate cash shift close status and amounts.",
+      "Reject stale inventory counts and duplicate stocktake batches.",
+      "Never falsely report unrecorded credit notes as successfully posted.",
+      "Read-only wholesale/retail price quotes plus local shift and stocktake events."
     ]
   },
   "releaseHistory": {
@@ -852,11 +853,35 @@
           "No modifications to invoices, inventory, activation, data or sync."
         ]
       }
+    },
+    "1.0.65": {
+      "releaseDate": "2026-10-15",
+      "features": {
+        "ar": [
+          "التحقق من إغلاق المناوبة: منع إغلاق مناوبة مغلقة ورفض المبالغ السالبة أو غير الصالحة.",
+          "فحص اختلاف كميات الجرد عن المخزون الحالي قبل تطبيق أي تسوية، مع رفض الدفعات المكررة.",
+          "إلغاء رسالة النجاح الوهمية عند إنشاء إشعار دائن دون حفظ أثره المالي الفعلي.",
+          "إضافة عرض سعر جملة/تجزئة من البيانات المسجلة دون تغيير أسعار الفواتير.",
+          "تسجيل بيانات إغلاق المناوبات والجرد الجديد في سجل عمليات محلي؛ لا يُعد سجلًا غير قابل للتعديل."
+        ],
+        "fr": [
+          "Contrôle de fermeture des caisses et rejet des montants incorrects.",
+          "Validation de cohérence et doublons des lots lors de l’inventaire.",
+          "Suppression du faux succès des avoirs non enregistrés.",
+          "Devis prix de gros/détail en lecture seule et journal local de clôture/inventaire."
+        ],
+        "en": [
+          "Validate cash shift close status and amounts.",
+          "Reject stale inventory counts and duplicate stocktake batches.",
+          "Never falsely report unrecorded credit notes as successfully posted.",
+          "Read-only wholesale/retail price quotes plus local shift and stocktake events."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.64-financial-review",
+      "id": "nano-pos-v1.0.65-finance-safety",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -887,14 +912,15 @@
         "1.0.60",
         "1.0.61",
         "1.0.62",
-        "1.0.63"
+        "1.0.63",
+        "1.0.64"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.64/NANO-POS-Patch-1.0.63-to-1.0.64-FINANCIAL-REVIEW.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.64",
-      "sha256": "d2ded1ff6c0fbd08f8396d3ffda04b1e43596d7438037878c6b9de4cb4202457",
-      "appAsarSha256": "3bdf3730bf94de9c7235d4cb6bddc89b84d0e4c1644140b1aa1df655bf8e4473",
-      "fileName": "NANO-POS-Patch-1.0.63-to-1.0.64-FINANCIAL-REVIEW.zip",
-      "sizeBytes": 31323357,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.65/NANO-POS-Patch-1.0.64-to-1.0.65-FINANCE-SAFETY.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.65",
+      "sha256": "4b0109bbf5de2a9fff3c3080a0aab132e4a3f4e9456c78a8e677bbb03372afbf",
+      "appAsarSha256": "a13c00f987b324decbb356c2949e7c3ef3f81cfa6cd285e0f41b9c374a524489",
+      "fileName": "NANO-POS-Patch-1.0.64-to-1.0.65-FINANCE-SAFETY.zip",
+      "sizeBytes": 31326480,
       "payloadType": "app-asar"
     }
   ],
@@ -905,8 +931,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "مراجعة مالية وسجل معاملات مرجعي للقراءة فقط مع توضيح حدود الدقة المحاسبية.",
-    "fr": "Revue financière et chronologie des transactions, sans mutation.",
-    "en": "Read-only financial review and posted transactions timeline with accuracy warnings."
+    "ar": "تحقق أكثر أمانًا من إغلاق المناوبات والجرد وأسعار الجملة، مع منع نتيجة مرتجع مالية وهمية.",
+    "fr": "Protections de caisse et inventaire, rejet de fausses confirmations de remboursement.",
+    "en": "Cash/stocktake safety validations and fail-closed unposted credit notes."
   }
 }
