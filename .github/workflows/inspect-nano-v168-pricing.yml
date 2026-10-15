@@ -1,0 +1,46 @@
+name: Inspect v167 existing promotion checkout schema
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-nano-v168-pricing.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect promotion records and sale payload contracts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p fetch
+          gh release download v1.0.67 --pattern 'NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip' --dir fetch
+          python3 - <<'PY'
+          import zipfile,pathlib,json,hashlib,struct,re
+          m=json.loads(pathlib.Path('nano-pos-update.json').read_text());assert m['version']=='1.0.67'
+          p=m['patches'][0]
+          with zipfile.ZipFile(pathlib.Path('fetch')/p['fileName']) as z:raw=z.read('payload/app.asar')
+          assert hashlib.sha256(raw).hexdigest()==p['appAsarSha256']
+          h=json.loads(raw[16:16+struct.unpack_from('<I',raw,12)[0]]);offset=8+struct.unpack_from('<I',raw,4)[0]
+          def rd(path):
+            n=h
+            for x in path.split('/'):n=n['files'][x]
+            return raw[offset+int(n['offset']):offset+int(n['offset'])+n['size']].decode('utf8','replace')
+          for path in ['renderer.js','nano-commerce-ui.js','v8-business-ui.js','browser-bridge.js','index.html']:
+            s=rd(path)
+            terms=['promotionsSection','promotionModal','get-promotions','save-promotion','add-promotion',
+               'promoProductDropdown','promotion_type','offer_price','discount_type','min_quantity',
+               'wholesale_price','btnSellWholesale','isWholesale','pricingMode','promotionPrice',
+               'function savePromotion','function addPromotion','process-sale','function processSale']
+            print('MODULE',path,len(s))
+            for term in terms:
+              matches=list(re.finditer(re.escape(term),s,re.I))
+              if not matches:continue
+              print('MATCH',path,term,len(matches))
+              for z in matches[:3]:
+                print('TEXT',path,term,z.start(),repr(s[max(0,z.start()-130):z.start()+750]))
+          print('END')
+          PY
