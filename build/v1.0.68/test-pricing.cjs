@@ -1,0 +1,18 @@
+'use strict';const assert=require('node:assert/strict'),p=require('./nano-pricing.js');
+const prod={id:1,pos_price:100,wholesale_price:85,wholesale_qty:6};
+const now=new Date('2026-10-15T10:00:00Z');
+const promo={id:44,product_id:1,discount_type:'percentage',discount_value:10,start_date:'2026-10-10',end_date:'2026-10-20',is_active:1};
+assert.equal(p.quote(prod,1,[],'auto',now).price,100);
+assert.equal(p.quote(prod,6,[],'auto',now).price,85);
+assert.equal(p.quote(prod,1,[promo],'retail',now).price,90);
+assert.equal(p.quote(prod,6,[promo],'auto',now).price,76.5);
+assert.equal(p.quote(prod,1,[{...promo,end_date:'2026-10-14'}],'retail',now).price,100);
+assert.equal(p.quote(prod,1,[{...promo,min_qty:3}],'retail',now).price,100);
+assert.equal(p.quote(prod,1,[{...promo,discount_type:'fixed',discount_value:7}],'retail',now).price,93);
+assert.equal(p.quote(prod,1,[promo,{...promo,id:45,discount_value:20}],'retail',now).price,80,'Best discount, not stacked');
+const inp={items:[{id:1,qty:2,pos_price:100}],checkout:{subtotal:200,total:200,discount:5,taxPercentage:0}};
+const result=p.reprice(inp,[prod],[promo],now);
+assert.equal(result.subtotal,180);assert.equal(result.total,175);assert.equal(result.payload.items[0].pos_price,90);
+assert.equal(inp.items[0].pos_price,100,'No mutation of source transaction');
+assert.throws(()=>p.reprice({items:[{id:1,qty:-1}],checkout:{}},[prod],[promo],now));
+console.log('PASS pricing dates, wholesale qty, one best promotion, discount and no input mutation');
