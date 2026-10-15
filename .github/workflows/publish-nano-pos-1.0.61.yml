@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/publish-nano-pos-1.0.61.yml'
+      - 'build/v1.0.61/build.py'
   workflow_dispatch:
 permissions:
   contents: write
