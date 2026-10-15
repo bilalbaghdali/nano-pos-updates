@@ -1,0 +1,103 @@
+name: Publish NANO POS v1.0.67 Stocktake Approval
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.67.yml'
+      - 'build/v1.0.67/build.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-v167-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build strictly from SHA-verified v1.0.60 production package
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.67/build.py
+          python3 build/v1.0.67/build.py
+      - name: Verify stocktake draft engine, PC-only approval and unchanged APK
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,zipfile,hashlib,struct,pathlib
+          d=pathlib.Path('build/v1.0.67')
+          meta=json.loads((d/'build-result.json').read_text())
+          with zipfile.ZipFile(d/meta['fileName']) as z:
+              assert z.testzip() is None
+              raw=z.read('payload/app.asar')
+          h=json.loads(raw[16:16+struct.unpack_from('<I',raw,12)[0]])
+          off=8+struct.unpack_from('<I',raw,4)[0]
+          def get(path):
+              node=h
+              for bit in path.split('/'):node=node['files'][bit]
+              return raw[off+int(node['offset']):off+int(node['offset'])+int(node['size'])]
+          assert get('nano-stocktake-approval.js')==get('mobile/www/nano-stocktake-approval.js')
+          assert get('nano-stocktake-drafts-ui.js')==get('mobile/www/nano-stocktake-drafts-ui.js')
+          for path in ['browser-bridge.js','mobile/www/browser-bridge.js']:
+              data=get(path)
+              assert b'approve-stocktake-draft' in data
+              assert b'create-stocktake-draft' in data
+              assert b'reject-stocktake-draft' in data
+              assert b'NANO_STOCKTAKE_APPROVAL_167' in data
+          assert get('pc-sync-service.cjs').count(b'primary_pc_only')==2
+          assert get('mobile-sync-server.cjs').count(b'primary_pc_only')==1
+          for path in ['index.html','mobile/www/index.html']:
+              b=get(path)
+              assert b'src="nano-stocktake-approval.js"' in b
+              assert b'<script defer src="nano-stocktake-drafts-ui.js"></script>' in b
+          assert hashlib.sha256(get('downloads/NANO-POS-Mobile-v1.3.7.apk')).hexdigest()==meta['mobileApkSha256']
+          assert json.loads(get('package.json'))['version']=='1.0.67'
+          assert meta['dataFilesModified'] is False
+          m=json.loads((d/'nano-pos-update-v167.json').read_text())
+          assert m['version']=='1.0.67'
+          assert m['patches'][0]['sha256']==meta['sha256']
+          assert m['patches'][0]['appAsarSha256']==meta['appAsarSha256']
+          print('PASS stocktake approval, remote rejection and release checksums')
+          PY
+      - name: Publish optional patch v1.0.67, never overwrite old release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          FILE='build/v1.0.67/NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip'
+          if gh release view v1.0.67 >/dev/null 2>&1; then
+            echo 'Release v1.0.67 already exists - will not overwrite'; exit 1
+          fi
+          gh release create v1.0.67 "$FILE" --target main \
+            --title 'NANO POS v1.0.67 — Mobile Stocktake Approval' \
+            --notes 'Phone/Web stocktake counts now create non-posting drafts. Only the main PC can approve/reject. Before approval, product batch quantities are revalidated against the live primary database; duplicates, stale counts and repeat approvals are blocked. Audit metadata retained in existing synchronized records. Includes phone barcode count UI, but bundled Android APK is unchanged; an independent Android build is required. Existing activation, MEGA and sales databases remain untouched. Full pricing promotions, tamper-resistant external audit and atomic exchanges still need separate validation.'
+      - name: Re-download ZIP to verify published SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.67 --pattern 'NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip' --dir verified
+          WANT="$(python3 -c 'import json;print(json.load(open("build/v1.0.67/build-result.json"))["sha256"])')"
+          GOT="$(sha256sum verified/NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip | cut -d' ' -f1)"
+          test "$WANT" = "$GOT"
+      - name: Update cloud updater manifest only after verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.67/nano-pos-update-v167.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+             -f message='Publish NANO POS v1.0.67 primary approved stocktake drafts' \
+             -f sha="$CURRENT" -f content="$CONTENT" >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.67-verified-metadata
+          path: build/v1.0.67/build-result.json
+          retention-days: 30
