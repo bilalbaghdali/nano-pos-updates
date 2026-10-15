@@ -1,0 +1,65 @@
+name: Inspect NANO POS v1.0.60 improvement anchors
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-nano-v161-improvements.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect verified released app package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p diagnostic
+          gh release download v1.0.60 --pattern 'NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip' --dir diagnostic
+          python3 - <<'PY'
+          import re,json,struct,hashlib,zipfile,pathlib
+          manifest=json.loads(pathlib.Path('nano-pos-update.json').read_text())
+          assert manifest['version']=='1.0.60'
+          p=manifest['patches'][0]
+          z=pathlib.Path('diagnostic')/p['fileName']
+          assert hashlib.sha256(z.read_bytes()).hexdigest()==p['sha256']
+          with zipfile.ZipFile(z) as a:
+              assert a.testzip() is None
+              data=a.read('payload/app.asar')
+          assert hashlib.sha256(data).hexdigest()==p['appAsarSha256']
+          h=json.loads(data[16:16+struct.unpack_from('<I',data,12)[0]])
+          base=8+struct.unpack_from('<I',data,4)[0]
+          docs={}
+          def walk(node,prefix=''):
+              for k,v in node['files'].items():
+                  path=prefix+k
+                  if 'files' in v: walk(v,path+'/')
+                  elif path.endswith(('.html','.css','.js','.cjs','.json')) and not path.startswith('node_modules/') and v['size']<4_000_000:
+                      try: docs[path]=data[base+int(v['offset']):base+int(v['offset'])+int(v['size'])].decode('utf8')
+                      except UnicodeDecodeError: pass
+          walk(h)
+          print('FILES',len(docs))
+          print('RELEVANT PATHS',*[p for p in docs if re.search('mega|sync|print|credit|debt|stat|sidebar|device|customer|sale|backup',p,re.I)],sep='\n')
+          patterns=[
+           'الأجهزة المرتبطة','الأجهزة المتصلة','الأجهزة','الأجهزة النشطة','Connected Devices','Connected devices',
+           'connected-devices','connectedDevices','linkedDevices','deviceCount','device-count','devices-count',
+           'connectedClients','connected-clients','deviceCenter','device-center',
+           'bottom-','bottomBar','statusBar','footer','floating',
+           'partialPayment','partial-payment','creditPayment','credit-payment','amountPaid','amount_paid',
+           'backup_only_on_primary_pc','mega','saveBackup','restoreBackup',
+           'debts','debtsBalance','print-language','printLanguage','printPreview'
+          ]
+          for term in patterns:
+              found=[]
+              for path,src in docs.items():
+                  if not re.search('index.html$|renderer.js$|nano-|desktop-|electron-|mobile-sync|print-|styles.css$',path):continue
+                  for m in list(re.finditer(re.escape(term),src,re.I))[:3]:
+                      c=src[max(0,m.start()-155):m.end()+235].replace('\n',' ')
+                      found.append((path,m.start(),c))
+                  if len(found)>=12:break
+              print('TERM',term,'COUNT',len(found))
+              for row in found[:10]:print(' ',repr(row))
+          PY
