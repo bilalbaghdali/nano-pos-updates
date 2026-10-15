@@ -50,6 +50,19 @@ jobs:
             for term in ['getProducts','getInventory','getStock','stock_quantity','min_stock','expiry_date','barcode','posSearchInput','notification','search','currentSection']:
               for mo in list(re.finditer(re.escape(term),s,re.I))[:2]:
                 print('CODE',f,term,mo.start(),repr(s[max(0,mo.start()-150):mo.start()+400]))
+          for f in ['index.html','mobile/www/index.html']:
+            s=files[f]
+            for term in ['id="productMinStock"','id="productStock"','id="productExpiry"','id="productExpire"','id="posProductSearchInput"','id="posQuickSearch"','id="posBarcode"','id="lowStock','id="productBarcode"']:
+              at=s.find(term)
+              if at>=0: print('PRODUCT_FORM',f,term,repr(s[max(0,at-300):at+700]))
+          for f in ['navigation-performance.js','wireless-barcode-desktop.js','nano-v136-shortcuts.js','nano-debt-stats-fix.js']:
+            s=files.get(f,'')
+            print('BASIC_MODULE',f,'LENGTH',len(s),'START',repr(s[:900]))
+          for path,s in files.items():
+            if path.startswith('node_modules/'): continue
+            for term in ['expiry_date','expiration_date','expirationDate','product_expiry','expires_at','lowStockThreshold']:
+              for mo in list(re.finditer(re.escape(term),s,re.I))[:1]:
+                if path.endswith(('html','.js')):print('EXPIRY',path,term,repr(s[max(0,mo.start()-100):mo.start()+240]))
           s=files.get('renderer.js','')
           for term in ['getProducts','getAllProducts','loadProducts','posSearchInput','posProductSearch','renderPosProducts','filterPosProducts','stock_quantity','min_stock','barcode','api.getProducts','getInventory']:
             mo=re.search(re.escape(term),s,re.I)
