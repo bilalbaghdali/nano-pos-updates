@@ -65,7 +65,7 @@ jobs:
           PY
       - name: Publish optional patch v1.0.61, never overwrite old release
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           FILE='build/v1.0.61/NANO-POS-Patch-1.0.60-to-1.0.61-UI-PAYMENT-GUARDS.zip'
@@ -77,7 +77,7 @@ jobs:
             --notes 'Optional focused desktop patch based on SHA-verified v1.0.60. Removes the redundant bottom-left floating Mobile Sync button, preserves the top device indicator and device center, adds nonnegative decimal input hints to the invoice paid field, and keyboard focus outlines. No backend changes: credit ledger, account balances, MEGA, synchronization, licensing and data storage remain unchanged. Back up and verify in your shop environment before rolling out.'
       - name: Re-download ZIP to verify published SHA-256
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p verified
@@ -87,7 +87,7 @@ jobs:
           test "$WANT" = "$GOT"
       - name: Update cloud updater manifest only after verified release
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           CURRENT="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
