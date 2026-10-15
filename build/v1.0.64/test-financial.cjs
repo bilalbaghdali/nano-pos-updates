@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict');
+const m=require('./nano-financial-review.js');
+const k=m.financial({sales:{revenue:10000,net_revenue:9000,returns_count:1,returns_value:1000},cogs:4000,totalExpenses:500});
+assert.equal(k.revenue,9000);
+assert.equal(k.gross,5000);
+assert.equal(k.provisional,4500);
+assert.equal(k.returnsRecorded,1);
+assert.throws(()=>m.financial({sales:{revenue:1},totalExpenses:2}));
+assert.throws(()=>m.financial({sales:{revenue:1},cogs:-2,totalExpenses:2}));
+const tx=m.timeline([{id:1,sale_date:'2026-10-15T12:00',total:7,user_name:'admin'}],[{id:2,invoice_date:'2026-10-14',total:12}]);
+assert.equal(tx.length,2);assert.equal(tx[0].kind,'بيع');
+assert.equal(tx[1].kind,'شراء');assert.equal(tx[0].by,'admin');
+assert.throws(()=>m.rows({success:false}));
+console.log('PASS: profit fields validation, returns caveats and read-only transaction timeline');
