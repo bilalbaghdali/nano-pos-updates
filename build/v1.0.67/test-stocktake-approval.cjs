@@ -17,7 +17,7 @@ assert.equal(m.approve(approved.next,{draftId:'stocktake-phone-001'},1,g).result
 const stale=structuredClone(x.next);stale.products[0].batches[0].stock=8;
 assert.throws(()=>m.approve(stale,{draftId:'stocktake-phone-001'},1,g),'stale primary stock must block approval');
 const rejected=m.reject(x.next,{draftId:'stocktake-phone-001',reason:'Mismatch'},1);
-assert.equal(rejected.next.products[0].stock,10);
+assert.equal(rejected.next.products[0].batches[0].stock,10);
 assert.equal(rejected.next.stocktake_drafts[0].status,'rejected');
 assert.throws(()=>m.approve(rejected.next,{draftId:'stocktake-phone-001'},1,g));
 console.log('PASS: draft preserves stock, approval by manager, collision/stale guard, reject and audit');
