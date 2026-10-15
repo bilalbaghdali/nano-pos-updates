@@ -1,0 +1,99 @@
+name: Publish NANO POS v1.0.68 Pricing and Offers
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.68.yml'
+      - 'build/v1.0.68/build.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-v168-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build strictly from SHA-verified v1.0.60 production package
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.68/build.py
+          python3 build/v1.0.68/build.py
+      - name: Verify opt-in promotions and total recalculation before final publish
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import zipfile,struct,json,pathlib,hashlib
+          p=pathlib.Path('build/v1.0.68')
+          m=json.loads((p/'build-result.json').read_text())
+          with zipfile.ZipFile(p/m['fileName']) as z:
+              assert z.testzip() is None
+              asar=z.read('payload/app.asar')
+          h=json.loads(asar[16:16+struct.unpack_from('<I',asar,12)[0]])
+          off=8+struct.unpack_from('<I',asar,4)[0]
+          def read(path):
+              n=h
+              for x in path.split('/'):n=n['files'][x]
+              return asar[off+int(n['offset']):off+int(n['offset'])+int(n['size']]
+          assert read('nano-pricing.js')==read('mobile/www/nano-pricing.js')
+          assert read('nano-pricing-ui.js')==read('mobile/www/nano-pricing-ui.js')
+          for pth in ['index.html','mobile/www/index.html']:
+              src=read(pth)
+              assert src.index(b'src="nano-pricing.js"')<src.index(b'src="browser-bridge.js"')
+              assert b'<script defer src="nano-pricing-ui.js"></script>' in src
+          for pth in ['browser-bridge.js','mobile/www/browser-bridge.js']:
+              src=read(pth)
+              assert b'NANO_PRICING_168.reprice(args[0],db.products,db.promotions||[])' in src
+              assert b'nanoApplyOffersToggle' in src
+          assert hashlib.sha256(read('downloads/NANO-POS-Mobile-v1.3.7.apk')).hexdigest()==m['mobileApkSha256']
+          assert m['dataFilesModified'] is False
+          assert json.loads(read('package.json'))['version']=='1.0.68'
+          manifest=json.loads((pathlib.Path('build/v1.0.68')/'nano-pos-update-v168.json').read_text())
+          assert manifest['version']=='1.0.68'
+          assert manifest['patches'][0]['sha256']==m['sha256']
+          assert manifest['patches'][0]['appAsarSha256']==m['appAsarSha256']
+          print('PASS v168 opt-in pricing and original data, apk/activation preserved')
+          PY
+      - name: Publish optional patch v1.0.68, never overwrite old release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          FILE='build/v1.0.68/NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip'
+          if gh release view v1.0.68 >/dev/null 2>&1; then
+            echo 'Release v1.0.68 already exists - will not overwrite'; exit 1
+          fi
+          gh release create v1.0.68 "$FILE" --target main \
+            --title 'NANO POS v1.0.68 — Wholesale and Timed Offers' \
+            --notes 'Adds an explicit opt-in checkbox to apply recorded promotions and wholesale thresholds at sale time. Recomputes checkout totals on the main PC, verifies offer dates and quantities, chooses a single best offer without stacking. Existing default checkout pricing unchanged unless selected. Original ledger, activation and user data remain unchanged in the package; business output changes only when enabled and sold. Requires field testing before production. Full independent tamper-evident audit and atomic exchanges remain separate work.'
+      - name: Re-download ZIP to verify published SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.68 --pattern 'NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip' --dir verified
+          WANT="$(python3 -c 'import json;print(json.load(open("build/v1.0.68/build-result.json"))["sha256"])')"
+          GOT="$(sha256sum verified/NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip | cut -d' ' -f1)"
+          test "$WANT" = "$GOT"
+      - name: Update cloud updater manifest only after verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.68/nano-pos-update-v168.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+             -f message='Publish NANO POS v1.0.68 optional wholesale and timed promotion pricing' \
+             -f sha="$CURRENT" -f content="$CONTENT" >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.68-verified-metadata
+          path: build/v1.0.68/build-result.json
+          retention-days: 30
