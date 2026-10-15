@@ -9,6 +9,10 @@ let dlg=null,busy=false,lines=[],saleId=null;
 const e=(tag,text,cls)=>{const el=doc.createElement(tag);if(text!==undefined&&text!==null)el.textContent=String(text);if(cls)el.className=cls;return el;};
 const apiCall=async(method,...args)=>{
   if(typeof root.api?.[method]==='function')return await root.api[method](...args);
+  const channel=method==='getSaleDetails'?'get-sale-details':method==='issueCreditNote'?'issue-credit-note':'';
+  if(channel&&typeof root.__browserElectron?.ipcRenderer?.invoke==='function'){
+    return await root.__browserElectron.ipcRenderer.invoke(channel,...args);
+  }
   throw Error('واجهة الفواتير غير متاحة في هذه النسخة');
 };
 function close(){if(dlg){dlg.remove();dlg=null;}}
