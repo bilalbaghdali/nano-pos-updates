@@ -51,5 +51,10 @@ jobs:
             body=f(p)
             for key in ['nano-sync/call','nano-mobile-sync','nano-mobile','__browserElectron','nanoToken','nanoDevice','mobile-sync','remoteCall','rpcBridge','ipcRenderer.invoke','window.api','nano-remote']:
               print('MOBSCAN',p,key,body.count(key))
+          bridge=f('mobile/www/mobile-sync-bridge.js')
+          for key in ['nano-sync/call','ipcRenderer.invoke','__browserElectron','window.api','getStocktakeSheet','window.nanoMobileSync','invoke','nanoToken','nanoDevice']:
+            pos=bridge.find(key)
+            print('RELAY',key,pos,repr(bridge[max(0,pos-250):pos+1050] if pos>=0 else ''))
+          print('RELAY_HEAD',repr(bridge[:1800]))
           print('END')
           PY
