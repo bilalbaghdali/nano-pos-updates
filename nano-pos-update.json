@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.62",
+  "version": "1.0.63",
   "releaseDate": "2026-10-15",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح اختصار F2 ليركز على حقل البحث بالاسم والباركود الفعلي في شاشة البيع.",
-      "إضافة مساعد إعادة الطلب في قسم المنتجات باستخدام حد المخزون الأدنى والكمية المتوفرة.",
-      "عرض تنبيهات انتهاء الصلاحية حسب تواريخ دفعات المنتجات المسجلة، دون اختلاق تواريخ للمنتجات غير المسجلة.",
-      "الحسابات للقراءة فقط: لا تُنشأ أوامر شراء تلقائية ولا تتغير البيانات أو التفعيل أو المزامنة."
+      "إضافة مركز موحد للعمليات والتنبيهات، يعرض تنبيهات المخزون والصلاحية من بيانات المنتجات الأصلية.",
+      "إضافة وصول سريع للأقسام الموجودة: الصندوق والمناوبات، الفواتير والمرتجعات، الجرد، العروض، البيع بالجملة والتقارير.",
+      "إظهار التنبيهات المتاحة من واجهة البرنامج دون إنشاء سجل بديل للمعاملات أو إجراء أي تعديلات مالية.",
+      "الحفاظ على المزامنة وقاعدة البيانات ونظام التفعيل. إصلاحات المرتجعات ومحاسبة صافي الربح وسجل التدقيق المؤكد لم تكتمل بعد."
     ],
     "fr": [
-      "Correction de F2 pour activer la recherche de produits et codes-barres du point de vente.",
-      "Assistant de réapprovisionnement basé sur les stocks et les seuils existants.",
-      "Alertes de péremption selon les dates de lots enregistrés.",
-      "Calculs en lecture seule; aucune écriture dans les stocks, données ou licences."
+      "Centre centralisé en lecture seule pour les alertes de stock et péremption.",
+      "Accès rapide aux modules existants de caisse, retours, inventaire, promotions et rapports.",
+      "Lecture des alertes existantes sans écritures comptables.",
+      "Données et licences inchangées; contrôles financiers approfondis restant à vérifier."
     ],
     "en": [
-      "Fix F2 shortcut to focus the current POS product/barcode search field.",
-      "Add a read-only reorder suggestion tool using existing inventory thresholds.",
-      "Show recorded batch expiry warnings without inferring missing expiration dates.",
-      "No automatic purchases, stock edits, activation changes, or synchronization changes."
+      "Add a read-only operations and unified inventory/expiration alert center.",
+      "Quick access to existing shifts, returns, stocktake, promotions, wholesale and report sections.",
+      "Display existing application notifications without creating new financial transactions.",
+      "Preserve data, activation and sync; full financial reconciliation and audit logs remain separate work."
     ]
   },
   "releaseHistory": {
@@ -806,11 +806,34 @@
           "No automatic purchases, stock edits, activation changes, or synchronization changes."
         ]
       }
+    },
+    "1.0.63": {
+      "releaseDate": "2026-10-15",
+      "features": {
+        "ar": [
+          "إضافة مركز موحد للعمليات والتنبيهات، يعرض تنبيهات المخزون والصلاحية من بيانات المنتجات الأصلية.",
+          "إضافة وصول سريع للأقسام الموجودة: الصندوق والمناوبات، الفواتير والمرتجعات، الجرد، العروض، البيع بالجملة والتقارير.",
+          "إظهار التنبيهات المتاحة من واجهة البرنامج دون إنشاء سجل بديل للمعاملات أو إجراء أي تعديلات مالية.",
+          "الحفاظ على المزامنة وقاعدة البيانات ونظام التفعيل. إصلاحات المرتجعات ومحاسبة صافي الربح وسجل التدقيق المؤكد لم تكتمل بعد."
+        ],
+        "fr": [
+          "Centre centralisé en lecture seule pour les alertes de stock et péremption.",
+          "Accès rapide aux modules existants de caisse, retours, inventaire, promotions et rapports.",
+          "Lecture des alertes existantes sans écritures comptables.",
+          "Données et licences inchangées; contrôles financiers approfondis restant à vérifier."
+        ],
+        "en": [
+          "Add a read-only operations and unified inventory/expiration alert center.",
+          "Quick access to existing shifts, returns, stocktake, promotions, wholesale and report sections.",
+          "Display existing application notifications without creating new financial transactions.",
+          "Preserve data, activation and sync; full financial reconciliation and audit logs remain separate work."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.62-restock-barcode",
+      "id": "nano-pos-v1.0.63-operations-alerts",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -839,14 +862,15 @@
         "1.0.58",
         "1.0.59",
         "1.0.60",
-        "1.0.61"
+        "1.0.61",
+        "1.0.62"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.62/NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.62",
-      "sha256": "65257db69c30c20f6bc2b6bad0b958e67ff7a47f7b3b371de456b339c5fc7c94",
-      "appAsarSha256": "01fc230ec74b948aa7b95fc7fdc20648d3626cfd4be3fd2ee01b7b5ad050d01c",
-      "fileName": "NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip",
-      "sizeBytes": 31312844,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.63/NANO-POS-Patch-1.0.62-to-1.0.63-OPERATIONS-ALERTS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.63",
+      "sha256": "9461a3fcb4c9f2977b32a42d2e2454f4c9b0ca5153beeeee1188c3f9175725d4",
+      "appAsarSha256": "b5f49dcb2c61d4b4faac7255a4783731129a38e5806f15c8b858f0f263290006",
+      "fileName": "NANO-POS-Patch-1.0.62-to-1.0.63-OPERATIONS-ALERTS.zip",
+      "sizeBytes": 31318603,
       "payloadType": "app-asar"
     }
   ],
@@ -857,8 +881,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "مساعد إعادة الطلب بالاعتماد على البيانات المسجلة وإصلاح اختصار الباركود F2، دون تغيير قاعدة البيانات.",
-    "fr": "Réapprovisionnement en lecture seule et raccourci F2 corrigé, données préservées.",
-    "en": "Read-only restock assistant and repaired F2 barcode focus, stored data preserved."
+    "ar": "مركز تنبيهات للمخزون والصلاحية وروابط للأقسام التشغيلية الحالية دون تعديل البيانات.",
+    "fr": "Centre des alertes et raccourcis opérationnels en lecture seule.",
+    "en": "Read-only operations shortcuts and unified stock and expiry alerts."
   }
 }
