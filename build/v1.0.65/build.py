@@ -239,6 +239,10 @@ def main():
         temp.write_bytes(files[name][1])
         subprocess.run(['node','--check',str(temp)],check=True,timeout=30)
     subprocess.run(['node',str(ROOT/'test-transaction-guards.cjs')],check=True,timeout=30,cwd=ROOT)
+    for path in ('browser-bridge.js','mobile/www/browser-bridge.js'):
+        module=ROOT/('integration-'+path.replace('/','-'))
+        module.write_bytes(files[path][1])
+        subprocess.run(['node',str(ROOT/'test-bridge-live.cjs'),str(module),str(ROOT/'nano-transaction-guards.js')],check=True,timeout=30,cwd=ROOT)
     asar=pack(files)
     check=unpack(asar)
     assert set(check)==set(files)
