@@ -1,0 +1,98 @@
+name: Publish NANO POS v1.0.62 Read-only Restock & Barcode
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.62.yml'
+      - 'build/v1.0.62/build.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-v162-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build strictly from SHA-verified v1.0.60 production package
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.62/build.py
+          python3 build/v1.0.62/build.py
+      - name: Validate stock alert tests, shortcuts, preserved databases and embedded APK
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import zipfile,struct,json,pathlib,hashlib
+          root=pathlib.Path('build/v1.0.62')
+          meta=json.loads((root/'build-result.json').read_text())
+          with zipfile.ZipFile(root/meta['fileName']) as z:
+              assert z.testzip() is None
+              raw=z.read('payload/app.asar')
+          h=json.loads(raw[16:16+struct.unpack_from('<I',raw,12)[0]])
+          offset=8+struct.unpack_from('<I',raw,4)[0]
+          def file(path):
+              n=h
+              for x in path.split('/'):n=n['files'][x]
+              return raw[offset+int(n['offset']):offset+int(n['offset'])+int(n['size'])]
+          assert b'root.api.getProducts' in file('nano-restock-assistant.js')
+          assert file('nano-restock-assistant.js')==file('mobile/www/nano-restock-assistant.js')
+          assert b'#posProductSearchInput' in file('nano-v136-shortcuts.js')
+          for html in ('index.html','mobile/www/index.html'):
+              assert b'<script defer src="nano-restock-assistant.js"></script>' in file(html)
+          assert hashlib.sha256(file('downloads/NANO-POS-Mobile-v1.3.7.apk')).hexdigest()==meta['mobileApkSha256']
+          assert set(meta['changedFiles']).issubset({
+             'nano-restock-assistant.js','mobile/www/nano-restock-assistant.js',
+             'nano-v136-shortcuts.js','index.html','mobile/www/index.html',
+             'package.json','package-lock.json','app-config.js','release-notes.js'})
+          assert meta['dataFilesModified'] is False
+          assert json.loads(file('package.json'))['version']=='1.0.62'
+          m=json.loads((root/'nano-pos-update-v162.json').read_text())
+          assert m['version']=='1.0.62'
+          assert m['patches'][0]['sha256']==meta['sha256']
+          assert m['patches'][0]['appAsarSha256']==meta['appAsarSha256']
+          print('PASS: read-only product alerts, barcode F2 search, licenses and data integrity')
+          PY
+      - name: Publish optional patch v1.0.62, never overwrite old release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          FILE='build/v1.0.62/NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip'
+          if gh release view v1.0.62 >/dev/null 2>&1; then
+            echo 'Release v1.0.62 already exists - will not overwrite'; exit 1
+          fi
+          gh release create v1.0.62 "$FILE" --target main \
+            --title 'NANO POS v1.0.62 — Restock Suggestions & POS Barcode Shortcut' \
+            --notes 'Incremental read-only NANO POS update from verified v1.0.61. Repairs F2 focus for actual POS barcode search input. Adds product restock suggestions based on recorded stock, minimum stock and expiring batches, with no automatic purchase orders and no mutations. All ledger, license, MEGA, sync and embedded APK binaries stay unchanged; test on a copy before production.'
+      - name: Re-download ZIP to verify published SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.62 --pattern 'NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip' --dir verified
+          WANT="$(python3 -c 'import json;print(json.load(open("build/v1.0.62/build-result.json"))["sha256"])')"
+          GOT="$(sha256sum verified/NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip | cut -d' ' -f1)"
+          test "$WANT" = "$GOT"
+      - name: Update cloud updater manifest only after verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.62/nano-pos-update-v162.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+             -f message='Publish NANO POS Desktop v1.0.62 inventory helper and F2 fix' \
+             -f sha="$CURRENT" -f content="$CONTENT" >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.62-verified-metadata
+          path: build/v1.0.62/build-result.json
+          retention-days: 30
