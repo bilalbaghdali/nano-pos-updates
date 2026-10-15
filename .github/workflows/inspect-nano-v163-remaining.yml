@@ -50,5 +50,20 @@ jobs:
               ms=list(re.finditer(re.escape(pat),s,re.I))
               if ms:
                 print('API',f,pat,len(ms),repr(s[max(0,ms[0].start()-100):ms[0].start()+300]))
+          for f in ['index.html','mobile/www/index.html']:
+            s=files[f]
+            ids=re.findall(r'<(?:section|div|button)[^>]*\bid=["\']([^"\']+)["\']',s)
+            for word in ['cash','caisse','return','stocktake','notification','profit','promo','wholesale','sale','audit','report','settings']:
+              names=[i for i in ids if word in i.lower()]
+              print('IDS',f,word,' '.join(names[:50]))
+            for word in ['toggleNotifications','getNotifications','loadNotifications','openCaisse','openCash','openStocktake','loadStocktake','showReturns','openReturns','switchAnalyticsTab']:
+              hits=list(re.finditer(re.escape(word),s,re.I))
+              print('ACTIONS',f,word,len(hits))
+              for hit in hits[:2]:print('SNIPPET',repr(s[max(0,hit.start()-200):hit.start()+250]))
+          for f in ['browser-bridge.js','mobile/www/browser-bridge.js']:
+            s=files[f]
+            for word in [\"channel === 'get-products'\",\"channel === 'get-analytics'\",\"channel === 'get-caisse'\",\"channel === 'get-expenses'\",\"channel === 'get-sales'\",\"channel === 'get-notifications'\"]:
+              idx=s.find(word)
+              print('BRIDGE',f,word,idx,repr(s[idx:idx+450]) if idx>=0 else '')
           print('DONE')
           PY
