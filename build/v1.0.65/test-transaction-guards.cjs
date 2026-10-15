@@ -1,0 +1,12 @@
+'use strict';const assert=require('node:assert/strict');const g=require('./nano-transaction-guards.js');
+assert.equal(g.close({status:'open'},3.456),3.46);
+assert.throws(()=>g.close({status:'closed',closed_at:'2026-01-01'},5));
+assert.throws(()=>g.close({status:'open'},-1));
+const products=[{id:1,batches:[{id:3,stock:10}]}];
+assert.equal(g.stocktake(products,[{product_id:1,batch_id:3,book_qty:10,counted_qty:8}])[0].difference,-2);
+assert.throws(()=>g.stocktake(products,[{product_id:1,batch_id:3,book_qty:9,counted_qty:8}]));
+assert.throws(()=>g.stocktake(products,[{product_id:1,batch_id:3,book_qty:10,counted_qty:-8}]));
+assert.throws(()=>g.stocktake(products,[{product_id:1,batch_id:3,book_qty:10,counted_qty:8},{product_id:1,batch_id:3,book_qty:10,counted_qty:8}]));
+assert.equal(g.price({pos_price:110,wholesale_price:90},'wholesale'),90);
+assert.equal(g.price({pos_price:110,wholesale_price:90},'retail'),110);
+console.log('PASS financial guard numeric and inventory conflict tests');
