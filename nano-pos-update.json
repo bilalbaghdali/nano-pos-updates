@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.63",
+  "version": "1.0.64",
   "releaseDate": "2026-10-15",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة مركز موحد للعمليات والتنبيهات، يعرض تنبيهات المخزون والصلاحية من بيانات المنتجات الأصلية.",
-      "إضافة وصول سريع للأقسام الموجودة: الصندوق والمناوبات، الفواتير والمرتجعات، الجرد، العروض، البيع بالجملة والتقارير.",
-      "إظهار التنبيهات المتاحة من واجهة البرنامج دون إنشاء سجل بديل للمعاملات أو إجراء أي تعديلات مالية.",
-      "الحفاظ على المزامنة وقاعدة البيانات ونظام التفعيل. إصلاحات المرتجعات ومحاسبة صافي الربح وسجل التدقيق المؤكد لم تكتمل بعد."
+      "إضافة مراجعة مالية للقراءة فقط تعرض الإيرادات وتكلفة البضاعة والربح الإجمالي والمصاريف وصافيًا تقديريًا.",
+      "إضافة سجل مرجعي لآخر فواتير البيع والشراء المتاحة، مرتب حسب تاريخ المعاملة والمستخدم المسجل إن توفر.",
+      "إظهار تحذير واضح من احتمال عدم احتساب بعض المرتجعات ومصاريف الصندوق؛ لا يُقدّم التقرير بوصفه حساب ربح نهائي.",
+      "عدم تعديل فواتير المتجر والمخزون والمزامنة والتفعيل أو قواعد البيانات."
     ],
     "fr": [
-      "Centre centralisé en lecture seule pour les alertes de stock et péremption.",
-      "Accès rapide aux modules existants de caisse, retours, inventaire, promotions et rapports.",
-      "Lecture des alertes existantes sans écritures comptables.",
-      "Données et licences inchangées; contrôles financiers approfondis restant à vérifier."
+      "Revue financière en lecture seule: recettes, coût des ventes, marge brute et résultat provisoire.",
+      "Chronologie des ventes et achats enregistrés avec date et utilisateur disponible.",
+      "Avertissement explicite: retours et dépenses de caisse peuvent être incomplets.",
+      "Aucune modification des factures, données, licences ou synchronisation."
     ],
     "en": [
-      "Add a read-only operations and unified inventory/expiration alert center.",
-      "Quick access to existing shifts, returns, stocktake, promotions, wholesale and report sections.",
-      "Display existing application notifications without creating new financial transactions.",
-      "Preserve data, activation and sync; full financial reconciliation and audit logs remain separate work."
+      "Read-only financial review for revenue, cost of goods, gross margin and provisional net estimate.",
+      "Recorded sales and purchases timeline with date and available recorded username.",
+      "Explicit warning that returns and cash expenses may be incomplete, so this is not certified net profit.",
+      "No modifications to invoices, inventory, activation, data or sync."
     ]
   },
   "releaseHistory": {
@@ -829,11 +829,34 @@
           "Preserve data, activation and sync; full financial reconciliation and audit logs remain separate work."
         ]
       }
+    },
+    "1.0.64": {
+      "releaseDate": "2026-10-15",
+      "features": {
+        "ar": [
+          "إضافة مراجعة مالية للقراءة فقط تعرض الإيرادات وتكلفة البضاعة والربح الإجمالي والمصاريف وصافيًا تقديريًا.",
+          "إضافة سجل مرجعي لآخر فواتير البيع والشراء المتاحة، مرتب حسب تاريخ المعاملة والمستخدم المسجل إن توفر.",
+          "إظهار تحذير واضح من احتمال عدم احتساب بعض المرتجعات ومصاريف الصندوق؛ لا يُقدّم التقرير بوصفه حساب ربح نهائي.",
+          "عدم تعديل فواتير المتجر والمخزون والمزامنة والتفعيل أو قواعد البيانات."
+        ],
+        "fr": [
+          "Revue financière en lecture seule: recettes, coût des ventes, marge brute et résultat provisoire.",
+          "Chronologie des ventes et achats enregistrés avec date et utilisateur disponible.",
+          "Avertissement explicite: retours et dépenses de caisse peuvent être incomplets.",
+          "Aucune modification des factures, données, licences ou synchronisation."
+        ],
+        "en": [
+          "Read-only financial review for revenue, cost of goods, gross margin and provisional net estimate.",
+          "Recorded sales and purchases timeline with date and available recorded username.",
+          "Explicit warning that returns and cash expenses may be incomplete, so this is not certified net profit.",
+          "No modifications to invoices, inventory, activation, data or sync."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.63-operations-alerts",
+      "id": "nano-pos-v1.0.64-financial-review",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -863,14 +886,15 @@
         "1.0.59",
         "1.0.60",
         "1.0.61",
-        "1.0.62"
+        "1.0.62",
+        "1.0.63"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.63/NANO-POS-Patch-1.0.62-to-1.0.63-OPERATIONS-ALERTS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.63",
-      "sha256": "9461a3fcb4c9f2977b32a42d2e2454f4c9b0ca5153beeeee1188c3f9175725d4",
-      "appAsarSha256": "b5f49dcb2c61d4b4faac7255a4783731129a38e5806f15c8b858f0f263290006",
-      "fileName": "NANO-POS-Patch-1.0.62-to-1.0.63-OPERATIONS-ALERTS.zip",
-      "sizeBytes": 31318603,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.64/NANO-POS-Patch-1.0.63-to-1.0.64-FINANCIAL-REVIEW.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.64",
+      "sha256": "d2ded1ff6c0fbd08f8396d3ffda04b1e43596d7438037878c6b9de4cb4202457",
+      "appAsarSha256": "3bdf3730bf94de9c7235d4cb6bddc89b84d0e4c1644140b1aa1df655bf8e4473",
+      "fileName": "NANO-POS-Patch-1.0.63-to-1.0.64-FINANCIAL-REVIEW.zip",
+      "sizeBytes": 31323357,
       "payloadType": "app-asar"
     }
   ],
@@ -881,8 +905,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "مركز تنبيهات للمخزون والصلاحية وروابط للأقسام التشغيلية الحالية دون تعديل البيانات.",
-    "fr": "Centre des alertes et raccourcis opérationnels en lecture seule.",
-    "en": "Read-only operations shortcuts and unified stock and expiry alerts."
+    "ar": "مراجعة مالية وسجل معاملات مرجعي للقراءة فقط مع توضيح حدود الدقة المحاسبية.",
+    "fr": "Revue financière et chronologie des transactions, sans mutation.",
+    "en": "Read-only financial review and posted transactions timeline with accuracy warnings."
   }
 }
