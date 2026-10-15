@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "releaseDate": "2026-10-15",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إزالة زر حالة الأجهزة والمزامنة العائم من أسفل واجهة الكمبيوتر دون تعطيل المزامنة.",
-      "الإبقاء على مؤشر الأجهزة المرتبطة في الأعلى وعلى مركز إدارة الأجهزة داخل الإعدادات.",
-      "تحسين إدخال المبلغ المدفوع في فاتورة الشراء ومنع الأرقام السالبة عبر خصائص حقل الإدخال.",
-      "إبراز التركيز بلوحة المفاتيح في شاشات البيع والرئيسية والفواتير دون تغيير بيانات التفعيل أو الأرصدة."
+      "إصلاح اختصار F2 ليركز على حقل البحث بالاسم والباركود الفعلي في شاشة البيع.",
+      "إضافة مساعد إعادة الطلب في قسم المنتجات باستخدام حد المخزون الأدنى والكمية المتوفرة.",
+      "عرض تنبيهات انتهاء الصلاحية حسب تواريخ دفعات المنتجات المسجلة، دون اختلاق تواريخ للمنتجات غير المسجلة.",
+      "الحسابات للقراءة فقط: لا تُنشأ أوامر شراء تلقائية ولا تتغير البيانات أو التفعيل أو المزامنة."
     ],
     "fr": [
-      "Suppression du bouton flottant inférieur des appareils, sans désactiver la synchronisation.",
-      "Indicateur supérieur et gestion des appareils dans les paramètres conservés.",
-      "Champ montant payé de facture: minimum zéro et précision de 0,01.",
-      "Amélioration de la navigation au clavier sans modifier les données ni les licences."
+      "Correction de F2 pour activer la recherche de produits et codes-barres du point de vente.",
+      "Assistant de réapprovisionnement basé sur les stocks et les seuils existants.",
+      "Alertes de péremption selon les dates de lots enregistrés.",
+      "Calculs en lecture seule; aucune écriture dans les stocks, données ou licences."
     ],
     "en": [
-      "Remove the redundant bottom floating connected-devices button without disabling sync.",
-      "Preserve the header devices badge and Settings device center.",
-      "Add nonnegative and decimal input hints to the purchase invoice amount-paid field.",
-      "Make keyboard focus visible in sales, home and invoices; preserve existing data and activation."
+      "Fix F2 shortcut to focus the current POS product/barcode search field.",
+      "Add a read-only reorder suggestion tool using existing inventory thresholds.",
+      "Show recorded batch expiry warnings without inferring missing expiration dates.",
+      "No automatic purchases, stock edits, activation changes, or synchronization changes."
     ]
   },
   "releaseHistory": {
@@ -783,11 +783,34 @@
           "Make keyboard focus visible in sales, home and invoices; preserve existing data and activation."
         ]
       }
+    },
+    "1.0.62": {
+      "releaseDate": "2026-10-15",
+      "features": {
+        "ar": [
+          "إصلاح اختصار F2 ليركز على حقل البحث بالاسم والباركود الفعلي في شاشة البيع.",
+          "إضافة مساعد إعادة الطلب في قسم المنتجات باستخدام حد المخزون الأدنى والكمية المتوفرة.",
+          "عرض تنبيهات انتهاء الصلاحية حسب تواريخ دفعات المنتجات المسجلة، دون اختلاق تواريخ للمنتجات غير المسجلة.",
+          "الحسابات للقراءة فقط: لا تُنشأ أوامر شراء تلقائية ولا تتغير البيانات أو التفعيل أو المزامنة."
+        ],
+        "fr": [
+          "Correction de F2 pour activer la recherche de produits et codes-barres du point de vente.",
+          "Assistant de réapprovisionnement basé sur les stocks et les seuils existants.",
+          "Alertes de péremption selon les dates de lots enregistrés.",
+          "Calculs en lecture seule; aucune écriture dans les stocks, données ou licences."
+        ],
+        "en": [
+          "Fix F2 shortcut to focus the current POS product/barcode search field.",
+          "Add a read-only reorder suggestion tool using existing inventory thresholds.",
+          "Show recorded batch expiry warnings without inferring missing expiration dates.",
+          "No automatic purchases, stock edits, activation changes, or synchronization changes."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.61-ui-payment-guard",
+      "id": "nano-pos-v1.0.62-restock-barcode",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -815,14 +838,15 @@
         "1.0.57",
         "1.0.58",
         "1.0.59",
-        "1.0.60"
+        "1.0.60",
+        "1.0.61"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.61/NANO-POS-Patch-1.0.60-to-1.0.61-UI-PAYMENT-GUARDS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.61",
-      "sha256": "4682c80470c7a8412e23d875167ddf4a1a7b30b53c94c7bd4e38ff4552976b9e",
-      "appAsarSha256": "ba12baef2a1678f681e5796ac5fc4a3ed38d52634a54a854a1ac98c7beace9b5",
-      "fileName": "NANO-POS-Patch-1.0.60-to-1.0.61-UI-PAYMENT-GUARDS.zip",
-      "sizeBytes": 31309280,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.62/NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.62",
+      "sha256": "65257db69c30c20f6bc2b6bad0b958e67ff7a47f7b3b371de456b339c5fc7c94",
+      "appAsarSha256": "01fc230ec74b948aa7b95fc7fdc20648d3626cfd4be3fd2ee01b7b5ad050d01c",
+      "fileName": "NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip",
+      "sizeBytes": 31312844,
       "payloadType": "app-asar"
     }
   ],
@@ -833,8 +857,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسين واجهة الأجهزة وإدخال المبلغ المدفوع دون تغيير قواعد البيانات.",
-    "fr": "Amélioration de l’interface et du champ de paiement, sans modification des données.",
-    "en": "Improve device UI and amount-paid input without changing stored data."
+    "ar": "مساعد إعادة الطلب بالاعتماد على البيانات المسجلة وإصلاح اختصار الباركود F2، دون تغيير قاعدة البيانات.",
+    "fr": "Réapprovisionnement en lecture seule et raccourci F2 corrigé, données préservées.",
+    "en": "Read-only restock assistant and repaired F2 barcode focus, stored data preserved."
   }
 }
