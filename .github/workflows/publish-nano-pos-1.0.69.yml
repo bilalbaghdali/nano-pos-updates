@@ -1,0 +1,108 @@
+name: Publish NANO POS v1.0.69 Multi-Phone Stocktake
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.69.yml'
+      - 'build/v1.0.69/build.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-v169-multi-count-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build strictly from SHA-verified v1.0.60 production package
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.69/build.py
+          python3 build/v1.0.69/build.py
+      - name: Verify no-offline-queue, trusted devices, exclusive count and per-phone attribution
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,zipfile,hashlib,struct,pathlib
+          folder=pathlib.Path('build/v1.0.69')
+          m=json.loads((folder/'build-result.json').read_text())
+          with zipfile.ZipFile(folder/m['fileName']) as z:
+              assert z.testzip() is None
+              a=z.read('payload/app.asar')
+          h=json.loads(a[16:16+struct.unpack_from('<I',a,12)[0]])
+          start=8+struct.unpack_from('<I',a,4)[0]
+          def data(path):
+              n=h
+              for seg in path.split('/'):n=n['files'][seg]
+              return a[start+int(n['offset']):start+int(n['offset'])+int(n['size'])]
+          assert data('nano-multi-count.js')==data('mobile/www/nano-multi-count.js')
+          assert data('nano-multi-count-ui.js')==data('mobile/www/nano-multi-count-ui.js')
+          for path in ['index.html','mobile/www/index.html']:
+              html=data(path)
+              assert html.index(b'src="nano-multi-count.js"')<html.index(b'src="browser-bridge.js"')
+              assert b'<script defer src="nano-multi-count-ui.js"></script>' in html
+          for path in ['browser-bridge.js','mobile/www/browser-bridge.js']:
+              txt=data(path)
+              assert b'NANO_MULTI_COUNT_169' in txt
+              assert b'nano-count-claim' in txt and b'nano-count-record' in txt
+          ms=data('mobile-sync-server.cjs')
+          assert b'__nanoCountOrigin' in ms and b'deviceId:device.id' in ms
+          assert b"channel.startsWith('nano-count-')" in ms
+          assert b'primary_pc_only' in ms
+          pc=data('pc-sync-service.cjs')
+          assert b'nano-count-start' in pc and b'nano-count-record' in pc
+          relay=data('mobile/www/mobile-sync-bridge.js')
+          assert b"channel.startsWith('nano-count-') && isNetworkError(error)" in relay
+          assert b"c === 'nano-count-active'" in relay
+          assert hashlib.sha256(data('downloads/NANO-POS-Mobile-v1.3.7.apk')).hexdigest()==m['mobileApkSha256']
+          assert m['dataFilesModified'] is False
+          assert json.loads(data('package.json'))['version']=='1.0.69'
+          manifest=json.loads((folder/'nano-pos-update-v169.json').read_text())
+          assert manifest['version']=='1.0.69'
+          assert manifest['patches'][0]['sha256']==m['sha256']
+          assert manifest['patches'][0]['appAsarSha256']==m['appAsarSha256']
+          print('PASS: multi-phone locks, names, barcode count, phone RPC identity, offline queue protection')
+          PY
+      - name: Publish optional patch v1.0.69, never overwrite old release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          FILE='build/v1.0.69/NANO-POS-Patch-1.0.68-to-1.0.69-MULTIPHONE-COUNT.zip'
+          if gh release view v1.0.69 >/dev/null 2>&1; then
+            echo 'Release v1.0.69 already exists - will not overwrite'; exit 1
+          fi
+          gh release create v1.0.69 "$FILE" --target main \
+            --title 'NANO POS v1.0.69 — Multi-Phone Collaborative Inventory Count' \
+            --notes 'Open one shared inventory-count session on the primary PC. Connected paired Android phones automatically present the session; each operator enters their name, scans a product barcode, sees the recorded stock, and enters physical counts for every batch. Product-level time-limited exclusive claims prevent simultaneous edits; after posting the product shows Counted By and per-phone history. Actual inventory remains unchanged until the primary manager closes the session into a stocktake draft and approves that draft. Read-only polling and all claim/count RPCs fail closed when disconnected, with no delayed offline queue. Existing data, activation and bundled Android APK unchanged. Automated two-phone tests passed; test with actual physical phones and isolated shop data before using in production.'
+      - name: Re-download ZIP to verify published SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.69 --pattern 'NANO-POS-Patch-1.0.68-to-1.0.69-MULTIPHONE-COUNT.zip' --dir verified
+          WANT="$(python3 -c 'import json;print(json.load(open("build/v1.0.69/build-result.json"))["sha256"])')"
+          GOT="$(sha256sum verified/NANO-POS-Patch-1.0.68-to-1.0.69-MULTIPHONE-COUNT.zip | cut -d' ' -f1)"
+          test "$WANT" = "$GOT"
+      - name: Update cloud updater manifest only after verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.69/nano-pos-update-v169.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+             -f message='Publish NANO POS v1.0.69 verified collaborative mobile counting' \
+             -f sha="$CURRENT" -f content="$CONTENT" >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.69-verified-metadata
+          path: build/v1.0.69/build-result.json
+          retention-days: 30
