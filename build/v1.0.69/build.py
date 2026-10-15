@@ -134,10 +134,14 @@ def main():
          ?engine.release(db,payload,trusted)
          :engine.finish(db,payload,user.id,window.NANO_STOCKTAKE_APPROVAL_167);
        if(data.next!==db){
+         const id=String(payload.sessionId||data.result?.session?.id);
+         const expected=JSON.stringify((data.next.nano_multi_count_sessions||[]).find(v=>v.id===id));
          const previous=db;db=data.next;save();
          const persisted=JSON.parse(localStorage.getItem(KEY)||'{}');
-         const persistedSession=(persisted.nano_multi_count_sessions||[]).find(v=>v.id===String(payload.sessionId||data.result?.session?.id));
-         if(!persistedSession){db=previous;return fail('فشل حفظ حالة الجرد؛ لم يتم تسجيل العملية');}
+         const persistedSession=(persisted.nano_multi_count_sessions||[]).find(v=>v.id===id);
+         if(!persistedSession||JSON.stringify(persistedSession)!==expected){
+            db=previous;return fail('فشل حفظ حالة الجرد؛ لم يتم تسجيل العملية');
+         }
        }
        return clone(data.result);
      }catch(error){return fail(error?.message||'تعذر تحديث الجرد الجماعي');}
