@@ -3,27 +3,27 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.67",
+  "version": "1.0.68",
   "releaseDate": "2026-10-15",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إنشاء مسودات جرد من الهاتف أو المتصفح دون تعديل كميات المخزون.",
-      "اعتماد الجرد أو رفضه من الكمبيوتر الرئيسي فقط، والتحقق من الكميات الحالية قبل الموافقة.",
-      "منع الاعتماد المكرر وتسجيل معلومات المستخدم والدفعات والفرق في سجل الجرد.",
-      "حظر أوامر اعتماد الجرد من أجهزة العميل والمتصفح البعيد على مستوى الخادم."
+      "إضافة خيار واضح لتطبيق العروض والسعر بالجملة أثناء البيع عند اختياره فقط.",
+      "إعادة حساب إجمالي الفاتورة من أسعار المنتجات والعروض السارية على الكمبيوتر الرئيسي.",
+      "التحقق من تاريخ العرض والكمية، واختيار أفضل تخفيض واحد دون جمع تخفيضات متعددة على المنتج.",
+      "الإبقاء على طريقة التسعير السابقة دون تغيير عند عدم تفعيل الخيار."
     ],
     "fr": [
-      "Création des projets de comptage sans modification du stock.",
-      "Validation ou rejet exclusivement sur le PC principal après contrôle du stock courant.",
-      "Anti-doublon et journal des opérations de stocktake, refus des validations à distance."
+      "Application optionnelle des promotions et prix de gros à la caisse.",
+      "Calcul du total sur le PC principal, validation des périodes et quantités, sans cumul des remises.",
+      "Comportement de caisse inchangé tant que le mode est désactivé."
     ],
     "en": [
-      "Submit stocktake count drafts without changing inventory.",
-      "Require primary-PC approval or rejection with current stock consistency checks.",
-      "Prevent repeated approvals and deny remote approval at sync endpoints."
+      "Add explicit opt-in to calculate current promotions and wholesale prices at checkout.",
+      "Recompute totals on the authoritative main PC with date and quantity guards.",
+      "Use the best promotion only and preserve default legacy pricing unless enabled."
     ]
   },
   "releaseHistory": {
@@ -919,11 +919,32 @@
           "Prevent repeated approvals and deny remote approval at sync endpoints."
         ]
       }
+    },
+    "1.0.68": {
+      "releaseDate": "2026-10-15",
+      "features": {
+        "ar": [
+          "إضافة خيار واضح لتطبيق العروض والسعر بالجملة أثناء البيع عند اختياره فقط.",
+          "إعادة حساب إجمالي الفاتورة من أسعار المنتجات والعروض السارية على الكمبيوتر الرئيسي.",
+          "التحقق من تاريخ العرض والكمية، واختيار أفضل تخفيض واحد دون جمع تخفيضات متعددة على المنتج.",
+          "الإبقاء على طريقة التسعير السابقة دون تغيير عند عدم تفعيل الخيار."
+        ],
+        "fr": [
+          "Application optionnelle des promotions et prix de gros à la caisse.",
+          "Calcul du total sur le PC principal, validation des périodes et quantités, sans cumul des remises.",
+          "Comportement de caisse inchangé tant que le mode est désactivé."
+        ],
+        "en": [
+          "Add explicit opt-in to calculate current promotions and wholesale prices at checkout.",
+          "Recompute totals on the authoritative main PC with date and quantity guards.",
+          "Use the best promotion only and preserve default legacy pricing unless enabled."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.67-stocktake-approval",
+      "id": "nano-pos-v1.0.68-pricing-offers",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -957,14 +978,15 @@
         "1.0.63",
         "1.0.64",
         "1.0.65",
-        "1.0.66"
+        "1.0.66",
+        "1.0.67"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.67/NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.67",
-      "sha256": "8b9ac5da6be3c5eca003fe86de3ae5236cc05368db1f8a0ceeb40659d73dd63a",
-      "appAsarSha256": "67bcfdbff2c73ed99a0dd69d6885a6fc6c9e8fd6308bff18623a809364ace0fb",
-      "fileName": "NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip",
-      "sizeBytes": 31342699,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.68/NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.68",
+      "sha256": "64a3a0a7564dc8d8ea0408ff6282e1f453f28ff54d7154b1c67e0a1b94d556fc",
+      "appAsarSha256": "c0302905634d3bd358f79ee1ffd5f4d25e5626d894f6c60bd6178e06d73ea9f6",
+      "fileName": "NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip",
+      "sizeBytes": 31349237,
       "payloadType": "app-asar"
     }
   ],
@@ -975,8 +997,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "مسودات جرد من الهاتف مع اعتماد آمن على الكمبيوتر الرئيسي بعد تحقق كميات المخزون.",
-    "fr": "Brouillons d’inventaire avec approbation sur ordinateur principal.",
-    "en": "Stocktake count drafts requiring primary PC approval."
+    "ar": "قواعد جملة وعروض اختيارية في البيع مع إعادة حساب الإجمالي على الكمبيوتر الرئيسي.",
+    "fr": "Prix de gros et promotions optionnels validés sur le PC principal.",
+    "en": "Opt-in promotion and wholesale pricing checked on primary PC."
   }
 }
