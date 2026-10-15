@@ -1,0 +1,32 @@
+name: Test NANO POS v1.0.68 Pricing
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-nano-v168-pricing.yml'
+      - 'build/v1.0.68/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and test pricing candidate against released v1.0.67
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.68/build.py
+          python3 build/v1.0.68/build.py
+      - name: Archive candidate for review, not yet publishing
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v168-pricing-tested-candidate
+          path: |
+            build/v1.0.68/NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip
+            build/v1.0.68/build-result.json
+          retention-days: 7
