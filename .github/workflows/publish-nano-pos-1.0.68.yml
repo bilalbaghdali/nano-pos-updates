@@ -40,7 +40,7 @@ jobs:
           def read(path):
               n=h
               for x in path.split('/'):n=n['files'][x]
-              return asar[off+int(n['offset']):off+int(n['offset'])+int(n['size']]
+              return asar[off+int(n['offset']):off+int(n['offset'])+int(n['size'])]
           assert read('nano-pricing.js')==read('mobile/www/nano-pricing.js')
           assert read('nano-pricing-ui.js')==read('mobile/www/nano-pricing-ui.js')
           for pth in ['index.html','mobile/www/index.html']:
