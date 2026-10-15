@@ -1,0 +1,22 @@
+name: Test NANO POS v1.0.66 Returns
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-nano-v166-returns.yml'
+      - 'build/v1.0.66/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  returns:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          set -euo pipefail
+          node --check build/v1.0.66/nano-return-plan.js
+          node build/v1.0.66/test-return-plan.cjs
