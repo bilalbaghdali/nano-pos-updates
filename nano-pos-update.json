@@ -3,27 +3,30 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.68",
+  "version": "1.0.69",
   "releaseDate": "2026-10-15",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة خيار واضح لتطبيق العروض والسعر بالجملة أثناء البيع عند اختياره فقط.",
-      "إعادة حساب إجمالي الفاتورة من أسعار المنتجات والعروض السارية على الكمبيوتر الرئيسي.",
-      "التحقق من تاريخ العرض والكمية، واختيار أفضل تخفيض واحد دون جمع تخفيضات متعددة على المنتج.",
-      "الإبقاء على طريقة التسعير السابقة دون تغيير عند عدم تفعيل الخيار."
+      "فتح جرد جماعي من الكمبيوتر الرئيسي وإظهار الجلسة تلقائيًا على الهواتف المتصلة.",
+      "إدخال اسم الجارد لكل هاتف وعرض الكمية المسجلة مباشرة عند مسح باركود المنتج.",
+      "حجز المنتج لهاتف واحد مؤقتًا لمنع تضارب عدّ نفس المنتج من هواتف متعددة.",
+      "إظهار رسالة تم جرده عند إعادة المسح، مع اسم الجارد والهاتف والكميات المسجلة.",
+      "عرض تقدم الجرد حسب كل هاتف وتجميع النتائج في مسودة للمراجعة والاعتماد من الكمبيوتر الرئيسي دون تغيير المخزون أثناء العدّ."
     ],
     "fr": [
-      "Application optionnelle des promotions et prix de gros à la caisse.",
-      "Calcul du total sur le PC principal, validation des périodes et quantités, sans cumul des remises.",
-      "Comportement de caisse inchangé tant que le mode est désactivé."
+      "Inventaire collectif ouvert depuis le PC principal et affiché automatiquement sur les téléphones.",
+      "Nom du compteur par téléphone; scan montre le stock théorique et la saisie des quantités.",
+      "Verrou temporaire au niveau du produit, historique par opérateur et refus des doublons.",
+      "Envoi des comptages vers un brouillon pour approbation sur PC principal."
     ],
     "en": [
-      "Add explicit opt-in to calculate current promotions and wholesale prices at checkout.",
-      "Recompute totals on the authoritative main PC with date and quantity guards.",
-      "Use the best promotion only and preserve default legacy pricing unless enabled."
+      "Primary PC starts a shared count; connected phones automatically display the count.",
+      "Each phone enters the counter name, scans barcodes and records physical quantities.",
+      "Exclusive per-product short leases prevent concurrent handset edits or duplicate counts.",
+      "All handset counts are attributed and merged into a draft pending primary PC approval."
     ]
   },
   "releaseHistory": {
@@ -940,11 +943,35 @@
           "Use the best promotion only and preserve default legacy pricing unless enabled."
         ]
       }
+    },
+    "1.0.69": {
+      "releaseDate": "2026-10-15",
+      "features": {
+        "ar": [
+          "فتح جرد جماعي من الكمبيوتر الرئيسي وإظهار الجلسة تلقائيًا على الهواتف المتصلة.",
+          "إدخال اسم الجارد لكل هاتف وعرض الكمية المسجلة مباشرة عند مسح باركود المنتج.",
+          "حجز المنتج لهاتف واحد مؤقتًا لمنع تضارب عدّ نفس المنتج من هواتف متعددة.",
+          "إظهار رسالة تم جرده عند إعادة المسح، مع اسم الجارد والهاتف والكميات المسجلة.",
+          "عرض تقدم الجرد حسب كل هاتف وتجميع النتائج في مسودة للمراجعة والاعتماد من الكمبيوتر الرئيسي دون تغيير المخزون أثناء العدّ."
+        ],
+        "fr": [
+          "Inventaire collectif ouvert depuis le PC principal et affiché automatiquement sur les téléphones.",
+          "Nom du compteur par téléphone; scan montre le stock théorique et la saisie des quantités.",
+          "Verrou temporaire au niveau du produit, historique par opérateur et refus des doublons.",
+          "Envoi des comptages vers un brouillon pour approbation sur PC principal."
+        ],
+        "en": [
+          "Primary PC starts a shared count; connected phones automatically display the count.",
+          "Each phone enters the counter name, scans barcodes and records physical quantities.",
+          "Exclusive per-product short leases prevent concurrent handset edits or duplicate counts.",
+          "All handset counts are attributed and merged into a draft pending primary PC approval."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.68-pricing-offers",
+      "id": "nano-pos-v1.0.69-multi-phone-count",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -979,14 +1006,15 @@
         "1.0.64",
         "1.0.65",
         "1.0.66",
-        "1.0.67"
+        "1.0.67",
+        "1.0.68"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.68/NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.68",
-      "sha256": "64a3a0a7564dc8d8ea0408ff6282e1f453f28ff54d7154b1c67e0a1b94d556fc",
-      "appAsarSha256": "c0302905634d3bd358f79ee1ffd5f4d25e5626d894f6c60bd6178e06d73ea9f6",
-      "fileName": "NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip",
-      "sizeBytes": 31349237,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.69/NANO-POS-Patch-1.0.68-to-1.0.69-MULTIPHONE-COUNT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.69",
+      "sha256": "95434b1e137774c53fabc79f5daca47d86e56c5aef732945404f9ba08121e81a",
+      "appAsarSha256": "c526615eb0277ce825e62709fba1a2baf94764311aec73a5d1782dd5ccf9618a",
+      "fileName": "NANO-POS-Patch-1.0.68-to-1.0.69-MULTIPHONE-COUNT.zip",
+      "sizeBytes": 31358844,
       "payloadType": "app-asar"
     }
   ],
@@ -997,8 +1025,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "قواعد جملة وعروض اختيارية في البيع مع إعادة حساب الإجمالي على الكمبيوتر الرئيسي.",
-    "fr": "Prix de gros et promotions optionnels validés sur le PC principal.",
-    "en": "Opt-in promotion and wholesale pricing checked on primary PC."
+    "ar": "جرد متزامن من عدة هواتف دون ازدواج المنتجات مع توثيق اسم الجارد لكل جهاز.",
+    "fr": "Inventaire simultané multi-téléphones avec attribution par opérateur.",
+    "en": "Shared multi-phone count, exclusive product claims and operator audit details."
   }
 }
