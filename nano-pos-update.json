@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.60",
-  "releaseDate": "2026-10-14",
+  "version": "1.0.61",
+  "releaseDate": "2026-10-15",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "حذف الأيقونة الزرقاء بجانب اسم المتجر في رأس القائمة الجانبية للكمبيوتر.",
-      "إزالة الأيقونة نفسها من واجهة القائمة الجانبية التي تُفتح من المتصفح المحلي.",
-      "الإبقاء على اسم المتجر ونص العنوان والقوائم كما هي دون تغيير.",
-      "عدم تعديل شعار المتجر في الإعدادات والفواتير والطباعة أو بيانات البيع والتفعيل والمزامنة."
+      "إزالة زر حالة الأجهزة والمزامنة العائم من أسفل واجهة الكمبيوتر دون تعطيل المزامنة.",
+      "الإبقاء على مؤشر الأجهزة المرتبطة في الأعلى وعلى مركز إدارة الأجهزة داخل الإعدادات.",
+      "تحسين إدخال المبلغ المدفوع في فاتورة الشراء ومنع الأرقام السالبة عبر خصائص حقل الإدخال.",
+      "إبراز التركيز بلوحة المفاتيح في شاشات البيع والرئيسية والفواتير دون تغيير بيانات التفعيل أو الأرصدة."
     ],
     "fr": [
-      "Suppression de l’icône bleue à côté du nom du magasin dans la barre latérale.",
-      "Même correction dans la barre latérale de l’interface locale.",
-      "Nom du magasin et menu inchangés.",
-      "Conservation des logos sur les factures et dans les paramètres, des données et de la synchronisation."
+      "Suppression du bouton flottant inférieur des appareils, sans désactiver la synchronisation.",
+      "Indicateur supérieur et gestion des appareils dans les paramètres conservés.",
+      "Champ montant payé de facture: minimum zéro et précision de 0,01.",
+      "Amélioration de la navigation au clavier sans modifier les données ni les licences."
     ],
     "en": [
-      "Remove the blue icon directly beside the store heading in the desktop sidebar.",
-      "Apply the same change to the local browser sidebar.",
-      "Preserve store name, heading text and navigation.",
-      "Keep business logos in settings/receipts, sales data, activation and synchronization intact."
+      "Remove the redundant bottom floating connected-devices button without disabling sync.",
+      "Preserve the header devices badge and Settings device center.",
+      "Add nonnegative and decimal input hints to the purchase invoice amount-paid field.",
+      "Make keyboard focus visible in sales, home and invoices; preserve existing data and activation."
     ]
   },
   "releaseHistory": {
@@ -760,11 +760,34 @@
           "Keep business logos in settings/receipts, sales data, activation and synchronization intact."
         ]
       }
+    },
+    "1.0.61": {
+      "releaseDate": "2026-10-15",
+      "features": {
+        "ar": [
+          "إزالة زر حالة الأجهزة والمزامنة العائم من أسفل واجهة الكمبيوتر دون تعطيل المزامنة.",
+          "الإبقاء على مؤشر الأجهزة المرتبطة في الأعلى وعلى مركز إدارة الأجهزة داخل الإعدادات.",
+          "تحسين إدخال المبلغ المدفوع في فاتورة الشراء ومنع الأرقام السالبة عبر خصائص حقل الإدخال.",
+          "إبراز التركيز بلوحة المفاتيح في شاشات البيع والرئيسية والفواتير دون تغيير بيانات التفعيل أو الأرصدة."
+        ],
+        "fr": [
+          "Suppression du bouton flottant inférieur des appareils, sans désactiver la synchronisation.",
+          "Indicateur supérieur et gestion des appareils dans les paramètres conservés.",
+          "Champ montant payé de facture: minimum zéro et précision de 0,01.",
+          "Amélioration de la navigation au clavier sans modifier les données ni les licences."
+        ],
+        "en": [
+          "Remove the redundant bottom floating connected-devices button without disabling sync.",
+          "Preserve the header devices badge and Settings device center.",
+          "Add nonnegative and decimal input hints to the purchase invoice amount-paid field.",
+          "Make keyboard focus visible in sales, home and invoices; preserve existing data and activation."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.60-sidebar-logo-only",
+      "id": "nano-pos-v1.0.61-ui-payment-guard",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -791,14 +814,15 @@
         "1.0.56",
         "1.0.57",
         "1.0.58",
-        "1.0.59"
+        "1.0.59",
+        "1.0.60"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.60/NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.60",
-      "sha256": "3cc83f02536ff92eed93004d7e2bc2fa1db6520265811a958fe7ed6ecdb832c9",
-      "appAsarSha256": "dc52c487cd99c1e5b86f3726211e063f5c75dc5b4b71a2e809dab66217fe8d70",
-      "fileName": "NANO-POS-Patch-1.0.59-to-1.0.60-SIDEBAR-LOGO-REMOVAL.zip",
-      "sizeBytes": 31308990,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.61/NANO-POS-Patch-1.0.60-to-1.0.61-UI-PAYMENT-GUARDS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.61",
+      "sha256": "4682c80470c7a8412e23d875167ddf4a1a7b30b53c94c7bd4e38ff4552976b9e",
+      "appAsarSha256": "ba12baef2a1678f681e5796ac5fc4a3ed38d52634a54a854a1ac98c7beace9b5",
+      "fileName": "NANO-POS-Patch-1.0.60-to-1.0.61-UI-PAYMENT-GUARDS.zip",
+      "sizeBytes": 31309280,
       "payloadType": "app-asar"
     }
   ],
@@ -809,8 +833,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "إزالة الشعار الأزرق بجانب اسم المتجر داخل رأس القائمة الجانبية فقط.",
-    "fr": "Suppression de l’icône à côté du nom du magasin dans la barre latérale.",
-    "en": "Remove only the blue sidebar logo beside the shop heading."
+    "ar": "تحسين واجهة الأجهزة وإدخال المبلغ المدفوع دون تغيير قواعد البيانات.",
+    "fr": "Amélioration de l’interface et du champ de paiement, sans modification des données.",
+    "en": "Improve device UI and amount-paid input without changing stored data."
   }
 }
