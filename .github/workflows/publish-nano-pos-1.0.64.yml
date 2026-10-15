@@ -1,0 +1,99 @@
+name: Publish NANO POS v1.0.64 Read-only Financial Review
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nano-pos-1.0.64.yml'
+      - 'build/v1.0.64/build.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-v164-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build strictly from SHA-verified v1.0.60 production package
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.64/build.py
+          python3 build/v1.0.64/build.py
+      - name: Verify read-only financial review module and preserved business files
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import zipfile,struct,json,pathlib,hashlib
+          root=pathlib.Path('build/v1.0.64')
+          meta=json.loads((root/'build-result.json').read_text())
+          with zipfile.ZipFile(root/meta['fileName']) as z:
+              assert z.testzip() is None
+              raw=z.read('payload/app.asar')
+          h=json.loads(raw[16:16+struct.unpack_from('<I',raw,12)[0]])
+          off=8+struct.unpack_from('<I',raw,4)[0]
+          def get(path):
+              n=h
+              for part in path.split('/'):n=n['files'][part]
+              return raw[off+int(n['offset']):off+int(n['offset'])+int(n['size'])]
+          assert get('nano-financial-review.js')==get('mobile/www/nano-financial-review.js')
+          assert b'NANO_FIN_REVIEW_164' in get('nano-financial-review.js')
+          assert b'getAnalytics' in get('nano-financial-review.js')
+          assert b'getSales' in get('nano-financial-review.js')
+          for path in ['index.html','mobile/www/index.html']:
+              assert b'<script defer src="nano-financial-review.js"></script>' in get(path)
+              assert b'<script defer src="nano-operations-center.js"></script>' in get(path)
+          assert hashlib.sha256(get('downloads/NANO-POS-Mobile-v1.3.7.apk')).hexdigest()==meta['mobileApkSha256']
+          assert set(meta['changedFiles']).issubset({
+             'nano-financial-review.js','mobile/www/nano-financial-review.js','index.html',
+             'mobile/www/index.html','package.json','package-lock.json','app-config.js','release-notes.js'})
+          assert meta['dataFilesModified'] is False
+          assert json.loads(get('package.json'))['version']=='1.0.64'
+          manifest=json.loads((root/'nano-pos-update-v164.json').read_text())
+          assert manifest['version']=='1.0.64'
+          assert manifest['patches'][0]['sha256']==meta['sha256']
+          assert manifest['patches'][0]['appAsarSha256']==meta['appAsarSha256']
+          print('PASS: verified financial review and transaction snapshots, protected data unchanged')
+          PY
+      - name: Publish optional patch v1.0.64, never overwrite old release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          FILE='build/v1.0.64/NANO-POS-Patch-1.0.63-to-1.0.64-FINANCIAL-REVIEW.zip'
+          if gh release view v1.0.64 >/dev/null 2>&1; then
+            echo 'Release v1.0.64 already exists - will not overwrite'; exit 1
+          fi
+          gh release create v1.0.64 "$FILE" --target main \
+            --title 'NANO POS v1.0.64 — Financial Review & Transaction Timeline' \
+            --notes 'Optional non-destructive financial review for recorded revenue, COGS, expenses, provisional profit, and a limited sales/purchases timeline. Explicitly warns that returns and some cash expenses may be incomplete. Does NOT create an immutable audit trail or certify net profit. Original ledgers, backups, MEGA, sync, inventory, license files and Android APK are unchanged. Test before production.'
+      - name: Re-download ZIP to verify published SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download v1.0.64 --pattern 'NANO-POS-Patch-1.0.63-to-1.0.64-FINANCIAL-REVIEW.zip' --dir verified
+          WANT="$(python3 -c 'import json;print(json.load(open("build/v1.0.64/build-result.json"))["sha256"])')"
+          GOT="$(sha256sum verified/NANO-POS-Patch-1.0.63-to-1.0.64-FINANCIAL-REVIEW.zip | cut -d' ' -f1)"
+          test "$WANT" = "$GOT"
+      - name: Update cloud updater manifest only after verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          CURRENT="$(gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha)"
+          CONTENT="$(base64 -w0 build/v1.0.64/nano-pos-update-v164.json)"
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json \
+             -f message='Publish NANO POS Desktop v1.0.64 financial review' \
+             -f sha="$CURRENT" -f content="$CONTENT" >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.64-verified-metadata
+          path: build/v1.0.64/build-result.json
+          retention-days: 30
