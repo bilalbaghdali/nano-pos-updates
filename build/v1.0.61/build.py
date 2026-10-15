@@ -104,6 +104,8 @@ def main():
     old_line=re.compile(r"    const chip=ensureGlobalStatusChip\(\),dot=chip.querySelector\('\[data-dot\]'\),text=chip.querySelector\('\[data-text\]'\);[^\n]*\n")
     assert len(old_line.findall(ui))==1,'Floating badge update changed upstream'
     ui=old_line.sub("    document.getElementById('nanoMobileSyncGlobalStatus')?.remove();\n",ui,count=1)
+    leftovers=[ui[max(0,m.start()-90):m.end()+140] for m in re.finditer('ensureGlobalStatusChip',ui)]
+    print('STILL_CALLS',repr(leftovers))
     assert 'ensureGlobalStatusChip' not in ui
     assert 'ensureHeaderDevicesBadge' in ui and 'openConnectedDevices' in ui
     assert 'saveEmbeddedMobileApk' in ui and 'data-download-scanner' in ui
