@@ -64,5 +64,10 @@ jobs:
             print('COLLECTION',path,repr(body[a:a+1400]))
             a=body.find("if (channel === 'process-sale')")
             print('POS_TAIL',path,repr(body[a+4900:a+9000]))
+          for p in ['browser-bridge.js','mobile/www/browser-bridge.js','index.html','mobile/www/index.html']:
+            code=read(p)
+            for needle in ['issueCreditNote','getSaleDetails','window.api','window.electronAPI','api =','issue-credit-note']:
+              print('ACCESS',p,needle,code.find(needle),repr(code[max(0,code.find(needle)-120):code.find(needle)+330] if code.find(needle)>=0 else ''))
+            print('SOURCE_END',p,repr(code[-1100:]))
           print('DONE')
           PY
