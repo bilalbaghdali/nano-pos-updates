@@ -3,30 +3,27 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.66",
+  "version": "1.0.67",
   "releaseDate": "2026-10-15",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تسجيل مرتجعات البيع جزئيًا أو كليًا مع ربط الفاتورة والدفعة الأصلية.",
-      "تخفيض دين الزبون أولاً ثم رد المبلغ المتبقي نقدًا من المناوبة المفتوحة للمستخدم المخوّل.",
-      "منع تكرار المرتجع باستعمال معرّف العملية ومنع استرجاع كمية أكبر من الكمية المباعة.",
-      "تعديل تكلفة البضاعة المباعة وإظهار قيمة وعدد المرتجعات في التحليلات.",
-      "الإبقاء على البيانات والتفعيل والمزامنة دون تغيير؛ إجراءات الاستبدال والعروض والجرد المعتمد للهاتف ما زالت تحتاج اختبارًا مستقلاً."
+      "إنشاء مسودات جرد من الهاتف أو المتصفح دون تعديل كميات المخزون.",
+      "اعتماد الجرد أو رفضه من الكمبيوتر الرئيسي فقط، والتحقق من الكميات الحالية قبل الموافقة.",
+      "منع الاعتماد المكرر وتسجيل معلومات المستخدم والدفعات والفرق في سجل الجرد.",
+      "حظر أوامر اعتماد الجرد من أجهزة العميل والمتصفح البعيد على مستوى الخادم."
     ],
     "fr": [
-      "Retours de vente tracés par facture, ligne et lot, y compris les remboursements partiels.",
-      "Réduction de la dette puis remboursement en caisse avec identifiant anti-doublon.",
-      "Statistiques et coût des marchandises ajustés pour les quantités retournées.",
-      "Données et licences conservées; échanges et inventaires mobile encore à valider."
+      "Création des projets de comptage sans modification du stock.",
+      "Validation ou rejet exclusivement sur le PC principal après contrôle du stock courant.",
+      "Anti-doublon et journal des opérations de stocktake, refus des validations à distance."
     ],
     "en": [
-      "Post sale returns by original invoice and stock batch with idempotent request identifiers.",
-      "Apply debt reduction before cash refunds, requiring an active authorized cashier shift.",
-      "Recalculate cost of sold goods after returned quantities and show return totals.",
-      "Data and licensing preserved; exchanges, complex promotions and APK stocktake approval pending."
+      "Submit stocktake count drafts without changing inventory.",
+      "Require primary-PC approval or rejection with current stock consistency checks.",
+      "Prevent repeated approvals and deny remote approval at sync endpoints."
     ]
   },
   "releaseHistory": {
@@ -901,11 +898,32 @@
           "Data and licensing preserved; exchanges, complex promotions and APK stocktake approval pending."
         ]
       }
+    },
+    "1.0.67": {
+      "releaseDate": "2026-10-15",
+      "features": {
+        "ar": [
+          "إنشاء مسودات جرد من الهاتف أو المتصفح دون تعديل كميات المخزون.",
+          "اعتماد الجرد أو رفضه من الكمبيوتر الرئيسي فقط، والتحقق من الكميات الحالية قبل الموافقة.",
+          "منع الاعتماد المكرر وتسجيل معلومات المستخدم والدفعات والفرق في سجل الجرد.",
+          "حظر أوامر اعتماد الجرد من أجهزة العميل والمتصفح البعيد على مستوى الخادم."
+        ],
+        "fr": [
+          "Création des projets de comptage sans modification du stock.",
+          "Validation ou rejet exclusivement sur le PC principal après contrôle du stock courant.",
+          "Anti-doublon et journal des opérations de stocktake, refus des validations à distance."
+        ],
+        "en": [
+          "Submit stocktake count drafts without changing inventory.",
+          "Require primary-PC approval or rejection with current stock consistency checks.",
+          "Prevent repeated approvals and deny remote approval at sync endpoints."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.66-sale-returns",
+      "id": "nano-pos-v1.0.67-stocktake-approval",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -938,14 +956,15 @@
         "1.0.62",
         "1.0.63",
         "1.0.64",
-        "1.0.65"
+        "1.0.65",
+        "1.0.66"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.66/NANO-POS-Patch-1.0.65-to-1.0.66-SALE-RETURNS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.66",
-      "sha256": "b9e8c9d8f533c6149b3e7f230e870d62dd1e5e95991c3f85c3013a25101398be",
-      "appAsarSha256": "82a8cf1011e78ac13f4983a4491dfde159bbf88124b775427d6969988ade95a7",
-      "fileName": "NANO-POS-Patch-1.0.65-to-1.0.66-SALE-RETURNS.zip",
-      "sizeBytes": 31332544,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.67/NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.67",
+      "sha256": "8b9ac5da6be3c5eca003fe86de3ae5236cc05368db1f8a0ceeb40659d73dd63a",
+      "appAsarSha256": "67bcfdbff2c73ed99a0dd69d6885a6fc6c9e8fd6308bff18623a809364ace0fb",
+      "fileName": "NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip",
+      "sizeBytes": 31342699,
       "payloadType": "app-asar"
     }
   ],
@@ -956,8 +975,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "مرتجعات البيع الموثقة مع تصحيح الديون والمخزون وتكلفة المبيعات.",
-    "fr": "Retours clients contrôlés avec gestion des dettes et du stock.",
-    "en": "Controlled partial or full returns with accounting and inventory entries."
+    "ar": "مسودات جرد من الهاتف مع اعتماد آمن على الكمبيوتر الرئيسي بعد تحقق كميات المخزون.",
+    "fr": "Brouillons d’inventaire avec approbation sur ordinateur principal.",
+    "en": "Stocktake count drafts requiring primary PC approval."
   }
 }
