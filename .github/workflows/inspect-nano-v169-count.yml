@@ -1,0 +1,44 @@
+name: Inspect v1.0.68 multi-phone stocktake RPC
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-nano-v169-count.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect current authoritative app entrypoints
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p z
+          gh release download v1.0.68 --pattern 'NANO-POS-Patch-1.0.67-to-1.0.68-PRICING-OFFERS.zip' --dir z
+          python3 - <<'PY'
+          import json,struct,hashlib,zipfile,pathlib,re
+          man=json.loads(pathlib.Path('nano-pos-update.json').read_text());assert man['version']=='1.0.68'
+          p=man['patches'][0]
+          with zipfile.ZipFile(pathlib.Path('z')/p['fileName']) as z:raw=z.read('payload/app.asar')
+          assert hashlib.sha256(raw).hexdigest()==p['appAsarSha256']
+          h=json.loads(raw[16:16+struct.unpack_from('<I',raw,12)[0]]);start=8+struct.unpack_from('<I',raw,4)[0]
+          def f(path):
+            n=h
+            for bit in path.split('/'):n=n['files'][bit]
+            return raw[start+int(n['offset']):start+int(n['offset'])+int(n['size'])].decode('utf8','replace')
+          for path in ['browser-bridge.js','mobile/www/browser-bridge.js','mobile-sync-server.cjs','pc-sync-service.cjs','electron-main.cjs','mobile/www/mobile-sync-client.js','mobile/www/nano-stocktake-drafts-ui.js','nano-stocktake-drafts-ui.js']:
+            try:s=f(path)
+            except KeyError:continue
+            print('MODULE',path,len(s))
+            needles=(['function permissionForChannel','function permissionAllowed','get-stocktake','create-stocktake-draft','approve-stocktake-draft','rpcContext','dispatchRpc','nano-sync/call','deviceForRequest','webCallAllowed','operationGuard.call','process-sale','const api = async',
+              'const initial','function save(', 'const save =', 'function normalize(', 'function clone(','window.__browserElectron','window.api','get-user','get-current-user','get-connected-clients']
+              if 'browser-bridge' in path or 'sync-' in path or 'electron-main' in path else
+              ['get-stocktake-sheet','get-stocktake-drafts','getStocktakeSheet','getStocktakeDrafts','nano-native-barcode','nano-native-scanner-state','window.api','__browserElectron'])
+            for needle in needles:
+              pos=s.find(needle)
+              if pos>=0:print('HIT',path,needle,pos,repr(s[max(0,pos-260):pos+1750]))
+          print('END')
+          PY
