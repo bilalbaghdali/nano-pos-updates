@@ -1,0 +1,32 @@
+name: Test NANO POS v1.0.67 Stocktake Approval
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-nano-v167-stocktake.yml'
+      - 'build/v1.0.67/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build verified v167 draft/approval candidate with real data-path tests
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.67/build.py
+          python3 build/v1.0.67/build.py
+      - name: Save tested candidate artifact, do not publish before review
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v167-stocktake-tested-candidate
+          path: |
+            build/v1.0.67/NANO-POS-Patch-1.0.66-to-1.0.67-STOCKTAKE-APPROVAL.zip
+            build/v1.0.67/build-result.json
+          retention-days: 7
