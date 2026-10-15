@@ -1,0 +1,34 @@
+name: Test v1.0.69 Multi Phone Counting
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-nano-v169-multiphone.yml'
+      - 'build/v1.0.69/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile, test lock ownership, build verified installable update candidate
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.69/build.py
+          node --check build/v1.0.69/nano-multi-count.js
+          node --check build/v1.0.69/nano-multi-count-ui.js
+          node build/v1.0.69/test-multi-count.cjs
+          python3 build/v1.0.69/build.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v169-multiphone-tested-candidate
+          path: |
+            build/v1.0.69/NANO-POS-Patch-1.0.68-to-1.0.69-MULTIPHONE-COUNT.zip
+            build/v1.0.69/build-result.json
+          retention-days: 7
