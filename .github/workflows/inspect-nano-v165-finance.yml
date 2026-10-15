@@ -47,5 +47,11 @@ jobs:
               for key in ["ipcMain.handle","nanoNative","new BrowserWindow","pcSyncRoute","open-caisse-session","return-sale","save-stocktake","audit","get-analytics","get-sales","get-stocktake","add-sale","get-notifications"]:
                 i=s.find(key)
                 if i>=0:print('FIND',f,key,i,repr(s[max(0,i-120):i+750]))
+          for f in ['browser-bridge.js','mobile/www/browser-bridge.js']:
+            code=file(f)
+            print('CORE_SNIPPET',f,'early',repr(code[2600:6800]))
+            for key in ["const api = async (channel, ...args) => {","const api=async","function save() {","function save(", "if (channel === 'process-sale')", "if (channel === 'create-stocktake')", "if (channel === 'update-stocktake')", "if (channel === 'approve-stocktake')", "if (channel === 'get-promotions')", "if (channel === 'add-promotion')", "if (channel === 'update-promotion')", "if (channel === 'create-promotion')", "if (channel === 'create-return')", "if (channel === 'get-return')", "if (channel === 'issue-credit-note')"]:
+              k=code.find(key)
+              if k>=0:print('DEEP',f,key,k,repr(code[k:k+3200]))
           print('INSPECT_END')
           PY
