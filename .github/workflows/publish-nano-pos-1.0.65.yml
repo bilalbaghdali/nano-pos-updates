@@ -47,7 +47,7 @@ jobs:
               assert b'window.NANO_TX_GUARD_165.stocktake(db.products, rows)' in b
               assert b'window.NANO_TX_GUARD_165.close(s,' in b
               assert b'nano-get-financial-action-log' in b
-              assert b'لا يمكن إصدار مرتجع مالي' in b
+              assert 'لا يمكن إصدار مرتجع مالي'.encode('utf-8') in b
           for f in ['index.html','mobile/www/index.html']:
               doc=content(f)
               assert doc.index(b'src="nano-transaction-guards.js"')<doc.index(b'src="browser-bridge.js"')
