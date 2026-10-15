@@ -56,5 +56,13 @@ jobs:
             for term in ['create-stocktake','window.api','confirm','approve','counted_qty','batch_id','save']:
               pos=s.find(term)
               if pos>=0:print('STOCKTAKE',path,term,pos,repr(s[max(0,pos-120):pos+900]))
+          for path in ['browser-bridge.js','mobile/www/browser-bridge.js']:
+            body=read(path)
+            a=body.find('function caisseSessionSummary(')
+            print('CAISSE_DETAIL',path,repr(body[a:a+2500]))
+            a=body.find('const collection =')
+            print('COLLECTION',path,repr(body[a:a+1400]))
+            a=body.find("if (channel === 'process-sale')")
+            print('POS_TAIL',path,repr(body[a+4900:a+9000]))
           print('DONE')
           PY
