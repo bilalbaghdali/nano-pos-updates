@@ -45,5 +45,11 @@ jobs:
             for marker in ['async function dispatchMobileRpc(', 'function dispatchMobileRpc(', 'const dispatchMobileRpc', 'function callRenderer', 'rpcContext', 'mobile-sync', 'queueCommand(']:
               pos=s.find(marker)
               if pos>=0:print('DETAIL',path,marker,pos,repr(s[max(0,pos-350):pos+2000]))
+          hjson=json.loads(raw[16:16+struct.unpack_from('<I',raw,12)[0]])
+          print('MOBILE_DIR',list(hjson['files']['mobile']['files']['www']['files'].keys()))
+          for p in ['mobile/www/index.html','mobile/www/browser-bridge.js']:
+            body=f(p)
+            for key in ['nano-sync/call','nano-mobile-sync','nano-mobile','__browserElectron','nanoToken','nanoDevice','mobile-sync','remoteCall','rpcBridge','ipcRenderer.invoke','window.api','nano-remote']:
+              print('MOBSCAN',p,key,body.count(key))
           print('END')
           PY
