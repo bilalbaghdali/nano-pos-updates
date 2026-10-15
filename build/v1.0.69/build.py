@@ -175,6 +175,17 @@ def main():
     ms=ms.replace(origin,newOrigin,1)
     put('mobile-sync-server.cjs',ms)
 
+    # Collaborative count requests must never be queued or optimistically marked successful offline.
+    relay=get('mobile/www/mobile-sync-bridge.js')
+    mutation="    if (/^(get-|check-|login-user|next-doc-number|discover-|scale:status|scale:sniff|scale:probe|cloud-sync:status|cloud-sync:get-|get-relay-status)/.test(c)) return false;"
+    assert relay.count(mutation)==1, 'Mobile offline queue classifier changed'
+    relay=relay.replace(mutation,"    if (c === 'nano-count-active') return false;\n"+mutation,1)
+    network="      if (mutation && isNetworkError(error)) {"
+    assert relay.count(network)==1,'Mobile offline queue catch changed'
+    relay=relay.replace(network,"      if (channel.startsWith('nano-count-') && isNetworkError(error)) {\n        throw new Error('انقطع الاتصال بالكمبيوتر الرئيسي؛ لا يمكن جرد منتج أو حجزه دون اتصال مباشر.');\n      }\n"+network,1)
+    put('mobile/www/mobile-sync-bridge.js',relay)
+
+
     pc=get('pc-sync-service.cjs')
     web="if (channel === 'approve-stocktake-draft' || channel === 'reject-stocktake-draft') return webJson(res, 403, { success: false, error: 'primary_pc_only', message: 'اعتماد الجرد أو رفضه يجب أن يتم من الكمبيوتر الرئيسي.' });"
     assert pc.count(web)==1
@@ -229,12 +240,12 @@ def main():
     changes=[n for n in files if n not in original or files[n][1]!=original[n][1]]
     allow={'nano-multi-count.js','mobile/www/nano-multi-count.js',
            'nano-multi-count-ui.js','mobile/www/nano-multi-count-ui.js',
-           'browser-bridge.js','mobile/www/browser-bridge.js','mobile-sync-server.cjs','pc-sync-service.cjs',
+           'browser-bridge.js','mobile/www/browser-bridge.js','mobile-sync-server.cjs','pc-sync-service.cjs','mobile/www/mobile-sync-bridge.js',
            'index.html','mobile/www/index.html','package.json','package-lock.json','app-config.js','release-notes.js'}
     assert set(changes).issubset(allow),changes
     assert {'nano-multi-count.js','mobile/www/nano-multi-count.js','nano-multi-count-ui.js',
             'mobile/www/nano-multi-count-ui.js','browser-bridge.js','mobile/www/browser-bridge.js',
-            'mobile-sync-server.cjs','pc-sync-service.cjs'}.issubset(set(changes))
+            'mobile-sync-server.cjs','pc-sync-service.cjs','mobile/www/mobile-sync-bridge.js'}.issubset(set(changes))
     for n in ('electron-main.cjs','electron-native-preload.cjs','renderer.js','mobile/www/renderer.js',
               'mega-cloud-backup.cjs','mega-restore-safety.cjs','nano-debt-stats-fix.js','print-engine.js',
               'nano-pricing-offers-168.js','nano-return-plan.js','mobile/www/nano-return-plan.js',
@@ -243,7 +254,7 @@ def main():
             assert files[n][1]==original[n][1],('Protected subsystem mutated',n)
     assert sha(files[BUNDLED_APK][1])==BUNDLED_APK_SHA
     for n in ('browser-bridge.js','mobile/www/browser-bridge.js','mobile-sync-server.cjs',
-              'pc-sync-service.cjs','nano-multi-count.js','nano-multi-count-ui.js'):
+              'pc-sync-service.cjs','mobile/www/mobile-sync-bridge.js','nano-multi-count.js','nano-multi-count-ui.js'):
         temp=ROOT/('syntax-'+n.replace('/','-'))
         temp.write_bytes(files[n][1])
         subprocess.run(['node','--check',str(temp)],check=True,timeout=30)
