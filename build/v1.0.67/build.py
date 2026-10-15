@@ -96,6 +96,9 @@ def main():
     assert b'NANO_STOCKTAKE_APPROVAL_167' in module
     files['nano-stocktake-approval.js']=({},module)
     files['mobile/www/nano-stocktake-approval.js']=({},module)
+    ui=(ROOT/'nano-stocktake-drafts-ui.js').read_bytes()
+    files['nano-stocktake-drafts-ui.js']=({},ui)
+    files['mobile/www/nano-stocktake-drafts-ui.js']=({},ui)
     for path in ('index.html','mobile/www/index.html'):
         doc=get(path)
         assert doc.count('src="browser-bridge.js"')==1
@@ -103,6 +106,8 @@ def main():
         doc=doc.replace('src="browser-bridge.js"',
             'src="nano-stocktake-approval.js"></script>\n  <script src="browser-bridge.js"',1)
         assert doc.index('src="nano-stocktake-approval.js"')<doc.index('src="browser-bridge.js"')
+        assert doc.count('</body>')==1
+        doc=doc.replace('</body>','<script defer src="nano-stocktake-drafts-ui.js"></script>\n</body>',1)
         put(path,doc)
 
     for path in ('browser-bridge.js','mobile/www/browser-bridge.js'):
@@ -203,6 +208,7 @@ def main():
 
     changed=[n for n in files if n not in original or files[n][1]!=original[n][1]]
     allowed={'nano-stocktake-approval.js','mobile/www/nano-stocktake-approval.js',
+             'nano-stocktake-drafts-ui.js','mobile/www/nano-stocktake-drafts-ui.js',
              'browser-bridge.js','mobile/www/browser-bridge.js','pc-sync-service.cjs','mobile-sync-server.cjs',
              'index.html','mobile/www/index.html','package.json','package-lock.json','app-config.js','release-notes.js'}
     assert set(changed).issubset(allowed),changed
@@ -215,7 +221,7 @@ def main():
         assert files[n][1]==original[n][1],('Protected file modified',n)
     assert sha(files[BUNDLED_APK][1])==BUNDLED_APK_SHA
     for n in ('browser-bridge.js','mobile/www/browser-bridge.js','pc-sync-service.cjs',
-              'mobile-sync-server.cjs','nano-stocktake-approval.js'):
+              'mobile-sync-server.cjs','nano-stocktake-approval.js','nano-stocktake-drafts-ui.js'):
         temp=ROOT/('syntax-'+n.replace('/','-'))
         temp.write_bytes(files[n][1])
         subprocess.run(['node','--check',str(temp)],check=True,timeout=30)
