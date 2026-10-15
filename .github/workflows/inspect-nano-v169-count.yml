@@ -60,5 +60,8 @@ jobs:
           for key in ['window.__browserElectron.ipcRenderer.invoke =','ipcRenderer.invoke =','async function invoke','const invoke =','queueOffline','optimisticQueuedResult','isWriteChannel','WRITE_CHANNELS','sendRemoteCall(', 'if (isNetworkError', 'offline', 'localInvoke(']:
             pos=bridge.find(key)
             if pos>=0:print('BRIDGEDETAIL',key,pos,repr(bridge[max(0,pos-350):pos+1700]))
+          for key in ['async function remoteInvoke', 'function remoteInvoke', 'function isWriteChannel', 'if (isWriteChannel', 'isWriteChannel(channel)', 'return enqueueOperation(', 'const config = getConfig();']:
+            i=bridge.find(key)
+            if i>=0:print('RELAY_TAIL',key,i,repr(bridge[max(0,i-80):i+2550]))
           print('END')
           PY
