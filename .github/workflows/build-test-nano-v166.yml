@@ -1,0 +1,32 @@
+name: Build and Test NANO POS v1.0.66 Returns Candidate
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-test-nano-v166.yml'
+      - 'build/v1.0.66/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Assemble and test candidate against authentic 1.0.65 source
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.66/build.py
+          python3 build/v1.0.66/build.py
+      - name: Upload test candidate for review only
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v166-returns-tested-candidate
+          path: |
+            build/v1.0.66/NANO-POS-Patch-1.0.65-to-1.0.66-SALE-RETURNS.zip
+            build/v1.0.66/build-result.json
+          retention-days: 7
