@@ -65,5 +65,12 @@ jobs:
             for word in ["channel === 'get-products'","channel === 'get-analytics'","channel === 'get-caisse'","channel === 'get-expenses'","channel === 'get-sales'","channel === 'get-notifications'"]:
               idx=s.find(word)
               print('BRIDGE',f,word,idx,repr(s[idx:idx+450]) if idx>=0 else '')
+          for f in ['browser-bridge.js','mobile/www/browser-bridge.js']:
+            source=files[f]
+            for needle in ["if (channel === 'get-analytics')", "if (channel === 'get-sales')", "if (channel === 'get-purchases')", "if (channel === 'get-caisse-sessions')", "if (channel === 'get-caisse-history')", "if (channel === 'get-users')"]:
+              at=source.find(needle)
+              if at>=0:print('FULL_API',f,needle,repr(source[at:at+4000]))
+          for path in ['nano-operations-center.js','nano-restock-assistant.js']:
+            print('CUSTOM',path,'size',len(files.get(path,'')))
           print('DONE')
           PY
