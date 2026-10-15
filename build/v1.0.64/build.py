@@ -77,15 +77,15 @@ SIDEBAR_LOGO = re.compile(
 )
 
 def main():
-    source=ROOT/'published-v162.zip'
+    source=ROOT/'published-v163.zip'
     if not source.exists():
         with urllib.request.urlopen(urllib.request.Request(BASE_URL,headers={'User-Agent':'NANO-POS-v164-builder'}),timeout=180) as r:
             source.write_bytes(r.read())
-    assert sha(source.read_bytes())==BASE_SHA,'v1.0.62 patch SHA-256 mismatch'
+    assert sha(source.read_bytes())==BASE_SHA,'v1.0.63 patch SHA-256 mismatch'
     with zipfile.ZipFile(source) as z:
         assert z.testzip() is None
         raw=z.read('payload/app.asar')
-    assert sha(raw)==BASE_ASAR_SHA,'v1.0.62 app.asar SHA-256 mismatch'
+    assert sha(raw)==BASE_ASAR_SHA,'v1.0.63 app.asar SHA-256 mismatch'
     original=unpack(raw)
     files=dict(original)
     def get(name):
@@ -107,19 +107,19 @@ def main():
         put(path,body.replace('</body>','  <script defer src="nano-financial-review.js"></script>\n</body>',1))
 
     pkg=json.loads(get('package.json'))
-    assert pkg['version']=='1.0.62'
+    assert pkg['version']=='1.0.63'
     pkg['version']='1.0.64'
     put('package.json',json.dumps(pkg,ensure_ascii=False,indent=2)+'\n')
     if 'package-lock.json' in original:
         lock=json.loads(get('package-lock.json'))
-        assert lock['version']=='1.0.62'
+        assert lock['version']=='1.0.63'
         lock['version']='1.0.64'
         if isinstance(lock.get('packages'),dict) and isinstance(lock['packages'].get(''),dict):
             lock['packages']['']['version']='1.0.64'
         put('package-lock.json',json.dumps(lock,ensure_ascii=False,indent=2)+'\n')
     if 'app-config.js' in original:
         config=get('app-config.js')
-        updated=config.replace("|| '1.0.62'","|| '1.0.64'")
+        updated=config.replace("|| '1.0.63'","|| '1.0.64'")
         assert updated!=config
         put('app-config.js',updated)
     features={
@@ -167,7 +167,7 @@ def main():
         assert files[name][1]==original[name][1],('Protected system mutated',name)
     assert sha(files[BUNDLED_APK][1])==BUNDLED_APK_SHA
     subprocess.run(['node','--check',str(ROOT/'nano-financial-review.js')],check=True,timeout=30)
-    subprocess.run(['node',str(ROOT/'test-operations.cjs')],check=True,timeout=30,cwd=ROOT)
+    subprocess.run(['node',str(ROOT/'test-financial.cjs')],check=True,timeout=30,cwd=ROOT)
     subprocess.run(['node',str(ROOT.parent/'v1.0.63/test-operations.cjs')],check=True,timeout=30)
     subprocess.run(['node',str(ROOT.parent/'v1.0.62/test-restock.cjs')],check=True,timeout=30)
     asar=pack(files)
@@ -184,18 +184,18 @@ def main():
         assert z.testzip() is None and z.namelist()==['payload/app.asar']
     meta={'fileName':ASSET,'sha256':sha(output.read_bytes()),
           'appAsarSha256':sha(asar),'sizeBytes':output.stat().st_size,
-          'fromVersion':'1.0.62','toVersion':'1.0.64',
+          'fromVersion':'1.0.63','toVersion':'1.0.64',
           'changedFiles':changed,'dataFilesModified':False,'mobileApkSha256':BUNDLED_APK_SHA}
     (ROOT/'build-result.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     manifest=json.loads((REPO/'nano-pos-update.json').read_text('utf8'))
-    assert manifest['version']=='1.0.62' and manifest.get('published') is True
+    assert manifest['version']=='1.0.63' and manifest.get('published') is True
     old=manifest.get('patches',[])
-    from_versions=list(dict.fromkeys((old[0].get('fromVersions',[]) if old else [])+['1.0.62']))
+    from_versions=list(dict.fromkeys((old[0].get('fromVersions',[]) if old else [])+['1.0.63']))
     manifest['version']='1.0.64'
     manifest['releaseDate']=date.today().isoformat()
     manifest['features']=features
     manifest.setdefault('releaseHistory',{})['1.0.64']={'releaseDate':manifest['releaseDate'],'features':features}
-    manifest['patches']=[{'id':'nano-pos-v1.0.64-operations-alerts',
+    manifest['patches']=[{'id':'nano-pos-v1.0.64-financial-review',
        'fromVersions':from_versions,
        'directUrl':'https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.64/'+ASSET,
        'pageUrl':'https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.64',
