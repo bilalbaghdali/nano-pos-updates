@@ -1,0 +1,46 @@
+name: Test NANO POS v1.0.65 Transaction Safety
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-nano-pos-1.0.65.yml'
+      - 'build/v1.0.65/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build from verified stable v1.0.64 and run real adapter integration tests
+        run: |
+          set -euo pipefail
+          python3 -m py_compile build/v1.0.65/build.py
+          python3 build/v1.0.65/build.py
+      - name: Check patch and generated metadata
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,zipfile,hashlib,pathlib
+          d=pathlib.Path('build/v1.0.65')
+          m=json.loads((d/'build-result.json').read_text())
+          assert m['toVersion']=='1.0.65'
+          assert m['dataFilesModified'] is False
+          with zipfile.ZipFile(d/m['fileName']) as z:
+              assert z.testzip() is None
+              asar=z.read('payload/app.asar')
+          assert hashlib.sha256(asar).hexdigest()==m['appAsarSha256']
+          print('PASS: verified v165 patch',m['sizeBytes'],m['changedFiles'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-1.0.65-tested-patch-candidate
+          path: |
+            build/v1.0.65/NANO-POS-Patch-1.0.64-to-1.0.65-FINANCE-SAFETY.zip
+            build/v1.0.65/build-result.json
+          retention-days: 7
