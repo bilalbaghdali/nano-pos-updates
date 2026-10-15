@@ -1,0 +1,60 @@
+name: Inspect v165 returns promotions stocktake and auth
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-nano-v166.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read real current code paths
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p temp
+          gh release download v1.0.65 --pattern 'NANO-POS-Patch-1.0.64-to-1.0.65-FINANCE-SAFETY.zip' --dir temp
+          python3 - <<'PY'
+          import json,struct,zipfile,pathlib,hashlib,re
+          m=json.loads(pathlib.Path('nano-pos-update.json').read_text());p=m['patches'][0]
+          with zipfile.ZipFile(pathlib.Path('temp')/p['fileName']) as z:b=z.read('payload/app.asar')
+          assert hashlib.sha256(b).hexdigest()==p['appAsarSha256']
+          h=json.loads(b[16:16+struct.unpack_from('<I',b,12)[0]]);off=8+struct.unpack_from('<I',b,4)[0]
+          def read(path):
+            n=h
+            for k in path.split('/'):n=n['files'][k]
+            return b[off+int(n['offset']):off+int(n['offset'])+n['size']].decode('utf8','replace')
+          a=read('browser-bridge.js');mob=read('mobile/www/browser-bridge.js')
+          for s in [a,mob]:
+            print('BRIDGE',len(s))
+            for marker,howmuch in [
+               ("if (channel === 'process-sale')",5000),
+               ("if (channel === 'get-analytics')",5800),
+               ("if (channel === 'get-promotions')",4500),
+               ("if (channel === 'create-promotion')",3300),
+               ("if (channel === 'save-promotion')",3300),
+               ("if (channel === 'create-stocktake')",2000),
+               ("if (channel === 'get-stocktake-sheet')",1300),
+               ("if (channel === 'nano-get-financial-action-log')",700),
+               ("if (channel === 'get-sale-details')",1000),
+               ("const remoteLocalOnly",600),
+               ("if (channel === 'get-data-revision')",500),
+               ("if (channel === 'get-stocktakes')",500)]:
+              at=s.find(marker)
+              print('FOCUS',marker,at,repr(s[at:at+howmuch] if at>=0 else ''))
+          for path in ['index.html','mobile/www/index.html']:
+            s=read(path)
+            for needle in ['returnModeToggleBtn','btnSellWholesale','stocktakeRoot','promoProductDropdown']:
+              p=s.find(needle)
+              print('HTML',path,needle,p,repr(s[max(0,p-550):p+700]))
+          for path in ['stocktake/stocktake-ui.js','stocktake/stocktake-guard.js']:
+            s=read(path)
+            for term in ['create-stocktake','window.api','confirm','approve','counted_qty','batch_id','save']:
+              pos=s.find(term)
+              if pos>=0:print('STOCKTAKE',path,term,pos,repr(s[max(0,pos-120):pos+900]))
+          print('DONE')
+          PY
