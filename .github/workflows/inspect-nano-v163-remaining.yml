@@ -17,10 +17,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p in
-          gh release download v1.0.62 --pattern 'NANO-POS-Patch-1.0.61-to-1.0.62-RESTOCK-BARCODE.zip' --dir in
+          gh release download v1.0.63 --pattern 'NANO-POS-Patch-1.0.62-to-1.0.63-OPERATIONS-ALERTS.zip' --dir in
           python3 - <<'PY'
           import re,zipfile,json,struct,pathlib,hashlib
-          m=json.loads(pathlib.Path('nano-pos-update.json').read_text());p=m['patches'][0]
+          m=json.loads(pathlib.Path('nano-pos-update.json').read_text());assert m['version']=='1.0.63';p=m['patches'][0]
           with zipfile.ZipFile(pathlib.Path('in')/p['fileName']) as z:a=z.read('payload/app.asar')
           assert hashlib.sha256(a).hexdigest()==p['appAsarSha256']
           h=json.loads(a[16:16+struct.unpack_from('<I',a,12)[0]])
