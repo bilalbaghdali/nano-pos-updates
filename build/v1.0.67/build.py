@@ -226,6 +226,13 @@ def main():
         temp.write_bytes(files[n][1])
         subprocess.run(['node','--check',str(temp)],check=True,timeout=30)
     subprocess.run(['node',str(ROOT/'test-stocktake-approval.cjs')],check=True,timeout=30,cwd=ROOT)
+    for name in ('browser-bridge.js','mobile/www/browser-bridge.js'):
+        t=ROOT/('integration-'+name.replace('/','-'))
+        t.write_bytes(files[name][1])
+        subprocess.run(['node',str(ROOT/'test-stocktake-bridge.cjs'),str(t),
+                       str(ROOT.parent/'v1.0.65/nano-transaction-guards.js'),
+                       str(ROOT.parent/'v1.0.66/nano-return-plan.js'),
+                       str(ROOT/'nano-stocktake-approval.js')],check=True,timeout=40,cwd=ROOT)
     asar=pack(files)
     verify=unpack(asar)
     assert set(verify)==set(files)
