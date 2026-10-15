@@ -62,7 +62,7 @@ jobs:
               for hit in hits[:2]:print('SNIPPET',repr(s[max(0,hit.start()-200):hit.start()+250]))
           for f in ['browser-bridge.js','mobile/www/browser-bridge.js']:
             s=files[f]
-            for word in [\"channel === 'get-products'\",\"channel === 'get-analytics'\",\"channel === 'get-caisse'\",\"channel === 'get-expenses'\",\"channel === 'get-sales'\",\"channel === 'get-notifications'\"]:
+            for word in ["channel === 'get-products'","channel === 'get-analytics'","channel === 'get-caisse'","channel === 'get-expenses'","channel === 'get-sales'","channel === 'get-notifications'"]:
               idx=s.find(word)
               print('BRIDGE',f,word,idx,repr(s[idx:idx+450]) if idx>=0 else '')
           print('DONE')
