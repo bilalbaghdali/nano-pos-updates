@@ -3,29 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.72",
+  "version": "1.0.73",
   "releaseDate": "2026-10-18",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات عامة على شاشة البيع والسعر",
-      "إزالة خيار تطبيق عروض المنتجات السارية وسعر الجملة حسب الكمية عند اعتماد البيع.",
-      "عدم إعادة احتساب سعر المنتج تلقائيًا عند اعتماد الفاتورة؛ اعتماد الأسعار الموجودة في السلة.",
-      "عرض الإجمالي المستحق في شاشة رقمية كبيرة بأرقام LED واضحة وتحديث فوري."
+      "تحسينات عامة على تناسق شاشة البيع",
+      "إعادة ضبط عرض لوحات المنتجات والسلة لتناسب المساحات المتاحة بدون تداخل.",
+      "تصغير ارتفاع شاشة السعر الرقمية وتنسيق الرقم والعملة والعنوان في بطاقة متوازنة.",
+      "تحسين المسافات بين أزرار البيع والتسديد وتوافق أوضاع العرض الثلاثة.",
+      "الاحتفاظ بجميع حسابات البيع وميزات التسعير من الإصدار السابق دون تغيير."
     ],
     "fr": [
-      "Améliorations générales de la vente et des prix",
-      "Retrait du calcul automatique des promotions et des prix de gros à la validation.",
-      "Les prix déjà saisis dans le panier sont conservés à la confirmation.",
-      "Grand affichage numérique du total en style LED, actualisé en temps réel."
+      "Améliorations générales de la mise en page de vente",
+      "Panneaux produits et panier mieux adaptés aux différentes tailles.",
+      "Afficheur numérique du prix plus compact avec montant et devise alignés.",
+      "Boutons de vente et validation mieux espacés dans les trois modes.",
+      "Aucun changement de calcul des ventes ou de tarification."
     ],
     "en": [
-      "General sales and price display improvements",
-      "Remove automatic active offers and quantity-based wholesale repricing at checkout.",
-      "Preserve the cart unit prices when confirming sales.",
-      "High-visibility seven-segment LED total updated live from the cart."
+      "General sales screen layout improvements",
+      "Product and cart panels better fit available width without overlaps.",
+      "A compact digital total with aligned amount, label and currency.",
+      "More balanced checkout buttons in all three POS display modes.",
+      "Sales calculation and pricing behavior unchanged."
     ]
   },
   "releaseHistory": {
@@ -1035,11 +1038,37 @@
           "High-visibility seven-segment LED total updated live from the cart."
         ]
       }
+    },
+    "1.0.73": {
+      "releaseDate": "2026-10-18",
+      "features": {
+        "ar": [
+          "تحسينات عامة على تناسق شاشة البيع",
+          "إعادة ضبط عرض لوحات المنتجات والسلة لتناسب المساحات المتاحة بدون تداخل.",
+          "تصغير ارتفاع شاشة السعر الرقمية وتنسيق الرقم والعملة والعنوان في بطاقة متوازنة.",
+          "تحسين المسافات بين أزرار البيع والتسديد وتوافق أوضاع العرض الثلاثة.",
+          "الاحتفاظ بجميع حسابات البيع وميزات التسعير من الإصدار السابق دون تغيير."
+        ],
+        "fr": [
+          "Améliorations générales de la mise en page de vente",
+          "Panneaux produits et panier mieux adaptés aux différentes tailles.",
+          "Afficheur numérique du prix plus compact avec montant et devise alignés.",
+          "Boutons de vente et validation mieux espacés dans les trois modes.",
+          "Aucun changement de calcul des ventes ou de tarification."
+        ],
+        "en": [
+          "General sales screen layout improvements",
+          "Product and cart panels better fit available width without overlaps.",
+          "A compact digital total with aligned amount, label and currency.",
+          "More balanced checkout buttons in all three POS display modes.",
+          "Sales calculation and pricing behavior unchanged."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.72-pos-digital-price",
+      "id": "nano-pos-v1.0.73-responsive-sales-layout",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1078,14 +1107,15 @@
         "1.0.68",
         "1.0.69",
         "1.0.70",
-        "1.0.71"
+        "1.0.71",
+        "1.0.72"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.72/NANO-POS-Patch-1.0.71-to-1.0.72-POS-DIGITAL-PRICE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.72",
-      "sha256": "14416c6bb85b7b82769cda4a44ebf02a4de51c7723d8c887ab10d6a00131c2b1",
-      "appAsarSha256": "f386e9fdc741929b7a60d5749409bdb2bed9cab5c7896e9696cc1e4acf177e5f",
-      "fileName": "NANO-POS-Patch-1.0.71-to-1.0.72-POS-DIGITAL-PRICE.zip",
-      "sizeBytes": 31387550,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.73/NANO-POS-Patch-1.0.72-to-1.0.73-SALES-RESPONSIVE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.73",
+      "sha256": "1dc560ff186a6e6ad6a6edfc69d696bb7a76a719eb093f77013e3af9aa48d7c8",
+      "appAsarSha256": "8fcd5dcb723616bed4718af8a2bacc231d47c62f1b557a0453f4228d01c43a1f",
+      "fileName": "NANO-POS-Patch-1.0.72-to-1.0.73-SALES-RESPONSIVE.zip",
+      "sizeBytes": 31388891,
       "payloadType": "app-asar"
     }
   ],
@@ -1096,8 +1126,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة: إزالة التطبيق التلقائي للعروض وسعر الجملة عند البيع، وإضافة شاشة سعر رقمية كبيرة.",
-    "fr": "Améliorations générales : retrait de la tarification automatique à la validation et grand affichage numérique.",
-    "en": "General improvements: no automatic repricing at checkout and a large digital LED total."
+    "ar": "تحسينات عامة — تنسيق أبعاد شاشة البيع وشاشة السعر الرقمية بما يتناسب مع عرض الصفحة، دون تغيير حسابات البيع.",
+    "fr": "Améliorations générales — écran de vente et afficheur numérique adaptatifs, sans changer les calculs.",
+    "en": "General improvements — responsive sales screen and digital total, without sales logic changes."
   }
 }
