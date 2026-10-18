@@ -3,30 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.69",
-  "releaseDate": "2026-10-15",
+  "version": "1.0.70",
+  "releaseDate": "2026-10-18",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "فتح جرد جماعي من الكمبيوتر الرئيسي وإظهار الجلسة تلقائيًا على الهواتف المتصلة.",
-      "إدخال اسم الجارد لكل هاتف وعرض الكمية المسجلة مباشرة عند مسح باركود المنتج.",
-      "حجز المنتج لهاتف واحد مؤقتًا لمنع تضارب عدّ نفس المنتج من هواتف متعددة.",
-      "إظهار رسالة تم جرده عند إعادة المسح، مع اسم الجارد والهاتف والكميات المسجلة.",
-      "عرض تقدم الجرد حسب كل هاتف وتجميع النتائج في مسودة للمراجعة والاعتماد من الكمبيوتر الرئيسي دون تغيير المخزون أثناء العدّ."
+      "تحسينات عامة",
+      "إزالة واجهات الجرد الجماعي والجرد عبر الهاتف من NANO POS.",
+      "قصر تنفيذ الجرد على برنامج الكمبيوتر الرئيسي مع منع طلبات الجرد القادمة من الهواتف.",
+      "إضافة تصدير CSV وطباعة تقرير الجرد من واجهة الكمبيوتر دون تعديل بيانات المخزون."
     ],
     "fr": [
-      "Inventaire collectif ouvert depuis le PC principal et affiché automatiquement sur les téléphones.",
-      "Nom du compteur par téléphone; scan montre le stock théorique et la saisie des quantités.",
-      "Verrou temporaire au niveau du produit, historique par opérateur et refus des doublons.",
-      "Envoi des comptages vers un brouillon pour approbation sur PC principal."
+      "Améliorations générales",
+      "Suppression des interfaces de comptage collectif et de comptage sur téléphone.",
+      "Inventaire réservé au PC ; blocage des demandes d’inventaire des téléphones.",
+      "Export CSV et impression du tableau d’inventaire depuis le PC sans changer le stock."
     ],
     "en": [
-      "Primary PC starts a shared count; connected phones automatically display the count.",
-      "Each phone enters the counter name, scans barcodes and records physical quantities.",
-      "Exclusive per-product short leases prevent concurrent handset edits or duplicate counts.",
-      "All handset counts are attributed and merged into a draft pending primary PC approval."
+      "General improvements",
+      "Removed collective and phone-based stocktake interfaces.",
+      "Limited stocktake to the desktop; phone stocktake requests are denied.",
+      "Added CSV export and stocktake report print actions on desktop without altering inventory."
     ]
   },
   "releaseHistory": {
@@ -967,11 +966,34 @@
           "All handset counts are attributed and merged into a draft pending primary PC approval."
         ]
       }
+    },
+    "1.0.70": {
+      "releaseDate": "2026-10-18",
+      "features": {
+        "ar": [
+          "تحسينات عامة",
+          "إزالة واجهات الجرد الجماعي والجرد عبر الهاتف من NANO POS.",
+          "قصر تنفيذ الجرد على برنامج الكمبيوتر الرئيسي مع منع طلبات الجرد القادمة من الهواتف.",
+          "إضافة تصدير CSV وطباعة تقرير الجرد من واجهة الكمبيوتر دون تعديل بيانات المخزون."
+        ],
+        "fr": [
+          "Améliorations générales",
+          "Suppression des interfaces de comptage collectif et de comptage sur téléphone.",
+          "Inventaire réservé au PC ; blocage des demandes d’inventaire des téléphones.",
+          "Export CSV et impression du tableau d’inventaire depuis le PC sans changer le stock."
+        ],
+        "en": [
+          "General improvements",
+          "Removed collective and phone-based stocktake interfaces.",
+          "Limited stocktake to the desktop; phone stocktake requests are denied.",
+          "Added CSV export and stocktake report print actions on desktop without altering inventory."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.69-multi-phone-count",
+      "id": "nano-pos-v1.0.70-desktop-stocktake",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1007,14 +1029,15 @@
         "1.0.65",
         "1.0.66",
         "1.0.67",
-        "1.0.68"
+        "1.0.68",
+        "1.0.69"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.69/NANO-POS-Patch-1.0.68-to-1.0.69-MULTIPHONE-COUNT.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.69",
-      "sha256": "95434b1e137774c53fabc79f5daca47d86e56c5aef732945404f9ba08121e81a",
-      "appAsarSha256": "c526615eb0277ce825e62709fba1a2baf94764311aec73a5d1782dd5ccf9618a",
-      "fileName": "NANO-POS-Patch-1.0.68-to-1.0.69-MULTIPHONE-COUNT.zip",
-      "sizeBytes": 31358844,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.70/NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.70",
+      "sha256": "69efbc58edeef78da1768094066f947a19ee8389b31c55c3003c8f0752c697fd",
+      "appAsarSha256": "a9a4ae823ebe1147ef1912cae702be392da1d5348dfad62a4be1cb4f646c9ebd",
+      "fileName": "NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip",
+      "sizeBytes": 31386067,
       "payloadType": "app-asar"
     }
   ],
@@ -1025,8 +1048,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "جرد متزامن من عدة هواتف دون ازدواج المنتجات مع توثيق اسم الجارد لكل جهاز.",
-    "fr": "Inventaire simultané multi-téléphones avec attribution par opérateur.",
-    "en": "Shared multi-phone count, exclusive product claims and operator audit details."
+    "ar": "تحسينات عامة — جرد الكمبيوتر فقط: إزالة جرد الهاتف والجرد الجماعي، مع تصدير CSV وطباعة تقرير الجرد.",
+    "fr": "Améliorations générales — Inventaire sur PC uniquement, avec export CSV et impression.",
+    "en": "General improvements — Desktop-only stocktake with CSV export and print report."
   }
 }
