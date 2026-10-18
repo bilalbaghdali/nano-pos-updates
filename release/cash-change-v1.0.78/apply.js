@@ -23,8 +23,19 @@ txt=read('browser-preload.js');
 txt=one(txt,"'getSales':_0x3a847b=>_invoke('get-sales',_0x3a847b),","'getSales':_0x3a847b=>_invoke('get-sales',_0x3a847b),'getCashChangeAudit':_0x52a=>_invoke('get-cash-change-audit',_0x52a),","read-only API");
 write('browser-preload.js',txt);
 txt=read('renderer.js');
-txt=one(txt,"async function executeSalePayload(_0x1ebf74,_0x8b1902){const _0x4ca74f=_0x427934;\ntry{","async function executeSalePayload(_0x1ebf74,_0x8b1902){const _0x4ca74f=_0x427934;\ntry{\n  if (window.NANO_CASH_CHANGE_178 && typeof window.NANO_CASH_CHANGE_178.prepare === 'function') {\n    const checked=window.NANO_CASH_CHANGE_178.prepare(_0x1ebf74);\n    if (!checked.ok) { showToast(checked.message,'error'); return; }\n  }","checkout payload enrichment before sale persistence");
-txt=one(txt,"return processSaleDirectly();\n}else openCheckoutModal();","return openCheckoutModal();\n}else openCheckoutModal();","force checkout for quick cash sale");
+const startRegex=/async function executeSalePayload\([^)]*\)\s*\{[\s\S]{0,250}?\btry\s*\{/g;
+const matches=[...txt.matchAll(startRegex)];
+if(matches.length!==1)throw Error('Cannot identify executeSalePayload entry; found '+matches.length);
+const begin=matches[0][0];
+const hook="if(window.NANO_CASH_CHANGE_178 && typeof window.NANO_CASH_CHANGE_178.prepare==='function'){" +
+ "const checked=window.NANO_CASH_CHANGE_178.prepare(arguments[0]);" +
+ "if(!checked.ok){showToast(checked.message,'error');return;}" +
+ "}";
+txt=txt.replace(begin,begin+hook);
+const quick=/return\s+processSaleDirectly\s*\(\s*\)\s*;/g;
+const quickMatches=[...txt.matchAll(quick)];
+if(quickMatches.length!==1)throw Error('Cannot identify quick sale action; found '+quickMatches.length);
+txt=txt.replace(quick,'return openCheckoutModal();');
 write('renderer.js',txt);
 txt=read('index.html');
 txt=one(txt,"</head>","<link rel=\"stylesheet\" href=\"nano-cash-change.css\" />\n</head>","cash change CSS");
