@@ -1,0 +1,50 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('fs');
+const {JSDOM}=require('/tmp/ui-test/node_modules/jsdom');
+const root=process.argv[2];if(!root)throw Error('Missing extraction dir');
+function checkUI(){
+ const src=fs.readFileSync(root+'/nano-cash-change.js','utf8');
+ const fixture='<div id="checkoutModal" class="hidden"><div id="checkoutTotalUI">120.00 DZD</div><select id="checkoutPaymentMethod"><option value="cash">Cash</option></select><div><input id="checkoutPaidAmount" value="120.00"></div><div id="checkoutStampBox"></div></div><input id="posCustomerSelect"><div id="salesSection"><div id="posToolbar"></div></div>';
+ const dom=new JSDOM(fixture,{url:'http://localhost/',runScripts:'outside-only'});
+ const w=dom.window,d=w.document;w.showToast=()=>{};
+ w.eval(src);d.dispatchEvent(new w.Event('DOMContentLoaded'));
+ d.getElementById('checkoutModal').classList.remove('hidden');
+ const input=d.getElementById('nanoCashTendered');assert(input);
+ input.value='200';input.dispatchEvent(new w.Event('input',{bubbles:true}));
+ assert.equal(d.getElementById('nanoCashChangeDue').textContent,'80.00');
+ const payload={checkout:{total:120,paidAmount:120,paymentMethod:'cash',customerId:null}};
+ assert.equal(w.NANO_CASH_CHANGE_178.prepare(payload).ok,true);
+ assert.equal(payload.checkout.cashTenderedAmount,200);
+ assert.equal(payload.checkout.paidAmount,120);
+ input.value='100';input.dispatchEvent(new w.Event('input',{bubbles:true}));
+ const partial={checkout:{total:120,paidAmount:120,paymentMethod:'cash',customerId:null}};
+ assert.equal(w.NANO_CASH_CHANGE_178.prepare(partial).ok,false);
+ d.getElementById('posCustomerSelect').value='23';partial.checkout.customerId='23';
+ assert.equal(w.NANO_CASH_CHANGE_178.prepare(partial).ok,true);
+ assert.equal(partial.checkout.paidAmount,100);
+ input.value='200.001';assert.equal(w.NANO_CASH_CHANGE_178.prepare(partial).ok,false);
+ console.log('PASS UI: full cash, 80 DZD change, partial credit, invalid decimals');
+}
+async function checkJournal(){
+ const dom=new JSDOM('<!doctype html><body></body>',{url:'http://localhost:4176/',runScripts:'outside-only'});
+ const w=dom.window;w.structuredClone=global.structuredClone;
+ w.NANO_CONFIG={distribution:{cleanBusinessDataOnFirstRun:false},login:{username:'admin',password:'test'}};
+ w.eval(fs.readFileSync(root+'/browser-bridge.js','utf8'));
+ const rpc=w.__browserElectron?.ipcRenderer?.invoke;
+ assert.equal(typeof rpc,'function');
+ const payload={userId:1,items:[{id:null,is_custom:true,custom_product_name:'Custom item',qty:1,pos_price:120}],checkout:{customerId:null,subtotal:120,taxPercentage:0,discount:0,total:120,paidAmount:120,paymentMethod:'cash',cashTenderedAmount:200}};
+ const done=await rpc('process-sale',payload);assert.equal(done.success,true,JSON.stringify(done));
+ const details=await rpc('get-sale-details',done.id);assert.equal(details.sale.cash_tendered_amount,200);assert.equal(details.sale.cash_change_amount,80);
+ assert.equal(details.sale.paid_amount,120);
+ let log=await rpc('get-cash-change-audit',{limit:5});assert.equal(log.length,1);
+ assert.equal(log[0].cash_change_due,80);
+ const invalid=await rpc('process-sale',{...payload,checkout:{...payload.checkout,cashTenderedAmount:90}});
+ assert.equal(invalid.success,false);
+ await rpc('delete-sale',done.id);
+ log=await rpc('get-cash-change-audit',{limit:5});
+ assert.equal(log.length,1);
+ const persisted=JSON.parse(w.localStorage.getItem('lumina-browser-data-v1'));
+ assert.equal(persisted.cash_change_audit[0].sale_id,done.id);
+ console.log('PASS LEDGER: persisted audit, stock not changed, journal survives sale deletion');
+}
+checkUI();checkJournal().catch(e=>{console.error(e);process.exitCode=1});
