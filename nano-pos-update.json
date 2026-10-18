@@ -3,32 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.73",
+  "version": "1.0.74",
   "releaseDate": "2026-10-18",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات عامة على تناسق شاشة البيع",
-      "إعادة ضبط عرض لوحات المنتجات والسلة لتناسب المساحات المتاحة بدون تداخل.",
-      "تصغير ارتفاع شاشة السعر الرقمية وتنسيق الرقم والعملة والعنوان في بطاقة متوازنة.",
-      "تحسين المسافات بين أزرار البيع والتسديد وتوافق أوضاع العرض الثلاثة.",
-      "الاحتفاظ بجميع حسابات البيع وميزات التسعير من الإصدار السابق دون تغيير."
+      "تحسينات عامة على الدعم التقني",
+      "إضافة زري فتح AnyDesk وTailscale داخل نافذة الاتصال بالدعم.",
+      "فتح التطبيق المثبت على Windows عند الضغط؛ وإذا لم يكن مثبتًا يظهر رابط التنزيل الرسمي.",
+      "لا تُفتح أي جلسة دعم أو اتصال عن بعد دون إجراء من المستخدم."
     ],
     "fr": [
-      "Améliorations générales de la mise en page de vente",
-      "Panneaux produits et panier mieux adaptés aux différentes tailles.",
-      "Afficheur numérique du prix plus compact avec montant et devise alignés.",
-      "Boutons de vente et validation mieux espacés dans les trois modes.",
-      "Aucun changement de calcul des ventes ou de tarification."
+      "Améliorations générales du support technique",
+      "Ajout des boutons AnyDesk et Tailscale dans la fenêtre de contact du support.",
+      "Ouverture des applications Windows installées et lien officiel de téléchargement à défaut.",
+      "Aucune session distante n’est ouverte sans intervention de l’utilisateur."
     ],
     "en": [
-      "General sales screen layout improvements",
-      "Product and cart panels better fit available width without overlaps.",
-      "A compact digital total with aligned amount, label and currency.",
-      "More balanced checkout buttons in all three POS display modes.",
-      "Sales calculation and pricing behavior unchanged."
+      "General technical support improvements",
+      "Added AnyDesk and Tailscale buttons to the Contact Support window.",
+      "Launch installed Windows apps or show their official download links if missing.",
+      "No remote-control session is started automatically."
     ]
   },
   "releaseHistory": {
@@ -1064,11 +1061,34 @@
           "Sales calculation and pricing behavior unchanged."
         ]
       }
+    },
+    "1.0.74": {
+      "releaseDate": "2026-10-18",
+      "features": {
+        "ar": [
+          "تحسينات عامة على الدعم التقني",
+          "إضافة زري فتح AnyDesk وTailscale داخل نافذة الاتصال بالدعم.",
+          "فتح التطبيق المثبت على Windows عند الضغط؛ وإذا لم يكن مثبتًا يظهر رابط التنزيل الرسمي.",
+          "لا تُفتح أي جلسة دعم أو اتصال عن بعد دون إجراء من المستخدم."
+        ],
+        "fr": [
+          "Améliorations générales du support technique",
+          "Ajout des boutons AnyDesk et Tailscale dans la fenêtre de contact du support.",
+          "Ouverture des applications Windows installées et lien officiel de téléchargement à défaut.",
+          "Aucune session distante n’est ouverte sans intervention de l’utilisateur."
+        ],
+        "en": [
+          "General technical support improvements",
+          "Added AnyDesk and Tailscale buttons to the Contact Support window.",
+          "Launch installed Windows apps or show their official download links if missing.",
+          "No remote-control session is started automatically."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.73-responsive-sales-layout",
+      "id": "nano-pos-v1.0.74-remote-support-tools",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1108,14 +1128,15 @@
         "1.0.69",
         "1.0.70",
         "1.0.71",
-        "1.0.72"
+        "1.0.72",
+        "1.0.73"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.73/NANO-POS-Patch-1.0.72-to-1.0.73-SALES-RESPONSIVE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.73",
-      "sha256": "1dc560ff186a6e6ad6a6edfc69d696bb7a76a719eb093f77013e3af9aa48d7c8",
-      "appAsarSha256": "8fcd5dcb723616bed4718af8a2bacc231d47c62f1b557a0453f4228d01c43a1f",
-      "fileName": "NANO-POS-Patch-1.0.72-to-1.0.73-SALES-RESPONSIVE.zip",
-      "sizeBytes": 31388891,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.74/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.74",
+      "sha256": "04cb5fc13b8de87ddb6be3c1fd7c83e83b3b14834aaef1ab24df58a73247ba87",
+      "appAsarSha256": "4e27442f202b3a754f8ea61a863f42480fbc6a604d9c5cb1ac7ff0cd28e4b283",
+      "fileName": "NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip",
+      "sizeBytes": 31391253,
       "payloadType": "app-asar"
     }
   ],
@@ -1126,8 +1147,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة — تنسيق أبعاد شاشة البيع وشاشة السعر الرقمية بما يتناسب مع عرض الصفحة، دون تغيير حسابات البيع.",
-    "fr": "Améliorations générales — écran de vente et afficheur numérique adaptatifs, sans changer les calculs.",
-    "en": "General improvements — responsive sales screen and digital total, without sales logic changes."
+    "ar": "تحسينات عامة — فتح AnyDesk وTailscale من نافذة الدعم التقني مع رابط تنزيل رسمي عند عدم التثبيت.",
+    "fr": "Améliorations générales — ouverture d’AnyDesk et de Tailscale depuis l’assistance.",
+    "en": "General improvements — launch AnyDesk and Tailscale from Contact Support."
   }
 }
