@@ -1,0 +1,121 @@
+name: Publish NANO POS v1.0.75 — Fix free product dialog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-free-product-v1075.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nano-pos-free-product-v1075
+  cancel-in-progress: false
+
+jobs:
+  build-verify-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download verified v1.0.74 baseline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/release
+          gh release download v1.0.74 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip' --dir /tmp/release
+          echo '04cb5fc13b8de87ddb6be3c1fd7c83e83b3b14834aaef1ab24df58a73247ba87  /tmp/release/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip' | sha256sum -c
+          unzip -q /tmp/release/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip 'payload/app.asar' -d /tmp/release/base
+          echo '4e27442f202b3a754f8ea61a863f42480fbc6a604d9c5cb1ac7ff0cd28e4b283  /tmp/release/base/payload/app.asar' | sha256sum -c
+      - name: Apply free-product dialog fix and run regressions
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/asar-cli --no-audit --no-fund --no-save @electron/asar@3.4.1
+          ASAR=/tmp/asar-cli/node_modules/.bin/asar
+          "$ASAR" extract /tmp/release/base/payload/app.asar /tmp/release/source
+          cp /tmp/release/source/browser-bridge.js /tmp/release/bridge-original.js
+          cp /tmp/release/source/renderer.js /tmp/release/renderer-original.js
+          node release/free-product-v1075/apply.js /tmp/release/source
+          node --check /tmp/release/source/nano-free-product-fix.js
+          node --check /tmp/release/source/renderer.js
+          node --check /tmp/release/source/browser-bridge.js
+          cmp /tmp/release/bridge-original.js /tmp/release/source/browser-bridge.js
+          cmp /tmp/release/renderer-original.js /tmp/release/source/renderer.js
+          node - <<'JS'
+          'use strict';
+          const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
+          const source=fs.readFileSync('/tmp/release/source/nano-free-product-fix.js','utf8');
+          const make=id=>({id,value:'',classList:{s:new Set(['hidden']),add(x){this.s.add(x)},remove(x){this.s.delete(x)},contains(x){return this.s.has(x)}},style:{display:'',removeProperty(x){if(x==='display')this.display=''}},setAttribute(){},removeAttribute(){},focus(){this.focused=true},addEventListener(){},dataset:{},parentElement:{},tagName:'INPUT'});
+          const ids=['customProductModal','customProductNameInput','customProductPriceInput','customProductCostInput'];
+          const elements=Object.fromEntries(ids.map(id=>[id,make(id)]));
+          const document={documentElement:{lang:'ar'},body:{appendChild(node){node.parentElement=this}},head:{appendChild(){}},readyState:'complete',getElementById:id=>elements[id],createElement:()=>({textContent:'',id:''})};
+          const box={document,cart:[],console,Number,Array,setTimeout(fn){fn()},window:{showToast(){},updateCartUI(){box.updates++}},updates:0};
+          vm.createContext(box);vm.runInContext(source,box,{timeout:1000});
+          assert.equal(box.window.openCustomProductModal(),true);
+          assert.equal(elements.customProductModal.parentElement,document.body);
+          elements.customProductNameInput.value='خدمة تركيب';elements.customProductPriceInput.value='1350.50';elements.customProductCostInput.value='120';
+          assert.equal(box.window.addCustomProductToCart(),true);
+          assert.equal(box.cart.length,1);assert.equal(box.cart[0].is_custom,true);
+          assert.equal(box.cart[0].product.id,null);assert.equal(box.cart[0].pos_price,1350.5);
+          assert.equal(box.updates,1);assert.equal(elements.customProductModal.classList.contains('hidden'),true);
+          box.window.openCustomProductModal();
+          elements.customProductNameInput.value='X';
+          elements.customProductPriceInput.value='-1';
+          assert.equal(box.window.addCustomProductToCart(),false);assert.equal(box.cart.length,1);
+          elements.customProductPriceInput.value='3';
+          elements.customProductNameInput.value='<b>unsafe</b>';
+          assert.equal(box.window.addCustomProductToCart(),false);assert.equal(box.cart.length,1);
+          box.window.closeCustomProductModal();assert.equal(elements.customProductModal.classList.contains('hidden'),true);
+          console.log('PASS: open/close, cart insertion, validation, XSS prevention, amount');
+          JS
+          node - <<'JS'
+          const fs=require('fs'),root='/tmp/release/source/';
+          const html=fs.readFileSync(root+'index.html','utf8');
+          const scripts=[html.indexOf('src="renderer.js"'),html.indexOf('src="nano-free-product-fix.js"')];
+          if(scripts.some(x=>x<0)||scripts[1]<=scripts[0])throw Error('Free product fix script not loaded after renderer');
+          const pkg=JSON.parse(fs.readFileSync(root+'package.json','utf8'));
+          if(pkg.version!=='1.0.75')throw Error('Package version mismatch');
+          JS
+          mkdir -p /tmp/release/payload
+          "$ASAR" pack /tmp/release/source /tmp/release/payload/app.asar
+          node - <<'JS'
+          const asar=require('/tmp/asar-cli/node_modules/@electron/asar');
+          const p='/tmp/release/payload/app.asar';
+          const pkg=JSON.parse(asar.extractFile(p,'package.json').toString('utf8'));
+          if(pkg.version!=='1.0.75')throw Error('Packaged version mismatch');
+          if(!asar.extractFile(p,'nano-free-product-fix.js').length)throw Error('Free product repair missing');
+          JS
+          (cd /tmp/release && zip -q -6 'NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip' payload/app.asar)
+          unzip -t /tmp/release/NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip
+          sha256sum /tmp/release/payload/app.asar /tmp/release/NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip
+      - name: Publish v1.0.75 release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.75 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p /tmp/release/check
+            gh release download v1.0.75 --repo "$GITHUB_REPOSITORY" \
+              --pattern 'NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip' --dir /tmp/release/check
+            cmp /tmp/release/NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip \
+              /tmp/release/check/NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip
+          else
+            gh release create v1.0.75 /tmp/release/NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --title 'NANO POS v1.0.75 — إصلاح المنتج الحر' \
+              --notes 'إصلاح نافذة إضافة المنتج الحر ضمن شاشة البيع: فتح وإغلاق موثوقان، تحقق من المدخلات وإضافة للسلة دون تسجيل منتج في المخزون.'
+          fi
+          gh release view v1.0.75 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fx 'NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip'
+      - name: Activate verified automatic update
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 release/free-product-v1075/update_manifest.py
