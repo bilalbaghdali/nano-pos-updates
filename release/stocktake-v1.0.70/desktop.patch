@@ -52,29 +52,3 @@
          if (channel === 'approve-stocktake-draft' || channel === 'reject-stocktake-draft') return send(res, 403, { success: false, error: 'primary_pc_only', message: 'اعتماد الجرد يقتصر على الكمبيوتر الرئيسي.' });
          if (channel==='nano-count-start'||channel==='nano-count-finish')
            return send(res,403,{success:false,error:'primary_pc_only',message:'فتح وإغلاق الجرد الجماعي من الكمبيوتر الرئيسي فقط'});
---- a/mobile/www/index.html
-+++ b/mobile/www/index.html
-@@ -30,9 +30,9 @@
- <script src="mobile-runtime.js"></script>
- <script src="nano-transaction-guards.js"></script>
-   <script src="nano-return-plan.js"></script>
--  <script src="nano-stocktake-approval.js"></script>
-+
-   <script src="nano-pricing.js"></script>
--  <script src="nano-multi-count.js"></script>
-+
-   <script src="browser-bridge.js"></script>
- <script src="mobile-sync-bridge.js"></script>
- <script src="browser-preload.js"></script>
-@@ -12838,9 +12838,9 @@
-   <script defer src="nano-operations-center.js"></script>
-   <script defer src="nano-financial-review.js"></script>
- <script defer src="nano-return-ui.js"></script>
--<script defer src="nano-stocktake-drafts-ui.js"></script>
-+
-   <script defer src="nano-pricing-ui.js"></script>
--<script defer src="nano-multi-count-ui.js"></script>
-+
- </body>
- 
- </html>
