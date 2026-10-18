@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""Publish metadata for a verified v1.0.77 release artifact. Only after release succeeds."""
+import base64
+import json
+import os
+import subprocess
+from pathlib import Path
+
+REPO = os.environ['GITHUB_REPOSITORY']
+TARGET = '1.0.77'
+ZIP_NAME = 'NANO-POS-Patch-1.0.76-to-1.0.77-FAST-POS.zip'
+BASE = f'https://github.com/{REPO}/releases'
+ZIP = Path('/tmp/release') / ZIP_NAME
+ASAR = Path('/tmp/release/payload/app.asar')
+
+
+def gh(*args):
+    return subprocess.check_output(['gh', 'api', *args], text=True)
+
+
+def sha256(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, 'rb') as inp:
+        for chunk in iter(lambda: inp.read(1024 * 1024), b''):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+ar = [
+    'نظام بيع سريع وذكي',
+    'تعزيز الوصول السريع إلى قارئ الباركود وإضافة المنتج الحر مع الحفاظ على اختصارات F1 وF8 وغيرها.',
+    'تعديل كمية السلة مباشرة داخل السطر دون فتح نافذة، باستخدام نفس فحوص المخزون الأصلية.',
+    'تقسيم فاتورة الزبون إلى مبلغ نقدي مدفوع ورصيد كريدي متبقٍ مرتبط بالزبون، مع منع القيم غير الصحيحة.',
+    'عدم تغيير منطق البيع الأصلي أو إدارة المخزون أو صلاحيات المستخدم.',
+]
+fr = [
+    'Vente rapide et intelligente',
+    'Accès rapide au scanner et au produit libre, avec raccourcis préexistants conservés.',
+    'Modification de la quantité directement sur la ligne du panier.',
+    'Paiement espèces partiel et solde client à crédit, avec validations.',
+    'Mécanismes de vente, stock et permissions préservés.',
+]
+en = [
+    'Fast and smart checkout',
+    'Quick barcode focus and free-product actions; original shortcuts preserved.',
+    'Inline quantity entry using stock validation already in the cart.',
+    'Split cash received and remaining customer credit balance with validation.',
+    'Original checkout, inventory and authorization code left untouched.',
+]
+
+path = f'repos/{REPO}/contents/nano-pos-update.json'
+current_response = json.loads(gh(path))
+current = json.loads(base64.b64decode(current_response['content']).decode('utf8'))
+if current.get('version') != '1.0.76':
+    raise SystemExit(f"Refusing to overwrite unexpected update manifest version: {current.get('version')!r}")
+if not ZIP.exists() or not ASAR.exists():
+    raise SystemExit('Missing verified release archive or app.asar')
+
+features = {'ar': ar, 'fr': fr, 'en': en}
+current['version'] = TARGET
+current['releaseDate'] = '2026-10-18'
+current['published'] = True
+current['features'] = features
+current.setdefault('releaseHistory', {})[TARGET] = {'releaseDate': '2026-10-18', 'features': features}
+current['patches'] = [{
+    'id': 'nano-pos-v1.0.77-fast-pos',
+    'fromVersions': [f'1.0.{n}' for n in range(34, 77)],
+    'directUrl': f'{BASE}/download/v{TARGET}/{ZIP_NAME}',
+    'pageUrl': f'{BASE}/tag/v{TARGET}',
+    'sha256': sha256(ZIP),
+    'appAsarSha256': sha256(ASAR),
+    'fileName': ZIP_NAME,
+    'sizeBytes': ZIP.stat().st_size,
+    'payloadType': 'app-asar',
+}]
+current['notes'] = {
+    'ar': 'تحسينات عامة — بيع سريع، إدخال باركود متتابع، تعديل كمية السلة دون نافذة، وتقسيم الدفع بين نقد وكريدي.',
+    'fr': 'Améliorations générales — vente rapide, scan en continu, quantité en ligne, règlement espèces et crédit.',
+    'en': 'General improvements — fast POS shortcuts, continuous scanning, inline quantity and cash/credit split.',
+}
+
+serialized = json.dumps(current, ensure_ascii=False, indent=2) + '\n'
+encoded = base64.b64encode(serialized.encode('utf8')).decode('ascii')
+response = json.loads(gh('-X', 'PUT', path,
+                         '-f', 'message=Release NANO POS 1.0.77 desktop-only stocktake',
+                         '-f', f'content={encoded}',
+                         '-f', f"sha={current_response['sha']}"))
+if not response.get('commit', {}).get('sha'):
+    raise SystemExit('Manifest update was not acknowledged by GitHub')
+confirm = json.loads(gh(path))
+check = json.loads(base64.b64decode(confirm['content']).decode('utf8'))
+assert check['version'] == TARGET
+assert check['patches'][0]['sha256'] == sha256(ZIP)
+assert check['patches'][0]['appAsarSha256'] == sha256(ASAR)
+print(f"Published manifest {TARGET}: commit {response['commit']['sha']}")
