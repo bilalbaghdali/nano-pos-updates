@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.74",
+  "version": "1.0.75",
   "releaseDate": "2026-10-18",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات عامة على الدعم التقني",
-      "إضافة زري فتح AnyDesk وTailscale داخل نافذة الاتصال بالدعم.",
-      "فتح التطبيق المثبت على Windows عند الضغط؛ وإذا لم يكن مثبتًا يظهر رابط التنزيل الرسمي.",
-      "لا تُفتح أي جلسة دعم أو اتصال عن بعد دون إجراء من المستخدم."
+      "تحسينات عامة وإصلاح نافذة إضافة منتج حر",
+      "إصلاح فتح وإغلاق نافذة المنتج الحر داخل شاشة البيع وإظهارها فوق المحتوى.",
+      "التحقق من اسم المنتج وسعر البيع وسعر الشراء الاختياري مع رسائل واضحة.",
+      "إضافة المنتج الحر للسلة فورًا دون إنشاء منتج في المخزون مع المحافظة على عمليات البيع."
     ],
     "fr": [
-      "Améliorations générales du support technique",
-      "Ajout des boutons AnyDesk et Tailscale dans la fenêtre de contact du support.",
-      "Ouverture des applications Windows installées et lien officiel de téléchargement à défaut.",
-      "Aucune session distante n’est ouverte sans intervention de l’utilisateur."
+      "Améliorations générales et correction du produit libre",
+      "Réparation de la fenêtre de produit libre dans les ventes.",
+      "Validation du nom, du prix de vente et du prix d’achat optionnel.",
+      "Ajout fiable au panier sans créer de produit dans le stock."
     ],
     "en": [
-      "General technical support improvements",
-      "Added AnyDesk and Tailscale buttons to the Contact Support window.",
-      "Launch installed Windows apps or show their official download links if missing.",
-      "No remote-control session is started automatically."
+      "General improvements and free-product dialog fix",
+      "Fix free-product dialog opening, closing and overlay placement.",
+      "Validate product name, sale price and optional purchase cost.",
+      "Add to cart without creating inventory products."
     ]
   },
   "releaseHistory": {
@@ -1084,11 +1084,34 @@
           "No remote-control session is started automatically."
         ]
       }
+    },
+    "1.0.75": {
+      "releaseDate": "2026-10-18",
+      "features": {
+        "ar": [
+          "تحسينات عامة وإصلاح نافذة إضافة منتج حر",
+          "إصلاح فتح وإغلاق نافذة المنتج الحر داخل شاشة البيع وإظهارها فوق المحتوى.",
+          "التحقق من اسم المنتج وسعر البيع وسعر الشراء الاختياري مع رسائل واضحة.",
+          "إضافة المنتج الحر للسلة فورًا دون إنشاء منتج في المخزون مع المحافظة على عمليات البيع."
+        ],
+        "fr": [
+          "Améliorations générales et correction du produit libre",
+          "Réparation de la fenêtre de produit libre dans les ventes.",
+          "Validation du nom, du prix de vente et du prix d’achat optionnel.",
+          "Ajout fiable au panier sans créer de produit dans le stock."
+        ],
+        "en": [
+          "General improvements and free-product dialog fix",
+          "Fix free-product dialog opening, closing and overlay placement.",
+          "Validate product name, sale price and optional purchase cost.",
+          "Add to cart without creating inventory products."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.74-remote-support-tools",
+      "id": "nano-pos-v1.0.75-free-product-dialog-fix",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1129,14 +1152,15 @@
         "1.0.70",
         "1.0.71",
         "1.0.72",
-        "1.0.73"
+        "1.0.73",
+        "1.0.74"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.74/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.74",
-      "sha256": "04cb5fc13b8de87ddb6be3c1fd7c83e83b3b14834aaef1ab24df58a73247ba87",
-      "appAsarSha256": "4e27442f202b3a754f8ea61a863f42480fbc6a604d9c5cb1ac7ff0cd28e4b283",
-      "fileName": "NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip",
-      "sizeBytes": 31391253,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.75/NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.75",
+      "sha256": "957b4c1e8f2714689f49a7b88f185d3a1f67594feb4ffa8ac81cf9988268531b",
+      "appAsarSha256": "517f6256ef9b6fbfacf7f0ff2a92bc207867c9e4ea24532082a2f7f64f1856d2",
+      "fileName": "NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip",
+      "sizeBytes": 31392616,
       "payloadType": "app-asar"
     }
   ],
@@ -1147,8 +1171,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة — فتح AnyDesk وTailscale من نافذة الدعم التقني مع رابط تنزيل رسمي عند عدم التثبيت.",
-    "fr": "Améliorations générales — ouverture d’AnyDesk et de Tailscale depuis l’assistance.",
-    "en": "General improvements — launch AnyDesk and Tailscale from Contact Support."
+    "ar": "تحسينات عامة — إصلاح نافذة إضافة منتج حر في شاشة البيع والتحقق من السعر وإضافة المنتج للسلة.",
+    "fr": "Améliorations générales — correction de la fenêtre de produit libre et de son ajout au panier.",
+    "en": "General improvements — repair free-product dialog and cart insertion."
   }
 }
