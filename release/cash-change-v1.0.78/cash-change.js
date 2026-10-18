@@ -45,7 +45,7 @@ function prepare(payload){
  if(!visible()||!cash()||!payload||payload.editSaleId||payload.checkout?.total<0)return {ok:true};
  const input=get('nanoCashTendered');
  if(!input||!input.value.trim())return {ok:false,message:T().required};
- const tender=parseCents(input.value),sum=parseCents(payload.checkout?.total),current=parseCents(payload.checkout?.paidAmount);
+ const tender=parseCents(input.value),sum=Number.isFinite(Number(payload.checkout?.total))?Math.round(Number(payload.checkout.total)*100):null,current=Number.isFinite(Number(payload.checkout?.paidAmount))?Math.round(Number(payload.checkout.paidAmount)*100):null;
  if(tender===null||sum===null)return {ok:false,message:T().invalid};
  const applied=split()?current:Math.min(sum,tender);
  if(applied===null||applied>sum||tender<applied)return {ok:false,message:T().notEnough};
