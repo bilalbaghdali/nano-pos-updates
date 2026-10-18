@@ -78,7 +78,9 @@ jobs:
           win.requestAnimationFrame=fn=>{pending.push(fn);return pending.length};
           win.ResizeObserver=class{observe(){}};
           function flush(){for(let i=0;pending.length&&i<10;i++){pending.shift()();}}
-          win.eval(layout);flush();
+          win.eval(layout);
+          win.document.dispatchEvent(new win.Event('DOMContentLoaded'));
+          flush();
           const section=win.document.getElementById('salesSection');
           const summary=win.document.getElementById('posSummaryBar');
           const products=win.document.getElementById('posProductsPane');
