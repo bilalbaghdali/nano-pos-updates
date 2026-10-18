@@ -29,6 +29,7 @@ async function checkJournal(){
  const dom=new JSDOM('<!doctype html><body></body>',{url:'http://localhost:4176/',runScripts:'outside-only'});
  const w=dom.window;w.structuredClone=global.structuredClone;
  w.NANO_CONFIG={distribution:{cleanBusinessDataOnFirstRun:false},login:{username:'admin',password:'test'}};
+ w.nanoLicense={access:async()=>({allowed:true,reason:'licensed'}),installationId:()=> 'test-device'};
  w.eval(fs.readFileSync(root+'/browser-bridge.js','utf8'));
  const rpc=w.__browserElectron?.ipcRenderer?.invoke;
  assert.equal(typeof rpc,'function');
