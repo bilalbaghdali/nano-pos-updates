@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.71",
+  "version": "1.0.72",
   "releaseDate": "2026-10-18",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات عامة وإصلاح الجرد",
-      "إصلاح رسالة «جرد الهاتف والجرد الجماعي متوقفان» عند استخدام الجرد على الكمبيوتر.",
-      "استعادة تحميل قائمة الأصناف والكميات أثناء الجرد من واجهة الكمبيوتر.",
-      "استمرار تعطيل طلبات الجرد القادمة من الهواتف دون التأثير على البيع والمخزون."
+      "تحسينات عامة على شاشة البيع والسعر",
+      "إزالة خيار تطبيق عروض المنتجات السارية وسعر الجملة حسب الكمية عند اعتماد البيع.",
+      "عدم إعادة احتساب سعر المنتج تلقائيًا عند اعتماد الفاتورة؛ اعتماد الأسعار الموجودة في السلة.",
+      "عرض الإجمالي المستحق في شاشة رقمية كبيرة بأرقام LED واضحة وتحديث فوري."
     ],
     "fr": [
-      "Améliorations générales et correction de l’inventaire",
-      "Correction du blocage involontaire des opérations d’inventaire sur PC.",
-      "Rétablissement du chargement des articles et quantités depuis le PC.",
-      "Inventaire mobile toujours désactivé sans affecter les ventes et le stock."
+      "Améliorations générales de la vente et des prix",
+      "Retrait du calcul automatique des promotions et des prix de gros à la validation.",
+      "Les prix déjà saisis dans le panier sont conservés à la confirmation.",
+      "Grand affichage numérique du total en style LED, actualisé en temps réel."
     ],
     "en": [
-      "General improvements and stocktake fix",
-      "Fix unintended blocking of desktop stocktake requests.",
-      "Restore desktop stocktake sheet loading.",
-      "Keep phone stocktake disabled while preserving desktop sales and inventory."
+      "General sales and price display improvements",
+      "Remove automatic active offers and quantity-based wholesale repricing at checkout.",
+      "Preserve the cart unit prices when confirming sales.",
+      "High-visibility seven-segment LED total updated live from the cart."
     ]
   },
   "releaseHistory": {
@@ -1012,11 +1012,34 @@
           "Keep phone stocktake disabled while preserving desktop sales and inventory."
         ]
       }
+    },
+    "1.0.72": {
+      "releaseDate": "2026-10-18",
+      "features": {
+        "ar": [
+          "تحسينات عامة على شاشة البيع والسعر",
+          "إزالة خيار تطبيق عروض المنتجات السارية وسعر الجملة حسب الكمية عند اعتماد البيع.",
+          "عدم إعادة احتساب سعر المنتج تلقائيًا عند اعتماد الفاتورة؛ اعتماد الأسعار الموجودة في السلة.",
+          "عرض الإجمالي المستحق في شاشة رقمية كبيرة بأرقام LED واضحة وتحديث فوري."
+        ],
+        "fr": [
+          "Améliorations générales de la vente et des prix",
+          "Retrait du calcul automatique des promotions et des prix de gros à la validation.",
+          "Les prix déjà saisis dans le panier sont conservés à la confirmation.",
+          "Grand affichage numérique du total en style LED, actualisé en temps réel."
+        ],
+        "en": [
+          "General sales and price display improvements",
+          "Remove automatic active offers and quantity-based wholesale repricing at checkout.",
+          "Preserve the cart unit prices when confirming sales.",
+          "High-visibility seven-segment LED total updated live from the cart."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.71-desktop-stocktake-fix",
+      "id": "nano-pos-v1.0.72-pos-digital-price",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1054,14 +1077,15 @@
         "1.0.67",
         "1.0.68",
         "1.0.69",
-        "1.0.70"
+        "1.0.70",
+        "1.0.71"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.71/NANO-POS-Patch-1.0.70-to-1.0.71-DESKTOP-STOCKTAKE-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.71",
-      "sha256": "88c2ae0aef2e45b0cdfd1ab42d606b50a89b0d24333cc659b6a537b95ddbd95f",
-      "appAsarSha256": "65c33648c28ef7083264a0f8c700b4b0f14c2b6762e8d5c3ca42a745fd174f9a",
-      "fileName": "NANO-POS-Patch-1.0.70-to-1.0.71-DESKTOP-STOCKTAKE-FIX.zip",
-      "sizeBytes": 31386040,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.72/NANO-POS-Patch-1.0.71-to-1.0.72-POS-DIGITAL-PRICE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.72",
+      "sha256": "14416c6bb85b7b82769cda4a44ebf02a4de51c7723d8c887ab10d6a00131c2b1",
+      "appAsarSha256": "f386e9fdc741929b7a60d5749409bdb2bed9cab5c7896e9696cc1e4acf177e5f",
+      "fileName": "NANO-POS-Patch-1.0.71-to-1.0.72-POS-DIGITAL-PRICE.zip",
+      "sizeBytes": 31387550,
       "payloadType": "app-asar"
     }
   ],
@@ -1072,8 +1096,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة — إصلاح جرد الكمبيوتر وإلغاء رسالة المنع الخاطئة، مع بقاء جرد الهاتف متوقفًا.",
-    "fr": "Améliorations générales — inventaire PC rétabli, inventaire mobile toujours désactivé.",
-    "en": "General improvements — desktop stocktake restored, mobile stocktake remains disabled."
+    "ar": "تحسينات عامة: إزالة التطبيق التلقائي للعروض وسعر الجملة عند البيع، وإضافة شاشة سعر رقمية كبيرة.",
+    "fr": "Améliorations générales : retrait de la tarification automatique à la validation et grand affichage numérique.",
+    "en": "General improvements: no automatic repricing at checkout and a large digital LED total."
   }
 }
