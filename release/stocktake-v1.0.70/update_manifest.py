@@ -28,16 +28,19 @@ def sha256(path):
 
 
 ar = [
+    'تحسينات عامة',
     'إزالة واجهات الجرد الجماعي والجرد عبر الهاتف من NANO POS.',
     'قصر تنفيذ الجرد على برنامج الكمبيوتر الرئيسي مع منع طلبات الجرد القادمة من الهواتف.',
     'إضافة تصدير CSV وطباعة تقرير الجرد من واجهة الكمبيوتر دون تعديل بيانات المخزون.',
 ]
 fr = [
+    'Améliorations générales',
     'Suppression des interfaces de comptage collectif et de comptage sur téléphone.',
     'Inventaire réservé au PC ; blocage des demandes d’inventaire des téléphones.',
     'Export CSV et impression du tableau d’inventaire depuis le PC sans changer le stock.',
 ]
 en = [
+    'General improvements',
     'Removed collective and phone-based stocktake interfaces.',
     'Limited stocktake to the desktop; phone stocktake requests are denied.',
     'Added CSV export and stocktake report print actions on desktop without altering inventory.',
@@ -69,9 +72,9 @@ current['patches'] = [{
     'payloadType': 'app-asar',
 }]
 current['notes'] = {
-    'ar': 'جرد الكمبيوتر فقط: إزالة جرد الهاتف والجرد الجماعي، مع تصدير CSV وطباعة تقرير الجرد.',
-    'fr': 'Inventaire sur PC uniquement, avec export CSV et impression.',
-    'en': 'Desktop-only stocktake with CSV export and print report.',
+    'ar': 'تحسينات عامة — جرد الكمبيوتر فقط: إزالة جرد الهاتف والجرد الجماعي، مع تصدير CSV وطباعة تقرير الجرد.',
+    'fr': 'Améliorations générales — Inventaire sur PC uniquement, avec export CSV et impression.',
+    'en': 'General improvements — Desktop-only stocktake with CSV export and print report.',
 }
 
 serialized = json.dumps(current, ensure_ascii=False, indent=2) + '\n'
