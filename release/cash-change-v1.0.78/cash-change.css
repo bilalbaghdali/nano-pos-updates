@@ -1,0 +1,24 @@
+/* NANO POS cash tender & durable change reference, compatible with split cash/credit. */
+#checkoutModal #nanoCashChangePanel{padding:12px 14px;margin-top:10px;border:1px solid #a7f3d0;border-radius:14px;background:#f0fdf4;box-sizing:border-box}
+#checkoutModal #nanoCashChangePanel[hidden]{display:none!important}
+#nanoCashTenderLabel{display:block;margin-bottom:7px;font-size:13px;font-weight:900;color:#065f46}
+#nanoCashTendered{display:block;width:100%;box-sizing:border-box;min-height:54px;border:2px solid #10b981;border-radius:12px;text-align:center;font-size:25px;font-weight:900;background:white;color:#064e3b;direction:ltr}
+#nanoCashTendered[aria-invalid="true"]{border-color:#e11d48}
+#checkoutModal .nano-cash-change-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:9px;text-align:center}
+#checkoutModal .nano-cash-change-grid>div{padding:10px 6px;border:1px solid #d1fae5;border-radius:10px;background:white;min-width:0}
+#checkoutModal .nano-cash-change-grid small{display:block;font-size:11px;color:#64748b;font-weight:700}
+#checkoutModal .nano-cash-change-grid strong{display:block;font-size:clamp(18px,2vw,28px);color:#0f766e;font-weight:900;direction:ltr;word-break:break-word}
+#checkoutModal #nanoCashMessage{font-size:12px;font-weight:800;color:#be123c}
+#salesSection #nanoCashAuditOpen{border-radius:9px;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc;padding:8px 11px;font-size:12px;font-weight:800;white-space:nowrap}
+#nanoCashAuditModal{position:fixed;inset:0;z-index:9999;background:#0f172acc;display:flex;align-items:center;justify-content:center;padding:15px}
+#nanoCashAuditModal.hidden{display:none!important}
+#nanoCashAuditModal .nano-cash-audit-card{width:min(980px,100%);max-height:90vh;display:flex;flex-direction:column;background:#fff;color:#0f172a;border-radius:15px;overflow:hidden}
+#nanoCashAuditModal .nano-cash-audit-head{display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid #e2e8f0;gap:10px}
+#nanoCashAuditModal h3{font-weight:900;font-size:16px}
+#nanoCashAuditClose{font-size:27px;padding:3px 10px}
+#nanoCashAuditModal .nano-cash-audit-scroll{overflow:auto;flex:1 1 auto}
+#nanoCashAuditModal table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+#nanoCashAuditModal th,#nanoCashAuditModal td{padding:11px;border-bottom:1px solid #e2e8f0;text-align:start}
+#nanoCashAuditModal th{position:sticky;top:0;background:#f1f5f9;font-weight:900}
+#nanoCashAuditHelp{padding:10px 14px;color:#64748b}
+@media(max-width:550px){#checkoutModal .nano-cash-change-grid{gap:5px}#nanoCashTendered{font-size:22px;min-height:46px}#nanoCashAuditModal{padding:6px}}
