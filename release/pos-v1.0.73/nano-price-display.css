@@ -1,0 +1,193 @@
+/* High-visibility LED price screen — sales section, desktop layouts 1/2/3. */
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled {
+    position:relative;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:stretch;
+    padding:14px 15px 17px;
+    margin-top:8px;
+    background:linear-gradient(150deg,#0b1526 0%,#101d32 55%,#111f29 100%);
+    border:2px solid #245165;
+    border-radius:18px;
+    box-shadow:inset 0 2px 8px rgba(0,0,0,.55),0 8px 23px rgba(8,26,43,.16);
+    min-width:0;
+}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled > div {
+    flex:1 1 100%;min-width:0;max-width:100%;
+}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled [data-i18n="total_due_label"]{
+    display:block;color:#b7d7e7;font-size:clamp(12px,1.1vw,17px);
+    font-weight:800;letter-spacing:.07em;margin:0 0 7px;
+}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled #cartTotal {
+    position:absolute!important;
+    width:1px!important;height:1px!important;
+    overflow:hidden!important;clip-path:inset(50%)!important;
+    white-space:nowrap!important;pointer-events:none!important;
+}
+#salesSection #posSummaryBar .nano-digital-total {
+    width:100%;max-width:100%;margin:1px auto 3px;
+    direction:ltr;display:flex;justify-content:center;align-items:center;
+    min-height:70px;max-height:132px;overflow:hidden;
+}
+#salesSection #posSummaryBar .nano-digital-frame {
+    width:100%;height:clamp(76px,10vh,128px);
+    display:flex;align-items:center;justify-content:center;
+}
+#salesSection #posSummaryBar .nano-digital-svg {
+    width:100%;height:100%;display:block;overflow:visible;
+    color:#60ffbb;filter:drop-shadow(0 0 3px rgba(59,252,164,.6));
+}
+#salesSection #posSummaryBar .nano-segment-on {opacity:1}
+#salesSection #posSummaryBar .nano-segment-off {opacity:.085;filter:none}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled > span[data-i18n="dzd"]{
+    position:absolute;inset-inline-end:16px;bottom:5px;
+    font-size:13px!important;color:#b7d7e7;font-weight:800;
+}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled #posSummaryDetailsToggle {
+    top:13px;inset-inline-end:14px;z-index:2;
+    transform:none;color:#e2e8f0;background:#21384c;border-color:#365e72;
+}
+@media (max-width:1280px){
+  #salesSection #posSummaryBar .nano-digital-frame {height:clamp(60px,8vh,103px)}
+  #salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled {padding:10px 12px 15px}
+}
+@media (prefers-reduced-motion:reduce){
+  #salesSection #posSummaryBar .nano-digital-svg {filter:none}
+}
+
+
+/* 1.0.73 Sales layout correction. Proportional to the pane, not the monitor. */
+#salesSection{min-width:0;min-height:0;max-width:100%;overflow:hidden}
+#salesSection>#posProductsPane,#salesSection>#posCartContainer{
+ min-width:0;min-height:0;max-width:100%;box-sizing:border-box
+}
+#salesSection #posToolbar{
+ min-width:0;max-width:100%;padding:10px clamp(10px,1.5vw,22px);
+ gap:7px 9px;flex-wrap:wrap
+}
+#salesSection #posToolbar>div{min-width:0;max-width:100%;flex-wrap:wrap}
+#salesSection #posCartHeader{
+ padding:clamp(10px,1.8vw,20px) clamp(10px,1.8vw,22px) 12px;gap:8px
+}
+#salesSection #cartItemsList{
+ min-height:52px;min-width:0;padding-inline:clamp(9px,1.6vw,22px);padding-bottom:12px
+}
+#salesSection #posSummaryBar{
+ flex-shrink:0;min-width:0;max-width:100%;box-sizing:border-box;
+ padding:clamp(10px,1.45vw,19px)!important;gap:10px!important
+}
+#salesSection #posSummaryBar .pos-summary-totals{
+ min-width:0;max-width:100%;margin-bottom:clamp(6px,1vw,12px)!important
+}
+#salesSection #posSummaryBar .pos-summary-actions,
+#salesSection #posSummaryBar .pos-summary-docs{
+ min-width:0;width:100%;gap:clamp(4px,.65vw,9px)
+}
+#salesSection #posSummaryBar .pos-summary-actions button,
+#salesSection #posSummaryBar .pos-summary-docs button{
+ min-width:0;max-width:100%;box-sizing:border-box;
+ padding:clamp(6px,.8vw,11px) clamp(2px,.45vw,8px)
+}
+#salesSection #posSummaryBar .pos-summary-actions button span,
+#salesSection #posSummaryBar .pos-summary-docs button span{max-width:100%}
+/* Smaller, balanced LED panel; keep the original #cartTotal for all calculations. */
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled{
+ box-sizing:border-box;position:relative;display:grid!important;
+ grid-template-columns:minmax(0,1fr) max-content;grid-template-areas:"price currency";
+ align-items:end;column-gap:clamp(4px,.8vw,12px);
+ margin:7px 0 0!important;padding:clamp(9px,1.3vw,15px)!important;
+ min-width:0;max-width:100%;width:100%;overflow:hidden;
+ border:1px solid #2d5262!important;border-radius:13px;
+ background:linear-gradient(145deg,#111c2b,#142c34);
+ box-shadow:inset 0 1px 8px rgba(0,0,0,.22)
+}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled>div{
+ grid-area:price;width:100%;min-width:0;max-width:100%;
+ display:flex;flex-direction:column;align-items:stretch;gap:0
+}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled [data-i18n="total_due_label"]{
+ display:block;width:100%;min-width:0;margin:0 0 5px!important;
+ padding-inline-end:22px;box-sizing:border-box;color:#c6dce5;
+ font-size:clamp(11px,1vw,14px);font-weight:800;line-height:1.4
+}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled #cartTotal{
+ position:absolute!important;width:1px!important;height:1px!important;
+ padding:0!important;margin:-1px!important;border:0!important;
+ overflow:hidden!important;white-space:nowrap!important;
+ clip-path:inset(50%)!important;pointer-events:none!important
+}
+#salesSection #posSummaryBar .nano-digital-total{
+ display:flex;direction:ltr;align-items:center;justify-content:center;
+ width:100%;min-width:0;max-width:100%;min-height:0;max-height:none;
+ margin:0;overflow:hidden
+}
+#salesSection #posSummaryBar .nano-digital-frame{
+ width:100%;min-width:0;max-width:100%;height:clamp(45px,13cqi,83px);
+ display:flex;align-items:center;justify-content:center
+}
+#salesSection #posSummaryBar .nano-digital-svg{
+ width:100%;height:100%;display:block;overflow:hidden;
+ color:#72fbb9;filter:drop-shadow(0 0 2px rgba(114,251,185,.40))
+}
+#salesSection #posSummaryBar .nano-segment-on{opacity:1}
+#salesSection #posSummaryBar .nano-segment-off{opacity:.075;filter:none}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled>span[data-i18n="dzd"]{
+ grid-area:currency;position:static!important;inset:auto!important;
+ justify-self:end;align-self:end;margin:0 0 6px!important;
+ padding:0;white-space:nowrap;font-size:clamp(10px,1vw,14px)!important;
+ font-weight:800;color:#c6dce5
+}
+#salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled #posSummaryDetailsToggle{
+ position:absolute;top:9px!important;inset-inline-end:9px!important;
+ transform:none!important;z-index:2;width:24px;height:24px;
+ background:#203b4e;border:1px solid #42647a;color:#ecf3f7
+}
+#salesSection #posSummaryBar.summary-compact .pos-summary-total-row.nano-digital-enabled{
+ padding-top:clamp(9px,1.3vw,15px)!important
+}
+/* Preserve each of the three existing user-selectable POS layouts. */
+#salesSection[data-pos-layout="design2"] #posSummaryBar,
+#salesSection[data-pos-layout="design3"] #posSummaryBar{
+ grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+ column-gap:clamp(8px,1.5vw,22px)!important;align-items:start
+}
+#salesSection[data-pos-layout="design3"] #posSummaryBar{
+ grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)
+}
+#salesSection[data-pos-layout="design3"] #posCartContainer:not(.fixed){width:100%!important}
+#salesSection[data-pos-layout="design3"] .pos-summary-totals{
+ min-width:0;padding:clamp(7px,1.2vw,14px)!important;border-radius:13px
+}
+@container (max-width:420px){
+ #posSummaryBar .nano-digital-frame{height:52px}
+ #posSummaryBar .pos-summary-actions,#posSummaryBar .pos-summary-docs{gap:4px}
+ #posSummaryBar .pos-summary-total-row.nano-digital-enabled{column-gap:3px;padding:9px!important}
+}
+@container (max-width:340px){
+ #posSummaryBar .nano-digital-frame{height:44px}
+ #posSummaryBar .pos-summary-total-row.nano-digital-enabled [data-i18n="total_due_label"]{font-size:11px}
+}
+@media (max-width:1280px){
+ #salesSection[data-pos-layout="design2"] #posSummaryBar,
+ #salesSection[data-pos-layout="design3"] #posSummaryBar{
+   grid-template-columns:minmax(0,1fr)!important
+ }
+ #salesSection[data-pos-layout="design2"] #posSummaryBar{
+   grid-template-areas:"totals" "actions" "docs"
+ }
+ #salesSection[data-pos-layout="design3"] #posSummaryBar{
+   grid-template-areas:"totals" "customer" "actions" "docs"
+ }
+}
+@media (max-height:740px){
+ #salesSection #posSummaryBar{padding-block:8px!important}
+ #salesSection #posSummaryBar .pos-summary-totals{margin-bottom:6px!important}
+ #salesSection #posSummaryBar .nano-digital-frame{height:clamp(42px,9cqi,64px)}
+ #salesSection:not([data-pos-layout="design3"]) #posSummaryBar{
+   max-height:67vh;overflow-y:auto;scrollbar-width:thin
+ }
+}
+@media (prefers-reduced-motion:reduce){
+ #salesSection #posSummaryBar .nano-digital-svg{filter:none}
+}
