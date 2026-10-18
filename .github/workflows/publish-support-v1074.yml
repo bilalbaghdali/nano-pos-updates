@@ -1,0 +1,119 @@
+name: Publish NANO POS v1.0.74 — Remote support launch buttons
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-support-v1074.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nano-pos-support-v1074
+  cancel-in-progress: false
+
+jobs:
+  build-verify-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Get verified NANO POS v1.0.73 baseline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/release
+          gh release download v1.0.73 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'NANO-POS-Patch-1.0.72-to-1.0.73-SALES-RESPONSIVE.zip' --dir /tmp/release
+          echo '1dc560ff186a6e6ad6a6edfc69d696bb7a76a719eb093f77013e3af9aa48d7c8  /tmp/release/NANO-POS-Patch-1.0.72-to-1.0.73-SALES-RESPONSIVE.zip' | sha256sum -c
+          unzip -q /tmp/release/NANO-POS-Patch-1.0.72-to-1.0.73-SALES-RESPONSIVE.zip 'payload/app.asar' -d /tmp/release/base
+          echo '8fcd5dcb723616bed4718af8a2bacc231d47c62f1b557a0453f4228d01c43a1f  /tmp/release/base/payload/app.asar' | sha256sum -c
+      - name: Add launch buttons and test safely
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/asar-cli --no-audit --no-fund --no-save @electron/asar@3.4.1
+          ASAR=/tmp/asar-cli/node_modules/.bin/asar
+          "$ASAR" extract /tmp/release/base/payload/app.asar /tmp/release/source
+          node release/support-v1.0.74/apply.js /tmp/release/source
+          node --check /tmp/release/source/electron-main.cjs
+          node --check /tmp/release/source/electron-native-preload.cjs
+          node --check /tmp/release/source/support-center.js
+          node --check /tmp/release/source/support-buttons.js
+          node --check /tmp/release/source/support-launcher.cjs
+          node - <<'JS'
+          const fs=require('fs'),EventEmitter=require('events');
+          const root='/tmp/release/source/';
+          const main=fs.readFileSync(root+'electron-main.cjs','utf8');
+          const preload=fs.readFileSync(root+'electron-native-preload.cjs','utf8');
+          const html=fs.readFileSync(root+'index.html','utf8');
+          const support=fs.readFileSync(root+'support-buttons.js','utf8');
+          const module=require(root+'support-launcher.cjs');
+          if(!main.includes("ipcMain.handle('nano-support-launch-tool'")) throw Error('Native IPC handler missing');
+          if(!preload.includes('launchSupportTool: id')) throw Error('Preload API missing');
+          if(!html.includes('src="support-buttons.js"')) throw Error('Support buttons not connected to desktop interface');
+          if(!support.includes('nanoRemoteAnyDesk')||!support.includes('nanoRemoteTailscale'))throw Error('Support buttons missing');
+          if(!support.includes('https://anydesk.com/')||!support.includes('https://tailscale.com/'))throw Error('Missing vendor links');
+          const pkg=JSON.parse(fs.readFileSync(root+'package.json','utf8'));
+          if(pkg.version!=='1.0.74')throw Error('Version incorrect');
+          (async()=>{
+            const missing=await module.launchSupportTool('anydesk',{platform:'win32',env:{ProgramFiles:'C:\\Program Files'},exists:()=>false});
+            if(missing.error!=='not_installed')throw Error('Missing app detection failed');
+            const blocked=await module.launchSupportTool('cmd',{platform:'win32'});
+            if(blocked.error!=='unsupported_tool')throw Error('Arbitrary execution permitted');
+            const good=await module.launchSupportTool('tailscale',{
+              platform:'win32',env:{ProgramFiles:'C:\\Program Files'},
+              exists:p=>p.endsWith('tailscale-ipn.exe'),
+              spawn:(exe,args,options)=>{
+                if(options.shell!==false||args.length)throw Error('Unsafe launch flags');
+                const e=new EventEmitter();e.unref=()=>{};process.nextTick(()=>e.emit('spawn'));return e;
+              }
+            });
+            if(!good.ok)throw Error('Installed Tailscale launch failed');
+            console.log('Support launcher behavior verified');
+          })().catch(error=>{console.error(error);process.exitCode=1});
+          JS
+          mkdir -p /tmp/release/payload
+          "$ASAR" pack /tmp/release/source /tmp/release/payload/app.asar
+          node - <<'JS'
+          const asar=require('/tmp/asar-cli/node_modules/@electron/asar');
+          const p='/tmp/release/payload/app.asar';
+          const pkg=JSON.parse(asar.extractFile(p,'package.json').toString('utf8'));
+          if(pkg.version!=='1.0.74')throw Error('Packaged version incorrect');
+          for(const f of ['support-buttons.js','support-launcher.cjs'])if(!asar.extractFile(p,f).length)throw Error('Missing '+f);
+          const html=asar.extractFile(p,'index.html').toString('utf8');
+          if(!html.includes('src="support-buttons.js"'))throw Error('Support button script not loaded');
+          JS
+          (cd /tmp/release && zip -q -6 'NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip' payload/app.asar)
+          unzip -t /tmp/release/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip
+          sha256sum /tmp/release/payload/app.asar /tmp/release/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip
+      - name: Publish NANO POS v1.0.74 Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.74 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p /tmp/release/check
+            gh release download v1.0.74 --repo "$GITHUB_REPOSITORY" \
+              --pattern 'NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip' --dir /tmp/release/check
+            cmp /tmp/release/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip \
+              /tmp/release/check/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip
+          else
+            gh release create v1.0.74 /tmp/release/NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --title 'NANO POS v1.0.74 — تحسينات الدعم التقني' \
+              --notes 'إضافة أزرار فتح AnyDesk وTailscale ضمن الاتصال بالدعم، مع روابط التنزيل الرسمية عند عدم التثبيت، دون بدء جلسات عن بُعد تلقائيًا.'
+          fi
+          gh release view v1.0.74 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' \
+            | grep -Fx 'NANO-POS-Patch-1.0.73-to-1.0.74-SUPPORT-TOOLS.zip'
+      - name: Enable automatic update after verified release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 release/support-v1.0.74/update_manifest.py
