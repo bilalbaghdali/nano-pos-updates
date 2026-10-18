@@ -1,4 +1,4 @@
-name: Publish NANO POS v1.0.78 — Verified cash change ledger
+name: Publish NANO POS v1.0.78 — Cash ledger verified
 
 on:
   push:
