@@ -1,0 +1,94 @@
+name: Publish NANO POS v1.0.78 — Cash change audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-cash-change-v1078.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nano-pos-cash-change-1078
+  cancel-in-progress: false
+
+jobs:
+  build-verify-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Retrieve verified NANO POS v1.0.77
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/release
+          gh release download v1.0.77 --repo "$GITHUB_REPOSITORY" --pattern 'NANO-POS-Patch-1.0.76-to-1.0.77-FAST-POS.zip' --dir /tmp/release
+          echo '2a0d3248dd0a2a0374c2aecced582288352ed1cdd4b21398a104c2dc44f75f76  /tmp/release/NANO-POS-Patch-1.0.76-to-1.0.77-FAST-POS.zip' | sha256sum -c
+          unzip -q /tmp/release/NANO-POS-Patch-1.0.76-to-1.0.77-FAST-POS.zip 'payload/app.asar' -d /tmp/release/base
+          echo 'd2d2d4cd29d10ac244ae9ce150582c8921f5997cd8ffdb2d73063dd5f65fdf0f  /tmp/release/base/payload/app.asar' | sha256sum -c
+      - name: Apply and test persistent tender and change accounting
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/asar-cli --no-audit --no-fund --no-save @electron/asar@3.4.1
+          npm install --prefix /tmp/ui-test --no-audit --no-fund --no-save jsdom@25.0.1 css-tree@3.1.0
+          ASAR=/tmp/asar-cli/node_modules/.bin/asar
+          "$ASAR" extract /tmp/release/base/payload/app.asar /tmp/release/source
+          cp /tmp/release/source/nano-fast-pos.js /tmp/release/fast-original.js
+          cp /tmp/release/source/nano-sales-layout.js /tmp/release/layout-original.js
+          node release/cash-change-v1.0.78/apply.js /tmp/release/source
+          node --check /tmp/release/source/browser-bridge.js
+          node --check /tmp/release/source/browser-preload.js
+          node --check /tmp/release/source/renderer.js
+          node --check /tmp/release/source/nano-cash-change.js
+          node --check release/cash-change-v1.0.78/test.js
+          cmp /tmp/release/fast-original.js /tmp/release/source/nano-fast-pos.js
+          cmp /tmp/release/layout-original.js /tmp/release/source/nano-sales-layout.js
+          node release/cash-change-v1.0.78/test.js /tmp/release/source
+          node - <<'JS'
+          const asarPath='/tmp/release/source/package.json',fs=require('fs');
+          const p=JSON.parse(fs.readFileSync(asarPath,'utf8'));
+          if(p.version!=='1.0.78')throw Error('Wrong build version');
+          const html=fs.readFileSync('/tmp/release/source/index.html','utf8');
+          if(!html.includes('nano-cash-change.js')||!html.includes('nano-cash-change.css'))throw Error('Change UI unavailable');
+          JS
+          mkdir -p /tmp/release/payload
+          "$ASAR" pack /tmp/release/source /tmp/release/payload/app.asar
+          node - <<'JS'
+          const asar=require('/tmp/asar-cli/node_modules/@electron/asar');
+          const p='/tmp/release/payload/app.asar';
+          const pkg=JSON.parse(asar.extractFile(p,'package.json').toString('utf8'));
+          if(pkg.version!=='1.0.78')throw Error('ASAR version mismatch');
+          for(const file of ['nano-cash-change.js','nano-cash-change.css'])
+            if(!asar.extractFile(p,file).length)throw Error('File missing: '+file);
+          JS
+          (cd /tmp/release && zip -q -6 'NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip' payload/app.asar)
+          unzip -t /tmp/release/NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip
+          sha256sum /tmp/release/payload/app.asar /tmp/release/NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip
+      - name: Publish GitHub Release v1.0.78
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.78 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p /tmp/release/check
+            gh release download v1.0.78 --repo "$GITHUB_REPOSITORY" --pattern 'NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip' --dir /tmp/release/check
+            cmp /tmp/release/NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip /tmp/release/check/NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip
+          else
+            gh release create v1.0.78 /tmp/release/NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip \
+              --repo "$GITHUB_REPOSITORY" --title 'NANO POS v1.0.78 — سجل الصرف النقدي' \
+              --notes 'تسجيل المبلغ المستلم من الزبون والصرف الواجب إرجاعه مع مرجع الفاتورة والمناوبة واسم البائع، وسجل مستقل للمراجعة.'
+          fi
+          gh release view v1.0.78 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fx 'NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip'
+      - name: Enable verified automatic update
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 release/cash-change-v1.0.78/update_manifest.py
