@@ -1,0 +1,249 @@
+/* NANO POS v1.0.76 — cohesive, responsive sales workspace.
+ * Presentation-only. Original IDs, cart state, checkout handlers, pricing and permissions remain intact. */
+#salesSection.nano-pos-workspace{
+  --nano-pos-gap: 6px;
+  box-sizing:border-box;min-width:0;min-height:0;max-width:100%;
+  align-items:stretch;overflow:hidden;background:#edf3fa;
+}
+#salesSection.nano-pos-workspace > #posProductsPane,
+#salesSection.nano-pos-workspace > #posCartContainer:not(.fixed){
+  box-sizing:border-box;min-width:0;min-height:0;max-width:100%;height:100%;
+  overflow:hidden;
+}
+#salesSection.nano-pos-workspace:not([data-pos-layout="design3"]) > #posProductsPane{
+  width:calc(58% - 3px);flex:0 1 auto;
+  border-inline-end:1px solid #dfe7f1;
+}
+#salesSection.nano-pos-workspace:not([data-pos-layout="design3"]) > #posCartContainer:not(.fixed){
+  width:calc(42% - 3px);flex:0 1 auto;
+  border-inline-start:1px solid #dfe7f1;
+}
+#salesSection.nano-pos-workspace > #posCartResizer{
+  flex:0 0 6px;width:6px;min-width:6px;
+}
+#salesSection.nano-pos-workspace[data-pos-layout="design3"] > #posCartContainer:not(.fixed){
+  width:100%!important;flex:1 1 100%;
+}
+#salesSection.nano-pos-workspace #posToolbar{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:8px 12px;min-height:48px;padding:9px 12px;
+  background:#f8fbff;border-bottom:1px solid #e0e9f3;
+  box-sizing:border-box;flex:0 0 auto;min-width:0;
+}
+#salesSection.nano-pos-workspace #posToolbar > div{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  min-width:0;max-width:100%;
+}
+#salesSection.nano-pos-workspace #posToolbar button{
+  min-height:32px;max-width:100%;white-space:nowrap;
+  border-radius:10px;box-sizing:border-box;
+}
+#salesSection.nano-pos-workspace #posToolbar #posCategoryDropdown,
+#salesSection.nano-pos-workspace #posToolbar #posAdvFiltersPanel{
+  max-width:min(85vw,360px);
+}
+#salesSection.nano-pos-workspace #posProductGrid{
+  box-sizing:border-box;min-width:0;min-height:0;flex:1 1 auto;
+  overflow-y:auto;overscroll-behavior:contain;
+  padding:clamp(10px,1.1vw,18px);
+  gap:clamp(9px,1vw,15px);
+  align-content:start;
+}
+#salesSection.nano-pos-workspace #posProductGrid.grid{
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,155px),1fr));
+}
+#salesSection.nano-pos-workspace #posProductGrid .pos-card-img{
+  max-height:145px;
+}
+#salesSection.nano-pos-workspace #posCartHeader{
+  box-sizing:border-box;padding:11px 14px 10px;margin:0;
+  gap:7px;flex:0 0 auto;background:#fff;
+}
+#salesSection.nano-pos-workspace #posCustomerWidget{
+  min-width:0;max-width:100%;
+}
+#salesSection.nano-pos-workspace #posCustomerWidget input[type="text"]{
+  min-width:0;max-width:100%;box-sizing:border-box;
+}
+#salesSection.nano-pos-workspace #cartItemsList{
+  box-sizing:border-box;flex:1 1 0;min-height:72px;
+  overflow-y:auto;overscroll-behavior:contain;
+  padding:10px 12px 15px;margin:0;
+}
+#salesSection.nano-pos-workspace #posSummaryBar{
+  box-sizing:border-box;min-width:0;max-width:100%;
+  flex:0 0 auto;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;
+  max-height:min(60vh,485px);
+  padding:12px 13px 13px;
+  border-top:1px solid #dbe5ef;
+  background:#f7faff;
+  scrollbar-width:thin;
+}
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-totals{
+  min-width:0;max-width:100%;margin-bottom:10px;
+  padding:0;gap:5px;
+}
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-actions,
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-docs{
+  box-sizing:border-box;min-width:0;max-width:100%;gap:6px;margin-top:6px;
+}
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-actions{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-docs{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-actions button,
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-docs button{
+  box-sizing:border-box;min-width:0;max-width:100%;
+  padding:7px 4px;border-radius:10px;
+  text-overflow:ellipsis;overflow:hidden;
+  min-height:42px;
+}
+#salesSection.nano-pos-workspace #posCheckoutBtn{
+  min-height:46px!important;
+  padding:8px 10px!important;
+  overflow:hidden;white-space:nowrap;
+  background:#175bd7;color:white;
+}
+#salesSection.nano-pos-workspace #checkoutBtnMainText{
+  min-width:0;max-width:100%;font-size:clamp(11px,1vw,14px);
+}
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-total-row.nano-digital-enabled{
+  box-sizing:border-box!important;
+  width:100%;min-width:0;max-width:100%;
+  margin:4px 0 7px!important;
+  padding:11px 12px 12px!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#0d1e31,#152c41)!important;
+  border:1px solid #2a5066!important;
+  box-shadow:inset 0 1px 5px #0004,0 3px 9px #0c253c18!important;
+}
+#salesSection.nano-pos-workspace #posSummaryBar .nano-digital-total{
+  box-sizing:border-box!important;
+  min-height:0!important;max-height:90px!important;
+  height:clamp(64px,8.5vh,90px)!important;
+  width:100%!important;max-width:100%;
+  overflow:hidden!important;
+  padding:0 20px 0 4px;margin:0!important;
+}
+#salesSection.nano-pos-workspace #posSummaryBar .nano-digital-frame{
+  width:100%!important;max-width:100%;height:100%!important;
+  display:flex;align-items:center;justify-content:center;
+}
+#salesSection.nano-pos-workspace #posSummaryBar .nano-digital-svg{
+  width:100%!important;height:100%!important;
+  max-height:90px!important;overflow:hidden!important;
+  color:#69ffbd;filter:drop-shadow(0 0 2px #37ecaf60);
+}
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-total-row.nano-digital-enabled [data-i18n="total_due_label"]{
+  font-size:clamp(12px,1.05vw,15px)!important;
+  color:#d5ecf6!important;margin:0 0 4px!important;
+}
+#salesSection.nano-pos-workspace #posSummaryBar .pos-summary-total-row.nano-digital-enabled > span[data-i18n="dzd"]{
+  font-size:12px!important;color:#c7deeb!important;
+}
+#salesSection.nano-pos-workspace #posSummaryDetailsToggle{
+  z-index:3;
+}
+#salesSection.nano-pos-workspace[data-pos-layout="design2"] #posSummaryBar{
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+  grid-template-areas:"totals actions" "totals docs";
+  gap:8px 12px;align-items:start;
+  max-height:min(53vh,360px);
+}
+#salesSection.nano-pos-workspace[data-pos-layout="design3"] #posSummaryBar{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-areas:"totals customer" "totals actions" "totals docs";
+  gap:7px 14px;max-height:min(55vh,385px);
+  padding:10px 14px;
+}
+#salesSection.nano-pos-workspace[data-pos-layout="design3"] .pos-summary-totals{
+  padding:9px 11px!important;border-radius:12px;
+}
+#salesSection.nano-pos-workspace[data-pos-layout="design3"] #posCartContainer:not(.fixed){
+  flex:1 1 100%;max-width:100%;
+}
+/* Scan/search remains in the shared top bar so keyboard/barcode handlers are untouched. */
+header:has(#posSearchWrapper:not(.hidden)) #posSearchWrapper{
+  min-width:0;max-width:100%;gap:8px;
+}
+header:has(#posSearchWrapper:not(.hidden)) #posSearchWrapper > div:first-child{
+  min-width:0;flex:1 1 240px;
+}
+header:has(#posSearchWrapper:not(.hidden)) #posProductSearchInput{
+  box-sizing:border-box;min-width:0;width:100%;
+  height:38px;border-color:#a9c6f2;background:#f8fbff;
+}
+header:has(#posSearchWrapper:not(.hidden)) #posBarcodeScanInput{
+  box-sizing:border-box;width:clamp(125px,13vw,200px);
+  height:38px;border:2px solid #60a5fa;
+  background:#eff6ff;color:#0c3872;
+}
+header:has(#posSearchWrapper:not(.hidden)) > div > div:first-child{
+  min-width:0;max-width:min(73%,940px);
+}
+/* Sidebar + browser split screen widths are measured by ResizeObserver, not viewport. */
+#salesSection.nano-pos-workspace.nano-pos-stack{
+  flex-direction:column!important;align-items:stretch;
+}
+#salesSection.nano-pos-workspace.nano-pos-stack:not([data-pos-layout="design3"]) > #posProductsPane{
+  box-sizing:border-box;width:100%!important;max-width:100%!important;
+  height:43%!important;flex:0 0 43%!important;
+  border-inline:0;border-bottom:1px solid #dce6f0;
+}
+#salesSection.nano-pos-workspace.nano-pos-stack:not([data-pos-layout="design3"]) > #posCartContainer:not(.fixed){
+  box-sizing:border-box;width:100%!important;max-width:100%!important;
+  height:57%!important;flex:1 1 57%!important;
+  border-inline:0;
+}
+#salesSection.nano-pos-workspace.nano-pos-stack > #posCartResizer{display:none!important}
+#salesSection.nano-pos-workspace.nano-pos-stack #posToolbar{padding:6px 10px;min-height:0}
+#salesSection.nano-pos-workspace.nano-pos-stack #posProductGrid{padding:9px;gap:8px}
+#salesSection.nano-pos-workspace.nano-pos-stack #posCartHeader{padding:6px 10px}
+#salesSection.nano-pos-workspace.nano-pos-stack #cartItemsList{min-height:52px;padding:6px 9px}
+#salesSection.nano-pos-workspace.nano-pos-stack #posSummaryBar{
+  max-height:min(39vh,365px);padding:7px 10px 9px;
+}
+#salesSection.nano-pos-workspace.nano-pos-stack #posSummaryBar .nano-digital-total{
+  height:clamp(52px,7vh,75px)!important;max-height:75px!important;
+}
+#salesSection.nano-pos-workspace.nano-pos-stack[data-pos-layout="design2"] #posSummaryBar{
+  max-height:min(39vh,365px);
+}
+#salesSection.nano-pos-workspace.nano-pos-stack[data-pos-layout="design3"]{
+  flex-direction:row!important;
+}
+#salesSection.nano-pos-workspace.nano-pos-stack[data-pos-layout="design3"] > #posCartContainer:not(.fixed){
+  height:100%!important;flex:1 1 100%!important;
+}
+#salesSection.nano-pos-workspace.nano-pos-tight #posToolbar > div{
+  max-width:100%;gap:5px;
+}
+#salesSection.nano-pos-workspace.nano-pos-tight #posToolbar button{
+  padding:5px 7px;font-size:10px;min-height:29px;
+}
+#salesSection.nano-pos-workspace.nano-pos-tight #posSummaryBar .pos-summary-actions button,
+#salesSection.nano-pos-workspace.nano-pos-tight #posSummaryBar .pos-summary-docs button{
+  min-height:37px;padding:5px 3px;
+}
+#salesSection.nano-pos-workspace.nano-pos-tight #posSummaryBar{
+  max-height:44vh;
+}
+#salesSection.nano-pos-workspace.nano-pos-tight[data-pos-layout="design2"] #posSummaryBar,
+#salesSection.nano-pos-workspace.nano-pos-tight[data-pos-layout="design3"] #posSummaryBar{
+  grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"totals" "customer" "actions" "docs";
+}
+@media(max-height:740px){
+ #salesSection.nano-pos-workspace #posSummaryBar{max-height:56vh;padding:8px 10px}
+ #salesSection.nano-pos-workspace #posSummaryBar .nano-digital-total{
+   height:clamp(50px,7vh,74px)!important;
+ }
+ #salesSection.nano-pos-workspace #posSummaryBar .pos-summary-actions button{min-height:36px}
+}
+@media(max-width:760px){
+ header:has(#posSearchWrapper:not(.hidden)) > div{gap:7px;padding-inline:10px}
+ header:has(#posSearchWrapper:not(.hidden)) #posSearchWrapper{gap:5px}
+ header:has(#posSearchWrapper:not(.hidden)) #posBarcodeScanInput{width:118px}
+}
