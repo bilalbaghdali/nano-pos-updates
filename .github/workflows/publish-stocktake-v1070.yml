@@ -59,9 +59,23 @@ jobs:
           node --check /tmp/release/source/browser-bridge.js
           node --check /tmp/release/source/mobile-sync-server.cjs
           node --check /tmp/release/source/stocktake/desktop-tools.js
+          mkdir -p /tmp/release/payload
           "$ASAR" pack /tmp/release/source /tmp/release/payload/app.asar
-          "$ASAR" extract-file /tmp/release/payload/app.asar package.json | grep '1.0.70'
-          (cd /tmp/release && zip -q -0 'NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip' payload/app.asar)
+          node - <<'JS'
+          const asar = require('/tmp/asar-cli/node_modules/@electron/asar');
+          const fs = require('fs');
+          const root = '/tmp/release/source/';
+          const pkg = JSON.parse(asar.extractFile('/tmp/release/payload/app.asar', 'package.json').toString('utf8'));
+          if (pkg.version !== '1.0.70') throw new Error('ASAR version mismatch: '+pkg.version);
+          for (const filename of ['index.html', 'mobile/www/index.html']) {
+            const html = fs.readFileSync(root+filename,'utf8');
+            for (const legacy of ['src="nano-multi-count.js"', 'src="nano-multi-count-ui.js"', 'src="nano-stocktake-approval.js"', 'src="nano-stocktake-drafts-ui.js"']) {
+              if (html.includes(legacy)) throw new Error('Old stocktake scripts remain active in '+filename);
+            }
+          }
+          if (!fs.existsSync(root+'stocktake/desktop-tools.js')) throw new Error('Missing desktop-only stocktake tools');
+          JS
+          (cd /tmp/release && zip -q -6 'NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip' payload/app.asar)
           unzip -t /tmp/release/NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip
           sha256sum /tmp/release/payload/app.asar /tmp/release/NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip
       - name: Publish GitHub Release v1.0.70
@@ -70,13 +84,18 @@ jobs:
         run: |
           set -euo pipefail
           if gh release view v1.0.70 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release tag already exists; refusing to overwrite' >&2
-            exit 1
+            echo 'Release exists, verifying asset checksum'
+            mkdir -p /tmp/release/check
+            gh release download v1.0.70 --repo "$GITHUB_REPOSITORY" \
+              --pattern 'NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip' --dir /tmp/release/check
+            cmp /tmp/release/NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip \
+              /tmp/release/check/NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip
+          else
+            gh release create v1.0.70 /tmp/release/NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --title 'NANO POS v1.0.70 — تحسينات عامة' \
+              --notes 'تحسينات عامة: إزالة الجرد الجماعي وجرد الهاتف، قصر الجرد على الكمبيوتر، وتصدير CSV وطباعة تقرير الجرد.'
           fi
-          gh release create v1.0.70 /tmp/release/NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip \
-            --repo "$GITHUB_REPOSITORY" \
-            --title 'NANO POS v1.0.70 — Desktop stocktake' \
-            --notes 'Desktop-only stocktake; disabled mobile and collective stocktake; CSV export and stocktake report printing. Review before installing in production.'
           gh release view v1.0.70 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' \
             | grep -Fx 'NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip'
       - name: Enable verified automatic update
