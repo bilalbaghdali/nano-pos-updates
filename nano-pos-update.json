@@ -3,29 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.75",
+  "version": "1.0.76",
   "releaseDate": "2026-10-18",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات عامة وإصلاح نافذة إضافة منتج حر",
-      "إصلاح فتح وإغلاق نافذة المنتج الحر داخل شاشة البيع وإظهارها فوق المحتوى.",
-      "التحقق من اسم المنتج وسعر البيع وسعر الشراء الاختياري مع رسائل واضحة.",
-      "إضافة المنتج الحر للسلة فورًا دون إنشاء منتج في المخزون مع المحافظة على عمليات البيع."
+      "إعادة تنظيم شاشة البيع بالكامل",
+      "توزيع متناسق بين المنتجات والسلة وأزرار الدفع مع احترام العرض المخصص يدويًا.",
+      "إبراز حقلي البحث بالمنتجات والباركود وتحسين شريط أدوات البيع.",
+      "ضبط شاشة الإجمالي الرقمي لتبقى واضحة وتتناسب تلقائيًا مع مساحة النافذة.",
+      "تخطيط رأسي مرن للشاشات الضيقة مع الحفاظ على جميع أدوات البيع."
     ],
     "fr": [
-      "Améliorations générales et correction du produit libre",
-      "Réparation de la fenêtre de produit libre dans les ventes.",
-      "Validation du nom, du prix de vente et du prix d’achat optionnel.",
-      "Ajout fiable au panier sans créer de produit dans le stock."
+      "Réorganisation complète de l’écran de vente",
+      "Disposition équilibrée du catalogue, du panier et des boutons de paiement.",
+      "Meilleure lisibilité de la recherche par produit et code-barres.",
+      "Affichage numérique du total adapté automatiquement à la fenêtre.",
+      "Mise en page verticale sur les fenêtres étroites, sans changer les calculs."
     ],
     "en": [
-      "General improvements and free-product dialog fix",
-      "Fix free-product dialog opening, closing and overlay placement.",
-      "Validate product name, sale price and optional purchase cost.",
-      "Add to cart without creating inventory products."
+      "Complete sales screen reorganization",
+      "Balanced product, cart and checkout controls with preserved manual resizing.",
+      "Improved visibility of product and barcode search.",
+      "Digital total scales to the available space.",
+      "Adaptive stacked layout on narrower screens without sales logic changes."
     ]
   },
   "releaseHistory": {
@@ -1107,11 +1110,37 @@
           "Add to cart without creating inventory products."
         ]
       }
+    },
+    "1.0.76": {
+      "releaseDate": "2026-10-18",
+      "features": {
+        "ar": [
+          "إعادة تنظيم شاشة البيع بالكامل",
+          "توزيع متناسق بين المنتجات والسلة وأزرار الدفع مع احترام العرض المخصص يدويًا.",
+          "إبراز حقلي البحث بالمنتجات والباركود وتحسين شريط أدوات البيع.",
+          "ضبط شاشة الإجمالي الرقمي لتبقى واضحة وتتناسب تلقائيًا مع مساحة النافذة.",
+          "تخطيط رأسي مرن للشاشات الضيقة مع الحفاظ على جميع أدوات البيع."
+        ],
+        "fr": [
+          "Réorganisation complète de l’écran de vente",
+          "Disposition équilibrée du catalogue, du panier et des boutons de paiement.",
+          "Meilleure lisibilité de la recherche par produit et code-barres.",
+          "Affichage numérique du total adapté automatiquement à la fenêtre.",
+          "Mise en page verticale sur les fenêtres étroites, sans changer les calculs."
+        ],
+        "en": [
+          "Complete sales screen reorganization",
+          "Balanced product, cart and checkout controls with preserved manual resizing.",
+          "Improved visibility of product and barcode search.",
+          "Digital total scales to the available space.",
+          "Adaptive stacked layout on narrower screens without sales logic changes."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.75-free-product-dialog-fix",
+      "id": "nano-pos-v1.0.76-responsive-sales-workspace",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1153,14 +1182,15 @@
         "1.0.71",
         "1.0.72",
         "1.0.73",
-        "1.0.74"
+        "1.0.74",
+        "1.0.75"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.75/NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.75",
-      "sha256": "957b4c1e8f2714689f49a7b88f185d3a1f67594feb4ffa8ac81cf9988268531b",
-      "appAsarSha256": "517f6256ef9b6fbfacf7f0ff2a92bc207867c9e4ea24532082a2f7f64f1856d2",
-      "fileName": "NANO-POS-Patch-1.0.74-to-1.0.75-FREE-PRODUCT-FIX.zip",
-      "sizeBytes": 31392616,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.76/NANO-POS-Patch-1.0.75-to-1.0.76-SALES-WORKSPACE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.76",
+      "sha256": "b1b515c3a02facb48b9fca23a7bc44742502e48113d5f5d0ca3eac260cadd5d7",
+      "appAsarSha256": "fe5506aacdbebc9eac7c593adeb77d34cbadee524b52a579a5c9a4cd7ec10bac",
+      "fileName": "NANO-POS-Patch-1.0.75-to-1.0.76-SALES-WORKSPACE.zip",
+      "sizeBytes": 31396237,
       "payloadType": "app-asar"
     }
   ],
@@ -1171,8 +1201,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة — إصلاح نافذة إضافة منتج حر في شاشة البيع والتحقق من السعر وإضافة المنتج للسلة.",
-    "fr": "Améliorations générales — correction de la fenêtre de produit libre et de son ajout au panier.",
-    "en": "General improvements — repair free-product dialog and cart insertion."
+    "ar": "إعادة تنظيم شاشة البيع — البحث بالباركود والمنتجات والسلة والإجمالي الرقمي وأزرار الدفع بتخطيط متجاوب.",
+    "fr": "Écran de vente réorganisé : recherche, panier, total numérique et actions adaptés à la fenêtre.",
+    "en": "Responsive sales layout for barcode search, products, cart, digital total and checkout."
   }
 }
