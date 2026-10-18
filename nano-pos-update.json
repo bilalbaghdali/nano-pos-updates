@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.70",
+  "version": "1.0.71",
   "releaseDate": "2026-10-18",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات عامة",
-      "إزالة واجهات الجرد الجماعي والجرد عبر الهاتف من NANO POS.",
-      "قصر تنفيذ الجرد على برنامج الكمبيوتر الرئيسي مع منع طلبات الجرد القادمة من الهواتف.",
-      "إضافة تصدير CSV وطباعة تقرير الجرد من واجهة الكمبيوتر دون تعديل بيانات المخزون."
+      "تحسينات عامة وإصلاح الجرد",
+      "إصلاح رسالة «جرد الهاتف والجرد الجماعي متوقفان» عند استخدام الجرد على الكمبيوتر.",
+      "استعادة تحميل قائمة الأصناف والكميات أثناء الجرد من واجهة الكمبيوتر.",
+      "استمرار تعطيل طلبات الجرد القادمة من الهواتف دون التأثير على البيع والمخزون."
     ],
     "fr": [
-      "Améliorations générales",
-      "Suppression des interfaces de comptage collectif et de comptage sur téléphone.",
-      "Inventaire réservé au PC ; blocage des demandes d’inventaire des téléphones.",
-      "Export CSV et impression du tableau d’inventaire depuis le PC sans changer le stock."
+      "Améliorations générales et correction de l’inventaire",
+      "Correction du blocage involontaire des opérations d’inventaire sur PC.",
+      "Rétablissement du chargement des articles et quantités depuis le PC.",
+      "Inventaire mobile toujours désactivé sans affecter les ventes et le stock."
     ],
     "en": [
-      "General improvements",
-      "Removed collective and phone-based stocktake interfaces.",
-      "Limited stocktake to the desktop; phone stocktake requests are denied.",
-      "Added CSV export and stocktake report print actions on desktop without altering inventory."
+      "General improvements and stocktake fix",
+      "Fix unintended blocking of desktop stocktake requests.",
+      "Restore desktop stocktake sheet loading.",
+      "Keep phone stocktake disabled while preserving desktop sales and inventory."
     ]
   },
   "releaseHistory": {
@@ -989,11 +989,34 @@
           "Added CSV export and stocktake report print actions on desktop without altering inventory."
         ]
       }
+    },
+    "1.0.71": {
+      "releaseDate": "2026-10-18",
+      "features": {
+        "ar": [
+          "تحسينات عامة وإصلاح الجرد",
+          "إصلاح رسالة «جرد الهاتف والجرد الجماعي متوقفان» عند استخدام الجرد على الكمبيوتر.",
+          "استعادة تحميل قائمة الأصناف والكميات أثناء الجرد من واجهة الكمبيوتر.",
+          "استمرار تعطيل طلبات الجرد القادمة من الهواتف دون التأثير على البيع والمخزون."
+        ],
+        "fr": [
+          "Améliorations générales et correction de l’inventaire",
+          "Correction du blocage involontaire des opérations d’inventaire sur PC.",
+          "Rétablissement du chargement des articles et quantités depuis le PC.",
+          "Inventaire mobile toujours désactivé sans affecter les ventes et le stock."
+        ],
+        "en": [
+          "General improvements and stocktake fix",
+          "Fix unintended blocking of desktop stocktake requests.",
+          "Restore desktop stocktake sheet loading.",
+          "Keep phone stocktake disabled while preserving desktop sales and inventory."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.70-desktop-stocktake",
+      "id": "nano-pos-v1.0.71-desktop-stocktake-fix",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1030,14 +1053,15 @@
         "1.0.66",
         "1.0.67",
         "1.0.68",
-        "1.0.69"
+        "1.0.69",
+        "1.0.70"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.70/NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.70",
-      "sha256": "69efbc58edeef78da1768094066f947a19ee8389b31c55c3003c8f0752c697fd",
-      "appAsarSha256": "a9a4ae823ebe1147ef1912cae702be392da1d5348dfad62a4be1cb4f646c9ebd",
-      "fileName": "NANO-POS-Patch-1.0.69-to-1.0.70-DESKTOP-STOCKTAKE.zip",
-      "sizeBytes": 31386067,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.71/NANO-POS-Patch-1.0.70-to-1.0.71-DESKTOP-STOCKTAKE-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.71",
+      "sha256": "88c2ae0aef2e45b0cdfd1ab42d606b50a89b0d24333cc659b6a537b95ddbd95f",
+      "appAsarSha256": "65c33648c28ef7083264a0f8c700b4b0f14c2b6762e8d5c3ca42a745fd174f9a",
+      "fileName": "NANO-POS-Patch-1.0.70-to-1.0.71-DESKTOP-STOCKTAKE-FIX.zip",
+      "sizeBytes": 31386040,
       "payloadType": "app-asar"
     }
   ],
@@ -1048,8 +1072,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة — جرد الكمبيوتر فقط: إزالة جرد الهاتف والجرد الجماعي، مع تصدير CSV وطباعة تقرير الجرد.",
-    "fr": "Améliorations générales — Inventaire sur PC uniquement, avec export CSV et impression.",
-    "en": "General improvements — Desktop-only stocktake with CSV export and print report."
+    "ar": "تحسينات عامة — إصلاح جرد الكمبيوتر وإلغاء رسالة المنع الخاطئة، مع بقاء جرد الهاتف متوقفًا.",
+    "fr": "Améliorations générales — inventaire PC rétabli, inventaire mobile toujours désactivé.",
+    "en": "General improvements — desktop stocktake restored, mobile stocktake remains disabled."
   }
 }
