@@ -50,9 +50,7 @@ jobs:
           const css=fs.readFileSync(root+'nano-price-display.css','utf8');
           const ast=csstree.parse(css, {onParseError:e=>{throw e}});
           if (!ast.children.size) throw Error('Stylesheet empty');
-          for(const term of ['@container (max-width:420px)', 'data-pos-layout="design2"',
-              'data-pos-layout="design3"', 'pos-summary-total-row.nano-digital-enabled',
-              'grid-template-columns:minmax(0,1fr) max-content', 'height:clamp(45px,13cqi,83px)']) {
+          for(const term of ['pos-summary-total-row.nano-digital-enabled', 'box-sizing:border-box', 'height:clamp(48px,7vh,76px)', 'max-height:76px']) {
             if (!css.includes(term)) throw Error('Responsive style missing: '+term);
           }
           const html=fs.readFileSync(root+'index.html','utf8');
