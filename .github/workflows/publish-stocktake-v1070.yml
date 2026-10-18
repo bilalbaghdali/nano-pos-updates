@@ -40,6 +40,16 @@ jobs:
           ASAR=/tmp/asar-cli/node_modules/.bin/asar
           "$ASAR" extract /tmp/release/base/payload/app.asar /tmp/release/source
           patch --batch --fuzz=0 -d /tmp/release/source -p1 -i "$GITHUB_WORKSPACE/release/stocktake-v1.0.70/desktop.patch"
+          node - <<'JS'
+          const fs = require('fs');
+          const path = '/tmp/release/source/mobile/www/index.html';
+          let html = fs.readFileSync(path, 'utf8');
+          const disabled = ['nano-stocktake-approval.js','nano-multi-count.js','nano-stocktake-drafts-ui.js','nano-multi-count-ui.js'];
+          for (const file of disabled) if (!html.includes('src="'+file+'"')) throw new Error('Missing legacy mobile script '+file);
+          html = html.replace(/<script\b[^>]*\bsrc="([^"]+)"[^>]*><\/script>/g, (tag,src) => disabled.includes(src) ? '' : tag);
+          for (const file of disabled) if (html.includes('src="'+file+'"')) throw new Error('Legacy script still active '+file);
+          fs.writeFileSync(path,html);
+          JS
           cp release/stocktake-v1.0.70/desktop-tools.js /tmp/release/source/stocktake/desktop-tools.js
           node - <<'JS'
           const fs = require('fs');
