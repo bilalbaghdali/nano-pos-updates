@@ -3,32 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.76",
+  "version": "1.0.77",
   "releaseDate": "2026-10-18",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إعادة تنظيم شاشة البيع بالكامل",
-      "توزيع متناسق بين المنتجات والسلة وأزرار الدفع مع احترام العرض المخصص يدويًا.",
-      "إبراز حقلي البحث بالمنتجات والباركود وتحسين شريط أدوات البيع.",
-      "ضبط شاشة الإجمالي الرقمي لتبقى واضحة وتتناسب تلقائيًا مع مساحة النافذة.",
-      "تخطيط رأسي مرن للشاشات الضيقة مع الحفاظ على جميع أدوات البيع."
+      "نظام بيع سريع وذكي",
+      "تعزيز الوصول السريع إلى قارئ الباركود وإضافة المنتج الحر مع الحفاظ على اختصارات F1 وF8 وغيرها.",
+      "تعديل كمية السلة مباشرة داخل السطر دون فتح نافذة، باستخدام نفس فحوص المخزون الأصلية.",
+      "تقسيم فاتورة الزبون إلى مبلغ نقدي مدفوع ورصيد كريدي متبقٍ مرتبط بالزبون، مع منع القيم غير الصحيحة.",
+      "عدم تغيير منطق البيع الأصلي أو إدارة المخزون أو صلاحيات المستخدم."
     ],
     "fr": [
-      "Réorganisation complète de l’écran de vente",
-      "Disposition équilibrée du catalogue, du panier et des boutons de paiement.",
-      "Meilleure lisibilité de la recherche par produit et code-barres.",
-      "Affichage numérique du total adapté automatiquement à la fenêtre.",
-      "Mise en page verticale sur les fenêtres étroites, sans changer les calculs."
+      "Vente rapide et intelligente",
+      "Accès rapide au scanner et au produit libre, avec raccourcis préexistants conservés.",
+      "Modification de la quantité directement sur la ligne du panier.",
+      "Paiement espèces partiel et solde client à crédit, avec validations.",
+      "Mécanismes de vente, stock et permissions préservés."
     ],
     "en": [
-      "Complete sales screen reorganization",
-      "Balanced product, cart and checkout controls with preserved manual resizing.",
-      "Improved visibility of product and barcode search.",
-      "Digital total scales to the available space.",
-      "Adaptive stacked layout on narrower screens without sales logic changes."
+      "Fast and smart checkout",
+      "Quick barcode focus and free-product actions; original shortcuts preserved.",
+      "Inline quantity entry using stock validation already in the cart.",
+      "Split cash received and remaining customer credit balance with validation.",
+      "Original checkout, inventory and authorization code left untouched."
     ]
   },
   "releaseHistory": {
@@ -1136,11 +1136,37 @@
           "Adaptive stacked layout on narrower screens without sales logic changes."
         ]
       }
+    },
+    "1.0.77": {
+      "releaseDate": "2026-10-18",
+      "features": {
+        "ar": [
+          "نظام بيع سريع وذكي",
+          "تعزيز الوصول السريع إلى قارئ الباركود وإضافة المنتج الحر مع الحفاظ على اختصارات F1 وF8 وغيرها.",
+          "تعديل كمية السلة مباشرة داخل السطر دون فتح نافذة، باستخدام نفس فحوص المخزون الأصلية.",
+          "تقسيم فاتورة الزبون إلى مبلغ نقدي مدفوع ورصيد كريدي متبقٍ مرتبط بالزبون، مع منع القيم غير الصحيحة.",
+          "عدم تغيير منطق البيع الأصلي أو إدارة المخزون أو صلاحيات المستخدم."
+        ],
+        "fr": [
+          "Vente rapide et intelligente",
+          "Accès rapide au scanner et au produit libre, avec raccourcis préexistants conservés.",
+          "Modification de la quantité directement sur la ligne du panier.",
+          "Paiement espèces partiel et solde client à crédit, avec validations.",
+          "Mécanismes de vente, stock et permissions préservés."
+        ],
+        "en": [
+          "Fast and smart checkout",
+          "Quick barcode focus and free-product actions; original shortcuts preserved.",
+          "Inline quantity entry using stock validation already in the cart.",
+          "Split cash received and remaining customer credit balance with validation.",
+          "Original checkout, inventory and authorization code left untouched."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.76-responsive-sales-workspace",
+      "id": "nano-pos-v1.0.77-fast-pos",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1183,14 +1209,15 @@
         "1.0.72",
         "1.0.73",
         "1.0.74",
-        "1.0.75"
+        "1.0.75",
+        "1.0.76"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.76/NANO-POS-Patch-1.0.75-to-1.0.76-SALES-WORKSPACE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.76",
-      "sha256": "b1b515c3a02facb48b9fca23a7bc44742502e48113d5f5d0ca3eac260cadd5d7",
-      "appAsarSha256": "fe5506aacdbebc9eac7c593adeb77d34cbadee524b52a579a5c9a4cd7ec10bac",
-      "fileName": "NANO-POS-Patch-1.0.75-to-1.0.76-SALES-WORKSPACE.zip",
-      "sizeBytes": 31396237,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.77/NANO-POS-Patch-1.0.76-to-1.0.77-FAST-POS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.77",
+      "sha256": "2a0d3248dd0a2a0374c2aecced582288352ed1cdd4b21398a104c2dc44f75f76",
+      "appAsarSha256": "d2d2d4cd29d10ac244ae9ce150582c8921f5997cd8ffdb2d73063dd5f65fdf0f",
+      "fileName": "NANO-POS-Patch-1.0.76-to-1.0.77-FAST-POS.zip",
+      "sizeBytes": 31401084,
       "payloadType": "app-asar"
     }
   ],
@@ -1201,8 +1228,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "إعادة تنظيم شاشة البيع — البحث بالباركود والمنتجات والسلة والإجمالي الرقمي وأزرار الدفع بتخطيط متجاوب.",
-    "fr": "Écran de vente réorganisé : recherche, panier, total numérique et actions adaptés à la fenêtre.",
-    "en": "Responsive sales layout for barcode search, products, cart, digital total and checkout."
+    "ar": "تحسينات عامة — بيع سريع، إدخال باركود متتابع، تعديل كمية السلة دون نافذة، وتقسيم الدفع بين نقد وكريدي.",
+    "fr": "Améliorations générales — vente rapide, scan en continu, quantité en ligne, règlement espèces et crédit.",
+    "en": "General improvements — fast POS shortcuts, continuous scanning, inline quantity and cash/credit split."
   }
 }
