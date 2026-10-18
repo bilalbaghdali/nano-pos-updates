@@ -1,0 +1,80 @@
+--- a/browser-bridge.js
++++ b/browser-bridge.js
+@@ -1165,6 +1165,7 @@
+ 
+    // --- Stocktakes (الجرد): counted quantity vs book quantity, then post variance ---
+    if (channel === 'nano-get-financial-action-log') return clone((db.audit_log || []).slice(-500));
++   if (channel.startsWith('nano-count-') || ['get-stocktake-sheet','get-stocktake-drafts','create-stocktake-draft','approve-stocktake-draft','reject-stocktake-draft'].includes(channel)) return {success:false,error:'mobile_stocktake_disabled',message:'جرد الهاتف والجرد الجماعي متوقفان؛ استخدم جرد الكمبيوتر.'};
+    if (channel === 'nano-count-active') {
+      return clone(window.NANO_MULTI_COUNT_169.present(window.NANO_MULTI_COUNT_169.active(db)));
+    }
+--- a/index.html
++++ b/index.html
+@@ -32,9 +32,9 @@
+ <script src="license-access.js"></script>
+ <script src="nano-transaction-guards.js"></script>
+   <script src="nano-return-plan.js"></script>
+-  <script src="nano-stocktake-approval.js"></script>
++
+   <script src="nano-pricing.js"></script>
+-  <script src="nano-multi-count.js"></script>
++
+   <script src="browser-bridge.js"></script>
+ <script src="browser-preload.js"></script>
+ <script src="desktop-sync-rpc.js"></script>
+@@ -11763,6 +11763,7 @@
+     <script src="manufacturing/pos-produce.js"></script>
+     <!-- واجهة الجرد: بعد renderer.js لأنها تستدعي t()/showToast()/showConfirm()/escapeHtml() -->
+     <script src="stocktake/stocktake-ui.js"></script>
++<script defer src="stocktake/desktop-tools.js"></script>
+     <script>
+         // إخفاء شاشة التحميل وكشف التطبيق بعد اكتمال التحميل
+         window.addEventListener('load', () => {
+@@ -12948,9 +12949,9 @@
+   <script defer src="nano-operations-center.js"></script>
+   <script defer src="nano-financial-review.js"></script>
+ <script defer src="nano-return-ui.js"></script>
+-<script defer src="nano-stocktake-drafts-ui.js"></script>
++
+   <script defer src="nano-pricing-ui.js"></script>
+-<script defer src="nano-multi-count-ui.js"></script>
++
+ </body>
+ 
+ </html>
+--- a/mobile-sync-server.cjs
++++ b/mobile-sync-server.cjs
+@@ -599,6 +599,7 @@
+         const args = Array.isArray(body.args) ? body.args : [];
+         const operationId = String(body.operationId || '').trim().slice(0, 120);
+         if (!channel || channel.length > 120) return send(res, 400, { success: false, error: 'invalid_channel' });
++        if (channel.startsWith('nano-count-') || ['get-stocktake-sheet','get-stocktake-drafts','create-stocktake-draft','approve-stocktake-draft','reject-stocktake-draft'].includes(channel)) return send(res, 403, {success:false,error:'mobile_stocktake_disabled',message:'الجرد متاح على الكمبيوتر فقط'});
+         if (channel === 'approve-stocktake-draft' || channel === 'reject-stocktake-draft') return send(res, 403, { success: false, error: 'primary_pc_only', message: 'اعتماد الجرد يقتصر على الكمبيوتر الرئيسي.' });
+         if (channel==='nano-count-start'||channel==='nano-count-finish')
+           return send(res,403,{success:false,error:'primary_pc_only',message:'فتح وإغلاق الجرد الجماعي من الكمبيوتر الرئيسي فقط'});
+--- a/mobile/www/index.html
++++ b/mobile/www/index.html
+@@ -30,9 +30,9 @@
+ <script src="mobile-runtime.js"></script>
+ <script src="nano-transaction-guards.js"></script>
+   <script src="nano-return-plan.js"></script>
+-  <script src="nano-stocktake-approval.js"></script>
++
+   <script src="nano-pricing.js"></script>
+-  <script src="nano-multi-count.js"></script>
++
+   <script src="browser-bridge.js"></script>
+ <script src="mobile-sync-bridge.js"></script>
+ <script src="browser-preload.js"></script>
+@@ -12838,9 +12838,9 @@
+   <script defer src="nano-operations-center.js"></script>
+   <script defer src="nano-financial-review.js"></script>
+ <script defer src="nano-return-ui.js"></script>
+-<script defer src="nano-stocktake-drafts-ui.js"></script>
++
+   <script defer src="nano-pricing-ui.js"></script>
+-<script defer src="nano-multi-count-ui.js"></script>
++
+ </body>
+ 
+ </html>
