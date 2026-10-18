@@ -1,4 +1,4 @@
-name: Publish NANO POS v1.0.78 — Cash change audit
+name: Publish NANO POS v1.0.78 — Verified cash change ledger
 
 on:
   push:
