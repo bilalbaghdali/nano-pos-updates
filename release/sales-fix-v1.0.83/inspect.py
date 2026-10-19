@@ -8,7 +8,7 @@ def show(label,text,term,before=150,after=4500,index=0):
  m=hits[min(index,len(hits)-1)]
  print(text[max(0,m.start()-before):min(len(text),m.start()+after)].replace('\\x20',' '))
 def balanced(text,term,max_len=12500):
- hits=list(re.finditer(r'\\b(?:async\\s+)?function\\s+'+re.escape(term)+r'\\s*\\(',text))
+ hits=list(re.finditer('function '+re.escape(term)+r'\s*\(',text))
  print('\n### FUNC '+term+' '+str(len(hits)))
  if not hits:return
  start=hits[0].start();print(text[start:start+max_len].replace('\\x20',' '))
