@@ -1,0 +1,46 @@
+name: Inspect Login Trigger v1.0.84
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inspect-login-v1085.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect authentic login overlay and successful authentication flow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/inspect
+          gh release download v1.0.84 --repo "$GITHUB_REPOSITORY" --pattern 'NANO-POS-Patch-1.0.83-to-1.0.84-FAITH-ROTATION.zip' --dir /tmp/inspect
+          echo '65696f81e13529d5ebcdd0d1a6fc841ca6d32da7d772964fc8bd0848dd60341f  /tmp/inspect/NANO-POS-Patch-1.0.83-to-1.0.84-FAITH-ROTATION.zip' | sha256sum -c
+          unzip -q /tmp/inspect/NANO-POS-Patch-1.0.83-to-1.0.84-FAITH-ROTATION.zip payload/app.asar -d /tmp/inspect
+          npm install --prefix /tmp/asar --no-fund --no-audit --no-save @electron/asar@3.4.1 >/dev/null
+          /tmp/asar/node_modules/.bin/asar extract /tmp/inspect/payload/app.asar /tmp/inspect/src
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('/tmp/inspect/src');h=(p/'index.html').read_text();r=(p/'renderer.js').read_text()
+          for name,s,patterns in [('HTML',h,['id="loginOverlay"','id="loginBtn"','nano-faith-login.js','faith-items.js','</body>']),('RENDERER',r,["loginOverlay","function login(","async function login(","async function handleLogin(","authenticate","loginSuccess","loginBtn","login-success","nano-commerce-login","style.display='none'","classList.add('hidden')","function logout("])]:
+           print('###',name,len(s))
+           for pat in patterns:
+            hits=list(re.finditer(re.escape(pat),s,re.I))
+            print('PATTERN',pat,'HITS',len(hits))
+            for match in hits[:4]:
+             i=match.start()
+             print('SNIP',repr(s[max(0,i-400):min(len(s),i+1500)]))
+          for name in ['login-commerce.js','nano-login.js','login-voice.js','nano-faith-login.js','electron-main.cjs']:
+           f=p/name
+           if f.exists():
+            txt=f.read_text();print('FILE',name,'SIZE',len(txt));print('HEAD',repr(txt[:2400]))
+          PY
