@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.83",
+  "version": "1.0.84",
   "releaseDate": "2026-10-19",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح تعديل الفاتورة الأصلية دون تسجيل بيع جديد أو تكرار خصم المخزون.",
-      "إصلاح تحليلات المنتج.",
-      "نافذة آية أو حديث موثق بعد تسجيل الدخول."
+      "تغيير الآية أو الحديث تلقائيًا بعد كل تسجيل دخول ناجح، حتى بعد إغلاق البرنامج وإعادة فتحه.",
+      "إضافة ست رسائل موثقة من القرآن الكريم وصحيحي البخاري ومسلم، بالتناوب دون تكرار قبل انتهاء الدورة.",
+      "الإبقاء على شرح كل رسالة ومصدرها ورابطها وإمكانية إغلاقها للمتابعة."
     ],
     "fr": [
-      "Modification de la facture originale sans nouvelle vente.",
-      "Analyse de produit corrigée.",
-      "Verset ou hadith référencé après connexion."
+      "Un verset ou hadith différent après chaque connexion, même après redémarrage.",
+      "Six citations vérifiées alternent sans répétition avant la fin du cycle.",
+      "Sources, explications et fermeture conservées."
     ],
     "en": [
-      "Edit the original sale without creating a new one.",
-      "Repair product analytics.",
-      "Show a sourced verse or hadith after login."
+      "Show a different Quran verse or authentic hadith at every successful login, even after restarting.",
+      "Six verified reminders rotate without repetition until the full set has been shown.",
+      "Keep source links, brief explanations and dismiss action."
     ]
   },
   "releaseHistory": {
@@ -1296,11 +1296,31 @@
           "Show a sourced verse or hadith after login."
         ]
       }
+    },
+    "1.0.84": {
+      "releaseDate": "2026-10-19",
+      "features": {
+        "ar": [
+          "تغيير الآية أو الحديث تلقائيًا بعد كل تسجيل دخول ناجح، حتى بعد إغلاق البرنامج وإعادة فتحه.",
+          "إضافة ست رسائل موثقة من القرآن الكريم وصحيحي البخاري ومسلم، بالتناوب دون تكرار قبل انتهاء الدورة.",
+          "الإبقاء على شرح كل رسالة ومصدرها ورابطها وإمكانية إغلاقها للمتابعة."
+        ],
+        "fr": [
+          "Un verset ou hadith différent après chaque connexion, même après redémarrage.",
+          "Six citations vérifiées alternent sans répétition avant la fin du cycle.",
+          "Sources, explications et fermeture conservées."
+        ],
+        "en": [
+          "Show a different Quran verse or authentic hadith at every successful login, even after restarting.",
+          "Six verified reminders rotate without repetition until the full set has been shown.",
+          "Keep source links, brief explanations and dismiss action."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.83",
+      "id": "nano-pos-v1.0.84-faith-rotation",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1350,14 +1370,15 @@
         "1.0.79",
         "1.0.80",
         "1.0.81",
-        "1.0.82"
+        "1.0.82",
+        "1.0.83"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.83/NANO-POS-Patch-1.0.82-to-1.0.83-SALES-ANALYTICS-FAITH.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.83",
-      "sha256": "17fa67fd4313296976252d656696a5e21578f784da3bd1c0e6c0f0a155411646",
-      "appAsarSha256": "b8edf3c0491ee4f603598284305f6dcb18ce1931431fbbb9825fbd79aff2a014",
-      "fileName": "NANO-POS-Patch-1.0.82-to-1.0.83-SALES-ANALYTICS-FAITH.zip",
-      "sizeBytes": 31433214,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.84/NANO-POS-Patch-1.0.83-to-1.0.84-FAITH-ROTATION.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.84",
+      "sha256": "65696f81e13529d5ebcdd0d1a6fc841ca6d32da7d772964fc8bd0848dd60341f",
+      "appAsarSha256": "260bf4904d0b31e675e5088262cb0942972ecc9b3d34fe82660db3dfd36e78ae",
+      "fileName": "NANO-POS-Patch-1.0.83-to-1.0.84-FAITH-ROTATION.zip",
+      "sizeBytes": 31435044,
       "payloadType": "app-asar"
     }
   ],
@@ -1368,8 +1389,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "إصلاح تعديل الفواتير وتحليلات المنتج وإضافة النافذة الدينية الموثقة.",
-    "fr": "Factures, analyses et citations.",
-    "en": "Invoice editing, analytics and sourced reminder."
+    "ar": "تغيير الآية والحديث بعد كل تسجيل دخول وحفظ ترتيب النصوص بين تشغيلات NANO POS.",
+    "fr": "Rotation persistante des rappels sourcés après chaque connexion.",
+    "en": "Persistent rotation of sourced reminders after each login."
   }
 }
