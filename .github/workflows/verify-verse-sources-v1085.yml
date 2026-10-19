@@ -1,0 +1,25 @@
+name: Verify Quran and Sahih source endpoints
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/verify-verse-sources-v1085.yml']
+permissions: {contents: read}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test trusted public Quran source availability
+        run: |
+          python3 - <<'PY'
+          import urllib.request,json
+          for url in ['https://api.alquran.cloud/v1/quran/quran-uthmani','https://api.alquran.cloud/v1/quran/ar.muyassar','https://api.alquran.cloud/v1/edition/language/ar','https://raw.githubusercontent.com/risan/quran-json/main/dist/quran.json','https://sunnah.com/bukhari:1']:
+           try:
+            req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 NANO-POS-Content-Verification/1.0'})
+            with urllib.request.urlopen(req,timeout=12) as response:
+             data=response.read(3000000)
+             print('SOURCE',url,'STATUS',response.status,'LEN',len(data),'PREFIX',data[:165].decode('utf-8',errors='replace'))
+             if 'quran/' in url or 'edition/' in url:
+              j=json.loads(data);print('PARSED',j.get('code'),len(j.get('data',{}).get('surahs',[])) if isinstance(j.get('data'),dict) else type(j.get('data')).__name__)
+           except Exception as e:print('SOURCE FAILED',url,type(e).__name__,str(e)[:120])
+          PY
