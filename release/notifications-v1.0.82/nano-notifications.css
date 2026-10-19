@@ -1,0 +1,49 @@
+/* NANO POS v1.0.82 — readable Nomad Nova-compatible notification dropdown. */
+#notificationToggle{position:relative}
+#notifBadge.nano-alert-count-badge{
+ display:flex!important;position:absolute!important;top:-5px!important;right:-8px!important;
+ left:auto!important;width:auto!important;height:21px!important;min-width:21px!important;
+ padding:0 4px!important;justify-content:center;align-items:center;z-index:4;
+ border:2px solid #fffdf6!important;border-radius:999px!important;
+ background:#e35d38!important;color:#fff!important;
+ box-sizing:border-box!important;line-height:1!important;
+ animation:none!important;pointer-events:none;
+}
+#notifBadge.nano-alert-count-badge .nano-alert-count{font-size:10px;font-weight:900;white-space:nowrap}
+#notificationsDropdown{
+ width:min(420px,calc(100vw - 28px))!important;max-width:calc(100vw - 28px);
+ border:1px solid #dfebdf!important;
+ background:#fffdf6!important;color:#132b2b!important;
+ box-shadow:0 15px 45px #1028212a!important;
+}
+#notificationsContent{max-height:min(60vh,420px)!important;overflow-y:auto;overscroll-behavior:contain}
+#notificationsContent .nano-alert-item{
+ box-sizing:border-box;display:flex;align-items:flex-start;gap:11px;width:100%;
+ padding:11px 10px;text-align:start;direction:inherit;
+ border:1px solid transparent;border-bottom:1px solid #eaf0e8!important;
+ background:#fffdf6;color:#163e31;cursor:pointer;border-radius:9px;
+ transition:background .12s ease;
+}
+#notificationsContent .nano-alert-item:hover,#notificationsContent .nano-alert-item:focus-visible{
+ background:#eff7ec;border-color:#cadfcc!important;outline:0;
+}
+#notificationsContent .nano-alert-symbol{font-size:19px;flex:0 0 auto;margin-top:2px}
+#notificationsContent .nano-alert-out .nano-alert-symbol,
+#notificationsContent .nano-alert-expired .nano-alert-symbol{color:#d33f31}
+#notificationsContent .nano-alert-low .nano-alert-symbol,
+#notificationsContent .nano-alert-soon .nano-alert-symbol{color:#d7832e}
+#notificationsContent .nano-alert-promo .nano-alert-symbol{color:#24554a}
+#notificationsContent .nano-alert-body{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+#notificationsContent .nano-alert-body strong{font-size:12px;font-weight:900;color:#18372f}
+#notificationsContent .nano-alert-description{line-height:1.55;font-size:11px;color:#536a5c;overflow-wrap:anywhere}
+#notificationsContent .nano-alert-empty,
+#notificationsContent .nano-alert-error,
+#notificationsContent .nano-alert-partial{padding:18px 9px;text-align:center;font-size:12px;font-weight:700;color:#587363}
+#notificationsContent .nano-alert-error{color:#bc3f31}
+#notificationsContent .nano-alert-partial{padding:10px 9px;color:#a36926}
+.dark #notificationsDropdown{background:#1b362d!important;color:#e4f0e9!important;border-color:#385b4c!important}
+.dark #notificationsContent .nano-alert-item{background:#1b362d!important;border-color:#385b4c!important}
+.dark #notificationsContent .nano-alert-item:hover{background:#284d40!important}
+.dark #notificationsContent .nano-alert-body strong{color:#f1f6ed!important}
+.dark #notificationsContent .nano-alert-description{color:#afc7b5!important}
+@media(max-width:560px){#notificationsDropdown{left:0!important;right:auto!important}#notificationsContent{max-height:55vh!important}}
