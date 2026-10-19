@@ -160,7 +160,7 @@ def main():
     texts=[norm(x["text"]) for x in items]
     if len(items)!=100 or len(set(ids))!=100 or len(set(texts))!=100:raise ValueError("Not 100 unique source texts")
     OUT.parent.mkdir(parents=True,exist_ok=True)
-    OUT.write_text("(function(){\\n'use strict';\\nwindow.NANO_FAITH_ITEMS_183="+json.dumps(items,ensure_ascii=False,separators=(',',':'))+";\\n})();\\n",encoding="utf8")
+    OUT.write_text("(function(){\n'use strict';\nwindow.NANO_FAITH_ITEMS_183="+json.dumps(items,ensure_ascii=False,separators=(',',':'))+";\n})();\n",encoding="utf8")
     print("VERIFIED 100 DISTINCT REMINDERS:",len(verses),"Quran verses +",len(ahadith),"Sahih hadith")
     print("OUTPUT",OUT,OUT.stat().st_size,"bytes")
     print("QURAN_SAMPLES",[(v["id"],v["reference"],v["text"][:30]) for v in verses[:3]])
