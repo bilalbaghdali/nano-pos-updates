@@ -17,9 +17,13 @@ main=once(main,
 // Route automatic/local backup flows through selected destination, but leave MEGA
 // integration tied to its existing internal temporary files to avoid breaking cloud.
 main=many(main,
- "path.join(app.getPath('userData'), 'backups')",
- "nanoLocalStorage.backupsDir()",
- 3,'local backup destinations'); // API, shutdown, hourly; cloud calls intentionally unchanged
+ "const backupDir = path.join(app.getPath('userData'), 'backups');",
+ "const backupDir = nanoLocalStorage.backupsDir();",
+ 2,'manual and shutdown backup destinations');
+main=once(main,
+ "const directory = path.join(app.getPath('userData'), 'backups');",
+ "const directory = nanoLocalStorage.backupsDir();",
+ 'hourly backup destination');
 // Export and PDF native dialogs start in the preferred folder; user can override on each save.
 main=once(main,
  "defaultPath: app.getPath('documents'), properties: ['openDirectory', 'createDirectory']",
