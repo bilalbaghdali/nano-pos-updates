@@ -86,7 +86,7 @@ function make(tag,text,className){
 function navigateTo(item){
  const destination=item.type==='promo'?'promotionsSection':'productsSection';
  if(typeof w.navigate==='function')w.navigate(destination);
- else d.querySelector('[onclick*="navigate(\\''+destination+'\\')"]')?.click();
+ else {const link=[...d.querySelectorAll('[onclick]')].find(x=>x.getAttribute('onclick')==="navigate('"+destination+"')");link?.click();}
  const section=$(destination);
  if(!section||section.classList.contains('hidden'))return; // preserve permission checks
  const dropdown=$('notificationsDropdown');
