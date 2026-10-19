@@ -1,0 +1,17 @@
+/* NANO POS 1.0.83: centered sourced verse/hadith message, visually matched to Nova. */
+#nanoFaithReminder183{position:fixed;inset:0;z-index:100150;background:rgba(8,29,26,.74);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}
+#nanoFaithReminder183 .nano-faith-dialog{box-sizing:border-box;width:min(555px,100%);max-height:92dvh;overflow-y:auto;outline:0;background:#fffdf6;border-radius:22px;border:1px solid #c9dacc;box-shadow:0 25px 65px #04130f73;color:#132b2b;padding:25px 28px;text-align:center;direction:rtl}
+#nanoFaithReminder183 header{position:relative;border-bottom:1px solid #e2eadd;padding-bottom:15px}
+#nanoFaithReminder183 .nano-faith-type{display:inline-block;padding:4px 12px;background:#e7f1e7;color:#24554a;border-radius:999px;font-size:12px;font-weight:900}
+#nanoFaithReminder183 h2{font-size:19px;margin:12px 0 2px;font-weight:900}
+#nanoFaithReminder183 .nano-faith-cross{position:absolute;left:0;top:0;background:transparent;color:#5a7566;font-size:29px;border:0;cursor:pointer}
+#nanoFaithReminder183 .nano-faith-quote{font-family:Amiri,"Traditional Arabic",serif;font-size:clamp(23px,3.4vw,30px);line-height:1.95;color:#174e39;margin:16px 0 9px;font-weight:700}
+#nanoFaithReminder183 .nano-faith-ref{font-size:12px;color:#aa6c32;font-weight:900}
+#nanoFaithReminder183 .nano-faith-explain-title{font-size:14px;font-weight:900;margin:18px 0 6px;text-align:start}
+#nanoFaithReminder183 .nano-faith-explain{text-align:start;font-size:14px;line-height:1.95;color:#3f5e4f}
+#nanoFaithReminder183 .nano-faith-attribution{font-size:12px;margin-top:12px;color:#597165;font-weight:700;text-align:start}
+#nanoFaithReminder183 footer{display:flex;gap:8px;margin-top:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#nanoFaithReminder183 footer a{color:#24554a;text-decoration:underline;font-size:12px;font-weight:800}
+#nanoFaithReminder183 .nano-faith-continue{padding:11px 18px;border-radius:11px;border:0;background:#eb813d;color:#132b2b;font-size:13px;font-weight:900;cursor:pointer}
+#nanoFaithReminder183 .nano-faith-continue:focus-visible,#nanoFaithReminder183 .nano-faith-cross:focus-visible{outline:3px solid #eb813d;outline-offset:2px}
+@media(max-width:520px){#nanoFaithReminder183 .nano-faith-dialog{padding:17px 18px;border-radius:16px}#nanoFaithReminder183 footer{justify-content:center}}
