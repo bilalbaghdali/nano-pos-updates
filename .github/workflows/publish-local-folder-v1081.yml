@@ -4,14 +4,14 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/publish-inventory-shortages-v1080.yml'
+      - '.github/workflows/publish-local-folder-v1081.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: nano-pos-shortages-v1080
+  group: nano-pos-local-folder-v1081
   cancel-in-progress: false
 
 jobs:
