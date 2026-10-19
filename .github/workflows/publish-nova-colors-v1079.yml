@@ -1,0 +1,122 @@
+name: Publish NANO POS v1.0.79 — Nomad Nova palette
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-nova-colors-v1079.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nano-pos-nova-colors-v1079
+  cancel-in-progress: false
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify and download NANO POS v1.0.78
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/release
+          gh release download v1.0.78 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip' --dir /tmp/release
+          echo '3b1ac017b995a497b00e0a32ff03aebb5e7696c0f3d1b828b6bb4d44ec97ebc1  /tmp/release/NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip' | sha256sum -c
+          unzip -q /tmp/release/NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip 'payload/app.asar' -d /tmp/release/base
+          echo 'ce93b4c8c778d2000e1cfe9f471eb736f4fa7b27d95baadcc59d97989f8f4ff9  /tmp/release/base/payload/app.asar' | sha256sum -c
+      - name: Apply authentic Nova colors and verify original NANO functions remain
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/asar-cli --no-audit --no-fund --no-save @electron/asar@3.4.1
+          npm install --prefix /tmp/css-check --no-audit --no-fund --no-save css-tree@3.1.0 jsdom@25.0.1
+          ASAR=/tmp/asar-cli/node_modules/.bin/asar
+          "$ASAR" extract /tmp/release/base/payload/app.asar /tmp/release/source
+          cp /tmp/release/source/index.html /tmp/release/original-index.html
+          (cd /tmp/release/source && find . -type f \( -name '*.js' -o -name '*.cjs' \) -print0 | sort -z | xargs -0 sha256sum) > /tmp/release/js-before.sha256
+          node release/nova-colors-v1.0.79/apply.js /tmp/release/source
+          node --check release/nova-colors-v1.0.79/apply.js
+          (cd /tmp/release/source && find . -type f \( -name '*.js' -o -name '*.cjs' \) -print0 | sort -z | xargs -0 sha256sum) > /tmp/release/js-after.sha256
+          cmp /tmp/release/js-before.sha256 /tmp/release/js-after.sha256
+          node - <<'JS'
+          const fs=require('fs'),assert=require('node:assert/strict');
+          const cssTree=require('/tmp/css-check/node_modules/css-tree');
+          const {JSDOM}=require('/tmp/css-check/node_modules/jsdom');
+          const root='/tmp/release/source/',css=fs.readFileSync(root+'nano-nova-desktop.css','utf8');
+          const ast=cssTree.parse(css,{onParseError:e=>{throw e}});
+          assert(ast.children.size>35,'Expected full desktop palette rules');
+          for(const value of ['#132b2b','#24554a','#eb813d','#f6f4ec','#fffdf6']){
+            assert(css.includes(value),'Nomad Nova color missing: '+value);
+          }
+          for(const sel of ['body > aside','body > header.fixed','#nanoHomeSection',
+            '#salesSection','#posCheckoutBtn','#loginOverlay','.nano-digital-svg',
+            '#checkoutModal','#nanoCashChangePanel']){
+            assert(css.includes(sel),'Required color scope missing '+sel);
+          }
+          assert(!/\bposition\s*:\s*(?:fixed|absolute)/.test(css),'Color CSS must not change element positioning');
+          assert(!/\b(?:grid-template|width|height)\s*:/.test(css),'Color CSS must not redesign page dimensions');
+          const orig=fs.readFileSync('/tmp/release/original-index.html','utf8');
+          const current=fs.readFileSync(root+'index.html','utf8');
+          assert(current.includes('nano-nova-desktop'),'Theme class not present');
+          assert(current.includes('href="nano-nova-desktop.css"'),'Theme CSS not linked');
+          for(const name of ['salesSection','nanoHomeSection','posCheckoutBtn','checkoutModal','nanoCashTendered','posBarcodeScanInput']){
+            assert.equal(current.includes('id="'+name+'"'),orig.includes('id="'+name+'"'),'Original UI id changed: '+name);
+          }
+          assert(current.includes('src="nano-cash-change.js"'),'Cash change feature lost');
+          assert(current.includes('src="nano-fast-pos.js"'),'Fast POS feature lost');
+          assert(current.includes('src="nano-sales-layout.js"'),'Sales layout feature lost');
+          const dom=new JSDOM('<html class="nano-nova-desktop"><head></head><body class="bg-background"><aside><nav><a class="nav-btn">Sale</a></nav></aside></body></html>');
+          const style=dom.window.document.createElement('style');style.textContent=css;dom.window.document.head.append(style);
+          const aside=dom.window.document.querySelector('aside');
+          assert(aside&&css.includes('background:var(--nova)!important'),'Sidebar recolor missing');
+          const pkg=JSON.parse(fs.readFileSync(root+'package.json','utf8'));
+          assert.equal(pkg.version,'1.0.79');
+          console.log('PASS: Nova palette, UI selectors, all original JS hashes identical, HTML IDs intact');
+          JS
+          mkdir -p /tmp/release/payload
+          "$ASAR" pack /tmp/release/source /tmp/release/payload/app.asar
+          node - <<'JS'
+          const asar=require('/tmp/asar-cli/node_modules/@electron/asar');
+          const p='/tmp/release/payload/app.asar';
+          const pkg=JSON.parse(asar.extractFile(p,'package.json').toString('utf8'));
+          if(pkg.version!=='1.0.79')throw Error('Packaged version mismatch');
+          if(!asar.extractFile(p,'nano-nova-desktop.css').length)throw Error('Theme missing in installed ASAR');
+          const html=asar.extractFile(p,'index.html').toString('utf8');
+          if(!html.includes('nano-nova-desktop.css'))throw Error('Theme not linked in packaged index');
+          JS
+          (cd /tmp/release && zip -q -6 'NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip' payload/app.asar)
+          unzip -t /tmp/release/NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip
+          sha256sum /tmp/release/payload/app.asar /tmp/release/NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip
+      - name: Publish v1.0.79 release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.79 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p /tmp/release/previous
+            gh release download v1.0.79 --repo "$GITHUB_REPOSITORY" \
+              --pattern 'NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip' --dir /tmp/release/previous
+            cmp /tmp/release/NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip \
+              /tmp/release/previous/NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip
+          else
+            gh release create v1.0.79 /tmp/release/NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip \
+              --repo "$GITHUB_REPOSITORY" --title 'NANO POS v1.0.79 — ألوان Nomad Nova' \
+              --notes 'تطبيق ألوان Nomad POS Nova v1.2.18 — الأخضر الداكن والبرتقالي والعاجي — على NANO POS Windows دون تغيير النوافذ أو الوظائف أو البيانات.'
+          fi
+          gh release view v1.0.79 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' \
+            | grep -Fx 'NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip'
+      - name: Activate automatic update after verified publication
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 release/nova-colors-v1.0.79/update_manifest.py
