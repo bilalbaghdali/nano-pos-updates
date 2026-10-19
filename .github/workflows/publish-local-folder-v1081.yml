@@ -1,0 +1,118 @@
+name: Publish NANO POS v1.0.81 — Local storage folder
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-inventory-shortages-v1080.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nano-pos-shortages-v1080
+  cancel-in-progress: false
+
+jobs:
+  build-test-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download and verify previous published NANO POS
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/release
+          gh release download v1.0.80 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'NANO-POS-Patch-1.0.79-to-1.0.80-INVENTORY-SHORTAGES.zip' --dir /tmp/release
+          echo '99da80e877ddc1650fdd41338ffbbc908fbb190b68308b53f23ff8bf66074c1b  /tmp/release/NANO-POS-Patch-1.0.79-to-1.0.80-INVENTORY-SHORTAGES.zip' | sha256sum -c
+          unzip -q /tmp/release/NANO-POS-Patch-1.0.79-to-1.0.80-INVENTORY-SHORTAGES.zip 'payload/app.asar' -d /tmp/release/base
+          echo 'be4477c98823fb58e244ae1d0f0d04d3d14f54cb9794ad8b4b01c4f90a9248a1  /tmp/release/base/payload/app.asar' | sha256sum -c
+      - name: Add desktop folder selection and test backup/export safety
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/asar-cli --no-audit --no-fund --no-save @electron/asar@3.4.1
+          npm install --prefix /tmp/ui-test --no-audit --no-fund --no-save jsdom@25.0.1 css-tree@3.1.0
+          ASAR=/tmp/asar-cli/node_modules/.bin/asar
+          "$ASAR" extract /tmp/release/base/payload/app.asar /tmp/release/source
+          for src in renderer.js browser-bridge.js nano-cash-change.js nano-fast-pos.js nano-sales-layout.js nano-nova-desktop.css mega-cloud-backup.cjs; do
+            cp "/tmp/release/source/$src" "/tmp/release/original-$src"
+          done
+          node release/local-folder-v1.0.81/apply.js /tmp/release/source
+          for src in renderer.js browser-bridge.js nano-cash-change.js nano-fast-pos.js nano-sales-layout.js nano-nova-desktop.css mega-cloud-backup.cjs; do
+            cmp "/tmp/release/source/$src" "/tmp/release/original-$src"
+          done
+          node --check /tmp/release/source/electron-main.cjs
+          node --check /tmp/release/source/electron-native-preload.cjs
+          node --check /tmp/release/source/nano-local-folder.cjs
+          node --check /tmp/release/source/nano-local-folder-ui.js
+          node --check /tmp/release/source/nano-inventory-shortages.js
+          node --check release/local-folder-v1.0.81/test.js
+          node release/local-folder-v1.0.81/test.js /tmp/release/source
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const parse=require('/tmp/ui-test/node_modules/css-tree').parse;
+          const base='/tmp/release/source/';
+          const css=fs.readFileSync(base+'nano-local-folder.css','utf8');
+          const tree=parse(css,{onParseError:e=>{throw e}});
+          assert(tree.children.size>8,'Missing local folder style');
+          const main=fs.readFileSync(base+'electron-main.cjs','utf8');
+          const html=fs.readFileSync(base+'index.html','utf8');
+          const preload=fs.readFileSync(base+'electron-native-preload.cjs','utf8');
+          assert(main.includes('nanoLocalStorage.backupsDir()'),'Missing backup redirection');
+          assert.equal((main.match(/nanoLocalStorage.backupsDir\(\)/g)||[]).length,3,'Expected manual, shutdown and hourly backups');
+          assert.equal((main.match(/nanoLocalStorage.exportDir\(\)/g)||[]).length,3,'Expected PDF and file export folder defaults');
+          assert(main.includes("const folder = path.join(app.getPath('userData'), 'backups');"),'MEGA staging location was unexpectedly changed');
+          for(const n of ['getLocalFolder','chooseLocalFolder','resetLocalFolder'])assert(preload.includes(n),'Missing '+n);
+          assert(html.includes('nano-local-folder-ui.js')&&html.includes('nano-local-folder.css'),'Settings UI not wired');
+          assert(html.includes('settingsTab-import-export'),'Original import/export settings missing');
+          const restock=fs.readFileSync(base+'nano-inventory-shortages.js','utf8');
+          assert(restock.includes('nanoNative.saveFile'),'Restock CSV does not use preferred export path');
+          assert(!main.includes("app.setPath('userData'"),'Live data directory must not move');
+          const pkg=JSON.parse(fs.readFileSync(base+'package.json','utf8'));
+          assert.equal(pkg.version,'1.0.81');
+          console.log('PASS native backup/export routing, original business data, MEGA, and CSS');
+          JS
+          mkdir -p /tmp/release/payload
+          "$ASAR" pack /tmp/release/source /tmp/release/payload/app.asar
+          node - <<'JS'
+          const asar=require('/tmp/asar-cli/node_modules/@electron/asar');
+          const path='/tmp/release/payload/app.asar';
+          const pkg=JSON.parse(asar.extractFile(path,'package.json').toString('utf8'));
+          if(pkg.version!=='1.0.81')throw Error('Wrong packaged version');
+          for(const name of ['nano-local-folder.cjs','nano-local-folder.css','nano-local-folder-ui.js'])
+            if(!asar.extractFile(path,name).length)throw Error('Missing packaged local folder component '+name);
+          JS
+          (cd /tmp/release && zip -q -6 'NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip' payload/app.asar)
+          unzip -t /tmp/release/NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip
+          sha256sum /tmp/release/payload/app.asar /tmp/release/NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip
+      - name: Publish NANO POS v1.0.81 release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.81 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+             mkdir -p /tmp/release/check
+             gh release download v1.0.81 --repo "$GITHUB_REPOSITORY" \
+               --pattern 'NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip' --dir /tmp/release/check
+             cmp /tmp/release/NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip \
+               /tmp/release/check/NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip
+          else
+             gh release create v1.0.81 /tmp/release/NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip \
+               --repo "$GITHUB_REPOSITORY" --title 'NANO POS v1.0.81 — مجلد التخزين المحلي' \
+               --notes 'اختيار مجلد التخزين المحلي للنسخ الاحتياطية والتصدير من إعدادات البرنامج، مع حفظ الاختيار والمسار الآمن البديل دون نقل قاعدة البيانات.'
+          fi
+          gh release view v1.0.81 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' |
+            grep -Fx 'NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip'
+      - name: Activate verified automatic update
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 release/local-folder-v1.0.81/update_manifest.py
