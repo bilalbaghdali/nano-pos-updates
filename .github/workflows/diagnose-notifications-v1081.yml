@@ -1,0 +1,56 @@
+name: Diagnose notification button v1.0.81
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/diagnose-notifications-v1081.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect exact published app and notification data path
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/check
+          gh release download v1.0.81 --repo "$GITHUB_REPOSITORY" --pattern 'NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip' --dir /tmp/check
+          echo '46599044eb82c93a335fa8ba4df5daab7c07a055e2ec7c44fa8dd7277c354bed  /tmp/check/NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip' | sha256sum -c
+          unzip -q /tmp/check/NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip payload/app.asar -d /tmp/check
+          echo '35a864b77a94ca4948d4303904226b508e76febe5e774d6ca969594a63cabc1a  /tmp/check/payload/app.asar' | sha256sum -c
+          npm install --prefix /tmp/asar --no-audit --no-fund --no-save @electron/asar@3.4.1
+          /tmp/asar/node_modules/.bin/asar extract /tmp/check/payload/app.asar /tmp/check/src
+          node - <<'JS'
+          const fs=require('fs'),path='/tmp/check/src/';
+          const html=fs.readFileSync(path+'index.html','utf8');
+          const renderer=fs.readFileSync(path+'renderer.js','utf8');
+          const bridge=fs.readFileSync(path+'browser-bridge.js','utf8');
+          const preload=fs.readFileSync(path+'browser-preload.js','utf8');
+          const native=fs.readFileSync(path+'electron-main.cjs','utf8');
+          const checks={
+            bellButton:html.includes('id="notificationToggle" onclick="toggleNotifications()"'),
+            dropdown:html.includes('id="notificationsDropdown"'),
+            badge:html.includes('id="notifBadge"'),
+            notificationsContent:html.includes('id="notificationsContent"'),
+            toggleHandler:renderer.includes('function toggleNotifications()'),
+            fetchHandler:renderer.includes('async function fetchNotifications()'),
+            apiProperty:preload.includes("'getNotifications':"),
+            browserBridgeEmpty:bridge.includes("|| channel === 'get-notifications') return []"),
+            nativeHandler:native.includes("get-notifications"),
+            triggeredOnClick:renderer.includes('fetchNotifications()')
+          };
+          console.log('DIAGNOSTIC',JSON.stringify(checks));
+          const idx=bridge.indexOf("'get-notifications'");
+          console.log('API_BRIDGE_CONTEXT',bridge.slice(Math.max(0,idx-180),idx+160).replace(/\\s+/g,' '));
+          const i=renderer.indexOf('async function fetchNotifications()');
+          console.log('RENDERER_FETCH_START',renderer.slice(i,i+275));
+          if(!checks.bellButton||!checks.dropdown||!checks.toggleHandler||!checks.fetchHandler)throw Error('Notification button not wired to UI');
+          JS
