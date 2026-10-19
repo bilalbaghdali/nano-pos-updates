@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.82",
+  "version": "1.0.83",
   "releaseDate": "2026-10-19",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تنبيهات حقيقية لنفاد المخزون ونقص الكميات واقتراب انتهاء الصلاحية والعروض.",
-      "عرض عدد التنبيهات على الجرس وفتح المنتج المتأثر مباشرة.",
-      "تحديث تلقائي مع حفظ البيانات والمزامنة دون تعديل آلية البيع."
+      "إصلاح تعديل الفاتورة الأصلية دون تسجيل بيع جديد أو تكرار خصم المخزون.",
+      "إصلاح تحليلات المنتج.",
+      "نافذة آية أو حديث موثق بعد تسجيل الدخول."
     ],
     "fr": [
-      "Alertes réelles de stocks bas, ruptures et dates de péremption.",
-      "Compteur sur la cloche et navigation vers les produits.",
-      "Mise à jour après modifications et synchronisation."
+      "Modification de la facture originale sans nouvelle vente.",
+      "Analyse de produit corrigée.",
+      "Verset ou hadith référencé après connexion."
     ],
     "en": [
-      "Real inventory, expiry and promotion alerts.",
-      "Notification count and affected-product navigation.",
-      "Automatic refresh after stock changes and synchronization."
+      "Edit the original sale without creating a new one.",
+      "Repair product analytics.",
+      "Show a sourced verse or hadith after login."
     ]
   },
   "releaseHistory": {
@@ -1276,11 +1276,31 @@
           "Automatic refresh after stock changes and synchronization."
         ]
       }
+    },
+    "1.0.83": {
+      "releaseDate": "2026-10-19",
+      "features": {
+        "ar": [
+          "إصلاح تعديل الفاتورة الأصلية دون تسجيل بيع جديد أو تكرار خصم المخزون.",
+          "إصلاح تحليلات المنتج.",
+          "نافذة آية أو حديث موثق بعد تسجيل الدخول."
+        ],
+        "fr": [
+          "Modification de la facture originale sans nouvelle vente.",
+          "Analyse de produit corrigée.",
+          "Verset ou hadith référencé après connexion."
+        ],
+        "en": [
+          "Edit the original sale without creating a new one.",
+          "Repair product analytics.",
+          "Show a sourced verse or hadith after login."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.82-notifications",
+      "id": "nano-pos-v1.0.83",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1329,14 +1349,15 @@
         "1.0.78",
         "1.0.79",
         "1.0.80",
-        "1.0.81"
+        "1.0.81",
+        "1.0.82"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.82/NANO-POS-Patch-1.0.81-to-1.0.82-NOTIFICATIONS-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.82",
-      "sha256": "3ba23338aa95d487e917a79a1cc72f517e3bf528957c330efe43e20a6afcaff8",
-      "appAsarSha256": "437ab513cd7ce6b5314b9c8c825f9d0e6efca2199598ffa7c5ed2bb3a83f318f",
-      "fileName": "NANO-POS-Patch-1.0.81-to-1.0.82-NOTIFICATIONS-FIX.zip",
-      "sizeBytes": 31427690,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.83/NANO-POS-Patch-1.0.82-to-1.0.83-SALES-ANALYTICS-FAITH.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.83",
+      "sha256": "17fa67fd4313296976252d656696a5e21578f784da3bd1c0e6c0f0a155411646",
+      "appAsarSha256": "b8edf3c0491ee4f603598284305f6dcb18ce1931431fbbb9825fbd79aff2a014",
+      "fileName": "NANO-POS-Patch-1.0.82-to-1.0.83-SALES-ANALYTICS-FAITH.zip",
+      "sizeBytes": 31433214,
       "payloadType": "app-asar"
     }
   ],
@@ -1347,8 +1368,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "إصلاح نظام التنبيهات والجرس وعدّاد التنبيهات.",
-    "fr": "Correction des alertes et du compteur.",
-    "en": "Fixed live notification system and badge."
+    "ar": "إصلاح تعديل الفواتير وتحليلات المنتج وإضافة النافذة الدينية الموثقة.",
+    "fr": "Factures, analyses et citations.",
+    "en": "Invoice editing, analytics and sourced reminder."
   }
 }
