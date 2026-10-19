@@ -1,0 +1,268 @@
+/* NANO POS v1.0.79 — Nomad Nova 1.2.18 palette transfer.
+   Visual colors only: no duplicate navigation, no DOM or business-logic changes. */
+html.nano-nova-desktop{
+ --nova:#132b2b;--nova-2:#24554a;--nova-accent:#eb813d;
+ --nova-gold:#ffd6a9;--nova-paper:#f6f4ec;--nova-ivory:#fffdf6;
+ --nova-line:#e7e7df;--nova-muted:#72817b;
+ --nova-soft:#eff3eb;--nova-text:#18372f;
+ --nova-shadow:0 10px 30px rgba(22,42,40,.075);
+ color-scheme:light;
+}
+html.nano-nova-desktop body.bg-background{
+ background:var(--nova-paper)!important;color:var(--nova-text)!important;
+}
+html.nano-nova-desktop body > main{
+ background:var(--nova-paper)!important;
+}
+html.nano-nova-desktop main > section.content-section:not(.hidden){
+ background:var(--nova-paper)!important;
+}
+html.nano-nova-desktop body > aside{
+ background:var(--nova)!important;color:#edf6ef!important;
+ border-color:#30534b!important;box-shadow:0 9px 30px #0c292526!important;
+}
+html.nano-nova-desktop body > aside [data-i18n="app_title"],
+html.nano-nova-desktop body > aside [data-nano-app-brand]{
+ color:#fffdf6!important;-webkit-text-fill-color:currentColor!important;
+}
+html.nano-nova-desktop body > aside nav h3{
+ color:#b2c8ba!important;opacity:.9!important;
+}
+html.nano-nova-desktop body > aside nav .nav-btn{
+ color:#d4e6db!important;
+ border-radius:11px!important;
+}
+html.nano-nova-desktop body > aside nav .nav-btn:hover{
+ color:var(--nova-gold)!important;background:#285247!important;
+}
+html.nano-nova-desktop body > aside nav .nav-btn.active,
+html.nano-nova-desktop body > aside nav .nav-btn[aria-current="page"],
+html.nano-nova-desktop body > aside nav .nav-btn.bg-blue-600,
+html.nano-nova-desktop body > aside nav .nav-btn.bg-blue-50{
+ background:var(--nova-accent)!important;color:#132b2b!important;
+ box-shadow:0 4px 14px #0002!important;
+}
+html.nano-nova-desktop body > aside nav .nav-btn.active .material-symbols-outlined,
+html.nano-nova-desktop body > aside nav .nav-btn:hover .material-symbols-outlined{color:inherit!important}
+html.nano-nova-desktop body > aside > button{
+ background:var(--nova-ivory)!important;color:var(--nova-2)!important;border-color:var(--nova-line)!important;
+}
+html.nano-nova-desktop body > header.fixed{
+ background:rgba(255,253,246,.96)!important;
+ border-bottom:1px solid var(--nova-line)!important;
+ box-shadow:0 2px 16px #143e3020!important;
+ color:var(--nova)!important;
+}
+/* Home dashboard. Keep original card sizes/links/IDs exactly as they were. */
+html.nano-nova-desktop #nanoHomeSection .nano-home-hero{
+ background:linear-gradient(125deg,#132b2b,#24554a)!important;
+ border:1px solid #326151!important;color:#fffdf6!important;
+ box-shadow:0 12px 28px #102e2926!important;
+}
+html.nano-nova-desktop #nanoHomeSection .nano-home-title,
+html.nano-nova-desktop #nanoHomeSection .nano-home-hero h1{color:#fffdf6!important}
+html.nano-nova-desktop #nanoHomeSection .nano-home-subtitle,
+html.nano-nova-desktop #nanoHomeSection .nano-home-kicker{color:#d6e6da!important}
+html.nano-nova-desktop #nanoHomeSection .nano-home-version-pill,
+html.nano-nova-desktop #nanoHomeSection .nano-dashboard-live-badge{
+ background:#ffe2bf!important;color:#274c40!important;
+ border-color:#e4b68c!important;
+}
+html.nano-nova-desktop #nanoHomeSection .nano-home-hero-art{
+ color:var(--nova-gold)!important;
+}
+html.nano-nova-desktop #nanoHomeStats .nano-home-stat,
+html.nano-nova-desktop #nanoHomeCardsGrid .nano-dept-card{
+ background:var(--nova-ivory)!important;
+ border:1px solid #e1e8dc!important;
+ box-shadow:var(--nova-shadow)!important;
+ color:var(--nova-text)!important;
+}
+html.nano-nova-desktop #nanoHomeStats .nano-home-stat:hover,
+html.nano-nova-desktop #nanoHomeCardsGrid .nano-dept-card:hover{
+ border-color:#e6a375!important;box-shadow:0 13px 25px #102b2b1b!important;
+}
+html.nano-nova-desktop #nanoHomeStats .nano-home-stat-icon,
+html.nano-nova-desktop #nanoHomeCardsGrid .nano-3d-icon,
+html.nano-nova-desktop #nanoHomeCardsGrid .nano-card-arrow{
+ background:#e7f0e8!important;color:var(--nova-2)!important;
+ box-shadow:none!important;
+}
+html.nano-nova-desktop #nanoHomeCardsGrid .nano-card-sales .nano-3d-icon,
+html.nano-nova-desktop #nanoHomeStats .nano-stat-sales .nano-home-stat-icon{
+ background:#ffdfbd!important;color:#b85726!important;
+}
+html.nano-nova-desktop #nanoHomeStats .nano-home-stat b,
+html.nano-nova-desktop #nanoHomeCardsGrid .nano-dept-card h3,
+html.nano-nova-desktop #nanoHomeCardsGrid .nano-dept-card strong{color:var(--nova)!important}
+html.nano-nova-desktop #nanoHomeSection .nano-home-section-heading strong{color:var(--nova)!important}
+/* Sales areas: harmonize cards and search without changing layout, scrolling or widths. */
+html.nano-nova-desktop #salesSection.nano-pos-workspace{
+ background:var(--nova-paper)!important;
+}
+html.nano-nova-desktop #salesSection #posProductsPane,
+html.nano-nova-desktop #salesSection #posCartContainer{
+ background:var(--nova-paper)!important;border-color:var(--nova-line)!important;
+}
+html.nano-nova-desktop #salesSection #posToolbar,
+html.nano-nova-desktop #salesSection #posCartHeader,
+html.nano-nova-desktop #salesSection #posSummaryBar{
+ background:var(--nova-ivory)!important;border-color:var(--nova-line)!important;
+}
+html.nano-nova-desktop #salesSection #posProductGrid{background:var(--nova-paper)!important}
+html.nano-nova-desktop #salesSection #cartItemsList{background:#f6f4ed!important}
+html.nano-nova-desktop #salesSection #posToolbar button:not(.bg-red-600):not(.bg-rose-600),
+html.nano-nova-desktop #salesSection .nano-fast-action,
+html.nano-nova-desktop #salesSection #nanoCashAuditOpen{
+ background:#e9f1e7!important;color:var(--nova-2)!important;
+ border-color:#cedfd4!important;
+}
+html.nano-nova-desktop #salesSection #posCheckoutBtn{
+ background:var(--nova-accent)!important;color:#142c26!important;
+ border-color:#eb813d!important;
+ box-shadow:0 6px 16px rgba(235,129,61,.22)!important;
+}
+html.nano-nova-desktop #salesSection #posCheckoutBtn:hover{
+ background:#f39855!important;
+}
+html.nano-nova-desktop #salesSection #posCheckoutBtn *{color:#142c26!important}
+html.nano-nova-desktop #salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled{
+ background:linear-gradient(135deg,#112e2b,#204a42)!important;
+ border:1px solid #38665a!important;
+ box-shadow:inset 0 2px 10px #001a1655!important;
+}
+html.nano-nova-desktop #salesSection #posSummaryBar .nano-digital-svg{
+ color:#ffcd86!important;
+ filter:drop-shadow(0 0 3px rgba(253,180,104,.4))!important;
+}
+html.nano-nova-desktop #salesSection #posSummaryBar .pos-summary-total-row.nano-digital-enabled [data-i18n="total_due_label"]{
+ color:#deeee5!important;
+}
+html.nano-nova-desktop #posBarcodeScanInput,
+html.nano-nova-desktop #posProductSearchInput{
+ background:#fffdf6!important;border-color:#b4d3bc!important;
+ color:var(--nova)!important;
+}
+html.nano-nova-desktop #posBarcodeScanInput:focus,
+html.nano-nova-desktop #posProductSearchInput:focus{
+ border-color:var(--nova-accent)!important;
+ box-shadow:0 0 0 3px #eb813d22!important;
+}
+/* Rest of the application: maintain established cards, tables, modal hierarchy and status colors. */
+html.nano-nova-desktop main .content-section :is(.bg-white,.bg-slate-50,.bg-slate-50\/80):not(.hidden){
+ background-color:var(--nova-ivory)!important;
+}
+html.nano-nova-desktop main .content-section :is(.border-slate-100,.border-slate-200){
+ border-color:var(--nova-line)!important;
+}
+html.nano-nova-desktop main .content-section :is(.text-blue-600,.text-blue-700){
+ color:var(--nova-2)!important;
+}
+html.nano-nova-desktop main .content-section button.bg-blue-600,
+html.nano-nova-desktop main .content-section button.bg-blue-700,
+html.nano-nova-desktop main .content-section a.bg-blue-600,
+html.nano-nova-desktop main .content-section button.bg-indigo-600{
+ background:var(--nova-2)!important;color:#fffdf6!important;
+ border-color:var(--nova-2)!important;
+}
+html.nano-nova-desktop main .content-section button.bg-blue-600:hover,
+html.nano-nova-desktop main .content-section button.bg-blue-700:hover{
+ background:var(--nova)!important;
+}
+html.nano-nova-desktop main .content-section :is(input,select,textarea):not([type="checkbox"]):not([type="radio"]):focus{
+ border-color:#c78d5d!important;outline-color:var(--nova-accent)!important;
+}
+html.nano-nova-desktop main .content-section :is(table,thead,tbody) th{
+ border-color:var(--nova-line)!important;
+}
+html.nano-nova-desktop :is(#checkoutModal,#customProductModal,#nanoCashAuditModal) > div,
+html.nano-nova-desktop .modal-container > div{
+ border-color:var(--nova-line)!important;
+}
+html.nano-nova-desktop #checkoutModal .nano-split-panel,
+html.nano-nova-desktop #checkoutModal #nanoCashChangePanel{
+ background:#ecf4e9!important;border-color:#c5dfd1!important;
+}
+html.nano-nova-desktop #checkoutModal #nanoSplitCash,
+html.nano-nova-desktop #checkoutModal #nanoCashTendered{
+ border-color:var(--nova-2)!important;color:var(--nova)!important;
+}
+html.nano-nova-desktop #nanoCashAuditModal .nano-cash-audit-head{
+ background:var(--nova-ivory)!important;
+}
+/* Recolor the existing login, not replace or overlay it. */
+html.nano-nova-desktop #loginOverlay.nano-commerce-login{
+ background:#132b2b!important;
+}
+html.nano-nova-desktop #loginOverlay .nano-commerce-login-backdrop{
+ background:linear-gradient(120deg,#112b29,#24554a)!important;
+}
+html.nano-nova-desktop #loginOverlay .nano-commerce-visual{
+ background:linear-gradient(155deg,#132b2b,#24554a)!important;color:#fffdf6!important;
+}
+html.nano-nova-desktop #loginOverlay .nano-commerce-brand-pill{
+ color:#ffd6a9!important;border-color:#62877a!important;
+}
+html.nano-nova-desktop #loginOverlay .nano-commerce-login-card{
+ background:#fffdf6!important;color:#132b2b!important;
+ border-color:#e7e7df!important;
+}
+html.nano-nova-desktop #loginOverlay .nano-commerce-wordmark,
+html.nano-nova-desktop #loginOverlay .nano-login-welcome h1{
+ color:var(--nova)!important;
+}
+html.nano-nova-desktop #loginOverlay .nano-commerce-wordmark span,
+html.nano-nova-desktop #loginOverlay .nano-login-eyebrow{
+ color:var(--nova-accent)!important;
+}
+html.nano-nova-desktop #loginOverlay .nano-commerce-field{
+ background:#f3f5ed!important;border-color:#e0e8da!important;
+}
+html.nano-nova-desktop #loginOverlay .nano-commerce-field:focus-within{
+ border-color:var(--nova-2)!important;box-shadow:0 0 0 3px #24554a22!important;
+}
+html.nano-nova-desktop #loginOverlay #loginBtn.nano-commerce-submit{
+ background:var(--nova-accent)!important;color:#16352d!important;
+ box-shadow:0 7px 18px #eb813d33!important;
+}
+html.nano-nova-desktop #splashScreen{
+ background:linear-gradient(145deg,#102e2a,#24554a)!important;
+}
+html.nano-nova-desktop #splashScreen .splash-logo{
+ background:var(--nova-accent)!important;box-shadow:0 14px 40px #071e194a!important;
+}
+html.nano-nova-desktop #splashScreen .splash-name{
+ background:none!important;color:#fffdf6!important;
+ -webkit-text-fill-color:#fffdf6!important;
+}
+/* Respect explicit dark mode without accidental bright-on-bright cards. */
+html.nano-nova-desktop.dark{
+ --nova-paper:#142820;--nova-ivory:#1d382f;--nova-soft:#223f34;
+ --nova-line:#35574a;--nova-text:#e7f0e9;--nova-muted:#b2c9bd;
+ color-scheme:dark;
+}
+html.nano-nova-desktop.dark body.bg-background,
+html.nano-nova-desktop.dark body > main,
+html.nano-nova-desktop.dark main > section.content-section:not(.hidden){
+ color:#e7f0e9!important;
+}
+html.nano-nova-desktop.dark #nanoHomeStats .nano-home-stat,
+html.nano-nova-desktop.dark #nanoHomeCardsGrid .nano-dept-card{
+ color:#e7f0e9!important;border-color:#386155!important;
+}
+html.nano-nova-desktop.dark #nanoHomeStats .nano-home-stat b,
+html.nano-nova-desktop.dark #nanoHomeCardsGrid .nano-dept-card h3,
+html.nano-nova-desktop.dark #nanoHomeCardsGrid .nano-dept-card strong,
+html.nano-nova-desktop.dark #nanoHomeSection .nano-home-section-heading strong{
+ color:#f3f4ec!important;
+}
+html.nano-nova-desktop.dark #salesSection #posToolbar,
+html.nano-nova-desktop.dark #salesSection #posCartHeader,
+html.nano-nova-desktop.dark #salesSection #posSummaryBar{
+ color:#e7f0e9!important;
+}
+@media print{
+ html.nano-nova-desktop body,html.nano-nova-desktop main > section.content-section{
+  background:#fff!important;color:#000!important;
+ }
+}
