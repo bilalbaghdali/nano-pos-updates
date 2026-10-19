@@ -3,27 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.85",
+  "version": "1.0.86",
   "releaseDate": "2026-10-19",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح عدم ظهور نافذة الآية أو الحديث بربطها بنجاح تسجيل الدخول الفعلي، ودعم استئناف الجلسة.",
-      "زيادة المحتوى إلى 100 رسالة مختلفة: 80 آية من القرآن الكريم بتفسير الميسر و20 حديثًا صحيحًا من البخاري ومسلم.",
-      "حفظ ترتيب الرسائل بين تشغيلات التطبيق وتجنب التكرار حتى اكتمال دورة المئة.",
-      "عرض نص كل آية أو حديث وشرح مختصر ومصدر موثق ورابط للمراجعة، دون تغيير وظائف البيع."
+      "إظهار نافذة الآية أو الحديث فور تسجيل الدخول الناجح واكتمال تأثير الدخول.",
+      "عدم إظهار النافذة قبل تسجيل الدخول أو عند فشله أو عند بدء جلسة محفوظة أو فك القفل.",
+      "الإبقاء على 100 رسالة موثقة مختلفة مع الشرح والمصدر والتناوب المحفوظ دون المساس بالبيانات."
     ],
     "fr": [
-      "Correction de la fenêtre après l’authentification, y compris la reprise de session.",
-      "100 citations vérifiées: 80 versets avec Tafsir Muyassar et 20 hadiths Sahih.",
-      "Rotation persistante sans doublon avant les 100 messages."
+      "Fenêtre sourcée seulement après connexion réussie et animation terminée.",
+      "Ne pas afficher avant connexion, en cas d’échec, en reprise de session ou au déverrouillage.",
+      "100 messages sourcés et rotation enregistrée préservés."
     ],
     "en": [
-      "Fix missing reminder after real login, including session resume.",
-      "100 unique verified messages: 80 Quran verses with Muyassar tafsir and 20 Sahih hadith.",
-      "Persistent, nonrepeating 100-message rotation and source links."
+      "Show sourced reminder only after confirmed successful login and completed transition.",
+      "Never display before login, on failed login, startup resume or unlock.",
+      "Keep 100 verified messages, explanations, citations and persistent rotation."
     ]
   },
   "releaseHistory": {
@@ -1338,11 +1337,31 @@
           "Persistent, nonrepeating 100-message rotation and source links."
         ]
       }
+    },
+    "1.0.86": {
+      "releaseDate": "2026-10-19",
+      "features": {
+        "ar": [
+          "إظهار نافذة الآية أو الحديث فور تسجيل الدخول الناجح واكتمال تأثير الدخول.",
+          "عدم إظهار النافذة قبل تسجيل الدخول أو عند فشله أو عند بدء جلسة محفوظة أو فك القفل.",
+          "الإبقاء على 100 رسالة موثقة مختلفة مع الشرح والمصدر والتناوب المحفوظ دون المساس بالبيانات."
+        ],
+        "fr": [
+          "Fenêtre sourcée seulement après connexion réussie et animation terminée.",
+          "Ne pas afficher avant connexion, en cas d’échec, en reprise de session ou au déverrouillage.",
+          "100 messages sourcés et rotation enregistrée préservés."
+        ],
+        "en": [
+          "Show sourced reminder only after confirmed successful login and completed transition.",
+          "Never display before login, on failed login, startup resume or unlock.",
+          "Keep 100 verified messages, explanations, citations and persistent rotation."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.85-faith-100-login-fix",
+      "id": "nano-pos-v1.0.86-faith-after-login",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1394,14 +1413,15 @@
         "1.0.81",
         "1.0.82",
         "1.0.83",
-        "1.0.84"
+        "1.0.84",
+        "1.0.85"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.85/NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.85",
-      "sha256": "780a64d7b93137acabd777b8b9764ef10f08129e36cdc260979d84e56ca68dd5",
-      "appAsarSha256": "a309e209dde2673ed9a10775cc44965b80a573f669787c1645e8f216577f6194",
-      "fileName": "NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip",
-      "sizeBytes": 31458622,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.86/NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.86",
+      "sha256": "a1d8a39cddf695f977b2bdb78a0e72e68c1580102ee00cc8f93e2838febb1e9c",
+      "appAsarSha256": "6cebbec3b230fff98cc7169eba45e2996c968def334c0ea9e8d80edace3cebe8",
+      "fileName": "NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip",
+      "sizeBytes": 31458085,
       "payloadType": "app-asar"
     }
   ],
@@ -1412,8 +1432,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "إصلاح ظهور نافذة الآية والحديث وزيادة المحتوى إلى 100 رسالة موثقة.",
-    "fr": "Fenêtre de rappel fonctionnelle et 100 textes sourcés.",
-    "en": "Reliable post-login reminder and 100 verified items."
+    "ar": "نافذة الآية والحديث تظهر فقط بعد تسجيل الدخول الناجح مع الحفاظ على 100 رسالة موثقة.",
+    "fr": "Rappel uniquement après authentification réussie.",
+    "en": "Reminder appears only after successful login."
   }
 }
