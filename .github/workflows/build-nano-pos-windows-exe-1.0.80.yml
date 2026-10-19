@@ -80,7 +80,32 @@ jobs:
           $ErrorActionPreference='Stop'
           $nsis = 'C:\Program Files (x86)\NSIS\makensis.exe'
           if (!(Test-Path $nsis)) {
-            choco install nsis -y --no-progress
+            for ($attempt = 1; $attempt -le 2; $attempt++) {
+              Write-Host "Installing NSIS from Chocolatey, attempt $attempt"
+              choco install nsis -y --no-progress
+              if (Test-Path $nsis) { break }
+              Start-Sleep -Seconds (5 * $attempt)
+            }
+          }
+          if (!(Test-Path $nsis)) {
+            Write-Host 'Chocolatey unavailable; retrieving verified NSIS compiler from electron-builder binaries'
+            $download = 'https://github.com/electron-userland/electron-builder-binaries/releases/download/nsis-3.0.4.1/nsis-3.0.4.1.7z'
+            $archive = Join-Path $PWD 'nsis-toolset.7z'
+            Invoke-WebRequest -Uri $download -OutFile $archive -MaximumRedirection 5
+            $sha512 = [Convert]::ToBase64String([Security.Cryptography.SHA512]::HashData([IO.File]::ReadAllBytes($archive)))
+            if ($sha512 -ne 'VKMiizYdmNdJOWpRGz4trl4lD++BvYP2irAXpMilheUP0pc93iKlWAoP843Vlraj8YG19CVn0j+dCo/hURz9+Q==') {
+              throw 'Downloaded NSIS toolset integrity check failed'
+            }
+            $seven = (Get-Command 7z.exe -ErrorAction SilentlyContinue).Source
+            if (!$seven -and (Test-Path 'C:\Program Files\7-Zip\7z.exe')) { $seven = 'C:\Program Files\7-Zip\7z.exe' }
+            if (!$seven) { throw '7-Zip not installed on Windows runner' }
+            $dest = Join-Path $PWD 'nsis-toolset'
+            New-Item -ItemType Directory -Force $dest | Out-Null
+            & $seven x $archive "-o$dest" -y
+            if ($LASTEXITCODE -ne 0) { throw 'Could not unpack verified NSIS toolset' }
+            $exe = Get-ChildItem $dest -Filter makensis.exe -Recurse -File | Select-Object -First 1
+            if (!$exe) { throw 'Verified NSIS toolset has no compiler' }
+            $nsis = $exe.FullName
           }
           if (!(Test-Path $nsis)) { throw "NSIS compiler was not found" }
           @'
