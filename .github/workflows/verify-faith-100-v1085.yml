@@ -1,4 +1,4 @@
-name: Validate verified 80 Quran and 20 Sahih texts v1.0.85
+name: Verify final Quran and Sahih corpus v1.0.85
 on:
   push:
     branches: [main]
