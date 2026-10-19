@@ -1,0 +1,101 @@
+name: Publish NANO POS v1.0.86 — Reminder After Successful Login
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-faith-after-login-v1086.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-faith-after-login-v1086
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download verified published v1.0.85 application
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/release
+          gh release download v1.0.85 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip' --dir /tmp/release
+          echo '780a64d7b93137acabd777b8b9764ef10f08129e36cdc260979d84e56ca68dd5  /tmp/release/NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip' | sha256sum -c
+          unzip -q /tmp/release/NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip payload/app.asar -d /tmp/release/base
+          echo 'a309e209dde2673ed9a10775cc44965b80a573f669787c1645e8f216577f6194  /tmp/release/base/payload/app.asar' | sha256sum -c
+      - name: Apply precise login-only trigger and test actual popup timing
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/asar-cli --no-audit --no-fund --no-save @electron/asar@3.4.1
+          npm install --prefix /tmp/testkit --no-audit --no-fund --no-save jsdom@25.0.1
+          ASAR=/tmp/asar-cli/node_modules/.bin/asar
+          "$ASAR" extract /tmp/release/base/payload/app.asar /tmp/release/source
+          for f in electron-main.cjs browser-bridge.js renderer.js faith-items.js nano-faith-login.css nano-product-analytics.js nano-notifications.js index.html; do
+            cp "/tmp/release/source/$f" "/tmp/release/original-$f"
+          done
+          node release/faith-on-login-v1.0.86/apply.js /tmp/release/source
+          node --check /tmp/release/source/nano-faith-login.js
+          node --check release/faith-on-login-v1.0.86/test.js
+          for f in electron-main.cjs browser-bridge.js renderer.js faith-items.js nano-faith-login.css nano-product-analytics.js nano-notifications.js index.html; do
+            cmp "/tmp/release/source/$f" "/tmp/release/original-$f"
+          done
+          node release/faith-on-login-v1.0.86/test.js /tmp/release/source
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const dir='/tmp/release/source/';
+          const pkg=JSON.parse(fs.readFileSync(dir+'package.json','utf8'));
+          assert.equal(pkg.version,'1.0.86');
+          const script=fs.readFileSync(dir+'nano-faith-login.js','utf8');
+          assert(script.includes("via!=='native-success'"));
+          assert(!script.includes("startup-resume"));
+          assert(!script.includes("observeOverlay("));
+          assert(script.includes('displayAfterLogin'),'Must wait until login overlay closes');
+          const html=fs.readFileSync(dir+'index.html','utf8');
+          assert(html.includes('nano-faith-login.js')&&html.includes('faith-items.js'));
+          console.log('PASS: only post-success login popup, all original business modules unchanged');
+          JS
+          mkdir -p /tmp/release/payload
+          "$ASAR" pack /tmp/release/source /tmp/release/payload/app.asar
+          node - <<'JS'
+          const asar=require('/tmp/asar-cli/node_modules/@electron/asar'),vm=require('node:vm');
+          const file='/tmp/release/payload/app.asar';
+          const pkg=JSON.parse(asar.extractFile(file,'package.json').toString('utf8'));
+          if(pkg.version!=='1.0.86')throw Error('Wrong package version');
+          const scope={window:{}};vm.runInNewContext(asar.extractFile(file,'faith-items.js').toString('utf8'),scope);
+          if(scope.window.NANO_FAITH_ITEMS_183.length!==100)throw Error('100 reminders not preserved');
+          const pop=asar.extractFile(file,'nano-faith-login.js').toString('utf8');
+          if(!pop.includes("via!=='native-success'"))throw Error('Successful-login restriction not packaged');
+          console.log('PASS: packaged 100-message content and corrected login trigger');
+          JS
+          (cd /tmp/release && zip -q -6 'NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip' payload/app.asar)
+          unzip -t /tmp/release/NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip
+          sha256sum /tmp/release/payload/app.asar /tmp/release/NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip
+      - name: Publish verified v1.0.86 release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          file=/tmp/release/NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip
+          if gh release view v1.0.86 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p /tmp/release/prior
+            gh release download v1.0.86 --repo "$GITHUB_REPOSITORY" --pattern '*.zip' --dir /tmp/release/prior
+            cmp "$file" "/tmp/release/prior/$(basename "$file")"
+          else
+            gh release create v1.0.86 "$file" --repo "$GITHUB_REPOSITORY" \
+              --title 'NANO POS v1.0.86 — النافذة بعد تسجيل الدخول الناجح' \
+              --notes 'نافذة الآية أو الحديث تظهر بعد المصادقة الناجحة واختفاء شاشة الدخول، وليس عند الفشل أو فتح جلسة محفوظة، مع الإبقاء على 100 نص موثق وتناوب محفوظ.'
+          fi
+          gh release view v1.0.86 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fx 'NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip'
+      - name: Activate verified automatic update
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 release/faith-on-login-v1.0.86/update_manifest.py
