@@ -13,7 +13,7 @@ const languages={
 };
 const L=()=>{let l=String(root.currentLanguage||doc.documentElement.lang||'ar').toLowerCase().slice(0,2);return languages[l]||languages.ar;};
 const byId=id=>doc.getElementById(id);
-const safeNumber=n=>typeof n==='number'&&Number.isFinite(n)?n:Number.isFinite(Number(n))?Number(n):null;
+const safeNumber=n=>n==null||n===''?null:typeof n==='number'&&Number.isFinite(n)?n:Number.isFinite(Number(n))?Number(n):null;
 const dateStr=()=>new Date().toLocaleString(root.currentLanguage||doc.documentElement.lang||'ar');
 const escapeCSV=v=>'"'+String(v??'').replace(/"/g,'""').replace(/\r?\n/g,' ')+'"';
 const formatQty=x=>x==null?'—':new Intl.NumberFormat('fr-DZ',{maximumFractionDigits:2}).format(x);
@@ -140,7 +140,9 @@ function printList(){
    '<style>body{font:13px Arial,sans-serif;color:#132b2b;margin:20px}h1{font-size:21px}p{color:#475569}table{border-collapse:collapse;width:100%;direction:rtl}th,td{border:1px solid #a9b8b0;padding:7px;text-align:right;vertical-align:top}th{background:#e7f0e8}tr{break-inside:avoid}thead{display:table-header-group}@page{size:A4 landscape;margin:12mm}</style></head><body></body></html>');
  other.close();
  const body=other.body;
- body.append(el.call(null,'h1',t.title),el.call(null,'p',t.date+': '+dateStr()+' · '+t.count+': '+data.length),el.call(null,'p',t.hint));
+ for(const [tag,value] of [['h1',t.title],['p',t.date+': '+dateStr()+' · '+t.count+': '+data.length],['p',t.hint]]){
+    const node=other.createElement(tag);node.textContent=value;body.append(node);
+ }
  const table=other.createElement('table'),thead=other.createElement('thead'),tr=other.createElement('tr');
  for(const s of [t.product,t.barcode,t.stock,t.minimum,t.suggest,t.status]){
    const th=other.createElement('th');th.textContent=s;tr.append(th);
