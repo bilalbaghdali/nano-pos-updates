@@ -65,7 +65,7 @@ HADITH=[
  ("bukhari:6412","نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ","ينبّه الحديث إلى قيمة الصحة والفراغ واغتنامهما."),
  ("bukhari:5027","خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ","فضيلة تعلم القرآن ونفع الآخرين بتعليمه."),
  ("bukhari:6464","أَحَبَّ الأَعْمَالِ أَدْوَمُهَا إِلَى اللَّهِ","المداومة على العمل الصالح من أسباب فضله ولو كان قليلاً."),
- ("bukhari:2989","السَّاعِي عَلَى الْأَرْمَلَةِ وَالْمِسْكِينِ","رعاية المحتاجين والسعي في مصالحهم عمل عظيم الأجر."),
+ ("bukhari:2989","وَالْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ","الكلمة الطيبة من صور البر والإحسان إلى الناس."),
  ("muslim:2699a","وَاللَّهُ فِي عَوْنِ الْعَبْدِ مَا كَانَ الْعَبْدُ فِي عَوْنِ أَخِيهِ","مساعدة الآخرين من أسباب معونة الله للعبد."),
  ("muslim:2588","مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ","للصدقة بركة وثواب، ولا يخسر المتصدق أجرها."),
  ("muslim:91","إِنَّ اللَّهَ جَمِيلٌ يُحِبُّ الْجَمَالَ","الجمال المشروع لا ينافي التواضع، والتكبر هو المذموم."),
@@ -130,19 +130,21 @@ def quran():
     return out
 
 def hadith():
-    out=[]
+    out=[];errors=[]
     for code,excerpt,summary in HADITH:
         url="https://sunnah.com/"+code
         page=fetch(url,timeout=25).decode("utf8")
         parser=ArabicParser();parser.feed(page)
         arabic=" ".join(parser.fragments)
-        if not arabic:raise ValueError("Missing authenticated Arabic Sahih text "+code)
+        if not arabic:
+            errors.append(f"Missing authenticated Arabic Sahih text {code}");continue
         if norm(excerpt) not in norm(arabic):
-            raise ValueError(f"Hadith quote not verified: {code}, {excerpt!r} (arabic length={len(arabic)})")
+            errors.append(f"Hadith quote not verified: {code}, {excerpt!r} (arabic length={len(arabic)})");continue
         reference=("صحيح البخاري " if code.startswith("bukhari") else "صحيح مسلم ")+code.split(":")[1]
         out.append(dict(id="h-"+code,type="حديث صحيح",text=excerpt,reference=reference,
                         explanation=summary,source=reference+" — معنى موجز مستفاد من الحديث",
                         url=url))
+    if errors:raise ValueError("\\n".join(errors))
     return out
 
 def main():
