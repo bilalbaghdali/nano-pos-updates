@@ -1,0 +1,80 @@
+name: Build and publish NANO POS v1.0.87 faith dialog fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-faith-187.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nano-pos-1.0.87-faith-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out publishing repository
+        uses: actions/checkout@v4
+
+      - name: Verify the currently published version
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 -c 'import json; x=json.load(open("nano-pos-update.json")); assert x["version"]=="1.0.86" and x["published"], "Unexpected current version"'
+          if gh release view v1.0.87 >/dev/null 2>&1; then
+            echo "Refusing to overwrite an existing v1.0.87 release"
+            exit 1
+          fi
+
+      - name: Download original verified v1.0.86 patch
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source incoming
+          gh release download v1.0.86 --pattern 'NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip' --dir source
+          test -f 'source/NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip'
+
+      - name: Apply verified faith-dialog fix and update internal version
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-faith-187.py \
+            'source/NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip' \
+            'incoming/NANO-POS-Patch-1.0.86-to-1.0.87-FAITH-DIALOG-FIX.zip'
+
+      - name: Prepare SHA256-verified automatic update manifest
+        id: prep
+        env:
+          ARCHIVE: incoming/NANO-POS-Patch-1.0.86-to-1.0.87-FAITH-DIALOG-FIX.zip
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/prepare-release.py "$ARCHIVE"
+          python3 -c 'import json; x=json.load(open("nano-pos-update.json")); assert x["version"]=="1.0.87" and x["published"]; assert x["patches"][0]["sha256"] and x["patches"][0]["appAsarSha256"]'
+
+      - name: Publish v1.0.87 Release with ZIP asset
+        env:
+          GH_TOKEN: \${{ github.token }}
+          ASSET: \${{ steps.prep.outputs.asset }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.87 "$ASSET" --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.87 - Faith dialog after login fix' \
+            --notes 'Fixes post-login Quran verse / hadith reminder dialog timing. Keeps data, backups and activation unchanged.'
+          gh release view v1.0.87 --json assets --jq '.assets[].name' \
+            | grep -Fx 'NANO-POS-Patch-1.0.86-to-1.0.87-FAITH-DIALOG-FIX.zip'
+
+      - name: Publish update manifest to main
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'Publish NANO POS v1.0.87 automatic update'
+          git push origin HEAD:main
