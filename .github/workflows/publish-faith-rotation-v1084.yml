@@ -55,7 +55,7 @@ jobs:
           assert.equal(pkg.version,'1.0.84');
           const faith=fs.readFileSync(dir+'nano-faith-login.js','utf8');
           assert(faith.includes("localStorage.setItem(STORAGE_KEY"),'No persistent rotation');
-          assert(faith.includes("wasOpen&&!visible"),'Login-only check missing');
+          assert(faith.includes("if(!wasOpen||shown)return;"),'Login-only check missing');
           const html=fs.readFileSync(dir+'index.html','utf8');
           for(const name of ['faith-items.js','nano-faith-login.js','nano-faith-login.css'])
             assert(html.includes(name),'Reminder missing from UI: '+name);
