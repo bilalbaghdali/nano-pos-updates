@@ -1,0 +1,190 @@
+name: Build NANO POS v1.0.81 Full Windows Installer — Local Storage
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-nano-pos-windows-exe-1.0.81.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nano-pos-1.0.81-windows-exe
+  cancel-in-progress: false
+
+jobs:
+  windows-installer:
+    runs-on: windows-latest
+    timeout-minutes: 50
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout update repository
+        uses: actions/checkout@v4
+
+      - name: Verify latest release is v1.0.81
+        run: |
+          $ErrorActionPreference='Stop'
+          $manifest = Get-Content nano-pos-update.json -Raw | ConvertFrom-Json
+          if ($manifest.version -ne '1.0.81' -or !$manifest.published) {
+            throw "Refusing to build a stale release: $($manifest.version)"
+          }
+          $p = $manifest.patches | Select-Object -First 1
+          if ($p.fileName -ne 'NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip') {
+            throw "Unexpected release archive in manifest"
+          }
+
+      - name: Download and verify authentic v1.0.81 app.asar
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force download, extracted | Out-Null
+          gh release download v1.0.81 --pattern 'NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip' --dir download
+          $meta = Get-Content nano-pos-update.json -Raw | ConvertFrom-Json
+          $patch = $meta.patches | Select-Object -First 1
+          $zip = Join-Path download $patch.fileName
+          if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $patch.sha256) {
+            throw "ZIP SHA256 mismatch"
+          }
+          Expand-Archive -LiteralPath $zip -DestinationPath extracted
+          $asar = "extracted\payload\app.asar"
+          if (!(Test-Path $asar)) { throw "ASAR missing from released patch" }
+          if ((Get-FileHash $asar -Algorithm SHA256).Hash.ToLowerInvariant() -ne $patch.appAsarSha256) {
+            throw "ASAR SHA256 mismatch"
+          }
+          python -c "import json,struct; p='extracted/payload/app.asar'; b=open(p,'rb').read(); a,n,c,d=struct.unpack_from('<4I',b); h=json.loads(b[16:16+d]); x=h['files']['package.json']; start=8+n+int(x['offset']); pkg=json.loads(b[start:start+int(x['size'])]); assert pkg['version']=='1.0.81' and pkg['main']=='electron-main.cjs',pkg; print('Verified application package:',pkg['version'])"
+
+      - name: Install Electron Windows x64 runtime
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force runtime-fetch | Out-Null
+          Push-Location runtime-fetch
+          npm init -y | Out-Null
+          npm install --no-audit --no-fund --save-exact electron@38.0.0
+          Pop-Location
+          $runtime = 'runtime-fetch\node_modules\electron\dist'
+          if (!(Test-Path "$runtime\electron.exe")) { throw "Windows Electron runtime not downloaded" }
+          Copy-Item -Path $runtime -Destination electron-app -Recurse
+          Rename-Item "electron-app\electron.exe" "NANO POS.exe"
+          Copy-Item "extracted\payload\app.asar" "electron-app\resources\app.asar"
+          if ((Get-FileHash "electron-app\resources\app.asar" -Algorithm SHA256).Hash.ToLowerInvariant() -ne (Get-Content nano-pos-update.json -Raw | ConvertFrom-Json).patches[0].appAsarSha256) {
+            throw "Packaged app.asar integrity mismatch"
+          }
+
+      - name: Create NSIS 64-bit setup EXE
+        run: |
+          $ErrorActionPreference='Stop'
+          $nsis = 'C:\Program Files (x86)\NSIS\makensis.exe'
+          if (!(Test-Path $nsis)) {
+            for ($attempt = 1; $attempt -le 2; $attempt++) {
+              Write-Host "Installing NSIS from Chocolatey, attempt $attempt"
+              choco install nsis -y --no-progress
+              if (Test-Path $nsis) { break }
+              Start-Sleep -Seconds (5 * $attempt)
+            }
+          }
+          if (!(Test-Path $nsis)) {
+            Write-Host 'Chocolatey unavailable; retrieving verified NSIS compiler from electron-builder binaries'
+            $download = 'https://github.com/electron-userland/electron-builder-binaries/releases/download/nsis-3.0.4.1/nsis-3.0.4.1.7z'
+            $archive = Join-Path $PWD 'nsis-toolset.7z'
+            Invoke-WebRequest -Uri $download -OutFile $archive -MaximumRedirection 5
+            $sha512 = [Convert]::ToBase64String([Security.Cryptography.SHA512]::HashData([IO.File]::ReadAllBytes($archive)))
+            if ($sha512 -ne 'VKMiizYdmNdJOWpRGz4trl4lD++BvYP2irAXpMilheUP0pc93iKlWAoP843Vlraj8YG19CVn0j+dCo/hURz9+Q==') {
+              throw 'Downloaded NSIS toolset integrity check failed'
+            }
+            $seven = (Get-Command 7z.exe -ErrorAction SilentlyContinue).Source
+            if (!$seven -and (Test-Path 'C:\Program Files\7-Zip\7z.exe')) { $seven = 'C:\Program Files\7-Zip\7z.exe' }
+            if (!$seven) { throw '7-Zip not installed on Windows runner' }
+            $dest = Join-Path $PWD 'nsis-toolset'
+            New-Item -ItemType Directory -Force $dest | Out-Null
+            & $seven x $archive "-o$dest" -y
+            if ($LASTEXITCODE -ne 0) { throw 'Could not unpack verified NSIS toolset' }
+            $exe = Get-ChildItem $dest -Filter makensis.exe -Recurse -File | Select-Object -First 1
+            if (!$exe) { throw 'Verified NSIS toolset has no compiler' }
+            $nsis = $exe.FullName
+          }
+          if (!(Test-Path $nsis)) { throw "NSIS compiler was not found" }
+          @'
+          Unicode true
+          !include "MUI2.nsh"
+          !include "x64.nsh"
+          Name "NANO POS"
+          OutFile "NANO-POS-Setup-1.0.81-x64.exe"
+          InstallDir "$LOCALAPPDATA\Programs\NANO POS"
+          InstallDirRegKey HKCU "Software\NANO POS" "InstallDir"
+          RequestExecutionLevel user
+          SetCompressor /SOLID lzma
+          !define MUI_ABORTWARNING
+          !insertmacro MUI_PAGE_WELCOME
+          !insertmacro MUI_PAGE_DIRECTORY
+          !insertmacro MUI_PAGE_INSTFILES
+          !insertmacro MUI_PAGE_FINISH
+          !insertmacro MUI_UNPAGE_CONFIRM
+          !insertmacro MUI_UNPAGE_INSTFILES
+          !insertmacro MUI_LANGUAGE "English"
+          Section "Install" SecMain
+            SetShellVarContext current
+            SetOutPath "$INSTDIR"
+            File /r "electron-app\*"
+            WriteRegStr HKCU "Software\NANO POS" "InstallDir" "$INSTDIR"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "DisplayName" "NANO POS"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "DisplayVersion" "1.0.81"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "Publisher" "NANO POS"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "InstallLocation" "$INSTDIR"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "DisplayIcon" "$INSTDIR\NANO POS.exe"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "UninstallString" '"$INSTDIR\Uninstall.exe"'
+            WriteUninstaller "$INSTDIR\Uninstall.exe"
+            CreateDirectory "$SMPROGRAMS\NANO POS"
+            CreateShortCut "$SMPROGRAMS\NANO POS\NANO POS.lnk" "$INSTDIR\NANO POS.exe"
+            CreateShortCut "$DESKTOP\NANO POS.lnk" "$INSTDIR\NANO POS.exe"
+          SectionEnd
+          Section "Uninstall"
+            SetShellVarContext current
+            Delete "$DESKTOP\NANO POS.lnk"
+            Delete "$SMPROGRAMS\NANO POS\NANO POS.lnk"
+            RMDir "$SMPROGRAMS\NANO POS"
+            DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS"
+            DeleteRegKey HKCU "Software\NANO POS"
+            RMDir /r "$INSTDIR"
+            ; Intentionally DO NOT delete %APPDATA%, userData, licenses or backups.
+          SectionEnd
+          '@ | Set-Content -Path installer.nsi -Encoding utf8
+          & $nsis installer.nsi
+          if ($LASTEXITCODE -ne 0) { throw "NSIS build failed with code $LASTEXITCODE" }
+          $exe = "NANO-POS-Setup-1.0.81-x64.exe"
+          if (!(Test-Path $exe) -or (Get-Item $exe).Length -lt 20000000) { throw "Installer missing or implausibly small" }
+          python -c "x=open('NANO-POS-Setup-1.0.81-x64.exe','rb').read(2); assert x==b'MZ',x;print('Windows executable PE header verified')"
+          Get-FileHash $exe -Algorithm SHA256 | Format-List
+
+      - name: Attach verified installer to the existing GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $name = 'NANO-POS-Setup-1.0.81-x64.exe'
+          $exists = @(gh release view v1.0.81 --json assets --jq '.assets[].name')
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to read GitHub Release assets' }
+          if ($exists -contains $name) {
+            New-Item -ItemType Directory -Force release-existing | Out-Null
+            gh release download v1.0.81 --pattern $name --dir release-existing
+            if ($LASTEXITCODE -ne 0) { throw 'Could not verify existing EXE' }
+            $one = (Get-FileHash $name -Algorithm SHA256).Hash
+            $two = (Get-FileHash (Join-Path release-existing $name) -Algorithm SHA256).Hash
+            if ($one -ne $two) { throw 'Conflicting installer already published; refusing overwrite' }
+          } else {
+            gh release upload v1.0.81 $name
+            if ($LASTEXITCODE -ne 0) { throw 'EXE upload failed' }
+          }
+          $files = @(gh release view v1.0.81 --json assets --jq '.assets[].name')
+          if ($files -notcontains $name) { throw 'EXE asset not present in release' }
+      - name: Archive verified EXE as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-Setup-1.0.81-x64
+          path: NANO-POS-Setup-1.0.81-x64.exe
+          if-no-files-found: error
+          retention-days: 30
