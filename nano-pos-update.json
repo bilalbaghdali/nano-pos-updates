@@ -3,30 +3,30 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.79",
+  "version": "1.0.80",
   "releaseDate": "2026-10-19",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تطبيق ألوان Nomad POS Nova v1.2.18 على NANO POS للكمبيوتر",
-      "الهوية الجديدة: أخضر داكن وعاجي وبرتقالي دافئ في تسجيل الدخول والشريط الجانبي والرئيسية.",
-      "توحيد ألوان شاشة البيع وحقول البحث والسلة وأزرار الدفع ولوحة السعر الرقمية.",
-      "تنسيق ألوان البطاقات والنوافذ وعناصر التحكم مع الحفاظ على جميع الوظائف والأبعاد الحالية.",
-      "الحفاظ على بيانات المتجر والمبيعات والمخزون والمزامنة والطباعة دون تعديل."
+      "إظهار قائمة اقتراح المنتجات الناقصة من المخزون في واجهة إدارة المخزون.",
+      "زر ثابت في شريط المخزون العلوي قرب إضافة منتج جديد وقائمة الأسعار.",
+      "عرض المخزون الحالي والحد الأدنى وكمية شراء مقترحة مع تمييز المنتجات النافدة.",
+      "طباعة القائمة وتصديرها CSV والنسخ ومشاركتها أو إرسالها عبر البريد وواتساب.",
+      "عدم تعديل أرصدة المنتجات أو إنشاء فواتير شراء تلقائيًا."
     ],
     "fr": [
-      "Couleurs de Nomad POS Nova 1.2.18 appliquées à NANO POS Desktop.",
-      "Palette vert profond, ivoire et orange chaleureux pour la connexion, le menu et l’accueil.",
-      "Vente, recherche, panier, encaissement et afficheur numérique harmonisés.",
-      "Toutes les fonctions, tailles de fenêtres et données restent inchangées."
+      "Bouton de réapprovisionnement visible dans la barre des stocks.",
+      "Liste des produits épuisés ou sous le seuil avec quantités d’achat suggérées.",
+      "Impression, export CSV, copie et partage par e-mail ou WhatsApp.",
+      "Aucune modification des stocks ni création de commandes."
     ],
     "en": [
-      "Nomad POS Nova 1.2.18 palette applied to NANO POS Desktop.",
-      "Deep green, ivory and warm orange across login, sidebar and dashboard.",
-      "Sales, barcode search, cart, checkout and digital total match the new palette.",
-      "All workflows, layouts, settings and business data are preserved."
+      "Prominent restock suggestion button in the inventory toolbar.",
+      "Out-of-stock and low-stock items with suggested replenishment quantities.",
+      "Print, CSV export, copy and sharing via email or WhatsApp.",
+      "Inventory and purchase invoices remain unchanged."
     ]
   },
   "releaseHistory": {
@@ -1210,11 +1210,35 @@
           "All workflows, layouts, settings and business data are preserved."
         ]
       }
+    },
+    "1.0.80": {
+      "releaseDate": "2026-10-19",
+      "features": {
+        "ar": [
+          "إظهار قائمة اقتراح المنتجات الناقصة من المخزون في واجهة إدارة المخزون.",
+          "زر ثابت في شريط المخزون العلوي قرب إضافة منتج جديد وقائمة الأسعار.",
+          "عرض المخزون الحالي والحد الأدنى وكمية شراء مقترحة مع تمييز المنتجات النافدة.",
+          "طباعة القائمة وتصديرها CSV والنسخ ومشاركتها أو إرسالها عبر البريد وواتساب.",
+          "عدم تعديل أرصدة المنتجات أو إنشاء فواتير شراء تلقائيًا."
+        ],
+        "fr": [
+          "Bouton de réapprovisionnement visible dans la barre des stocks.",
+          "Liste des produits épuisés ou sous le seuil avec quantités d’achat suggérées.",
+          "Impression, export CSV, copie et partage par e-mail ou WhatsApp.",
+          "Aucune modification des stocks ni création de commandes."
+        ],
+        "en": [
+          "Prominent restock suggestion button in the inventory toolbar.",
+          "Out-of-stock and low-stock items with suggested replenishment quantities.",
+          "Print, CSV export, copy and sharing via email or WhatsApp.",
+          "Inventory and purchase invoices remain unchanged."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.79-nomad-nova-palette",
+      "id": "nano-pos-v1.0.80-inventory-shortages-print-share",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1260,14 +1284,15 @@
         "1.0.75",
         "1.0.76",
         "1.0.77",
-        "1.0.78"
+        "1.0.78",
+        "1.0.79"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.79/NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.79",
-      "sha256": "1a6a23b07ad9a134e430be7957f0c125705b46a00e9d994dd207b8332ca01194",
-      "appAsarSha256": "c5e63005c4f31d0a204dd340db3ff6f234cfbfd1866be4663d7970bee82bcdbb",
-      "fileName": "NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip",
-      "sizeBytes": 31408796,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.80/NANO-POS-Patch-1.0.79-to-1.0.80-INVENTORY-SHORTAGES.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.80",
+      "sha256": "99da80e877ddc1650fdd41338ffbbc908fbb190b68308b53f23ff8bf66074c1b",
+      "appAsarSha256": "be4477c98823fb58e244ae1d0f0d04d3d14f54cb9794ad8b4b01c4f90a9248a1",
+      "fileName": "NANO-POS-Patch-1.0.79-to-1.0.80-INVENTORY-SHORTAGES.zip",
+      "sizeBytes": 31415142,
       "payloadType": "app-asar"
     }
   ],
@@ -1278,8 +1303,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحديث ألوان NANO POS بهوية Nomad POS Nova: أخضر داكن، برتقالي وعاجي دون تعديل وظائف البرنامج.",
-    "fr": "Palette Nomad Nova vert foncé, orange et ivoire, sans changement fonctionnel.",
-    "en": "Nomad Nova deep-green, orange and ivory colors, with no functional changes."
+    "ar": "زر المنتجات الناقصة في المخزون مع القائمة والطباعة وتصدير CSV والإرسال.",
+    "fr": "Suggestions de réapprovisionnement depuis la barre des stocks, impression et partage.",
+    "en": "Inventory low-stock suggestion list with print, CSV and sharing."
   }
 }
