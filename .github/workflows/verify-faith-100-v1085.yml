@@ -1,0 +1,29 @@
+name: Verify 100 Quran and Sahih reminders v1.0.85
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-faith-100-v1085.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve Quran Uthmani verses, Muyassar commentary and validate Sahih narrations
+        run: |
+          set -euo pipefail
+          python3 release/faith-hundred-v1.0.85/build-content.py /tmp/nano-hundred-faith-items.js
+          node --check /tmp/nano-hundred-faith-items.js
+          node - <<'JS'
+          const fs=require('fs'),vm=require('vm');
+          const w={};vm.runInNewContext(fs.readFileSync('/tmp/nano-hundred-faith-items.js','utf8'),{window:w});
+          const list=w.NANO_FAITH_ITEMS_183||[];
+          if(list.length!==100)throw Error('100 items missing');
+          if(list.filter(x=>x.id.startsWith('q-')).length!==80)throw Error('80 Quran items missing');
+          if(list.filter(x=>x.id.startsWith('h-')).length!==20)throw Error('20 Sahih items missing');
+          console.log('PASS 100 verified source-bound messages');
+          JS
