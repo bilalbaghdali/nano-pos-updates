@@ -4,16 +4,19 @@ on:
     branches: [main]
     paths: ['.github/workflows/inspect-sales-detail-v1083.yml']
   workflow_dispatch:
-permissions: {contents: read}
+permissions:
+  contents: read
 jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '22'}
+        with:
+          node-version: '22'
       - name: Inspect exact published code
-        env: {GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/inspect
