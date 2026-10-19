@@ -48,7 +48,7 @@ async function run(mode,expected){
    assert.equal(modal.querySelector('.nano-faith-quote').textContent,all[expected].text,'Wrong rotated message');
    assert.equal(modal.querySelector('.nano-faith-attribution').textContent,'المصدر: '+all[expected].source);
    assert.equal(modal.querySelector('a').href,all[expected].url);
-   assert.equal(modal.style.zIndex,'','Popup style overrides are attached to overlay, not dialog');
+   assert.equal(modal.style.zIndex,'2147483000','Popup must remain over the main screen');
    assert(d.getElementById('nanoFaithReminder183').style.zIndex,'Popup must overlay main screen');
    modal.querySelector('.nano-faith-continue').click();
    assert(!d.getElementById('nanoFaithReminder183'),'Close button failed');
