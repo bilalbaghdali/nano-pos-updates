@@ -1,0 +1,37 @@
+/* Nomad Nova-consistent local storage selector, isolated to the existing settings tab. */
+#settingsTab-import-export .nano-local-folder-card{
+ box-sizing:border-box;width:100%;margin:0 0 28px;padding:22px 24px;border-radius:17px;
+ background:#fffdf6;border:1px solid #cbdcd0;color:#18372f;box-shadow:0 10px 23px #173a3220;
+}
+#settingsTab-import-export .nano-local-folder-head{
+ display:flex;align-items:center;gap:14px;padding-bottom:12px;border-bottom:1px solid #e0eadf;
+}
+#settingsTab-import-export .nano-local-folder-head>.material-symbols-outlined{
+ display:grid;place-items:center;min-width:50px;min-height:50px;border-radius:12px;
+ background:#e3f1e7;color:#24554a;font-size:27px;
+}
+#settingsTab-import-export .nano-local-folder-head h3{margin:0;font-weight:900;font-size:18px;color:#132b2b}
+#settingsTab-import-export .nano-local-folder-head p{margin:5px 0;font-size:12px;color:#5f7269;line-height:1.6}
+#settingsTab-import-export .nano-local-folder-paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+#settingsTab-import-export .nano-local-folder-paths>div{
+ min-width:0;border:1px solid #e0e9db;background:#f4f7f0;border-radius:12px;padding:10px 12px;
+}
+#settingsTab-import-export .nano-local-folder-paths span{display:block;font-size:11px;font-weight:800;color:#547263;margin-bottom:8px}
+#settingsTab-import-export .nano-local-folder-paths code{
+ display:block;direction:ltr;overflow-wrap:anywhere;word-break:break-word;
+ unicode-bidi:plaintext;font:700 12px/1.6 Consolas,monospace;color:#18372f;
+ max-height:72px;overflow:auto;
+}
+#settingsTab-import-export .nano-local-folder-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#settingsTab-import-export .nano-local-folder-actions button{
+ border-radius:10px;min-height:40px;padding:9px 15px;font-weight:900;
+ font-size:12px;border:1px solid #acc8b8;color:#24554a;background:#e8f1e6;
+}
+#settingsTab-import-export #nanoLocalFolderChoose{background:#eb813d;border-color:#d36d31;color:#132b2b}
+#settingsTab-import-export .nano-local-folder-actions button:hover{filter:brightness(1.06)}
+#settingsTab-import-export .nano-local-folder-actions button:disabled{opacity:.5;cursor:wait}
+#nanoLocalFolderMessage{font-size:12px;margin:10px 0 0;color:#476b59;line-height:1.5}
+.dark #settingsTab-import-export .nano-local-folder-card{background:#1d382f;color:#e7f0e9;border-color:#3f6354}
+.dark #settingsTab-import-export .nano-local-folder-head h3,.dark #settingsTab-import-export .nano-local-folder-paths code{color:#e7f0e9}
+.dark #settingsTab-import-export .nano-local-folder-paths>div{background:#23443b;border-color:#3f6354}
+@media(max-width:850px){#settingsTab-import-export .nano-local-folder-paths{grid-template-columns:minmax(0,1fr)}#settingsTab-import-export .nano-local-folder-card{padding:14px}}
