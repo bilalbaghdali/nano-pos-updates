@@ -2,11 +2,11 @@ name: Publish NANO POS patch
 on:
   push:
     branches: [main]
-    paths: ['incoming/*.zip']
+    paths: ['incoming/*.zip', 'incoming/*.zip.part*']
   workflow_dispatch:
     inputs:
       archive:
-        description: 'Path to existing incoming/*.zip patch'
+        description: 'Path to existing incoming/*.zip or .zip.part01 patch'
         required: true
         type: string
 permissions:
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
-      - name: Select ZIP
+      - name: Select or rebuild uploaded ZIP
         id: select
         shell: bash
         env:
@@ -32,11 +32,17 @@ jobs:
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             file="$MANUAL_ARCHIVE"
           else
-            mapfile -t files < <(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" -- 'incoming/*.zip')
-            [[ ${#files[@]} -eq 1 ]] || { echo "Push exactly one ZIP"; exit 1; }
+            mapfile -t files < <(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" -- 'incoming/*.zip' 'incoming/*.zip.part*')
+            [[ ${#files[@]} -gt 0 ]] || { echo "No incoming patch files changed"; exit 1; }
             file="${files[0]}"
           fi
-          [[ -f "$file" ]] || exit 1
+          if [[ "$file" == *.zip.part* ]]; then
+            file="${file%.part*}"
+          fi
+          if [[ ! -f "$file" ]]; then
+            [[ -f "${file}.part01" && -f "${file}.part02" ]] || { echo "Both .part01 and .part02 are required"; exit 1; }
+            cat "${file}.part01" "${file}.part02" > "$file"
+          fi
           echo "archive=$file" >> "$GITHUB_OUTPUT"
       - name: Verify ZIP and prepare manifest
         id: prep
