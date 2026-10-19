@@ -3,26 +3,23 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.86",
+  "version": "1.0.87",
   "releaseDate": "2026-10-19",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إظهار نافذة الآية أو الحديث فور تسجيل الدخول الناجح واكتمال تأثير الدخول.",
-      "عدم إظهار النافذة قبل تسجيل الدخول أو عند فشله أو عند بدء جلسة محفوظة أو فك القفل.",
-      "الإبقاء على 100 رسالة موثقة مختلفة مع الشرح والمصدر والتناوب المحفوظ دون المساس بالبيانات."
+      "إصلاح تأخر ظهور نافذة الآية أو الحديث بعد تسجيل الدخول الناجح.",
+      "الحفاظ على 100 رسالة مع الشرح والمصدر دون تعديل بيانات المبيعات أو التفعيل."
     ],
     "fr": [
-      "Fenêtre sourcée seulement après connexion réussie et animation terminée.",
-      "Ne pas afficher avant connexion, en cas d’échec, en reprise de session ou au déverrouillage.",
-      "100 messages sourcés et rotation enregistrée préservés."
+      "Correction de l'affichage tardif de la fenêtre de rappel après une connexion réussie.",
+      "Conservation de 100 messages avec leurs sources, sans modifier les données ou l'activation."
     ],
     "en": [
-      "Show sourced reminder only after confirmed successful login and completed transition.",
-      "Never display before login, on failed login, startup resume or unlock.",
-      "Keep 100 verified messages, explanations, citations and persistent rotation."
+      "Fixed reminder dialog timing after successful sign-in.",
+      "Preserved 100 sourced reminders and explanations without changing store data or activation."
     ]
   },
   "releaseHistory": {
@@ -1357,11 +1354,28 @@
           "Keep 100 verified messages, explanations, citations and persistent rotation."
         ]
       }
+    },
+    "1.0.87": {
+      "releaseDate": "2026-10-19",
+      "features": {
+        "ar": [
+          "إصلاح تأخر ظهور نافذة الآية أو الحديث بعد تسجيل الدخول الناجح.",
+          "الحفاظ على 100 رسالة مع الشرح والمصدر دون تعديل بيانات المبيعات أو التفعيل."
+        ],
+        "fr": [
+          "Correction de l'affichage tardif de la fenêtre de rappel après une connexion réussie.",
+          "Conservation de 100 messages avec leurs sources, sans modifier les données ou l'activation."
+        ],
+        "en": [
+          "Fixed reminder dialog timing after successful sign-in.",
+          "Preserved 100 sourced reminders and explanations without changing store data or activation."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.86-faith-after-login",
+      "id": "nano-pos-v1.0.87-automatic",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1414,14 +1428,15 @@
         "1.0.82",
         "1.0.83",
         "1.0.84",
-        "1.0.85"
+        "1.0.85",
+        "1.0.86"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.86/NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.86",
-      "sha256": "a1d8a39cddf695f977b2bdb78a0e72e68c1580102ee00cc8f93e2838febb1e9c",
-      "appAsarSha256": "6cebbec3b230fff98cc7169eba45e2996c968def334c0ea9e8d80edace3cebe8",
-      "fileName": "NANO-POS-Patch-1.0.85-to-1.0.86-FAITH-AFTER-LOGIN.zip",
-      "sizeBytes": 31458085,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.87/NANO-POS-Patch-1.0.86-to-1.0.87-FAITH-DIALOG-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.87",
+      "sha256": "c273ac3a9ce72be5f742b1410871eb54669f1fa19fb728867a7c4fc64e7d268f",
+      "appAsarSha256": "a6cbd3920e5eea86e4aa885b1988b1738ad004b1d29cea827388389e4b9f79a7",
+      "fileName": "NANO-POS-Patch-1.0.86-to-1.0.87-FAITH-DIALOG-FIX.zip",
+      "sizeBytes": 31394689,
       "payloadType": "app-asar"
     }
   ],
@@ -1432,8 +1447,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "نافذة الآية والحديث تظهر فقط بعد تسجيل الدخول الناجح مع الحفاظ على 100 رسالة موثقة.",
-    "fr": "Rappel uniquement après authentification réussie.",
-    "en": "Reminder appears only after successful login."
+    "ar": "إصلاح ظهور نافذة الآية والحديث بعد الدخول، مع الحفاظ على 100 رسالة موثقة.",
+    "fr": "Correction du rappel après connexion réussie.",
+    "en": "Fixed reminder dialog after successful login."
   }
 }
