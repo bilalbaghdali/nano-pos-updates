@@ -1,0 +1,51 @@
+/* NANO POS 1.0.82 — authenticated local notification source from live POS business data.
+ * For insertion INSIDE browser-bridge.js where db is already bound. */
+ if (channel === 'get-notifications') {
+   const result={outOfStock:[],lowStock:[],expired:[],expiringSoon:[],rawMaterials:[],promotionsEnding:[]};
+   const now=new Date(),today=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
+   const num=v=>v===null||v===undefined||v===''?null:Number.isFinite(Number(v))?Number(v):null;
+   const read=(o,keys)=>{for(const k of keys){const n=num(o?.[k]);if(n!==null)return n;}return null;};
+   const day=value=>{
+     const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(value||''));
+     if(!m)return null;
+     const t=Date.UTC(+m[1],+m[2]-1,+m[3]);
+     const d=new Date(t);
+     return d.getUTCFullYear()===+m[1]&&d.getUTCMonth()===+m[2]-1&&d.getUTCDate()===+m[3]?Math.round((t-today)/86400000):null;
+   };
+   for(const p of db.products||[]){
+     if(!p||typeof p!=='object')continue;
+     const id=p.id??p.product_id??null;
+     const name=String(p.name||p.product_name||p.title||'').trim()||'—';
+     const barcode=String(p.barcode||p.code||'').trim();
+     const batches=Array.isArray(p.batches)?p.batches:[];
+     const stock=read(p,['stock','total_stock','quantity','stock_quantity','current_stock'])??(batches.length?batches.reduce((s,b)=>s+(read(b,['stock','quantity'])||0),0):null);
+     const minimum=read(p,['min_stock','minStock','minimum_stock','reorder_point']);
+     const base={id,name,barcode,stock,minimum};
+     if(stock!==null&&stock<=0)result.outOfStock.push(base);
+     else if(stock!==null&&minimum!==null&&minimum>0&&stock<minimum)result.lowStock.push(base);
+     const exp=[];
+     for(const b of batches){
+       const units=read(b,['stock','quantity']);
+       if(units!==null&&units<=0)continue;
+       const value=b.expiry_date||b.expiration_date||b.expiryDate||b.expirationDate;
+       const remaining=day(value);
+       if(remaining!==null)exp.push({date:String(value).slice(0,10),remaining});
+     }
+     if(!exp.length){
+       const value=p.expiry_date||p.expiration_date||p.expiryDate||p.expirationDate;
+       const remaining=day(value);
+       if(remaining!==null)exp.push({date:String(value).slice(0,10),remaining});
+     }
+     if(stock!==null&&stock<=0)continue;
+     exp.sort((a,b)=>a.remaining-b.remaining);
+     if(exp.length&&exp[0].remaining<0)result.expired.push({...base,expiry_date:exp[0].date,days:exp[0].remaining});
+     else if(exp.length&&exp[0].remaining<=30)result.expiringSoon.push({...base,expiry_date:exp[0].date,days:exp[0].remaining});
+   }
+   for(const promotion of db.promotions||[]){
+     if(!promotion||promotion.is_active===false||promotion.active===false)continue;
+     const remaining=day(promotion.end_date||promotion.endDate);
+     if(remaining!==null&&remaining>=0&&remaining<=7)
+       result.promotionsEnding.push({id:promotion.id??null,name:String(promotion.name||promotion.title||'عرض'),end_date:String(promotion.end_date||promotion.endDate).slice(0,10),days:remaining});
+   }
+   return clone(result);
+ }
