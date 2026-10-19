@@ -1,4 +1,4 @@
-name: Publish NANO POS v1.0.86 — Reminder After Successful Login
+name: Publish NANO POS v1.0.86 — Verified Login-Only Reminder
 on:
   push:
     branches: [main]
