@@ -3,23 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.87",
+  "version": "1.0.88",
   "releaseDate": "2026-10-19",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح تأخر ظهور نافذة الآية أو الحديث بعد تسجيل الدخول الناجح.",
-      "الحفاظ على 100 رسالة مع الشرح والمصدر دون تعديل بيانات المبيعات أو التفعيل."
+      "اعتماد أيقونة N مع واجهة متجر لأيقونة NANO POS على سطح المكتب وقائمة ابدأ.",
+      "تضمين الأيقونة في ملف NANO POS.exe ومثبت Windows الجديد 64 بت.",
+      "تحديث اختصار البرنامج دون تعديل بيانات المبيعات أو المخزون أو التفعيل."
     ],
     "fr": [
-      "Correction de l'affichage tardif de la fenêtre de rappel après une connexion réussie.",
-      "Conservation de 100 messages avec leurs sources, sans modifier les données ou l'activation."
+      "Nouvelle icône N et boutique sur le bureau et dans le menu Démarrer.",
+      "Icône intégrée dans NANO POS.exe et dans l'installateur Windows 64 bits.",
+      "Mise à jour des raccourcis sans toucher aux données ni à la licence."
     ],
     "en": [
-      "Fixed reminder dialog timing after successful sign-in.",
-      "Preserved 100 sourced reminders and explanations without changing store data or activation."
+      "New N storefront icon for desktop and Start menu shortcuts.",
+      "Icon embedded in NANO POS.exe and the Windows 64-bit installer.",
+      "Updated shortcuts without modifying store records or activation."
     ]
   },
   "releaseHistory": {
@@ -1371,84 +1374,39 @@
           "Preserved 100 sourced reminders and explanations without changing store data or activation."
         ]
       }
+    },
+    "1.0.88": {
+      "releaseDate": "2026-10-19",
+      "features": {
+        "ar": [
+          "اعتماد أيقونة N مع واجهة متجر لأيقونة NANO POS على سطح المكتب وقائمة ابدأ.",
+          "تضمين الأيقونة في ملف NANO POS.exe ومثبت Windows الجديد 64 بت.",
+          "تحديث اختصار البرنامج دون تعديل بيانات المبيعات أو المخزون أو التفعيل."
+        ],
+        "fr": [
+          "Nouvelle icône N et boutique sur le bureau et dans le menu Démarrer.",
+          "Icône intégrée dans NANO POS.exe et dans l'installateur Windows 64 bits.",
+          "Mise à jour des raccourcis sans toucher aux données ni à la licence."
+        ],
+        "en": [
+          "New N storefront icon for desktop and Start menu shortcuts.",
+          "Icon embedded in NANO POS.exe and the Windows 64-bit installer.",
+          "Updated shortcuts without modifying store records or activation."
+        ]
+      }
     }
   },
-  "patches": [
-    {
-      "id": "nano-pos-v1.0.87-automatic",
-      "fromVersions": [
-        "1.0.34",
-        "1.0.35",
-        "1.0.36",
-        "1.0.37",
-        "1.0.38",
-        "1.0.39",
-        "1.0.40",
-        "1.0.41",
-        "1.0.42",
-        "1.0.43",
-        "1.0.44",
-        "1.0.45",
-        "1.0.46",
-        "1.0.47",
-        "1.0.48",
-        "1.0.49",
-        "1.0.50",
-        "1.0.51",
-        "1.0.52",
-        "1.0.53",
-        "1.0.54",
-        "1.0.55",
-        "1.0.56",
-        "1.0.57",
-        "1.0.58",
-        "1.0.59",
-        "1.0.60",
-        "1.0.61",
-        "1.0.62",
-        "1.0.63",
-        "1.0.64",
-        "1.0.65",
-        "1.0.66",
-        "1.0.67",
-        "1.0.68",
-        "1.0.69",
-        "1.0.70",
-        "1.0.71",
-        "1.0.72",
-        "1.0.73",
-        "1.0.74",
-        "1.0.75",
-        "1.0.76",
-        "1.0.77",
-        "1.0.78",
-        "1.0.79",
-        "1.0.80",
-        "1.0.81",
-        "1.0.82",
-        "1.0.83",
-        "1.0.84",
-        "1.0.85",
-        "1.0.86"
-      ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.87/NANO-POS-Patch-1.0.86-to-1.0.87-FAITH-DIALOG-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.87",
-      "sha256": "c273ac3a9ce72be5f742b1410871eb54669f1fa19fb728867a7c4fc64e7d268f",
-      "appAsarSha256": "a6cbd3920e5eea86e4aa885b1988b1738ad004b1d29cea827388389e4b9f79a7",
-      "fileName": "NANO-POS-Patch-1.0.86-to-1.0.87-FAITH-DIALOG-FIX.zip",
-      "sizeBytes": 31394689,
-      "payloadType": "app-asar"
-    }
-  ],
+  "patches": [],
   "download": {
-    "directUrl": "",
-    "pageUrl": "",
-    "sha256": "",
-    "fileName": ""
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.88/NANO-POS-Setup-1.0.88-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.88",
+    "sha256": "f1d0b7b3e1ed8d6b35fc484aba0b10e829955ea94568e226b48d02ee72029f0e",
+    "fileName": "NANO-POS-Setup-1.0.88-x64.exe",
+    "sizeBytes": 118794907
   },
   "notes": {
-    "ar": "إصلاح ظهور نافذة الآية والحديث بعد الدخول، مع الحفاظ على 100 رسالة موثقة.",
-    "fr": "Correction du rappel après connexion réussie.",
-    "en": "Fixed reminder dialog after successful login."
+    "ar": "مثبت Windows كامل لتحديث أيقونة البرنامج واختصاراته.",
+    "fr": "Installateur complet Windows avec nouvelle icône.",
+    "en": "Full Windows installer for the new desktop icon."
   }
 }
