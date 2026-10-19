@@ -72,8 +72,9 @@ jobs:
           if (!(Test-Path 'assets\NANO-POS-Icon.ico')) { throw 'Icon not downloaded' }
           gh release view v1.0.87 --json assets | Out-Null
           if ($LASTEXITCODE -ne 0) { throw 'Cannot read source release' }
-          gh release view v1.0.88 *> $null
-          if ($LASTEXITCODE -eq 0) { throw 'Release v1.0.88 already exists; refusing to overwrite' }
+          $existing=@(gh release list --limit 100 --json tagName --jq '.[].tagName')
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot query releases' }
+          if ($existing -contains 'v1.0.88') { throw 'Release v1.0.88 already exists; refusing to overwrite' }
       - name: Retrieve and hash-check 1.0.87 application
         env:
           GH_TOKEN: ${{ github.token }}
