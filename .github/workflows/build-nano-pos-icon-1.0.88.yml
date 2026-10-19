@@ -114,7 +114,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Could not install rcedit' }
           @'
           const path=require('path');
-          const rcedit=require('rcedit');
+          const rcedit=require('rcedit').rcedit;
           const exe=path.resolve('../electron-app/NANO POS.exe');
           const icon=path.resolve('../assets/NANO-POS-Icon.ico');
           (async()=>{
