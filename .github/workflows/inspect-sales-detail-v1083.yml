@@ -1,4 +1,4 @@
-name: Inspect sale-edit detail v1.0.82
+name: Inspect detailed NANO sale and analytics API v1.0.82
 on:
   push:
     branches: [main]
