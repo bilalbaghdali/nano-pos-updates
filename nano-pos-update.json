@@ -3,30 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.80",
+  "version": "1.0.81",
   "releaseDate": "2026-10-19",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إظهار قائمة اقتراح المنتجات الناقصة من المخزون في واجهة إدارة المخزون.",
-      "زر ثابت في شريط المخزون العلوي قرب إضافة منتج جديد وقائمة الأسعار.",
-      "عرض المخزون الحالي والحد الأدنى وكمية شراء مقترحة مع تمييز المنتجات النافدة.",
-      "طباعة القائمة وتصديرها CSV والنسخ ومشاركتها أو إرسالها عبر البريد وواتساب.",
-      "عدم تعديل أرصدة المنتجات أو إنشاء فواتير شراء تلقائيًا."
+      "إضافة اختيار مجلد التخزين المحلي في الإعدادات ← استيراد وتصدير.",
+      "حفظ المسار المختار على الكمبيوتر واستخدامه في النسخ الاحتياطية المحلية اليدوية والتلقائية ونسخة إغلاق البرنامج.",
+      "فتح نافذة حفظ التصديرات وPDF افتراضيًا داخل المجلد المختار، مع السماح باختيار مكان آخر وقت الحفظ.",
+      "إضافة زري إعادة الوضع الافتراضي وتحديث حالة المجلد، مع مسار آمن بديل إذا أصبح المجلد غير متاح.",
+      "عدم نقل قاعدة البيانات الحية أو تغيير البيانات والنسخ السابقة أو إعدادات النسخ إلى MEGA."
     ],
     "fr": [
-      "Bouton de réapprovisionnement visible dans la barre des stocks.",
-      "Liste des produits épuisés ou sous le seuil avec quantités d’achat suggérées.",
-      "Impression, export CSV, copie et partage par e-mail ou WhatsApp.",
-      "Aucune modification des stocks ni création de commandes."
+      "Choix du dossier de stockage local dans Paramètres > Importer/Exporter.",
+      "Sauvegardes locales automatiques/manuelles et à la fermeture au dossier sélectionné.",
+      "Exports et PDF suggérés dans le dossier choisi, modifiable au moment de sauvegarder.",
+      "Réinitialisation et bascule sûre si le dossier devient indisponible.",
+      "Aucune migration de base active ni modification des sauvegardes MEGA."
     ],
     "en": [
-      "Prominent restock suggestion button in the inventory toolbar.",
-      "Out-of-stock and low-stock items with suggested replenishment quantities.",
-      "Print, CSV export, copy and sharing via email or WhatsApp.",
-      "Inventory and purchase invoices remain unchanged."
+      "Local storage folder picker in Settings > Import / Export.",
+      "Persistent chosen location for native manual/hourly/shutdown backups.",
+      "Default export and PDF save path uses the chosen folder, still overridable.",
+      "Reset and safe fallback if selected storage is unavailable.",
+      "Live database and existing backup files are never moved."
     ]
   },
   "releaseHistory": {
@@ -1234,11 +1236,37 @@
           "Inventory and purchase invoices remain unchanged."
         ]
       }
+    },
+    "1.0.81": {
+      "releaseDate": "2026-10-19",
+      "features": {
+        "ar": [
+          "إضافة اختيار مجلد التخزين المحلي في الإعدادات ← استيراد وتصدير.",
+          "حفظ المسار المختار على الكمبيوتر واستخدامه في النسخ الاحتياطية المحلية اليدوية والتلقائية ونسخة إغلاق البرنامج.",
+          "فتح نافذة حفظ التصديرات وPDF افتراضيًا داخل المجلد المختار، مع السماح باختيار مكان آخر وقت الحفظ.",
+          "إضافة زري إعادة الوضع الافتراضي وتحديث حالة المجلد، مع مسار آمن بديل إذا أصبح المجلد غير متاح.",
+          "عدم نقل قاعدة البيانات الحية أو تغيير البيانات والنسخ السابقة أو إعدادات النسخ إلى MEGA."
+        ],
+        "fr": [
+          "Choix du dossier de stockage local dans Paramètres > Importer/Exporter.",
+          "Sauvegardes locales automatiques/manuelles et à la fermeture au dossier sélectionné.",
+          "Exports et PDF suggérés dans le dossier choisi, modifiable au moment de sauvegarder.",
+          "Réinitialisation et bascule sûre si le dossier devient indisponible.",
+          "Aucune migration de base active ni modification des sauvegardes MEGA."
+        ],
+        "en": [
+          "Local storage folder picker in Settings > Import / Export.",
+          "Persistent chosen location for native manual/hourly/shutdown backups.",
+          "Default export and PDF save path uses the chosen folder, still overridable.",
+          "Reset and safe fallback if selected storage is unavailable.",
+          "Live database and existing backup files are never moved."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.80-inventory-shortages-print-share",
+      "id": "nano-pos-v1.0.81-local-storage-folder",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1285,14 +1313,15 @@
         "1.0.76",
         "1.0.77",
         "1.0.78",
-        "1.0.79"
+        "1.0.79",
+        "1.0.80"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.80/NANO-POS-Patch-1.0.79-to-1.0.80-INVENTORY-SHORTAGES.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.80",
-      "sha256": "99da80e877ddc1650fdd41338ffbbc908fbb190b68308b53f23ff8bf66074c1b",
-      "appAsarSha256": "be4477c98823fb58e244ae1d0f0d04d3d14f54cb9794ad8b4b01c4f90a9248a1",
-      "fileName": "NANO-POS-Patch-1.0.79-to-1.0.80-INVENTORY-SHORTAGES.zip",
-      "sizeBytes": 31415142,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.81/NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.81",
+      "sha256": "46599044eb82c93a335fa8ba4df5daab7c07a055e2ec7c44fa8dd7277c354bed",
+      "appAsarSha256": "35a864b77a94ca4948d4303904226b508e76febe5e774d6ca969594a63cabc1a",
+      "fileName": "NANO-POS-Patch-1.0.80-to-1.0.81-LOCAL-STORAGE-FOLDER.zip",
+      "sizeBytes": 31419996,
       "payloadType": "app-asar"
     }
   ],
@@ -1303,8 +1332,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "زر المنتجات الناقصة في المخزون مع القائمة والطباعة وتصدير CSV والإرسال.",
-    "fr": "Suggestions de réapprovisionnement depuis la barre des stocks, impression et partage.",
-    "en": "Inventory low-stock suggestion list with print, CSV and sharing."
+    "ar": "اختيار مجلد التخزين المحلي للنسخ الاحتياطية والتصدير مع حفظ الاختيار وإعادة الضبط الآمنة.",
+    "fr": "Sélection du dossier local pour les sauvegardes et exports, avec repli sécurisé.",
+    "en": "Select persistent local backup/export folder with safe fallback."
   }
 }
