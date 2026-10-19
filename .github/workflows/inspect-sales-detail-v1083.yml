@@ -1,0 +1,25 @@
+name: Inspect sale-edit detail v1.0.82
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/inspect-sales-detail-v1083.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Inspect exact published code
+        env: {GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/inspect
+          gh release download v1.0.82 --repo "$GITHUB_REPOSITORY" --pattern 'NANO-POS-Patch-1.0.81-to-1.0.82-NOTIFICATIONS-FIX.zip' --dir /tmp/inspect
+          echo '3ba23338aa95d487e917a79a1cc72f517e3bf528957c330efe43e20a6afcaff8  /tmp/inspect/NANO-POS-Patch-1.0.81-to-1.0.82-NOTIFICATIONS-FIX.zip' | sha256sum -c
+          unzip -q /tmp/inspect/NANO-POS-Patch-1.0.81-to-1.0.82-NOTIFICATIONS-FIX.zip payload/app.asar -d /tmp/inspect
+          npm install --prefix /tmp/asar --no-fund --no-audit --no-save @electron/asar@3.4.1 >/dev/null
+          /tmp/asar/node_modules/.bin/asar extract /tmp/inspect/payload/app.asar /tmp/inspect/src
+          python3 release/sales-fix-v1.0.83/inspect.py
