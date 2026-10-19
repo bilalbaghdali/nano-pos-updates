@@ -3,32 +3,30 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.78",
-  "releaseDate": "2026-10-18",
+  "version": "1.0.79",
+  "releaseDate": "2026-10-19",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "حساب الصرف النقدي وتوثيقه عند البيع",
-      "إدخال المبلغ النقدي الذي سلّمه الزبون وعرض الصرف الواجب إرجاعه بشكل مباشر وواضح.",
-      "حفظ المبلغ المستلم والصرف المحسوب ورقم الفاتورة والبائع والمناوبة في سجل مستقل دائم.",
-      "ربط سجل الصرف بالفاتورة وإتاحته للمراجعة من شاشة المبيعات حتى عند حذف الفاتورة.",
-      "حساب النقد المحتسب بالصندوق منفصلًا عن إجمالي المبلغ المستلم لحماية أرصدة النقد والكريدي."
+      "تطبيق ألوان Nomad POS Nova v1.2.18 على NANO POS للكمبيوتر",
+      "الهوية الجديدة: أخضر داكن وعاجي وبرتقالي دافئ في تسجيل الدخول والشريط الجانبي والرئيسية.",
+      "توحيد ألوان شاشة البيع وحقول البحث والسلة وأزرار الدفع ولوحة السعر الرقمية.",
+      "تنسيق ألوان البطاقات والنوافذ وعناصر التحكم مع الحفاظ على جميع الوظائف والأبعاد الحالية.",
+      "الحفاظ على بيانات المتجر والمبيعات والمخزون والمزامنة والطباعة دون تعديل."
     ],
     "fr": [
-      "Calcul de la monnaie et journal des encaissements",
-      "Saisie de la somme remise et calcul immédiat de la monnaie à rendre.",
-      "Conservation du montant reçu, monnaie, facture, caissier et session dans un journal distinct.",
-      "Consultation du journal même après suppression d’une vente.",
-      "Seule la somme nette imputée à la vente affecte la caisse et le crédit."
+      "Couleurs de Nomad POS Nova 1.2.18 appliquées à NANO POS Desktop.",
+      "Palette vert profond, ivoire et orange chaleureux pour la connexion, le menu et l’accueil.",
+      "Vente, recherche, panier, encaissement et afficheur numérique harmonisés.",
+      "Toutes les fonctions, tailles de fenêtres et données restent inchangées."
     ],
     "en": [
-      "Cash tender and expected-change audit",
-      "Enter customer cash handed and calculate change immediately.",
-      "Persist cash received, calculated change, sale reference, cashier and shift separately.",
-      "Read the persistent audit history even after a sale is deleted.",
-      "Only net cash applied to the invoice affects cashbox and customer credit."
+      "Nomad POS Nova 1.2.18 palette applied to NANO POS Desktop.",
+      "Deep green, ivory and warm orange across login, sidebar and dashboard.",
+      "Sales, barcode search, cart, checkout and digital total match the new palette.",
+      "All workflows, layouts, settings and business data are preserved."
     ]
   },
   "releaseHistory": {
@@ -1188,11 +1186,35 @@
           "Only net cash applied to the invoice affects cashbox and customer credit."
         ]
       }
+    },
+    "1.0.79": {
+      "releaseDate": "2026-10-19",
+      "features": {
+        "ar": [
+          "تطبيق ألوان Nomad POS Nova v1.2.18 على NANO POS للكمبيوتر",
+          "الهوية الجديدة: أخضر داكن وعاجي وبرتقالي دافئ في تسجيل الدخول والشريط الجانبي والرئيسية.",
+          "توحيد ألوان شاشة البيع وحقول البحث والسلة وأزرار الدفع ولوحة السعر الرقمية.",
+          "تنسيق ألوان البطاقات والنوافذ وعناصر التحكم مع الحفاظ على جميع الوظائف والأبعاد الحالية.",
+          "الحفاظ على بيانات المتجر والمبيعات والمخزون والمزامنة والطباعة دون تعديل."
+        ],
+        "fr": [
+          "Couleurs de Nomad POS Nova 1.2.18 appliquées à NANO POS Desktop.",
+          "Palette vert profond, ivoire et orange chaleureux pour la connexion, le menu et l’accueil.",
+          "Vente, recherche, panier, encaissement et afficheur numérique harmonisés.",
+          "Toutes les fonctions, tailles de fenêtres et données restent inchangées."
+        ],
+        "en": [
+          "Nomad POS Nova 1.2.18 palette applied to NANO POS Desktop.",
+          "Deep green, ivory and warm orange across login, sidebar and dashboard.",
+          "Sales, barcode search, cart, checkout and digital total match the new palette.",
+          "All workflows, layouts, settings and business data are preserved."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.78-cash-change-audit",
+      "id": "nano-pos-v1.0.79-nomad-nova-palette",
       "fromVersions": [
         "1.0.34",
         "1.0.35",
@@ -1237,14 +1259,15 @@
         "1.0.74",
         "1.0.75",
         "1.0.76",
-        "1.0.77"
+        "1.0.77",
+        "1.0.78"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.78/NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.78",
-      "sha256": "3b1ac017b995a497b00e0a32ff03aebb5e7696c0f3d1b828b6bb4d44ec97ebc1",
-      "appAsarSha256": "ce93b4c8c778d2000e1cfe9f471eb736f4fa7b27d95baadcc59d97989f8f4ff9",
-      "fileName": "NANO-POS-Patch-1.0.77-to-1.0.78-CASH-CHANGE-AUDIT.zip",
-      "sizeBytes": 31404555,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.79/NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.79",
+      "sha256": "1a6a23b07ad9a134e430be7957f0c125705b46a00e9d994dd207b8332ca01194",
+      "appAsarSha256": "c5e63005c4f31d0a204dd340db3ff6f234cfbfd1866be4663d7970bee82bcdbb",
+      "fileName": "NANO-POS-Patch-1.0.78-to-1.0.79-NOVA-COLORS.zip",
+      "sizeBytes": 31408796,
       "payloadType": "app-asar"
     }
   ],
@@ -1255,8 +1278,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "إضافة المبلغ المستلم من الزبون وحساب الصرف الواجب إرجاعه مع سجل مرجعي دائم لكل عملية بيع نقدي.",
-    "fr": "Saisie des espèces reçues, calcul de la monnaie et journal de référence par vente.",
-    "en": "Record cash tender, calculate change and keep a permanent reference log per sale."
+    "ar": "تحديث ألوان NANO POS بهوية Nomad POS Nova: أخضر داكن، برتقالي وعاجي دون تعديل وظائف البرنامج.",
+    "fr": "Palette Nomad Nova vert foncé, orange et ivoire, sans changement fonctionnel.",
+    "en": "Nomad Nova deep-green, orange and ivory colors, with no functional changes."
   }
 }
