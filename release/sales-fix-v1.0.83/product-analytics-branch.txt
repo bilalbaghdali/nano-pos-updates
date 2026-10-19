@@ -1,0 +1,55 @@
+   if (channel === 'get-product-analytics') {
+     const id=args[0],product=(db.products||[]).find(p=>String(p.id)===String(id));
+     if(!product)return fail('المنتج غير موجود.');
+     const toNum=v=>Number.isFinite(Number(v))?Number(v):0;
+     let sold=0,revenue=0,profit=0,last30=0;
+     const now=Date.now(),thirty=30*86400000;
+     const variants=new Map();
+     for(const sale of db.sales||[]){
+       const when=Date.parse(sale.sale_date||sale.created_at||'');
+       for(const item of sale.items||[]){
+         if(String(item.product_id??item.id)!==String(id))continue;
+         const qty=toNum(item.quantity??item.qty);
+         if(!qty)continue;
+         const unit=toNum(item.selling_price??item.price??item.pos_price);
+         const cost=toNum(item.cost_price??product.cost_price);
+         const gross=toNum(item.total??qty*unit);
+         sold+=qty;revenue+=gross;profit+=(unit-cost)*qty;
+         if(Number.isFinite(when)&&when<=now&&when>now-thirty)last30+=qty;
+         if(item.variant_id!=null){
+           const key=String(item.variant_id);
+           const row=variants.get(key)||{variant_id:item.variant_id,
+             variant_name:String(item.variant_name||item.variant?.name||key),
+             sold_qty:0,revenue:0,remaining_stock:0};
+           row.sold_qty+=qty;row.revenue+=gross;variants.set(key,row);
+         }
+       }
+     }
+     let stock=0,valid=0,expired=0,finished=0;
+     const today=new Date().toISOString().slice(0,10);
+     for(const batch of product.batches||[]){
+       const quantity=toNum(batch.stock??batch.quantity);
+       stock+=quantity;
+       if(quantity<=0)finished++;
+       const expiry=String(batch.expiry_date||batch.expiration_date||'').slice(0,10);
+       if(expiry&&expiry<today)expired+=Math.max(0,quantity);
+       else valid+=Math.max(0,quantity);
+     }
+     const avg=last30/30,margin=revenue?profit/revenue*100:0;
+     const out=avg>0?Math.ceil(Math.max(0,stock)/avg):0;
+     const result={
+       product_id:product.id,totalRevenue:rounded(revenue),totalProfit:rounded(profit),
+       profit:rounded(profit),netProfit:rounded(profit),totalSold:sold,
+       stockValue:rounded(stock*toNum(product.cost_price)),
+       avgDaily:avg,avgDailySales:avg,daysOut:out,daysOfStock:out,
+       profitMargin:margin,
+       inventoryStats:{current_stock:stock,valid_stock:valid,expired_stock:expired,
+         finished_batches:finished,total_batches:(product.batches||[]).length},
+       variantsPerf:[...variants.values()]
+     };
+     return clone(result);
+   }
+   if (channel === 'get-sale-edit-audit') {
+     const limit=Math.max(1,Math.min(500,Number(args[0]?.limit||100)));
+     return clone((db.sale_edit_audit||[]).slice(0,limit));
+   }
