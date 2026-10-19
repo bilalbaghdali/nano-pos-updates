@@ -4,7 +4,7 @@
 'use strict';
 const d=w.document;
 const KEY='nano-faith-rotation-v185',MODAL='nanoFaithReminder183';
-let latestShown=0,inMemoryCursor=0,shownInThisWindow=0;
+let latestShown=0,inMemoryCursor=0,shownInThisWindow=0,pendingDisplay=false;
 const $=id=>d.getElementById(id);
 function loginVisible(){return !!$('loginOverlay')&&!$('loginOverlay').classList.contains('hidden');}
 function lockVisible(){return !!$('lockOverlay')&&!$('lockOverlay').classList.contains('hidden');}
@@ -70,12 +70,16 @@ function show(){
 function handleAuthenticated(event){
  // A trusted in-app event is emitted strictly after window.api.loginUser succeeds.
  // This handler doesn't perform login itself; no message on a failed authentication.
- const now=Date.now();if(now-latestShown<1300)return;
+ const now=Date.now();if(pendingDisplay||now-latestShown<1300)return;
+ pendingDisplay=true;
  const delay=(event?.detail?.via==='native-success')?850:700;
  w.setTimeout(()=>{
-   if(loginVisible()||lockVisible()){
-     w.setTimeout(()=>{if(!loginVisible()&&!lockVisible())show();},650);
-   }else show();
+   const finish=()=>{
+     pendingDisplay=false;
+     if(!loginVisible()&&!lockVisible()&&!$(MODAL))show();
+   };
+   if(loginVisible()||lockVisible())w.setTimeout(finish,650);
+   else finish();
  },delay);
 }
 function observeOverlay(id){
