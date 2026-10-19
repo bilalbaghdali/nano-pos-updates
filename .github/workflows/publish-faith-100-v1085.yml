@@ -1,0 +1,105 @@
+name: Publish NANO POS v1.0.85 — 100 Verified Login Reminders
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-faith-100-v1085.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-v1085-faith-100
+  cancel-in-progress: false
+jobs:
+  build-verify-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 38
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download and verify actual published v1.0.84
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/release
+          gh release download v1.0.84 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'NANO-POS-Patch-1.0.83-to-1.0.84-FAITH-ROTATION.zip' --dir /tmp/release
+          echo '65696f81e13529d5ebcdd0d1a6fc841ca6d32da7d772964fc8bd0848dd60341f  /tmp/release/NANO-POS-Patch-1.0.83-to-1.0.84-FAITH-ROTATION.zip' | sha256sum -c
+          unzip -q /tmp/release/NANO-POS-Patch-1.0.83-to-1.0.84-FAITH-ROTATION.zip payload/app.asar -d /tmp/release/base
+          echo '260bf4904d0b31e675e5088262cb0942972ecc9b3d34fe82660db3dfd36e78ae  /tmp/release/base/payload/app.asar' | sha256sum -c
+      - name: Generate 100 Quran and Sahih messages from their verified primary records
+        run: |
+          set -euo pipefail
+          python3 release/faith-hundred-v1.0.85/build-content.py release/faith-hundred-v1.0.85/faith-items.js
+          node --check release/faith-hundred-v1.0.85/faith-items.js
+      - name: Install direct login success hook and run UI/rotation regression
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/asar-cli --no-audit --no-fund --no-save @electron/asar@3.4.1
+          npm install --prefix /tmp/testkit --no-audit --no-fund --no-save jsdom@25.0.1
+          ASAR=/tmp/asar-cli/node_modules/.bin/asar
+          "$ASAR" extract /tmp/release/base/payload/app.asar /tmp/release/source
+          for file in electron-main.cjs browser-bridge.js browser-preload.js nano-cash-change.js nano-product-analytics.js nano-notifications.js nano-local-folder.cjs index.html; do
+            cp "/tmp/release/source/$file" "/tmp/release/baseline-$file"
+          done
+          node release/faith-hundred-v1.0.85/apply.js /tmp/release/source
+          node --check /tmp/release/source/renderer.js
+          node --check /tmp/release/source/nano-faith-login.js
+          node --check /tmp/release/source/faith-items.js
+          node --check release/faith-hundred-v1.0.85/test.js
+          for file in electron-main.cjs browser-bridge.js browser-preload.js nano-cash-change.js nano-product-analytics.js nano-notifications.js nano-local-folder.cjs index.html; do
+            cmp "/tmp/release/source/$file" "/tmp/release/baseline-$file"
+          done
+          node release/faith-hundred-v1.0.85/test.js /tmp/release/source
+          node - <<'JS'
+          const fs=require('fs'),assert=require('node:assert/strict');
+          const root='/tmp/release/source/';
+          const html=fs.readFileSync(root+'index.html','utf8');
+          const renderer=fs.readFileSync(root+'renderer.js','utf8');
+          const pkg=JSON.parse(fs.readFileSync(root+'package.json','utf8'));
+          assert.equal(pkg.version,'1.0.85');
+          assert(renderer.includes("initUserSession(),window.dispatchEvent(new CustomEvent('nano-pos-login-success'"),'Missing real success hook');
+          for(const marker of ['nano-faith-login.js','faith-items.js','nano-faith-login.css','id="loginOverlay"','id="lockOverlay"'])
+            assert(html.includes(marker),'Original login/faith UI missing '+marker);
+          console.log('PASS actual authentication hook, 100 verified reminders, original POS preserved');
+          JS
+          mkdir -p /tmp/release/payload
+          "$ASAR" pack /tmp/release/source /tmp/release/payload/app.asar
+          node - <<'JS'
+          const asar=require('/tmp/asar-cli/node_modules/@electron/asar'),vm=require('node:vm');
+          const file='/tmp/release/payload/app.asar';
+          const pkg=JSON.parse(asar.extractFile(file,'package.json').toString('utf8'));
+          if(pkg.version!=='1.0.85')throw Error('Packaged version mismatch');
+          const w={};vm.runInNewContext(asar.extractFile(file,'faith-items.js').toString('utf8'),{window:w});
+          if(w.NANO_FAITH_ITEMS_183.length!==100)throw Error('ASAR contains fewer than 100 messages');
+          if(!asar.extractFile(file,'nano-faith-login.js').toString().includes('nano-pos-login-success'))throw Error('ASAR login fix missing');
+          console.log('PASS released ASAR contains full 100-message catalog');
+          JS
+          (cd /tmp/release && zip -q -6 'NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip' payload/app.asar)
+          unzip -t /tmp/release/NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip
+          sha256sum /tmp/release/payload/app.asar /tmp/release/NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip
+      - name: Publish verified v1.0.85
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          file=/tmp/release/NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip
+          if gh release view v1.0.85 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p /tmp/release/check
+            gh release download v1.0.85 --repo "$GITHUB_REPOSITORY" --pattern '*.zip' --dir /tmp/release/check
+            cmp "$file" "/tmp/release/check/$(basename "$file")"
+          else
+            gh release create v1.0.85 "$file" --repo "$GITHUB_REPOSITORY" \
+              --title 'NANO POS v1.0.85 — إصلاح النافذة و100 آية وحديث' \
+              --notes 'ربط الرسالة بنجاح تسجيل الدخول، والتأكد من ظهور النافذة؛ إضافة 100 رسالة مختلفة موثقة: 80 آية بتفسير الميسر و20 حديثًا صحيحًا، تحفظ ترتيبها بين تسجيلات الدخول. دون تغيير المبيعات أو المخزون.'
+          fi
+          gh release view v1.0.85 --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fx 'NANO-POS-Patch-1.0.84-to-1.0.85-FAITH-100-LOGIN-FIX.zip'
+      - name: Activate verified automatic update
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 release/faith-hundred-v1.0.85/update_manifest.py
