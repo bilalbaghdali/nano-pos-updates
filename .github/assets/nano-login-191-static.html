@@ -1,0 +1,18 @@
+<section id="nanoLoginPcRoles" class="nano-login-mode-select" aria-label="نوع الدخول" dir="rtl">
+ <fieldset class="nano-pc-modes" style="border:0;padding:0;margin:0;min-width:0">
+  <legend class="nano-login-mode-title">طريقة تسجيل الدخول / Mode de connexion</legend>
+  <label><input type="radio" id="nanoLoginAsMain" name="nanoLoginPcMode" value="main" checked><span id="nanoLoginMainLabel">الدخول ككمبيوتر رئيسي / مستقل</span></label>
+  <label><input type="radio" id="nanoLoginAsSecondary" name="nanoLoginPcMode" value="secondary"><span id="nanoLoginSecondaryLabel">الدخول ككمبيوتر ثانوي</span></label>
+ </fieldset>
+ <div id="nanoSecondaryFields" hidden>
+  <label for="nanoLoginHost" id="nanoLoginHostLabel">عنوان IP للكمبيوتر الرئيسي (LAN / Tailscale)</label>
+  <input id="nanoLoginHost" type="text" autocomplete="off" dir="ltr" placeholder="192.168.1.20 / 100.80.20.10">
+  <label for="nanoLoginJoinCode" id="nanoLoginCodeLabel">رمز الاقتران (6 أرقام)</label>
+  <input id="nanoLoginJoinCode" type="text" inputmode="numeric" maxlength="6" autocomplete="off" dir="ltr" placeholder="••••••">
+  <label for="nanoLoginDeviceName" id="nanoLoginNameLabel">اسم الكمبيوتر الثانوي</label>
+  <input id="nanoLoginDeviceName" type="text" maxlength="80" autocomplete="off" placeholder="NANO PC 2">
+  <button type="button" id="nanoLoginTest">اختبار الاتصال</button>
+  <p id="nanoLoginHelp">شغّل NANO POS على الكمبيوتر الرئيسي، المنفذ الافتراضي 4178.</p>
+  <p id="nanoSecondaryStatus" role="status" aria-live="polite" hidden></p>
+ </div>
+</section>
