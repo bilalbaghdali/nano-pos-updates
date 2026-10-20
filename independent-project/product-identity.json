@@ -1,0 +1,38 @@
+{
+  "project": "NANO Commerce",
+  "project_status": "unpublished_development",
+  "releasePolicy": {
+    "publishAutomatically": false,
+    "githubReleasesEnabled": false,
+    "updateManifest": null,
+    "mustNeverUse": [
+      "nano-pos-update.json",
+      "nano-pos-updates",
+      "v1.1.0 from NANO POS"
+    ]
+  },
+  "windows": {
+    "packageName": "nano-commerce",
+    "appId": "com.nanocommerce.desktop",
+    "appUserModelId": "com.nanocommerce.desktop",
+    "executable": "NANO Commerce.exe",
+    "installDirectory": "NANO Commerce",
+    "shortcut": "NANO Commerce",
+    "userDataDirectory": "NANO Commerce",
+    "primaryLocalPort": 4276,
+    "pcSyncPort": 4278
+  },
+  "dataIsolation": {
+    "copyFromLegacy": "manual-opt-in-only",
+    "shareDatabase": false,
+    "shareLocalStorage": false,
+    "shareBackupFolder": false,
+    "shareDeviceActivation": false,
+    "shareLicenseFiles": false
+  },
+  "mobile": {
+    "packageId": "com.nanocommerce.mobile",
+    "sharesLegacyActivation": false,
+    "sharesLegacyStorage": false
+  }
+}
