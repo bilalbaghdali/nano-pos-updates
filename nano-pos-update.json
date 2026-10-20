@@ -3,32 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.90",
+  "version": "1.0.91",
   "releaseDate": "2026-10-20",
   "mandatory": false,
   "importance": "high",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة خيار «الدخول ككمبيوتر ثانوي» مباشرة في صفحة تسجيل الدخول.",
-      "إمكانية إدخال IP الكمبيوتر الرئيسي عبر LAN أو Tailscale ورمز الاقتران واسم الكمبيوتر الثانوي.",
-      "اختبار الاتصال ومزامنة البيانات قبل السماح بالدخول، مع منع الدخول المحلي إذا تعذر الاتصال بالرئيسي.",
-      "إعادة استخدام الربط المحفوظ، مع بقاء الدخول العادي للكمبيوتر الرئيسي دون تغيير.",
-      "الحفاظ على بيانات البرنامج والتفعيل والنسخ الاحتياطية وأيقونة N."
+      "إصلاح عدم ظهور خيارات الكمبيوتر الرئيسي والثانوي داخل شاشة تسجيل الدخول.",
+      "عرض خيار نوع الكمبيوتر مباشرة في واجهة الدخول حتى لو تأخر تحميل JavaScript.",
+      "إظهار IP الكمبيوتر الرئيسي ورمز الاقتران واسم الكمبيوتر عند اختيار الدخول الثانوي.",
+      "ضمان قابلية تمرير نافذة الدخول على الشاشات الصغيرة مع الحفاظ على شرط الاتصال بالرئيسي.",
+      "الحفاظ على بيانات البيع والمخزون والتفعيل وأيقونة N."
     ],
     "fr": [
-      "Ajouter le mode PC secondaire à l'écran de connexion NANO POS.",
-      "Configurer l'adresse LAN/Tailscale, le code d'appairage et le nom du PC.",
-      "Vérifier l'hôte et synchroniser les données avant la connexion; refuser le repli local si l'hôte est inaccessible.",
-      "Réutiliser les connexions appairées tout en préservant le mode principal.",
-      "Conserver les données, licences, sauvegardes et la nouvelle icône N."
+      "Corrige les options de connexion PC principal/secondaire manquantes.",
+      "Le choix du mode est directement intégré à l'écran de connexion.",
+      "Champs d'adresse IP, de code de liaison et de nom d'appareil en mode secondaire.",
+      "Défilement corrigé pour petits écrans et blocage de connexion si l'hôte est indisponible.",
+      "Aucune modification des données, des licences ou de l'icône N."
     ],
     "en": [
-      "Secondary computer sign-in option on the NANO POS login screen.",
-      "Configure primary PC IP over LAN/Tailscale, pairing code and secondary device name.",
-      "Verify host reachability and synchronize before login; block local fallback on connection failure.",
-      "Reuse saved pairing while preserving normal primary-PC login.",
-      "Preserve store records, licenses, backups and the new N icon."
+      "Fixed missing primary/secondary computer options on the login screen.",
+      "Role selection is embedded directly in the login layout, independent of JavaScript initialization.",
+      "Host IP, pairing code and device name appear when secondary login is selected.",
+      "Scrollable login on small screens; host-connection safety check preserved.",
+      "Sales data, inventory, activation and N icon retained."
     ]
   },
   "releaseHistory": {
@@ -1449,33 +1449,59 @@
           "Preserve store records, licenses, backups and the new N icon."
         ]
       }
+    },
+    "1.0.91": {
+      "releaseDate": "2026-10-20",
+      "features": {
+        "ar": [
+          "إصلاح عدم ظهور خيارات الكمبيوتر الرئيسي والثانوي داخل شاشة تسجيل الدخول.",
+          "عرض خيار نوع الكمبيوتر مباشرة في واجهة الدخول حتى لو تأخر تحميل JavaScript.",
+          "إظهار IP الكمبيوتر الرئيسي ورمز الاقتران واسم الكمبيوتر عند اختيار الدخول الثانوي.",
+          "ضمان قابلية تمرير نافذة الدخول على الشاشات الصغيرة مع الحفاظ على شرط الاتصال بالرئيسي.",
+          "الحفاظ على بيانات البيع والمخزون والتفعيل وأيقونة N."
+        ],
+        "fr": [
+          "Corrige les options de connexion PC principal/secondaire manquantes.",
+          "Le choix du mode est directement intégré à l'écran de connexion.",
+          "Champs d'adresse IP, de code de liaison et de nom d'appareil en mode secondaire.",
+          "Défilement corrigé pour petits écrans et blocage de connexion si l'hôte est indisponible.",
+          "Aucune modification des données, des licences ou de l'icône N."
+        ],
+        "en": [
+          "Fixed missing primary/secondary computer options on the login screen.",
+          "Role selection is embedded directly in the login layout, independent of JavaScript initialization.",
+          "Host IP, pairing code and device name appear when secondary login is selected.",
+          "Scrollable login on small screens; host-connection safety check preserved.",
+          "Sales data, inventory, activation and N icon retained."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.90-secondary-login",
+      "id": "nano-pos-v1.0.91-visible-secondary-login",
       "fromVersions": [
-        "1.0.89"
+        "1.0.90"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.90/NANO-POS-Patch-1.0.89-to-1.0.90-SECONDARY-LOGIN.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.90",
-      "sha256": "e4bc124b6b76107ccf5e47f86250c7ee300d10eec618c502450c84aaa123c169",
-      "appAsarSha256": "46a23427cbe8781800c27d7e9412e58f6245d1c618abce458d5dad9cff1e7ae8",
-      "fileName": "NANO-POS-Patch-1.0.89-to-1.0.90-SECONDARY-LOGIN.zip",
-      "sizeBytes": 31388107,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.91/NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.91",
+      "sha256": "8116cd5ee114a5f8af79b66eca83f55441447af3e9a8b77d7a847a645f720b25",
+      "appAsarSha256": "55424bde8d6767ba5e2e76b3736112ca6db51d11e259e52d82a44bd6eed4d55b",
+      "fileName": "NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip",
+      "sizeBytes": 31388938,
       "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.90/NANO-POS-Setup-1.0.90-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.90",
-    "sha256": "82aa56dc5e1beb00dae4f8de4eaa80e902b0263dff29ebb722a621cda9392f21",
-    "fileName": "NANO-POS-Setup-1.0.90-x64.exe",
-    "sizeBytes": 118804973
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.91/NANO-POS-Setup-1.0.91-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.91",
+    "sha256": "03ef620db00ae015bfc076963a1581c11d78a1eceb82eb30ce7e9829693554dc",
+    "fileName": "NANO-POS-Setup-1.0.91-x64.exe",
+    "sizeBytes": 118805923
   },
   "notes": {
-    "ar": "الدخول ككمبيوتر ثانوي من شاشة تسجيل الدخول، مع التحقق من اتصال الكمبيوتر الرئيسي قبل السماح بالدخول.",
-    "fr": "Connexion secondaire et vérification du PC principal depuis l'écran de connexion.",
-    "en": "Secondary PC login with primary connectivity check on sign-in."
+    "ar": "إصلاح ظهور خيارات الدخول على صفحة تسجيل الدخول واستمرار الربط الآمن بالرئيسي.",
+    "fr": "Correction de l'affichage du mode de connexion principal/secondaire.",
+    "en": "Fixed primary/secondary login selection visibility."
   }
 }
