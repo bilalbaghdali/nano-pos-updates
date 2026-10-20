@@ -39,7 +39,7 @@ def build(source,destination):
   assert javascript.count(marker)==1
   javascript=javascript.replace(marker,"document.head.appendChild(style);")
  else:raise AssertionError("Unknown original 1.0.90 login script; stop build")
- assert "document.addEventListener('submit',checkSubmit,true)" in javascript
+ assert ("document.addEventListener('submit',checkSubmit,true)" in javascript or "document.addEventListener('submit',submit,true)" in javascript)
  markup=Path(".github/assets/nano-login-191-static.html").read_text(encoding="utf-8")
  css=Path(".github/assets/nano-login-191.css").read_text(encoding="utf-8")
  assert 'id="nanoLoginPcRoles"' in markup and 'id="nanoSecondaryFields"' in markup
