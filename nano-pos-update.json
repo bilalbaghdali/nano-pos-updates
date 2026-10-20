@@ -3,26 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.88",
-  "releaseDate": "2026-10-19",
+  "version": "1.0.89",
+  "releaseDate": "2026-10-20",
   "mandatory": false,
-  "importance": "normal",
+  "importance": "critical",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "اعتماد أيقونة N مع واجهة متجر لأيقونة NANO POS على سطح المكتب وقائمة ابدأ.",
-      "تضمين الأيقونة في ملف NANO POS.exe ومثبت Windows الجديد 64 بت.",
-      "تحديث اختصار البرنامج دون تعديل بيانات المبيعات أو المخزون أو التفعيل."
+      "تحديث مهم للغاية: عرض آية كريمة أو حديث صحيح داخل البانر العلوي للصفحة الرئيسية بدل النافذة المنبثقة.",
+      "تتغير الرسالة عند كل رجوع فعلي من أحد الأقسام إلى الصفحة الرئيسية، دون تكرارها عند تحديث الإحصائيات.",
+      "الإبقاء على 100 رسالة موثقة مختلفة مع شرحها والمصدر ورابط الاطلاع.",
+      "الحفاظ على أيقونة N الجديدة وعلى المبيعات والمخزون والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
-      "Nouvelle icône N et boutique sur le bureau et dans le menu Démarrer.",
-      "Icône intégrée dans NANO POS.exe et dans l'installateur Windows 64 bits.",
-      "Mise à jour des raccourcis sans toucher aux données ni à la licence."
+      "Mise à jour très importante : verset ou hadith dans la bannière supérieure de l’accueil, sans fenêtre modale.",
+      "La citation change à chaque retour réel à l’accueil, pas à chaque actualisation des statistiques.",
+      "100 messages sourcés avec explication et lien de référence.",
+      "Préservation de l’icône N et des données, licences et sauvegardes."
     ],
     "en": [
-      "New N storefront icon for desktop and Start menu shortcuts.",
-      "Icon embedded in NANO POS.exe and the Windows 64-bit installer.",
-      "Updated shortcuts without modifying store records or activation."
+      "High-priority update: Quran verse or authentic hadith displayed in the Home header banner, not a popup.",
+      "Message changes on every return to Home, not on background statistics refresh.",
+      "100 sourced messages with explanation and reference link.",
+      "Keeps the new N icon, all store records, licenses, and backups."
     ]
   },
   "releaseHistory": {
@@ -1394,19 +1397,56 @@
           "Updated shortcuts without modifying store records or activation."
         ]
       }
+    },
+    "1.0.89": {
+      "releaseDate": "2026-10-20",
+      "features": {
+        "ar": [
+          "تحديث مهم للغاية: عرض آية كريمة أو حديث صحيح داخل البانر العلوي للصفحة الرئيسية بدل النافذة المنبثقة.",
+          "تتغير الرسالة عند كل رجوع فعلي من أحد الأقسام إلى الصفحة الرئيسية، دون تكرارها عند تحديث الإحصائيات.",
+          "الإبقاء على 100 رسالة موثقة مختلفة مع شرحها والمصدر ورابط الاطلاع.",
+          "الحفاظ على أيقونة N الجديدة وعلى المبيعات والمخزون والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Mise à jour très importante : verset ou hadith dans la bannière supérieure de l’accueil, sans fenêtre modale.",
+          "La citation change à chaque retour réel à l’accueil, pas à chaque actualisation des statistiques.",
+          "100 messages sourcés avec explication et lien de référence.",
+          "Préservation de l’icône N et des données, licences et sauvegardes."
+        ],
+        "en": [
+          "High-priority update: Quran verse or authentic hadith displayed in the Home header banner, not a popup.",
+          "Message changes on every return to Home, not on background statistics refresh.",
+          "100 sourced messages with explanation and reference link.",
+          "Keeps the new N icon, all store records, licenses, and backups."
+        ]
+      }
     }
   },
-  "patches": [],
+  "patches": [
+    {
+      "id": "nano-pos-v1.0.89-faith-home-banner",
+      "fromVersions": [
+        "1.0.88"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.89/NANO-POS-Patch-1.0.88-to-1.0.89-HOME-FAITH-BANNER.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.89",
+      "sha256": "aacca685206eb06e1d80348d50337823f16e0ead9c9ee9f519c055120c2786a1",
+      "appAsarSha256": "04f9120f6b1d890943abb199d452da92cc39f8d8d78c415a50cf119ef37af2ab",
+      "fileName": "NANO-POS-Patch-1.0.88-to-1.0.89-HOME-FAITH-BANNER.zip",
+      "sizeBytes": 31394584,
+      "payloadType": "app-asar"
+    }
+  ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.88/NANO-POS-Setup-1.0.88-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.88",
-    "sha256": "f1d0b7b3e1ed8d6b35fc484aba0b10e829955ea94568e226b48d02ee72029f0e",
-    "fileName": "NANO-POS-Setup-1.0.88-x64.exe",
-    "sizeBytes": 118794907
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.89/NANO-POS-Setup-1.0.89-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.89",
+    "sha256": "b9076070e3122b67e90d9a67417ad6c9c00fdb69547b2cc69d49025f8e1bfa03",
+    "fileName": "NANO-POS-Setup-1.0.89-x64.exe",
+    "sizeBytes": 118811623
   },
   "notes": {
-    "ar": "مثبت Windows كامل لتحديث أيقونة البرنامج واختصاراته.",
-    "fr": "Installateur complet Windows avec nouvelle icône.",
-    "en": "Full Windows installer for the new desktop icon."
+    "ar": "تحديث ذو أولوية عالية: الآيات والأحاديث في بانر الرئيسية وتتغير عند الرجوع إليها.",
+    "fr": "Priorité élevée : citations dans la bannière d’accueil, actualisées à chaque retour.",
+    "en": "High priority: sourced Home-banner reminders rotate on each return."
   }
 }
