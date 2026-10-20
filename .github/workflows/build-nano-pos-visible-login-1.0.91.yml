@@ -1,5 +1,5 @@
 name: NANO POS v1.0.91 - Visible Secondary Computer Login Fix
-# Build from authenticated 1.0.90 release; handle the actual published login initializer and preserve the N icon.
+# Source v1.0.90 renderer uses submit() handler; accept both submit handler variants while preserving the N icon.
 
 on:
   push:
