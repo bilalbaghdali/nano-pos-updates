@@ -27,7 +27,7 @@ def build(source_zip, replacement_js, dest_zip):
         obj=header['files'][path]; start=base+int(obj['offset']);size=obj['size'];return obj,start,size
     old,st,size=lookup(SOURCE_FILE)
     assert b'NANO_FAITH_186' in data[st:st+size], 'Wrong faith source'
-    updated=replacement_js.read_bytes()
+    updated=replacement_js.read_bytes().replace(b'\r\n',b'\n')
     assert len(updated)<=size,'Unexpectedly long banner script'
     updated=updated.ljust(size,b' ')
     data[st:st+size]=updated
