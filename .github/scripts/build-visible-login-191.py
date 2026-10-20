@@ -24,13 +24,21 @@ def build(source,destination):
  assert html.count(opening)==1 and html.count('<form id="loginForm"')==1
  begin=html.index(opening);end=html.index("</script>",begin)+9
  javascript=html[begin+len(opening):end-9]
- old="    const container=document.createElement('div');"
- assert javascript.count(old)==1,"Missing expected v1.0.90 dynamic login code"
- p1=javascript.index(old);p2=javascript.index("    const style=document.createElement('style');",p1)
- javascript=javascript[:p1]+"    const container=$('nanoLoginPcRoles');if(!container)return;\n"+javascript[p2:]
- marker="document.head.appendChild(style);form.insertBefore(container,$('loginBtn'));"
- assert javascript.count(marker)==1
- javascript=javascript.replace(marker,"document.head.appendChild(style);")
+ # Support both inspected local builds and the published 1.0.90 renderer.
+ if "const block=document.createElement('div');block.id='nanoLoginPcRoles'" in javascript:
+  javascript=javascript.replace("if(!form||$('nanoLoginPcRoles'))return;","if(!form)return;")
+  p1=javascript.index("const block=document.createElement('div');block.id='nanoLoginPcRoles'")
+  p2=javascript.index("form.insertBefore(block,$('loginBtn'));",p1)
+  javascript=javascript[:p1]+"const block=$('nanoLoginPcRoles');if(!block)return;\n"+javascript[p2:]
+  javascript=javascript.replace("form.insertBefore(block,$('loginBtn'));","",1)
+ elif "const container=document.createElement('div');" in javascript:
+  p1=javascript.index("    const container=document.createElement('div');")
+  p2=javascript.index("    const style=document.createElement('style');",p1)
+  javascript=javascript[:p1]+"    const container=$('nanoLoginPcRoles');if(!container)return;\n"+javascript[p2:]
+  marker="document.head.appendChild(style);form.insertBefore(container,$('loginBtn'));"
+  assert javascript.count(marker)==1
+  javascript=javascript.replace(marker,"document.head.appendChild(style);")
+ else:raise AssertionError("Unknown original 1.0.90 login script; stop build")
  assert "document.addEventListener('submit',checkSubmit,true)" in javascript
  markup=Path(".github/assets/nano-login-191-static.html").read_text(encoding="utf-8")
  css=Path(".github/assets/nano-login-191.css").read_text(encoding="utf-8")
