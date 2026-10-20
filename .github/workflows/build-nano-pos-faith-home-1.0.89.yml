@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/build-nano-pos-icon-1.0.89.yml'
+      - '.github/workflows/build-nano-pos-faith-home-1.0.89.yml'
   workflow_dispatch:
 
 permissions:
