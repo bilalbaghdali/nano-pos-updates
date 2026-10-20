@@ -3,32 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.91",
+  "version": "1.1.0",
   "releaseDate": "2026-10-20",
   "mandatory": false,
   "importance": "high",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح عدم ظهور خيارات الكمبيوتر الرئيسي والثانوي داخل شاشة تسجيل الدخول.",
-      "عرض خيار نوع الكمبيوتر مباشرة في واجهة الدخول حتى لو تأخر تحميل JavaScript.",
-      "إظهار IP الكمبيوتر الرئيسي ورمز الاقتران واسم الكمبيوتر عند اختيار الدخول الثانوي.",
-      "ضمان قابلية تمرير نافذة الدخول على الشاشات الصغيرة مع الحفاظ على شرط الاتصال بالرئيسي.",
-      "الحفاظ على بيانات البيع والمخزون والتفعيل وأيقونة N."
+      "المرحلة الأولى من NANO POS Multi-Commerce: شاشة اختيار نشاط المتجر عند الإعداد الأول فقط، ثم الدخول مباشرة للرئيسية.",
+      "ثمانية أنشطة: المواد الغذائية، الهواتف والإلكترونيات، الملابس والأحذية، العطور والتجميل، الخردوات، قطع الغيار، السيارات، والتجارة المتعددة.",
+      "إظهار النشاط المختار في الرئيسية وزر تغيير النشاط للمدير.",
+      "حفظ اختيار النشاط والوحدات والحقول المقترحة ضمن إعدادات المتجر والتحقق من نجاح الحفظ.",
+      "لا تتغير قواعد حساب المبيعات والمخزون أو طرق البيع الحالية في هذه المرحلة التأسيسية؛ ستضاف الخصائص القطاعية بعد اختبارها."
     ],
     "fr": [
-      "Corrige les options de connexion PC principal/secondaire manquantes.",
-      "Le choix du mode est directement intégré à l'écran de connexion.",
-      "Champs d'adresse IP, de code de liaison et de nom d'appareil en mode secondaire.",
-      "Défilement corrigé pour petits écrans et blocage de connexion si l'hôte est indisponible.",
-      "Aucune modification des données, des licences ou de l'icône N."
+      "Première phase Multi-Commerce: sélection du secteur au premier paramétrage, accès direct au tableau de bord ensuite.",
+      "Huit activités commerciales, notamment alimentation, électronique, mode, cosmétique, quincaillerie, pièces auto et véhicules.",
+      "Activité affichée sur l’accueil et modification réservée à l’administrateur.",
+      "Enregistrement du secteur, des unités et des champs recommandés dans les paramètres du magasin.",
+      "Les règles de vente et de stock ne changent pas dans cette phase de préparation."
     ],
     "en": [
-      "Fixed missing primary/secondary computer options on the login screen.",
-      "Role selection is embedded directly in the login layout, independent of JavaScript initialization.",
-      "Host IP, pairing code and device name appear when secondary login is selected.",
-      "Scrollable login on small screens; host-connection safety check preserved.",
-      "Sales data, inventory, activation and N icon retained."
+      "Multi-Commerce Phase 1: select business sector at first setup only, then open the dashboard directly.",
+      "Eight sector templates including groceries, electronics, apparel, beauty, hardware, parts, cars and mixed retail.",
+      "Display the current activity on Home, with admin-only change control.",
+      "Persist sector, recommended units and fields in store settings and verify save.",
+      "Existing inventory, sales accounting and installments are unchanged in this foundation release."
     ]
   },
   "releaseHistory": {
@@ -1475,33 +1475,59 @@
           "Sales data, inventory, activation and N icon retained."
         ]
       }
+    },
+    "1.1.0": {
+      "releaseDate": "2026-10-20",
+      "features": {
+        "ar": [
+          "المرحلة الأولى من NANO POS Multi-Commerce: شاشة اختيار نشاط المتجر عند الإعداد الأول فقط، ثم الدخول مباشرة للرئيسية.",
+          "ثمانية أنشطة: المواد الغذائية، الهواتف والإلكترونيات، الملابس والأحذية، العطور والتجميل، الخردوات، قطع الغيار، السيارات، والتجارة المتعددة.",
+          "إظهار النشاط المختار في الرئيسية وزر تغيير النشاط للمدير.",
+          "حفظ اختيار النشاط والوحدات والحقول المقترحة ضمن إعدادات المتجر والتحقق من نجاح الحفظ.",
+          "لا تتغير قواعد حساب المبيعات والمخزون أو طرق البيع الحالية في هذه المرحلة التأسيسية؛ ستضاف الخصائص القطاعية بعد اختبارها."
+        ],
+        "fr": [
+          "Première phase Multi-Commerce: sélection du secteur au premier paramétrage, accès direct au tableau de bord ensuite.",
+          "Huit activités commerciales, notamment alimentation, électronique, mode, cosmétique, quincaillerie, pièces auto et véhicules.",
+          "Activité affichée sur l’accueil et modification réservée à l’administrateur.",
+          "Enregistrement du secteur, des unités et des champs recommandés dans les paramètres du magasin.",
+          "Les règles de vente et de stock ne changent pas dans cette phase de préparation."
+        ],
+        "en": [
+          "Multi-Commerce Phase 1: select business sector at first setup only, then open the dashboard directly.",
+          "Eight sector templates including groceries, electronics, apparel, beauty, hardware, parts, cars and mixed retail.",
+          "Display the current activity on Home, with admin-only change control.",
+          "Persist sector, recommended units and fields in store settings and verify save.",
+          "Existing inventory, sales accounting and installments are unchanged in this foundation release."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.91-visible-secondary-login",
+      "id": "nano-pos-v1.1.0-multi-commerce-phase1",
       "fromVersions": [
-        "1.0.90"
+        "1.0.91"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.91/NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.91",
-      "sha256": "8116cd5ee114a5f8af79b66eca83f55441447af3e9a8b77d7a847a645f720b25",
-      "appAsarSha256": "55424bde8d6767ba5e2e76b3736112ca6db51d11e259e52d82a44bd6eed4d55b",
-      "fileName": "NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip",
-      "sizeBytes": 31388938,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.1.0/NANO-POS-Patch-1.0.91-to-1.1.0-MULTI-COMMERCE-PHASE1.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.1.0",
+      "sha256": "3227c4449b6cda9bdc03abc2ff16680f278128396a782cfe331a357fdef34a99",
+      "appAsarSha256": "bb3ba5619ccb21a7a96520a73c9836175d29b254202be7fbfd3ede0836215f55",
+      "fileName": "NANO-POS-Patch-1.0.91-to-1.1.0-MULTI-COMMERCE-PHASE1.zip",
+      "sizeBytes": 31393097,
       "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.91/NANO-POS-Setup-1.0.91-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.91",
-    "sha256": "03ef620db00ae015bfc076963a1581c11d78a1eceb82eb30ce7e9829693554dc",
-    "fileName": "NANO-POS-Setup-1.0.91-x64.exe",
-    "sizeBytes": 118805923
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.1.0/NANO-POS-Setup-1.1.0-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.1.0",
+    "sha256": "dfcdde69b6df38d6695caa5b35a5a737004f75fd24011783cab92b09912181c6",
+    "fileName": "NANO-POS-Setup-1.1.0-x64.exe",
+    "sizeBytes": 118860998
   },
   "notes": {
-    "ar": "إصلاح ظهور خيارات الدخول على صفحة تسجيل الدخول واستمرار الربط الآمن بالرئيسي.",
-    "fr": "Correction de l'affichage du mode de connexion principal/secondaire.",
-    "en": "Fixed primary/secondary login selection visibility."
+    "ar": "المرحلة الأولى لنظام متعدد الأنشطة: شاشة اختيار أولية، ثم دخول مباشر إلى الرئيسية مع زر تغيير النشاط. وظائف البيع القطاعية تأتي في إصدارات لاحقة.",
+    "fr": "Multi-Commerce Phase 1: choix initial d’activité, accès direct au tableau de bord, sans modification du moteur de vente.",
+    "en": "Multi-Commerce Phase 1: initial activity selection with direct dashboard entry thereafter, existing sales engine preserved."
   }
 }
