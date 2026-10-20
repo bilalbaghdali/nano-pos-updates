@@ -1,0 +1,33 @@
+name: Unpublish NANO POS Multi-Commerce v1.1.0
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unpublish-multicommerce-1.1.0.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  unpublish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm original update channel is restored
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          with open('nano-pos-update.json',encoding='utf-8') as f: m=json.load(f)
+          assert m['version']=='1.0.91' and m['published'] is True, 'Do not unpublish until stable channel has been restored'
+          assert 'v1.0.91' in m['download']['directUrl'], 'Incorrect stable download'
+          print('Original NANO POS v1.0.91 manifest is active')
+          PY
+      - name: Unpublish v1.1.0 (preserve assets as a reversible draft)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release edit v1.1.0 --draft
+          is_draft="$(gh release view v1.1.0 --json isDraft --jq '.isDraft')"
+          test "$is_draft" = true
+          echo 'Multi-Commerce v1.1.0 release is now an unpublished draft.'
