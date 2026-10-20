@@ -3,29 +3,32 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.89",
+  "version": "1.0.90",
   "releaseDate": "2026-10-20",
   "mandatory": false,
-  "importance": "critical",
+  "importance": "high",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحديث مهم للغاية: عرض آية كريمة أو حديث صحيح داخل البانر العلوي للصفحة الرئيسية بدل النافذة المنبثقة.",
-      "تتغير الرسالة عند كل رجوع فعلي من أحد الأقسام إلى الصفحة الرئيسية، دون تكرارها عند تحديث الإحصائيات.",
-      "الإبقاء على 100 رسالة موثقة مختلفة مع شرحها والمصدر ورابط الاطلاع.",
-      "الحفاظ على أيقونة N الجديدة وعلى المبيعات والمخزون والتفعيل والنسخ الاحتياطية."
+      "إضافة خيار «الدخول ككمبيوتر ثانوي» مباشرة في صفحة تسجيل الدخول.",
+      "إمكانية إدخال IP الكمبيوتر الرئيسي عبر LAN أو Tailscale ورمز الاقتران واسم الكمبيوتر الثانوي.",
+      "اختبار الاتصال ومزامنة البيانات قبل السماح بالدخول، مع منع الدخول المحلي إذا تعذر الاتصال بالرئيسي.",
+      "إعادة استخدام الربط المحفوظ، مع بقاء الدخول العادي للكمبيوتر الرئيسي دون تغيير.",
+      "الحفاظ على بيانات البرنامج والتفعيل والنسخ الاحتياطية وأيقونة N."
     ],
     "fr": [
-      "Mise à jour très importante : verset ou hadith dans la bannière supérieure de l’accueil, sans fenêtre modale.",
-      "La citation change à chaque retour réel à l’accueil, pas à chaque actualisation des statistiques.",
-      "100 messages sourcés avec explication et lien de référence.",
-      "Préservation de l’icône N et des données, licences et sauvegardes."
+      "Ajouter le mode PC secondaire à l'écran de connexion NANO POS.",
+      "Configurer l'adresse LAN/Tailscale, le code d'appairage et le nom du PC.",
+      "Vérifier l'hôte et synchroniser les données avant la connexion; refuser le repli local si l'hôte est inaccessible.",
+      "Réutiliser les connexions appairées tout en préservant le mode principal.",
+      "Conserver les données, licences, sauvegardes et la nouvelle icône N."
     ],
     "en": [
-      "High-priority update: Quran verse or authentic hadith displayed in the Home header banner, not a popup.",
-      "Message changes on every return to Home, not on background statistics refresh.",
-      "100 sourced messages with explanation and reference link.",
-      "Keeps the new N icon, all store records, licenses, and backups."
+      "Secondary computer sign-in option on the NANO POS login screen.",
+      "Configure primary PC IP over LAN/Tailscale, pairing code and secondary device name.",
+      "Verify host reachability and synchronize before login; block local fallback on connection failure.",
+      "Reuse saved pairing while preserving normal primary-PC login.",
+      "Preserve store records, licenses, backups and the new N icon."
     ]
   },
   "releaseHistory": {
@@ -1420,33 +1423,59 @@
           "Keeps the new N icon, all store records, licenses, and backups."
         ]
       }
+    },
+    "1.0.90": {
+      "releaseDate": "2026-10-20",
+      "features": {
+        "ar": [
+          "إضافة خيار «الدخول ككمبيوتر ثانوي» مباشرة في صفحة تسجيل الدخول.",
+          "إمكانية إدخال IP الكمبيوتر الرئيسي عبر LAN أو Tailscale ورمز الاقتران واسم الكمبيوتر الثانوي.",
+          "اختبار الاتصال ومزامنة البيانات قبل السماح بالدخول، مع منع الدخول المحلي إذا تعذر الاتصال بالرئيسي.",
+          "إعادة استخدام الربط المحفوظ، مع بقاء الدخول العادي للكمبيوتر الرئيسي دون تغيير.",
+          "الحفاظ على بيانات البرنامج والتفعيل والنسخ الاحتياطية وأيقونة N."
+        ],
+        "fr": [
+          "Ajouter le mode PC secondaire à l'écran de connexion NANO POS.",
+          "Configurer l'adresse LAN/Tailscale, le code d'appairage et le nom du PC.",
+          "Vérifier l'hôte et synchroniser les données avant la connexion; refuser le repli local si l'hôte est inaccessible.",
+          "Réutiliser les connexions appairées tout en préservant le mode principal.",
+          "Conserver les données, licences, sauvegardes et la nouvelle icône N."
+        ],
+        "en": [
+          "Secondary computer sign-in option on the NANO POS login screen.",
+          "Configure primary PC IP over LAN/Tailscale, pairing code and secondary device name.",
+          "Verify host reachability and synchronize before login; block local fallback on connection failure.",
+          "Reuse saved pairing while preserving normal primary-PC login.",
+          "Preserve store records, licenses, backups and the new N icon."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.89-faith-home-banner",
+      "id": "nano-pos-v1.0.90-secondary-login",
       "fromVersions": [
-        "1.0.88"
+        "1.0.89"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.89/NANO-POS-Patch-1.0.88-to-1.0.89-HOME-FAITH-BANNER.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.89",
-      "sha256": "aacca685206eb06e1d80348d50337823f16e0ead9c9ee9f519c055120c2786a1",
-      "appAsarSha256": "04f9120f6b1d890943abb199d452da92cc39f8d8d78c415a50cf119ef37af2ab",
-      "fileName": "NANO-POS-Patch-1.0.88-to-1.0.89-HOME-FAITH-BANNER.zip",
-      "sizeBytes": 31394584,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.90/NANO-POS-Patch-1.0.89-to-1.0.90-SECONDARY-LOGIN.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.90",
+      "sha256": "e4bc124b6b76107ccf5e47f86250c7ee300d10eec618c502450c84aaa123c169",
+      "appAsarSha256": "46a23427cbe8781800c27d7e9412e58f6245d1c618abce458d5dad9cff1e7ae8",
+      "fileName": "NANO-POS-Patch-1.0.89-to-1.0.90-SECONDARY-LOGIN.zip",
+      "sizeBytes": 31388107,
       "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.89/NANO-POS-Setup-1.0.89-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.89",
-    "sha256": "b9076070e3122b67e90d9a67417ad6c9c00fdb69547b2cc69d49025f8e1bfa03",
-    "fileName": "NANO-POS-Setup-1.0.89-x64.exe",
-    "sizeBytes": 118811623
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.90/NANO-POS-Setup-1.0.90-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.90",
+    "sha256": "82aa56dc5e1beb00dae4f8de4eaa80e902b0263dff29ebb722a621cda9392f21",
+    "fileName": "NANO-POS-Setup-1.0.90-x64.exe",
+    "sizeBytes": 118804973
   },
   "notes": {
-    "ar": "تحديث ذو أولوية عالية: الآيات والأحاديث في بانر الرئيسية وتتغير عند الرجوع إليها.",
-    "fr": "Priorité élevée : citations dans la bannière d’accueil, actualisées à chaque retour.",
-    "en": "High priority: sourced Home-banner reminders rotate on each return."
+    "ar": "الدخول ككمبيوتر ثانوي من شاشة تسجيل الدخول، مع التحقق من اتصال الكمبيوتر الرئيسي قبل السماح بالدخول.",
+    "fr": "Connexion secondaire et vérification du PC principal depuis l'écran de connexion.",
+    "en": "Secondary PC login with primary connectivity check on sign-in."
   }
 }
