@@ -1,0 +1,11 @@
+#loginOverlay.nano-commerce-login:not(.hidden) .nano-commerce-login-card{max-height:calc(100dvh - 24px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-width:thin!important}
+#loginOverlay.nano-commerce-login:not(.hidden) .nano-commerce-login-side{min-height:100dvh!important;overflow:visible!important}
+#loginOverlay .nano-login-mode-select{display:block!important;visibility:visible!important;opacity:1!important;flex-shrink:0!important;margin:12px 0!important;padding:12px!important;border:1.5px solid #9dc5f2!important;border-radius:14px!important;background:#f0f7ff!important;color:#123b67!important;font-family:inherit!important}
+#loginOverlay .nano-login-mode-title{display:block;padding:0;margin:0 0 9px;color:#134e88;font-weight:900;font-size:12px}
+#loginOverlay .nano-login-mode-select .nano-pc-modes{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px!important}
+#loginOverlay .nano-login-mode-select .nano-pc-modes label{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important;padding:9px 7px!important;line-height:1.5!important;background:#fff!important;border:1px solid #a9c8e6!important;border-radius:9px!important;font-size:11px!important;font-weight:800!important;cursor:pointer!important;color:#184d7b!important}
+#loginOverlay .nano-login-mode-select input[type=radio]{flex:none!important;width:15px!important;height:15px!important;accent-color:#1967d2!important}
+#loginOverlay #nanoSecondaryFields[hidden]{display:none!important}
+#loginOverlay #nanoSecondaryFields{display:block}
+#loginOverlay #nanoSecondaryFields input{display:block;width:100%;max-width:100%}
+@media(max-width:600px){#loginOverlay .nano-login-mode-select .nano-pc-modes{grid-template-columns:1fr!important}#loginOverlay.nano-commerce-login:not(.hidden) .nano-commerce-login-card{max-height:calc(100dvh - 12px)!important}}
