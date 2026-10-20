@@ -1,4 +1,5 @@
 name: NANO POS v1.0.89 - Important Faith Home Banner Update
+# Windows checkout line endings are normalized by build-faith-home-189.py.
 
 on:
   push:
