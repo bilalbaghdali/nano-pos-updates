@@ -1,0 +1,44 @@
+'use strict';
+const assert=require('node:assert/strict');
+const d=require('./trade-domain.cjs');
+const throws=(fn,code)=>assert.throws(fn,e=>e.code===code,code);
+const src=[{lineId:'A',quantity:'3',unitCost:'100.00'},{lineId:'B',quantity:'1.5',unitCost:'200.00'}];
+const pristine=JSON.stringify(src);
+const c=d.purchaseTotal(src,{freight:'10.01',otherFees:'2.04',nonrecoverableTax:'3.00'});
+assert.equal(c.subtotalCents,60000);
+assert.equal(c.extraCents,1505);
+assert.equal(c.totalCents,61505);
+assert.equal(c.lines.reduce((s,x)=>s+x.landedCents,0),61505);
+assert.equal(c.lines.reduce((s,x)=>s+x.allocatedChargesCents,0),1505);
+assert.equal(JSON.stringify(src),pristine);
+const zero=d.purchaseTotal([{lineId:'A',quantity:1,unitCost:'0'},{lineId:'B',quantity:1,unitCost:'0'}],{freight:'0.01'});
+assert.deepEqual(zero.lines.map(x=>x.allocatedChargesCents),[1,0]);
+throws(()=>d.purchaseTotal([{lineId:'A',quantity:1,unitCost:'9'},{lineId:'A',quantity:1,unitCost:'3'}]),'duplicate_line_id');
+throws(()=>d.purchaseTotal([{lineId:'A',quantity:-1,unitCost:'3'}]),'invalid_decimal');
+throws(()=>d.purchaseTotal([{lineId:'A',quantity:'1.0001',unitCost:'3'}]),'invalid_decimal');
+throws(()=>d.purchaseTotal([{lineId:'A',quantity:1,unitCost:'3.005'}]),'invalid_decimal');
+assert.equal(d.targetSellPrice('100','20').sellingPriceCents,12500);
+assert.equal(d.targetSellPrice('100','0').sellingPriceCents,10000);
+throws(()=>d.targetSellPrice('100','100'),'invalid_margin');
+const order=[{lineId:'A',quantity:'5'},{lineId:'B',quantity:'3'}];
+const earlier=[{receiptId:'receipt-order-0001',lines:[{lineId:'A',quantity:'3'}]}];
+const next={receiptId:'receipt-order-0002',lines:[{lineId:'A',quantity:'2'},{lineId:'B',quantity:'3'}]};
+const applied=d.receiptPlan(order,earlier,next);
+assert.equal(applied.duplicate,false);assert.equal(applied.complete,true);
+assert.deepEqual(applied.movements,[{lineId:'A',qtyMilli:2000},{lineId:'B',qtyMilli:3000}]);
+assert.equal(d.receiptPlan(order,earlier,{...earlier[0]}).duplicate,true);
+throws(()=>d.receiptPlan(order,earlier,{receiptId:'receipt-order-0002',lines:[{lineId:'A',quantity:'3'}]}),'over_receipt');
+throws(()=>d.receiptPlan(order,earlier,{receiptId:'receipt-order-0001',lines:[{lineId:'A',quantity:'4'}]}),'receipt_id_conflict');
+const settlement=d.splitPayment('150.50',[{method:'cash',amount:'50.5'},{method:'card',amount:'75'}]);
+assert.equal(settlement.paidCents,12550);assert.equal(settlement.debtCents,2500);
+throws(()=>d.splitPayment('100',[{method:'cash',amount:101}]),'overpayment_requires_change_handling');
+throws(()=>d.splitPayment('100',[{method:'crypto',amount:1}]),'invalid_payment_method');
+assert.deepEqual(d.returnPlan([{lineId:'A',quantity:'3'}],[{lineId:'A',quantity:'1'}],[{lineId:'A',quantity:'2'}]).movements,[{lineId:'A',qtyMilli:2000}]);
+throws(()=>d.returnPlan([{lineId:'A',quantity:'3'}],[{lineId:'A',quantity:'2'}],[{lineId:'A',quantity:'2'}]),'return_exceeds_sale');
+const vendors=d.rankSupplierQuotes([
+ {supplierId:'fast',unitCost:'100',freight:'10',leadDays:1},
+ {supplierId:'cheap',unitCost:'99',freight:'1',leadDays:5}
+],2);
+assert.equal(vendors[0].supplierId,'cheap');
+throws(()=>d.rankSupplierQuotes([{supplierId:'x',unitCost:10,leadDays:-1}],1),'invalid_lead_days');
+console.log('PASS: purchase, margin, supplier, partial receipt, payment split, returns; all pure');
