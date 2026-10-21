@@ -20,11 +20,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p source work
+          curl -fsSL https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json -o source/latest-manifest.json
           gh release download v1.0.101 --pattern NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip --dir source
           python3 - <<'PY'
           from pathlib import Path
           import zipfile,json,hashlib
-          d=json.loads(Path('nano-pos-update.json').read_text())
+          d=json.loads(Path('source/latest-manifest.json').read_text())
           assert d['version']=='1.0.101' and d['published']
           f=Path('source/NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip')
           assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
