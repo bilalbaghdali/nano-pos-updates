@@ -58,12 +58,11 @@ def payment_bridge(s):
      }
      // Keep a snapshot""")
  s=once(s,
- "      db.sales.unshift(sale);\n      if (remaining > 0) reviseCustomerBalance(customer.id,remaining);",
- """      if(__nanoId105){
+ "if (remaining > 0) reviseCustomerBalance(customer.id,remaining);",
+ """if(__nanoId105){
         sale.nano_checkout_operation_id=__nanoId105;
         sale.nano_checkout_signature=__nanoSignature105;
       }
-      db.sales.unshift(sale);
       if (remaining > 0) reviseCustomerBalance(customer.id,remaining);""")
  return s
 def notes(s):
