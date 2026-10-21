@@ -32,7 +32,7 @@ jobs:
           node-version: '22'
       - name: Verify official v1.0.93 base and fetch ZIP
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           python -c "import json;d=json.load(open('nano-pos-update.json',encoding='utf8'));assert d['version']=='1.0.93' and d['published'];assert d['patches'][0]['appAsarSha256']=='74725370d317031683794312bcfebd3b131c8ec64e1e4db7c4e2083814f5d269'"
@@ -61,7 +61,7 @@ jobs:
           pwsh -NoProfile -File .github/tests/test-stability-194.ps1 -SourceRoot "$(pwd)/review"
       - name: Publish only after successful Windows tests
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           file='NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip'
