@@ -1,0 +1,26 @@
+name: NANO POS v1.0.102 - Payment Ledger Foundation Tests
+on:
+  push:
+    branches: ['feature/payment-ledger-102']
+    paths: ['development/trade/nano-payment-ledger-102.js','development/trade/test-payment-ledger-102.cjs','.github/workflows/test-payment-ledger-102.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  calculate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest,windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test split/debt totals, duplicate IDs and untouched data
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd development/trade
+          node --check nano-payment-ledger-102.js
+          node --check test-payment-ledger-102.cjs
+          node test-payment-ledger-102.cjs
