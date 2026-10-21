@@ -1,0 +1,100 @@
+name: NANO POS v1.0.95 - Fast Checkout and Invoice Safety
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-fast-invoices-195.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-195
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official source
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.95 >/dev/null 2>&1 || { echo 'Release exists' >&2; exit 1; }
+          mkdir -p incoming build
+          gh release download v1.0.94 --pattern NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip --dir incoming
+          python3 - <<'PY'
+          import json,hashlib,zipfile
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text())
+          assert d['version']=='1.0.94' and d['published']
+          f=Path('incoming/NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          PY
+      - name: Build, validate and test v1.0.95
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-pos-195.py incoming/NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip build
+          python3 - <<'PY'
+          import struct,json,zipfile,pathlib
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,b,c,n=struct.unpack_from('<4I',data)
+          assert magic==4 and b==c+4
+          header=json.loads(data[16:16+n])
+          def extract(name):
+            ent=header['files'][name]
+            return data[8+b+int(ent['offset']):8+b+int(ent['offset'])+ent['size']]
+          assert json.loads(extract('package.json'))['version']=='1.0.95'
+          assert extract('nano-sales-safe-195.js')==pathlib.Path('.github/assets/nano-sales-safe-195.js').read_bytes()
+          pathlib.Path('build/browser-bridge.js').write_bytes(extract('browser-bridge.js'))
+          PY
+          for f in build/renderer.js build/nano-v136-shortcuts.js build/nano-sales-safe-195.js build/browser-bridge.js; do node --check "$f"; done
+          cp .github/scripts/test-pos-195.cjs build/
+          (cd build && node test-pos-195.cjs)
+      - name: Publish only after tests pass
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.95 NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip --target "$GITHUB_SHA" --title 'NANO POS v1.0.95 — تحسينات البيع السريع والفواتير' --notes 'إصلاح F2 لتعليق السلة، منع تكرار تأكيد البيع أثناء التنفيذ، وحماية تعديل الفواتير إذا كانت بنودها الأصلية غير موجودة. الحفاظ على قاعدة البيانات والتفعيل.'
+          gh release view v1.0.95 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip
+      - name: Update auto-update manifest
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,zipfile,datetime
+          from pathlib import Path
+          path=Path('nano-pos-update.json')
+          d=json.loads(path.read_text(encoding='utf8'))
+          assert d['version']=='1.0.94' and d['published']
+          f=Path('NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip')
+          with zipfile.ZipFile(f) as z: asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.95'
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.95/'+f.name
+          notes={'ar':['إصلاح F2 لتعليق سلة البيع بدل البحث.','منع التأكيد المزدوج أثناء معالجة البيع.','حماية تعديل الفواتير من فقدان بنود المنتجات والدفعات.','الحفاظ على بيانات المتجر والمخزون والتفعيل.'],
+                 'fr':['F2 suspend le panier plutôt que lancer la recherche.','Prévention de la double confirmation.','Modification de facture refusée si des produits ou lots sont manquants.'],
+                 'en':['F2 suspends the POS cart instead of opening search.','Protect against duplicate checkout confirmation.','Refuse incomplete invoice edits when a product or batch is missing.']}
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.95',published=True,releaseDate=day,mandatory=False,importance='normal',features=notes)
+          d.setdefault('releaseHistory',{})['1.0.95']={'releaseDate':day,'features':notes}
+          d['patches']=[{'id':'nano-pos-v1.0.95-fast-sales-invoices','fromVersions':['1.0.94'],'directUrl':url,'pageUrl':page,
+                         'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),'appAsarSha256':asar,'fileName':f.name,
+                         'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'تحسينات البيع السريع والفواتير.','fr':'Améliorations des ventes rapides et des factures.','en':'Fast sales and invoice improvements.'}
+          path.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.95 fast sale invoice safety'
+          git push origin HEAD:refs/heads/main
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-v1.0.95
+          path: NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip
+          if-no-files-found: error
