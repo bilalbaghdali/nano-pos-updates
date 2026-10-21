@@ -1,0 +1,18 @@
+name: Audit v1.0.105 POS cash and boot sources
+on:
+  push:
+    branches: [feature/cash-change-performance-106]
+    paths: [.github/workflows/audit-cash-performance-106.yml]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read verified published app archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v1.0.105 --pattern NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip
+          python3 .github/scripts/audit-cash-performance-106.py NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip
