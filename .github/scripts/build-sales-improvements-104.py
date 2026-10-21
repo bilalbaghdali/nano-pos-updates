@@ -116,6 +116,8 @@ def build(source,target,directory):
    stride=int(integrity.get('blockSize',4194304))
    integrity['blocks']=[H(value[i:i+stride]) for i in range(0,len(value),stride)]
   data.extend(value)
+  if name in {'browser-bridge.js','nano-payment-ledger-102.js'}:
+   (directory/name).write_bytes(value)
   if name in modified:
    (directory/name).parent.mkdir(parents=True,exist_ok=True)
    (directory/name).write_bytes(value)
