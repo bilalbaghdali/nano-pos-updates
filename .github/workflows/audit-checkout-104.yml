@@ -1,4 +1,5 @@
 name: Audit NANO POS v1.0.103 Checkout For Improvements
+# repeat audit after parser correction
 on:
   push:
     branches: [fix/sales-ui-improvements-104]
