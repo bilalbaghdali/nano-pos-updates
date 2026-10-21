@@ -1,0 +1,69 @@
+name: Trade Domain - Staged Purchase and Sales Checks
+on:
+  push:
+    branches:
+      - feature/purchase-sales-stage-1
+    paths:
+      - 'development/trade/**'
+      - '.github/workflows/test-trade-stage-1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract_tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run Node.js purchase/sales financial invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd development/trade
+          node --check trade-domain.cjs
+          node --check test-trade-domain.cjs
+          node --check test-properties.cjs
+          node test-trade-domain.cjs
+          node test-properties.cjs
+      - name: Ensure no live database, backup, activation or updater files were touched
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main:refs/remotes/origin/main
+          files="$(git diff --name-only origin/main...HEAD)"
+          echo "$files"
+          if echo "$files" | grep -E '^(app\.asar|nano-pos-update\.json|mobile/|src/|database/|activation/|backup/|resources/|app/)' ; then
+            echo 'Protected application or manifest file unexpectedly changed' >&2
+            exit 1
+          fi
+  verified_source_baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check current production version and artifact checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p incoming
+          gh release download v1.0.98 --pattern NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip --dir incoming
+          python3 - <<'PY'
+          import json,zipfile,hashlib
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert m['published'] and m['version']=='1.0.98'
+          f=Path('incoming/NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          print('PASS: official 1.0.98 SHA verified; no business data touched')
+          PY
