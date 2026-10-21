@@ -3,29 +3,27 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.97",
+  "version": "1.0.98",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "التحقق تلقائيًا من وجود تحديثات عند تشغيل NANO POS ثم دوريًا أثناء عمله.",
-      "تحميل التحديث الموثق وفحص سلامته تلقائيًا داخل البرنامج دون تنزيل ZIP يدويًا.",
-      "تثبيت التحديث وإعادة فتح البرنامج عند شاشة الدخول؛ تأجيل التثبيت أثناء المعاملات النشطة.",
-      "عرض رقم الإصدار ومميزاته، مع المحافظة على بيانات المتجر والتفعيل وإصلاحات المزامنة السابقة."
+      "إضافة زر تحليل الاحتياج المتوقع داخل قائمة المنتجات الناقصة الحالية، دون إنشاء شاشة مكررة.",
+      "تقدير معدل البيع اليومي وأيام تغطية المخزون والكمية المقترحة للشراء، مع الطباعة والتصدير.",
+      "تبقى الحسابات استرشادية للقراءة فقط ولا تنشئ فاتورة شراء أو تعدل المخزون.",
+      "المحافظة على بيانات المتجر والتفعيل والتحسينات السابقة للمزامنة والتحديثات."
     ],
     "fr": [
-      "Recherche automatique de mises à jour au lancement et périodiquement.",
-      "Téléchargement et vérification SHA-256 directement dans NANO POS.",
-      "Installation à la connexion, différée pendant les ventes actives.",
-      "Version, notes, données et activation conservées."
+      "Estimation des besoins dans la liste actuelle des ruptures de stock.",
+      "Moyenne des ventes par jour, jours de couverture, quantités suggérées et export.",
+      "Lecture seule sans achats ou mouvements de stock automatiques."
     ],
     "en": [
-      "Automatically check for updates at startup and periodically.",
-      "Automatically download and verify official updates inside NANO POS.",
-      "Install and restart on the sign-in screen, deferring while sales are active.",
-      "Keep release notes, store data, activation and previous sync fixes."
+      "Demand estimation in the existing shortage list, without duplicate pages.",
+      "Average daily sales, stock coverage and suggested quantities in print and CSV.",
+      "Read-only calculations; no stock mutations or automatic purchases."
     ]
   },
   "releaseHistory": {
@@ -1602,32 +1600,53 @@
           "Keep release notes, store data, activation and previous sync fixes."
         ]
       }
+    },
+    "1.0.98": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "إضافة زر تحليل الاحتياج المتوقع داخل قائمة المنتجات الناقصة الحالية، دون إنشاء شاشة مكررة.",
+          "تقدير معدل البيع اليومي وأيام تغطية المخزون والكمية المقترحة للشراء، مع الطباعة والتصدير.",
+          "تبقى الحسابات استرشادية للقراءة فقط ولا تنشئ فاتورة شراء أو تعدل المخزون.",
+          "المحافظة على بيانات المتجر والتفعيل والتحسينات السابقة للمزامنة والتحديثات."
+        ],
+        "fr": [
+          "Estimation des besoins dans la liste actuelle des ruptures de stock.",
+          "Moyenne des ventes par jour, jours de couverture, quantités suggérées et export.",
+          "Lecture seule sans achats ou mouvements de stock automatiques."
+        ],
+        "en": [
+          "Demand estimation in the existing shortage list, without duplicate pages.",
+          "Average daily sales, stock coverage and suggested quantities in print and CSV.",
+          "Read-only calculations; no stock mutations or automatic purchases."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-197-auto-in-app",
+      "id": "nano-pos-v1.0.98-smart-inventory",
       "fromVersions": [
-        "1.0.96"
+        "1.0.97"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.97/NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.97",
-      "sha256": "82360f1dd33308bc059f586b46ea84cc22b31ae251348bdcec6a4fcbf3ff65eb",
-      "appAsarSha256": "6cb54593d444e93faef4f2bd5d72959e1d8268d1a69f0fa9310c55a77e360571",
-      "fileName": "NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip",
-      "sizeBytes": 31388955,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.98/NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.98",
+      "sha256": "0039a0d04f90720ccb1be6f53770a77968be3e65a90c503d3a1345c4b8fa0930",
+      "appAsarSha256": "284f6fb14f6fc006b49de6dab3d6a4d0d305bb865796e6ac52b6a62d8d72ada3",
+      "fileName": "NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip",
+      "sizeBytes": 31390647,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.97",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.98",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "التحديث الآلي المدمج مع البرنامج.",
-    "fr": "Mises à jour automatiques intégrées.",
-    "en": "Automatic in-app updates."
+    "ar": "تطوير المخزون الذكي دون المساس بالبيانات.",
+    "fr": "Inventaire intelligent et recommandations sans modifier les données.",
+    "en": "Smart inventory and safe read-only recommendations."
   }
 }
