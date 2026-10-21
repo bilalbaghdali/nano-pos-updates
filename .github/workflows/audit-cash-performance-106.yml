@@ -2,7 +2,7 @@ name: Audit v1.0.105 POS cash and boot sources
 on:
   push:
     branches: [feature/cash-change-performance-106]
-    paths: [.github/workflows/audit-cash-performance-106.yml]
+    paths: [.github/workflows/audit-cash-performance-106.yml, .github/scripts/audit-cash-performance-106.py]
 permissions:
   contents: read
 jobs:
