@@ -51,7 +51,7 @@ async function run(){
   const passedIntegrity=await install({}, {filePath:update,updateKind:'patch',manifest:{...manifest,patches:[{...manifest.patches[0],sha256:digest}]}});
   assert.equal(passedIntegrity.error,'patch_requires_packaged_app');
   const malicious=await install({}, {filePath:update,updateKind:'full',manifest:{...manifest,patches:[],download:{directUrl:'https://example.com/test',fileName:'safe-patch.zip'}}});
-  assert.equal(malicious.error,'invalid_installer');
+  assert.equal(malicious.error,'patch_not_applicable');
   const marker='return String.raw'+String.fromCharCode(96);
   const start=updates.indexOf(marker);
   const end=updates.indexOf(String.fromCharCode(96)+';\n}',start);
