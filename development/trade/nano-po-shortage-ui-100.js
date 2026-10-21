@@ -78,7 +78,11 @@
  async function save(){
   if(busy)return;
   try{
-    if(pending===null)pending=prepare();
+    if(pending===null){
+      pending=prepare();
+      // After any remote attempt the payload and operation IDs must stay frozen for safe replay.
+      for(const input of popup.querySelectorAll('input,select'))input.disabled=true;
+    }
     if(!pending.length){status(t().none);return;}
     busy=true;
     const btn=doc.getElementById('nanoPoShortageSave100');btn.disabled=true;
