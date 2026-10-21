@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.105",
+  "version": "1.0.106",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "ملخص الدفع يعرض المبلغ الإجمالي وطريقة الدفع وحالة التسديد الكامل أو الدين.",
-      "حماية المحاسبة والمخزون من تسجيل نفس البيع مرتين عند الضغط المتكرر أو إعادة المحاولة.",
-      "التحقق من الزبون المسجل قبل البيع بالدين ومن صحة مبلغ الفاتورة قبل التسجيل.",
-      "طريقة دفع واحدة فقط دون المبلغ المستلم أو الدفع المختلط، مع حفظ الفواتير والديون السابقة."
+      "تحسينات: إدخال المبلغ النقدي المستلم وحساب الصرف بدقة مع اقتراح فئات الدينار الجزائري لإرجاعه.",
+      "منع تسجيل بيع نقدي بمبلغ غير كافٍ، مع حفظ مبالغ النقد والصرف الفعلي المحسوب بالفاتورة.",
+      "فتح نافذة البرنامج دون انتظار اكتمال تهيئة خدمات المزامنة الاختيارية، وتشغيلها بعدها.",
+      "الحفاظ على البيع بالدين الكامل وطريقة دفع واحدة والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
-      "Résumé de la facture, du mode et du statut de règlement.",
-      "Prévention des ventes dupliquées grâce à un identifiant de transaction durable.",
-      "Vérification du client avant une vente entièrement à crédit.",
-      "Un seul mode de paiement et aucun champ montant reçu ou paiement mixte."
+      "Retour du calcul de monnaie avec répartition conseillée en DZD.",
+      "Contrôle du montant remis et historique des espèces dans la facture.",
+      "Démarrage de la fenêtre sans attendre les serveurs de synchronisation facultatifs.",
+      "Ventes entièrement à crédit, licences, sauvegardes et moyens uniques préservés."
     ],
     "en": [
-      "Clear invoice total, payment method and full/credit payment summary.",
-      "Persistent duplicate-sale protection for retries and repeated checkout.",
-      "Customer validation for credit and transaction amount verification.",
-      "Single payment method; no received amount or mixed checkout."
+      "Restore customer cash tender and exact change with recommended DZD denominations.",
+      "Block insufficient cash and record change information with the sale.",
+      "Show window without waiting for optional phone/PC sync services to bind.",
+      "Preserve full-credit sales, single method, licenses and backups."
     ]
   },
   "releaseHistory": {
@@ -1784,11 +1784,34 @@
           "Single payment method; no received amount or mixed checkout."
         ]
       }
+    },
+    "1.0.106": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "تحسينات: إدخال المبلغ النقدي المستلم وحساب الصرف بدقة مع اقتراح فئات الدينار الجزائري لإرجاعه.",
+          "منع تسجيل بيع نقدي بمبلغ غير كافٍ، مع حفظ مبالغ النقد والصرف الفعلي المحسوب بالفاتورة.",
+          "فتح نافذة البرنامج دون انتظار اكتمال تهيئة خدمات المزامنة الاختيارية، وتشغيلها بعدها.",
+          "الحفاظ على البيع بالدين الكامل وطريقة دفع واحدة والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Retour du calcul de monnaie avec répartition conseillée en DZD.",
+          "Contrôle du montant remis et historique des espèces dans la facture.",
+          "Démarrage de la fenêtre sans attendre les serveurs de synchronisation facultatifs.",
+          "Ventes entièrement à crédit, licences, sauvegardes et moyens uniques préservés."
+        ],
+        "en": [
+          "Restore customer cash tender and exact change with recommended DZD denominations.",
+          "Block insufficient cash and record change information with the sale.",
+          "Show window without waiting for optional phone/PC sync services to bind.",
+          "Preserve full-credit sales, single method, licenses and backups."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-105-professional-payment-improvements",
+      "id": "nano-pos-v106-cash-change-faststart",
       "fromVersions": [
         "1.0.91",
         "1.0.92",
@@ -1803,14 +1826,15 @@
         "1.0.101",
         "1.0.102",
         "1.0.103",
-        "1.0.104"
+        "1.0.104",
+        "1.0.105"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.105/NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.105",
-      "sha256": "acb96f4e5d4b23159b450add2c6a0b3a77b5b33b149593806879cc9ce67b50d0",
-      "appAsarSha256": "cca80aeebdc24b3343624535b7555d66099fd2140f0a23005dfa296aee2f3aa7",
-      "fileName": "NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip",
-      "sizeBytes": 31413047,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.106/NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.106",
+      "sha256": "498e113b6be95a6d6c9fdef58dfb7321f8398711ff9d78c9cba2e1742f2e039e",
+      "appAsarSha256": "fd4f1b2b83c55fe07c3c7f932a6955119ad4f0e6c80f4fb5a1dcf3b5825e4283",
+      "fileName": "NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip",
+      "sizeBytes": 31415590,
       "payloadType": "app-asar"
     }
   ],
@@ -1821,8 +1845,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات احترافية في الدفع مع منع تكرار الفواتير وحماية الأرصدة.",
-    "fr": "Améliorations de paiement et protection contre les doubles ventes.",
-    "en": "Professional payment summary and duplicate sale protection."
+    "ar": "تحسينات الصرف النقدي وسرعة بدء البرنامج.",
+    "fr": "Amélioration de la monnaie à rendre et du démarrage.",
+    "en": "Cash change and quicker first-window startup improvements."
   }
 }
