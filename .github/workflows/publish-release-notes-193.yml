@@ -1,0 +1,170 @@
+name: NANO POS v1.0.93 - Fix Current Release Features
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-release-notes-193.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-193
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout NANO POS updates
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify v1.0.92 base and fetch its published patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text(encoding='utf-8'))
+          assert d['published'] and d['version']=='1.0.92'
+          assert d['patches'][0]['appAsarSha256']=='f25a6c0ca6aaded38f7984b6bcf9edc3b1829c7846148bc0f6ad0a0c080b03e1'
+          PY
+          if gh release view v1.0.93 >/dev/null 2>&1; then
+            echo 'Release v1.0.93 exists; do not overwrite' >&2
+            exit 1
+          fi
+          mkdir -p incoming
+          gh release download v1.0.92 --pattern 'NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip' --dir incoming
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text(encoding='utf-8'))
+          p=Path('incoming/NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==d['patches'][0]['sha256'],'v1.0.92 ZIP SHA mismatch'
+          PY
+      - name: Validate release-notes source and build repaired ASAR
+        run: |
+          set -euo pipefail
+          node --check .github/assets/nano-release-notes-193.js
+          python3 .github/scripts/build-release-notes-193.py \
+            incoming/NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip \
+            NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip \
+            .github/assets/nano-release-notes-193.js
+          python3 - <<'PY'
+          import hashlib,struct,json,zipfile
+          from pathlib import Path
+          patch=Path('NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip')
+          with zipfile.ZipFile(patch) as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,block,content_size,n=struct.unpack_from('<4I',data)
+          header=json.loads(data[16:16+n])
+          assert magic==4 and block==content_size+4
+          def read(name):
+            e=header['files'][name]
+            return data[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+          assert json.loads(read('package.json'))['version']=='1.0.93'
+          js=read('release-notes.js')
+          assert js==Path('.github/assets/nano-release-notes-193.js').read_bytes()
+          assert hashlib.sha256(js).hexdigest()==header['files']['release-notes.js']['integrity']['hash']
+          Path('release-notes-compiled.js').write_bytes(js)
+          print('Verified ASAR version, release notes payload and hashes')
+          PY
+          node --check release-notes-compiled.js
+      - name: Test installed version release features (offline, online, and language)
+        run: |
+          node <<'JS'
+          const fs = require('fs'), vm = require('vm'), assert = require('assert/strict');
+          const code = fs.readFileSync('release-notes-compiled.js', 'utf8');
+          const elements = {};
+          for (const id of ['currentReleaseTitle','currentReleaseFeatures','currentReleaseVersion'])
+            elements[id] = {textContent:'',innerHTML:''};
+          const listeners = {};
+          const cache = new Map();
+          const ctx = {
+            window:{currentLanguage:'ar',nanoNative:{
+              appVersion:'1.0.93',
+              getCurrentAppVersion:async()=>({version:'1.0.93'}),
+              checkForUpdates:async()=>({success:true,currentVersion:'1.0.93',manifest:{
+                version:'1.0.94',features:{ar:['WRONG NEW VERSION']},
+                releaseHistory:{'1.0.93':{features:{ar:['CURRENT INSTALLED FEATURES'],fr:['Fonctions actuelles'],en:['Current features']}}}
+              }})
+            },addEventListener:(k,fn)=>{listeners[k]=fn}},
+            document:{readyState:'complete',documentElement:{lang:'ar'},getElementById:k=>elements[k]},
+            localStorage:{getItem:k=>cache.get(k)||null,setItem:(k,v)=>cache.set(k,v)},
+            console
+          };
+          vm.runInNewContext(code, ctx);
+          assert.match(elements.currentReleaseFeatures.innerHTML,/إصلاح ظهور/); // offline immediately
+          setImmediate(()=>{
+            assert.match(elements.currentReleaseTitle.textContent,/1.0.93/);
+            assert.match(elements.currentReleaseFeatures.innerHTML,/CURRENT INSTALLED FEATURES/);
+            assert.doesNotMatch(elements.currentReleaseFeatures.innerHTML,/WRONG NEW VERSION/);
+            ctx.window.currentLanguage='fr'; listeners['nano-language-synchronized']();
+            assert.match(elements.currentReleaseFeatures.innerHTML,/Fonctions actuelles/);
+            console.log('Release feature tests PASSED');
+          });
+          JS
+      - name: Publish v1.0.93 General Improvements
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          file=NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip
+          gh release create v1.0.93 "$file" --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.93 — تحسينات عامة: إصلاح مميزات الإصدار الحالي' \
+            --notes 'إصلاح توقف عرض مميزات الإصدار الحالي بسبب خطأ JavaScript. تظهر مميزات النسخة المثبتة حتى دون الإنترنت، ويتم تحديثها من GitHub وفق رقم الإصدار الصحيح مع دعم العربية والفرنسية والإنجليزية. يتضمن أيضًا إصلاح البحث السابق في 1.0.92، ولا يغير البيانات أو التفعيل.'
+          gh release view v1.0.93 --json assets --jq '.assets[].name' | grep -Fx "$file"
+      - name: Update live manifest only after release confirmed
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,datetime,zipfile
+          from pathlib import Path
+          p=Path('nano-pos-update.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert d['version']=='1.0.92' and d['published']
+          f=Path('NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip')
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.93'
+          direct='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.93/'+f.name
+          with zipfile.ZipFile(f) as z:
+            asar_sha=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          notes={
+            'ar':['إصلاح مشكلة عدم ظهور مميزات الإصدار الحالي الناتجة عن خطأ JavaScript.',
+                  'عرض المميزات الحقيقية للنسخة المثبتة دون إنترنت، ومزامنتها مع GitHub عند الاتصال.',
+                  'تصحيح رقم الإصدار ولغة العرض مع الإبقاء على إصلاح البحث السابق وحماية البيانات والتفعيل.'],
+            'fr':['Correction de la section des nouveautés de la version actuelle et de son erreur JavaScript.',
+                  'Nouveautés disponibles hors ligne, synchronisées avec GitHub selon la version installée.',
+                  'Version, langue et correctif de recherche conservés; données et licence intactes.'],
+            'en':['Fixed JavaScript error that prevented current-version highlights from showing.',
+                  'Show installed-version highlights offline; synchronize correct version history from GitHub.',
+                  'Version and language fixed; previous search fix and all data and licensing preserved.']
+          }
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.93',releaseDate=day,published=True,mandatory=False,
+                   importance='normal',features=notes)
+          d.setdefault('releaseHistory',{})['1.0.93']={'releaseDate':day,'features':notes}
+          d['patches']=[{'id':'nano-pos-v1.0.93-current-features-fix',
+             'fromVersions':['1.0.91','1.0.92'],
+             'directUrl':direct,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+             'appAsarSha256':asar_sha,'fileName':f.name,'sizeBytes':f.stat().st_size,
+             'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'تحسينات عامة: إصلاح مميزات الإصدار الحالي.',
+                      'fr':'Améliorations générales : correction des nouveautés.',
+                      'en':'General improvements: fixed current-release highlights.'}
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.93 release features fix'
+          git push origin HEAD:refs/heads/main
+      - name: Preserve patch artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-v1.0.93-Release-Features
+          path: NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip
+          if-no-files-found: error
+          retention-days: 30
