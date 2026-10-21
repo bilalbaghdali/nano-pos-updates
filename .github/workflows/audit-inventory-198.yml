@@ -1,0 +1,32 @@
+name: Inspect NANO POS v1.0.97 Inventory Implementation
+on:
+  push:
+    paths: ['.github/workflows/audit-inventory-198.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and audit official 1.0.97 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p incoming
+          gh release download v1.0.97 --pattern NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip --dir incoming
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert d['version']=='1.0.97' and d['published']
+          p=Path('incoming/NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          PY
+          python3 .github/scripts/audit-inventory-198.py incoming/NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip
