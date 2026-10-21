@@ -66,6 +66,14 @@ async function exerciseBridge(){
  assert.equal(stored.purchases[0].total,20);
  assert.equal(stored.purchase_orders[0].status,'partial');
  assert.equal(stored.purchase_orders[0].lines[0].receivedMilli,2000);
+ assert.equal((await rpc('delete-purchase',first.purchaseId)).success,false,
+   'receipt invoices must not be deleted without reconciling the purchase order');
+ assert.equal((await rpc('save-purchase',{editInvoiceId:first.purchaseId,
+   invoiceData:{supplier_id:7,total:1},items:[{product_id:3,quantity:1,cost_price:1}]})).success,false,
+   'posted receipt invoices must not be independently edited');
+ stored=JSON.parse(map.get(STORAGE_KEY));
+ assert.equal(stored.products[0].stock,12);
+ assert.equal(stored.suppliers[0].balance,20);
  assert.equal(notifications>0,true);
  // Receipt retry after receipt revised order: must return original invoice, no duplicate posting.
  const afterFirst=written;
