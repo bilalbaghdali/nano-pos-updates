@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.103",
+  "version": "1.0.104",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح زر تحديث الآن: تحميل وتثبيت الحزمة الرسمية داخل NANO POS دون فتح صفحة GitHub.",
-      "إتاحة الانتقال المباشر من الإصدارات المدعومة ذات المحرك الداخلي إلى 1.0.103.",
-      "التحقق من سلامة الملف وحفظ إمكانية الاسترجاع وتأجيل إعادة التشغيل خلال العمل.",
-      "إظهار حالة عدم توفر حزمة مناسبة داخل البرنامج بدل الانتقال إلى المتصفح."
+      "تحسينات: إزالة «المبلغ المستلم» من نافذة البيع وإلغاء حاسبة الصرف الظاهرة.",
+      "تحسينات: إزالة الدفع المختلط من شاشة إتمام البيع.",
+      "الإبقاء على الدفع الكامل أو البيع بالدين الكامل، وطريقة دفع واحدة.",
+      "المحافظة على الفواتير والديون السابقة والمخزون والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
-      "Installer les mises à jour dans NANO POS sans redirection vers GitHub.",
-      "Mise à niveau directe depuis les versions avec un moteur interne compatible.",
-      "SHA-256, rollback et installation différée pendant la vente.",
-      "Afficher les erreurs dans l’application, pas dans le navigateur."
+      "Améliorations : retrait du montant reçu et du calcul de monnaie à la caisse.",
+      "Suppression des options de paiement mixte et partagé.",
+      "Paiement total ou entièrement à crédit avec un seul mode de paiement.",
+      "Données, factures, activation et sauvegardes préservées."
     ],
     "en": [
-      "Download and install inside NANO POS, not through GitHub in a browser.",
-      "Direct in-app upgrade from compatible earlier versions.",
-      "Integrity verification, rollback and checkout-safe restart.",
-      "Display unsupported-download errors inside the app."
+      "Improvements: remove the received amount and change-due fields from checkout.",
+      "Remove the mixed/split payment UI for new sales.",
+      "Keep single-method full payment or full-credit sales.",
+      "Preserve existing invoices, accounting records, activation and backups."
     ]
   },
   "releaseHistory": {
@@ -1738,11 +1738,34 @@
           "Display unsupported-download errors inside the app."
         ]
       }
+    },
+    "1.0.104": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "تحسينات: إزالة «المبلغ المستلم» من نافذة البيع وإلغاء حاسبة الصرف الظاهرة.",
+          "تحسينات: إزالة الدفع المختلط من شاشة إتمام البيع.",
+          "الإبقاء على الدفع الكامل أو البيع بالدين الكامل، وطريقة دفع واحدة.",
+          "المحافظة على الفواتير والديون السابقة والمخزون والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Améliorations : retrait du montant reçu et du calcul de monnaie à la caisse.",
+          "Suppression des options de paiement mixte et partagé.",
+          "Paiement total ou entièrement à crédit avec un seul mode de paiement.",
+          "Données, factures, activation et sauvegardes préservées."
+        ],
+        "en": [
+          "Improvements: remove the received amount and change-due fields from checkout.",
+          "Remove the mixed/split payment UI for new sales.",
+          "Keep single-method full payment or full-credit sales.",
+          "Preserve existing invoices, accounting records, activation and backups."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.103-no-browser-internal-updates",
+      "id": "nano-pos-1.0.104-improvements",
       "fromVersions": [
         "1.0.91",
         "1.0.92",
@@ -1755,14 +1778,15 @@
         "1.0.99",
         "1.0.100",
         "1.0.101",
-        "1.0.102"
+        "1.0.102",
+        "1.0.103"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.103/NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.103",
-      "sha256": "1a9216ae9da04ee7c6c46a3c103202f9d5f017d0537fe9e98794748ff5828e84",
-      "appAsarSha256": "6622d30bf8a95071f97fbf257926d05a53bbade789e770738e88d8c843d3dcaf",
-      "fileName": "NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip",
-      "sizeBytes": 31409646,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.104/NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.104",
+      "sha256": "fa7397acfa8b22eeb6e9b2fd7e68e5aaa84c4abd9bed3639db74fac5358307d0",
+      "appAsarSha256": "fbf0fdc38fac1fec62c49df0f0bba7dc5250a2297b63d4941af60778c1daca02",
+      "fileName": "NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip",
+      "sizeBytes": 31410019,
       "payloadType": "app-asar"
     }
   ],
@@ -1773,8 +1797,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "التحديث والتثبيت مباشرة داخل البرنامج.",
-    "fr": "Installation des mises à jour dans l’application.",
-    "en": "Internal update download and installation without browser redirects."
+    "ar": "تحسينات شاشة البيع وإزالة المبلغ المستلم والدفع المختلط.",
+    "fr": "Améliorations de la caisse et suppression des paiements mixtes.",
+    "en": "Checkout improvements: no tendered-amount or split-payment controls."
   }
 }
