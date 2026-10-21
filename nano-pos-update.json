@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.100",
+  "version": "1.0.101",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إنشاء أوامر شراء مباشرة من قائمة المنتجات الناقصة مع اقتراح المورد تلقائيًا.",
-      "اعتماد المورد المرتبط بالمنتج أو أقل سعر شراء حديث مسجل في فواتير الموردين.",
-      "استبعاد الكميات التي تغطيها أوامر شراء مفتوحة لتفادي الشراء المكرر.",
-      "تجميع الطلبات حسب المورد مع مراجعة الكمية والتكلفة قبل الحفظ وعدم ترحيل المخزون أو الدين عند إنشاء الأمر."
+      "مقارنة أسعار الموردين التاريخية داخل أوامر الشراء من المخزون الناقص.",
+      "حساب تكاليف النقل والمصاريف والضرائب غير المستردة المضافة حسب المورد وتوزيعها بدقة السنتيم.",
+      "عرض التكلفة النهائية التقديرية للوحدة وسعر بيع مقترح حسب هامش الربح.",
+      "معاينة للقراءة فقط لا تغيّر البيانات أو المخزون أو التفعيل أو ديون الموردين."
     ],
     "fr": [
-      "Création de bons de commande depuis les stocks bas.",
-      "Fournisseur préféré ou meilleur prix d’achat récent connu.",
-      "Déduction des quantités déjà commandées, révision avant enregistrement.",
-      "Les commandes ne modifient ni le stock ni les dettes."
+      "Comparaison des prix historiques des fournisseurs.",
+      "Estimation des frais de transport et autres frais au centime.",
+      "Calcul du prix de revient estimé et prix de vente cible.",
+      "Aperçu sans écritures comptables ni modification des stocks."
     ],
     "en": [
-      "Create purchase orders from the low-stock list.",
-      "Suggest suppliers using linked supplier or lowest recent historical buying price.",
-      "Exclude quantities already ordered but pending receipt.",
-      "Review orders per supplier; creating orders never updates stock or supplier debt."
+      "Compare historical supplier purchase prices.",
+      "Estimate shipping, fees and nonrecoverable taxes to the cent.",
+      "Preview estimated landed unit cost and margin-based selling price.",
+      "Read-only: no accounting posts, inventory, activation or debt changes."
     ]
   },
   "releaseHistory": {
@@ -1669,32 +1669,55 @@
           "Review orders per supplier; creating orders never updates stock or supplier debt."
         ]
       }
+    },
+    "1.0.101": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "مقارنة أسعار الموردين التاريخية داخل أوامر الشراء من المخزون الناقص.",
+          "حساب تكاليف النقل والمصاريف والضرائب غير المستردة المضافة حسب المورد وتوزيعها بدقة السنتيم.",
+          "عرض التكلفة النهائية التقديرية للوحدة وسعر بيع مقترح حسب هامش الربح.",
+          "معاينة للقراءة فقط لا تغيّر البيانات أو المخزون أو التفعيل أو ديون الموردين."
+        ],
+        "fr": [
+          "Comparaison des prix historiques des fournisseurs.",
+          "Estimation des frais de transport et autres frais au centime.",
+          "Calcul du prix de revient estimé et prix de vente cible.",
+          "Aperçu sans écritures comptables ni modification des stocks."
+        ],
+        "en": [
+          "Compare historical supplier purchase prices.",
+          "Estimate shipping, fees and nonrecoverable taxes to the cent.",
+          "Preview estimated landed unit cost and margin-based selling price.",
+          "Read-only: no accounting posts, inventory, activation or debt changes."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.100-shortage-supplier-orders",
+      "id": "nano-pos-v1.0.101-supplier-landed-cost",
       "fromVersions": [
-        "1.0.99"
+        "1.0.100"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.100/NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.100",
-      "sha256": "ebb72568a19d5a89356afcf0f2e7d4b199d2b1b08e1915ef801e1607ef59416f",
-      "appAsarSha256": "7649aeae82000f4439d9c98c1e4a4249f21a7937657816c093a1a5ac446c835d",
-      "fileName": "NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip",
-      "sizeBytes": 31402412,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.101/NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.101",
+      "sha256": "f7245824f41a44279fb80009767df2be1446ad4954b429dbe6e9e1a17abbd72e",
+      "appAsarSha256": "e787c99a4cec6470d0da92d81356906c5fa18215b6711f8ffbe2fd657e72b82f",
+      "fileName": "NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip",
+      "sizeBytes": 31405866,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.100",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.101",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "أوامر شراء من المنتجات الناقصة مع اختيار المورد تلقائيًا.",
-    "fr": "Commandes fournisseurs automatiques depuis le stock bas.",
-    "en": "Auto-suggest supplier orders from low stock."
+    "ar": "مقارنة الموردين والتكلفة الفعلية التقديرية.",
+    "fr": "Comparaison fournisseurs et coût de revient estimé.",
+    "en": "Supplier comparisons and estimated landed costs."
   }
 }
