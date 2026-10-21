@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const crypto=require('node:crypto'),vm=require('node:vm');
-const root=process.argv[2];
+const root=path.resolve(process.argv[2]);
 if (!root) throw new Error('source_directory_required');
 const updates=fs.readFileSync(path.join(root,'updater-main.cjs'),'utf8');
 const backups=require(path.join(root,'backup-safety.cjs'));
