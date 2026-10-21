@@ -1,0 +1,120 @@
+name: NANO POS 1.0.100 - Low Stock Supplier Order Integration
+on:
+  push:
+    branches: ['feature/purchase-orders-from-shortages-100']
+    paths:
+      - 'development/trade/**'
+      - '.github/workflows/test-shortage-suppliers-100.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify published source SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source work
+          gh release download v1.0.99 --pattern NANO-POS-Patch-1.0.98-to-1.0.99-PURCHASE-ORDERS.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          m=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert m['version']=='1.0.99' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.98-to-1.0.99-PURCHASE-ORDERS.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          print('Official v1.0.99 verified')
+          PY
+      - name: Build and test supplier matching and low-stock UI
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 development/trade/build-shortage-po-100.py \
+            source/NANO-POS-Patch-1.0.98-to-1.0.99-PURCHASE-ORDERS.zip \
+            NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip work
+          for name in nano-po-auto-supplier-100.js nano-po-shortage-ui-100.js nano-inventory-shortages.js release-notes.js; do node --check "work/$name"; done
+          cp development/trade/test-po-from-shortages-100.cjs work/
+          cp development/trade/test-po-shortage-ui-100.cjs work/
+          (cd work && node test-po-from-shortages-100.cjs)
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-po-shortage-ui-100.cjs)
+          python3 - <<'PY'
+          import hashlib,json,struct,zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',data)
+          assert magic==4 and b==hs+4
+          h=json.loads(data[16:16+n])['files']
+          for name in ['index.html','nano-inventory-shortages.js','release-notes.js','package.json',
+                       'nano-po-auto-supplier-100.js','nano-po-shortage-ui-100.js']:
+            e=h[name];blob=data[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert blob==Path('work/'+name).read_bytes()
+            if 'integrity' in e:assert hashlib.sha256(blob).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.100'
+          print('PASS official ASAR structure, integrity and version')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-100-unreleased-tested
+          path: |
+            NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip
+            work/index.html
+            work/nano-inventory-shortages.js
+            work/nano-po-auto-supplier-100.js
+            work/nano-po-shortage-ui-100.js
+            work/release-notes.js
+            work/package.json
+            work/test-po-from-shortages-100.cjs
+            work/test-po-shortage-ui-100.cjs
+          retention-days: 14
+          if-no-files-found: error
+  test_windows:
+    needs: build_linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-100-unreleased-tested
+      - name: Run supplier regression and UI smoke on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check nano-inventory-shortages.js
+            node --check nano-po-auto-supplier-100.js
+            node --check nano-po-shortage-ui-100.js
+            node test-po-from-shortages-100.cjs
+            if($LASTEXITCODE -ne 0){ throw 'Supplier tests failed' }
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){ throw 'JSdom install failed' }
+            node test-po-shortage-ui-100.cjs
+            if($LASTEXITCODE -ne 0){ throw 'UI tests failed' }
+          }finally{Pop-Location}
+  protected_files:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Guard user database, license, and official updater manifest
+        run: |
+          set -euo pipefail
+          files="$(git diff --name-only origin/main...HEAD)"
+          printf '%s\n' "$files"
+          if echo "$files" | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|src/|database/|activation/|backup/)' ; then
+            echo 'Protected paths changed; rejecting release' >&2
+            exit 1
+          fi
