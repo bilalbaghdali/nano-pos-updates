@@ -3,32 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.91",
-  "releaseDate": "2026-10-20",
+  "version": "1.0.92",
+  "releaseDate": "2026-10-21",
   "mandatory": false,
-  "importance": "high",
+  "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح عدم ظهور خيارات الكمبيوتر الرئيسي والثانوي داخل شاشة تسجيل الدخول.",
-      "عرض خيار نوع الكمبيوتر مباشرة في واجهة الدخول حتى لو تأخر تحميل JavaScript.",
-      "إظهار IP الكمبيوتر الرئيسي ورمز الاقتران واسم الكمبيوتر عند اختيار الدخول الثانوي.",
-      "ضمان قابلية تمرير نافذة الدخول على الشاشات الصغيرة مع الحفاظ على شرط الاتصال بالرئيسي.",
-      "الحفاظ على بيانات البيع والمخزون والتفعيل وأيقونة N."
+      "تحسينات عامة: إصلاح بحث الشريط العلوي ليبحث داخل القسم المفتوح دون الانتقال إلى شاشة البحث العامة.",
+      "البحث في المنتجات وفواتير البيع والشراء حسب القسم الحالي مع دعم مسح البحث والضغط على Enter.",
+      "الحفاظ على قاعدة البيانات والمبيعات والمخزون والتفعيل وإعدادات المستخدم."
     ],
     "fr": [
-      "Corrige les options de connexion PC principal/secondaire manquantes.",
-      "Le choix du mode est directement intégré à l'écran de connexion.",
-      "Champs d'adresse IP, de code de liaison et de nom d'appareil en mode secondaire.",
-      "Défilement corrigé pour petits écrans et blocage de connexion si l'hôte est indisponible.",
-      "Aucune modification des données, des licences ou de l'icône N."
+      "Améliorations générales : recherche supérieure limitée à la section active, sans ouvrir la recherche globale.",
+      "Recherche dans les produits, factures de vente et achats; Entrée et effacement pris en charge.",
+      "Données, stocks, ventes et activation préservés."
     ],
     "en": [
-      "Fixed missing primary/secondary computer options on the login screen.",
-      "Role selection is embedded directly in the login layout, independent of JavaScript initialization.",
-      "Host IP, pairing code and device name appear when secondary login is selected.",
-      "Scrollable login on small screens; host-connection safety check preserved.",
-      "Sales data, inventory, activation and N icon retained."
+      "General improvements: top search is scoped to the current page instead of opening global search.",
+      "Search products, sales invoices and purchase invoices; Enter and clear supported.",
+      "Store data, inventory, sales and activation preserved."
     ]
   },
   "releaseHistory": {
@@ -1475,33 +1469,52 @@
           "Sales data, inventory, activation and N icon retained."
         ]
       }
+    },
+    "1.0.92": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "تحسينات عامة: إصلاح بحث الشريط العلوي ليبحث داخل القسم المفتوح دون الانتقال إلى شاشة البحث العامة.",
+          "البحث في المنتجات وفواتير البيع والشراء حسب القسم الحالي مع دعم مسح البحث والضغط على Enter.",
+          "الحفاظ على قاعدة البيانات والمبيعات والمخزون والتفعيل وإعدادات المستخدم."
+        ],
+        "fr": [
+          "Améliorations générales : recherche supérieure limitée à la section active, sans ouvrir la recherche globale.",
+          "Recherche dans les produits, factures de vente et achats; Entrée et effacement pris en charge.",
+          "Données, stocks, ventes et activation préservés."
+        ],
+        "en": [
+          "General improvements: top search is scoped to the current page instead of opening global search.",
+          "Search products, sales invoices and purchase invoices; Enter and clear supported.",
+          "Store data, inventory, sales and activation preserved."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.91-visible-secondary-login",
+      "id": "nano-pos-v1.0.92-general-improvements",
       "fromVersions": [
-        "1.0.90"
+        "1.0.91"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.91/NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.91",
-      "sha256": "8116cd5ee114a5f8af79b66eca83f55441447af3e9a8b77d7a847a645f720b25",
-      "appAsarSha256": "55424bde8d6767ba5e2e76b3736112ca6db51d11e259e52d82a44bd6eed4d55b",
-      "fileName": "NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip",
-      "sizeBytes": 31388938,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.92/NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.92",
+      "sha256": "8a2de2751e8da58abd67499cd9ee9c11e26b4bf7325e95fa105569e40b48a167",
+      "appAsarSha256": "f25a6c0ca6aaded38f7984b6bcf9edc3b1829c7846148bc0f6ad0a0c080b03e1",
+      "fileName": "NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip",
+      "sizeBytes": 31388990,
       "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.91/NANO-POS-Setup-1.0.91-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.91",
-    "sha256": "03ef620db00ae015bfc076963a1581c11d78a1eceb82eb30ce7e9829693554dc",
-    "fileName": "NANO-POS-Setup-1.0.91-x64.exe",
-    "sizeBytes": 118805923
+    "directUrl": "",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.92",
+    "sha256": "",
+    "fileName": ""
   },
   "notes": {
-    "ar": "إصلاح ظهور خيارات الدخول على صفحة تسجيل الدخول واستمرار الربط الآمن بالرئيسي.",
-    "fr": "Correction de l'affichage du mode de connexion principal/secondaire.",
-    "en": "Fixed primary/secondary login selection visibility."
+    "ar": "تحسينات عامة: بحث داخل القسم المفتوح.",
+    "fr": "Améliorations générales : recherche dans la section courante.",
+    "en": "General improvements: current-section search."
   }
 }
