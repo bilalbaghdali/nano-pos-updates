@@ -1,4 +1,5 @@
 name: NANO POS v1.0.98 - Smart Inventory Forecast
+# Regression rerun after fractional-quantity rounding correction
 on:
   push:
     branches: [main]
