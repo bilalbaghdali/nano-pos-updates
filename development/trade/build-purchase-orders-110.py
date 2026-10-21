@@ -15,6 +15,10 @@ def bridge(s):
  s=once(s,"'products','customers','suppliers','sales','purchases','bundles','promotions',",
         "'products','customers','suppliers','sales','purchases','purchase_orders','bundles','promotions',")
  s=once(s,"   purchases: () => db.purchases || [],","   purchases: () => db.purchases || [],\n   'purchase-orders': () => db.purchase_orders || [],")
+ s=once(s,"     const existing = existingIndex >= 0 ? flattenPurchaseRecord(db.purchases[existingIndex]) : null;\n     const id = existing?.id ?? ids();",
+        "     const existing = existingIndex >= 0 ? flattenPurchaseRecord(db.purchases[existingIndex]) : null;\n     if (existing?.purchase_order_id) return fail('فاتورة الاستلام مرتبطة بأمر شراء ولا يمكن تعديلها بهذا المسار.');\n     const id = existing?.id ?? ids();")
+ s=once(s,"     const p = flattenPurchaseRecord(db.purchases[index]);\n     adjustPurchaseStock(p.items, -1);",
+        "     const p = flattenPurchaseRecord(db.purchases[index]);\n     if (p?.purchase_order_id) return fail('فاتورة الاستلام مرتبطة بأمر شراء ولا يمكن حذفها بهذا المسار.');\n     adjustPurchaseStock(p.items, -1);")
  # Forward stable id with remote LAN calls, enabling primary PC server's persistent RPC ledger.
  s=once(s,"body: JSON.stringify({ channel, args })",
         "body: JSON.stringify({ channel, args, operationId: "
