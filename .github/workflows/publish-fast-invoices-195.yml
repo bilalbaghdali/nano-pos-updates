@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify official source
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           ! gh release view v1.0.95 >/dev/null 2>&1 || { echo 'Release exists' >&2; exit 1; }
@@ -58,7 +58,7 @@ jobs:
           (cd build && node test-pos-195.cjs)
       - name: Publish only after tests pass
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           gh release create v1.0.95 NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip --target "$GITHUB_SHA" --title 'NANO POS v1.0.95 — تحسينات البيع السريع والفواتير' --notes 'إصلاح F2 لتعليق السلة، منع تكرار تأكيد البيع أثناء التنفيذ، وحماية تعديل الفواتير إذا كانت بنودها الأصلية غير موجودة. الحفاظ على قاعدة البيانات والتفعيل.'
