@@ -1,0 +1,123 @@
+name: NANO POS v1.0.103 - In-App Update Regression
+on:
+  push:
+    branches: ['fix/in-app-update-103']
+    paths:
+      - '.github/scripts/build-in-app-update-103.py'
+      - '.github/scripts/test-in-app-update-103.cjs'
+      - '.github/workflows/test-in-app-update-103.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtain trusted v1.0.102 ZIP and legacy updater
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p incoming work legacy
+          gh release download v1.0.102 \
+            --pattern NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip --dir incoming
+          gh release download v1.0.91 \
+            --pattern NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip --dir legacy
+          python3 - <<'PY'
+          import hashlib,json,zipfile,struct
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.102' and m['published']
+          f=Path('incoming/NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          old=Path('legacy/NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip')
+          with zipfile.ZipFile(old) as z:
+            assert 'payload/app.asar' in z.namelist()
+            raw=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and block==hs+4
+          items=json.loads(raw[16:16+n])['files']
+          def read(name):
+            e=items[name];return raw[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+          assert json.loads(read('package.json'))['version']=='1.0.91'
+          old_updater=read('updater-main.cjs')
+          for token in [b'findApplicablePatch',b'patch_payload_sha256_mismatch',
+            b'launchPatchInstaller',b'nano-update-download',b'nano-update-install']:
+            assert token in old_updater, 'Legacy updater cannot process in-app ZIP: '+repr(token)
+          Path('work/native-v1.0.91.cjs').write_bytes(old_updater)
+          print('PASS v1.0.91 native updater can install ASAR ZIP internally')
+          PY
+      - name: Build and test in-app update on Linux
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-in-app-update-103.py \
+            incoming/NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip \
+            NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip work
+          node --check work/update-manager.js
+          node --check work/release-notes.js
+          cp .github/scripts/test-in-app-update-103.cjs work/
+          (cd work && node test-in-app-update-103.cjs)
+          python3 - <<'PY'
+          import hashlib,json,struct,zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and block==hs+4
+          files=json.loads(raw[16:16+n])['files']
+          for name in ('package.json','release-notes.js','update-manager.js'):
+            e=files[name];value=raw[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+            assert value==Path('work/'+name).read_bytes()
+            if e.get('integrity'):assert hashlib.sha256(value).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.103'
+          print('PASS: ASAR header, hash, release version and source integrity')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v103-verified-in-app
+          path: |
+            NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip
+            work/update-manager.js
+            work/release-notes.js
+            work/package.json
+            work/test-in-app-update-103.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v103-verified-in-app
+      - name: Test in-app download/install and no browser redirect
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check update-manager.js
+            node test-in-app-update-103.cjs
+            if($LASTEXITCODE -ne 0){throw 'Update installer regression failure'}
+          } finally {Pop-Location}
+  unchanged_user_data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          set -euo pipefail
+          changed="$(git diff --name-only origin/main...HEAD)"
+          echo "$changed"
+          if echo "$changed" | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|src/|database/|activation/|backup/)' ; then
+            echo 'Live data, activation or manifest source unexpectedly changed' >&2
+            exit 1
+          fi
