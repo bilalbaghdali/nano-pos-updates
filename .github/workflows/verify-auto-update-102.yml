@@ -1,0 +1,77 @@
+name: NANO POS v1.0.102 - Automatic Update Compatibility
+on:
+  push:
+    branches: [fix/automatic-update-102-compatibility]
+    paths:
+      - 'nano-pos-update.json'
+      - '.github/scripts/verify-auto-102.py'
+      - '.github/scripts/test-auto-update-102.cjs'
+      - '.github/workflows/verify-auto-update-102.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download official released v1.0.102 archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release download v1.0.102 \
+            --pattern NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip
+      - name: Verify integrity and real updater selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/verify-auto-102.py NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip
+          node --check work/updater-main.cjs
+          node --check work/update-manager.js
+          node .github/scripts/test-auto-update-102.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-auto-update-102-evidence
+          path: |
+            nano-pos-update.json
+            work/updater-main.cjs
+            work/update-manager.js
+            .github/scripts/test-auto-update-102.cjs
+          if-no-files-found: error
+          retention-days: 14
+  verify_windows:
+    needs: verify_linux
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-auto-update-102-evidence
+      - name: Recheck real updater compatibility on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          node --check work/updater-main.cjs
+          node --check work/update-manager.js
+          node .github/scripts/test-auto-update-102.cjs
+          if($LASTEXITCODE -ne 0){throw 'Windows automatic update eligibility failed'}
+  verify_no_app_changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure update manifest cannot overwrite business data, activation or backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only origin/main...HEAD)"
+          printf '%s\n' "$changed"
+          if echo "$changed" | grep -E '^(app\.asar|mobile/|src/|database/|activation/|backup/|resources/)' ; then
+            echo 'Protected application source/data unexpectedly modified' >&2
+            exit 1
+          fi
