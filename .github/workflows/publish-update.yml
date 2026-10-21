@@ -86,7 +86,7 @@ jobs:
             echo "Release already exists: refusing to overwrite" >&2
             exit 1
           fi
-          gh release create "v$VERSION" "$PATCH_FILE" --target "$GITHUB_SHA" --title "NANO POS v$VERSION — تحسينات عامة" --notes "$FEATURES_AR" --verify-tag=false
+          gh release create "v$VERSION" "$PATCH_FILE" --target "$GITHUB_SHA" --title "NANO POS v$VERSION — تحسينات عامة" --notes "$FEATURES_AR"
       - name: Update manifest after release upload succeeds
         env:
           VERSION: ${{ inputs.version }}
@@ -129,7 +129,7 @@ jobs:
                             "sizeBytes":os.path.getsize(fn),
                             "payloadType":"app-asar"}]
           # Do not expose an old full installer as if it were the new version.
-          data["download"]={}
+          data["download"]={"directUrl":"","pageUrl":f'https://github.com/{os.environ["REPO"]}/releases/tag/v{version}',"sha256":"","fileName":""}
           p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           PY
           git config user.name "github-actions[bot]"
