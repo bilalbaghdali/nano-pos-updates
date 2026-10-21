@@ -1,0 +1,161 @@
+name: NANO POS v1.0.98 - Smart Inventory Forecast
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-inventory-198.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-v1.0.98
+  cancel-in-progress: false
+jobs:
+  linux_build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official v1.0.97 and acquire update ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.98 >/dev/null 2>&1; then echo 'Release already published'; exit 1; fi
+          mkdir -p incoming work
+          gh release download v1.0.97 --pattern NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip --dir incoming
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert d['published'] and d['version']=='1.0.97'
+          f=Path('incoming/NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          PY
+      - name: Construct ASAR and test read-only smart-inventory module
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-inventory-198.py \
+            incoming/NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip \
+            NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip work
+          node --check work/nano-stock-forecast-198.js
+          node --check work/nano-inventory-shortages.js
+          node --check work/release-notes.js
+          cp .github/scripts/test-inventory-198.cjs work/
+          (cd work && node test-inventory-198.cjs)
+          python3 - <<'PY'
+          import zipfile,json,struct,hashlib
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,block,size,n=struct.unpack_from('<4I',data)
+          assert magic==4 and block==size+4
+          files=json.loads(data[16:16+n])['files']
+          for name in ['nano-inventory-shortages.js','nano-stock-forecast-198.js','index.html','release-notes.js','package.json']:
+            entry=files[name]
+            body=data[8+block+int(entry['offset']):8+block+int(entry['offset'])+entry['size']]
+            assert body==Path('work/'+name).read_bytes()
+            if 'integrity' in entry:
+              assert hashlib.sha256(body).hexdigest()==entry['integrity']['hash']
+          print('ASAR file hash checks succeeded')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-smart-inventory-198
+          path: |
+            NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip
+            work/index.html
+            work/nano-inventory-shortages.js
+            work/nano-stock-forecast-198.js
+            work/release-notes.js
+            work/package.json
+            work/test-inventory-198.cjs
+          if-no-files-found: error
+          retention-days: 30
+  windows_tests:
+    needs: linux_build
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-smart-inventory-198
+      - name: Run Windows stock forecast regression
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          node --check work/nano-inventory-shortages.js
+          node --check work/nano-stock-forecast-198.js
+          Push-Location work
+          try {
+            node test-inventory-198.cjs
+            if ($LASTEXITCODE -ne 0) { throw 'Inventory tests failed on Windows' }
+          } finally { Pop-Location }
+  publish:
+    needs: [linux_build, windows_tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-smart-inventory-198
+      - name: Publish release only after Linux + Windows tests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.98 >/dev/null 2>&1 || { echo 'Release exists'; exit 1; }
+          gh release create v1.0.98 NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.98 — تطوير المخزون الذكي' \
+            --notes 'إضافة تحليل اختياري للاحتياج المتوقع في قائمة المنتجات الناقصة الموجودة: معدل البيع اليومي وأيام تغطية المخزون وكمية الشراء المقترحة لأفق 14 يومًا + هامش أمان 3 أيام، مع إبقاء الطباعة والتصدير. تحليل استرشادي، يقتصر على 60 منتجًا في كل دفعة وبثلاث طلبات متزامنة، دون تعديل المخزون أو إنشاء طلبات شراء أو تغيير التفعيل. يعمل تلقائيًا مع نظام تحديث 1.0.97.'
+          gh release view v1.0.98 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip
+      - name: Publish new manifest after verifying released patch
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,datetime,zipfile
+          from pathlib import Path
+          m=Path('nano-pos-update.json')
+          d=json.loads(m.read_text(encoding='utf8'))
+          assert d['published'] and d['version']=='1.0.97'
+          f=Path('NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          base='https://github.com/bilalbaghdali/nano-pos-updates/releases'
+          page=base+'/tag/v1.0.98';link=base+'/download/v1.0.98/'+f.name
+          notes={
+            'ar':['إضافة زر تحليل الاحتياج المتوقع داخل قائمة المنتجات الناقصة الحالية، دون إنشاء شاشة مكررة.',
+                  'تقدير معدل البيع اليومي وأيام تغطية المخزون والكمية المقترحة للشراء، مع الطباعة والتصدير.',
+                  'تبقى الحسابات استرشادية للقراءة فقط ولا تنشئ فاتورة شراء أو تعدل المخزون.',
+                  'المحافظة على بيانات المتجر والتفعيل والتحسينات السابقة للمزامنة والتحديثات.'],
+            'fr':['Estimation des besoins dans la liste actuelle des ruptures de stock.',
+                  'Moyenne des ventes par jour, jours de couverture, quantités suggérées et export.',
+                  'Lecture seule sans achats ou mouvements de stock automatiques.'],
+            'en':['Demand estimation in the existing shortage list, without duplicate pages.',
+                  'Average daily sales, stock coverage and suggested quantities in print and CSV.',
+                  'Read-only calculations; no stock mutations or automatic purchases.']
+          }
+          today=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.98',published=True,releaseDate=today,mandatory=False,importance='normal',features=notes)
+          d.setdefault('releaseHistory',{})['1.0.98']={'releaseDate':today,'features':notes}
+          d['patches']=[{
+            'id':'nano-pos-v1.0.98-smart-inventory','fromVersions':['1.0.97'],
+            'directUrl':link,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,
+            'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'تطوير المخزون الذكي دون المساس بالبيانات.',
+                      'fr':'Inventaire intelligent et recommandations sans modifier les données.',
+                      'en':'Smart inventory and safe read-only recommendations.'}
+          m.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.98 verified smart inventory'
+          git push origin HEAD:refs/heads/main
