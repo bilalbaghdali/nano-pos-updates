@@ -1,0 +1,22 @@
+name: Audit NANO POS v1.0.103 Checkout For Improvements
+on:
+  push:
+    branches: [fix/sales-ui-improvements-104]
+    paths: ['.github/workflows/audit-checkout-104.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review_checkout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch official release and inspect checkout source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p incoming
+          gh release download v1.0.103 --pattern NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip --dir incoming
+          python3 .github/scripts/audit-checkout-104.py incoming/NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip
