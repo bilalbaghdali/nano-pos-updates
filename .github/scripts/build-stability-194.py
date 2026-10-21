@@ -159,7 +159,32 @@ def build(data):
    assert SHA(blob)==ORIGINAL[filename],('source_changed',filename)
    blob=(patch_updater if filename=='updater-main.cjs' else patch_backup)(blob.decode()).encode()
    changed.add(filename)
-  elif filename=='package.json':
+  elif filename=='release-notes.js':
+   original=Path('.github/assets/nano-release-notes-193.js').read_bytes()
+   assert blob==original,'v1.0.93 release notes do not match'
+   notes=blob.decode('utf-8')
+   notes=replace(notes,"const FALLBACK_VERSION = '1.0.93';","const FALLBACK_VERSION = '1.0.94';")
+   notes=between(notes,"  const OFFLINE = {","  const TITLES = {",'''  const OFFLINE = {
+    ar: [
+      'تحسين ثبات التحديثات والتحقق من سلامة الملفات مرة أخرى قبل التثبيت.',
+      'استبدال آمن لملفات البرنامج مع الاحتفاظ بنسخة للتراجع عند فشل العملية.',
+      'تحسين التحقق من النسخ الاحتياطية دون المساس ببيانات المتجر أو التفعيل.'
+    ],
+    fr: [
+      'Mise à jour plus fiable avec nouvelle vérification des fichiers avant installation.',
+      'Remplacement atomique du programme avec copie de retour arrière conservée.',
+      'Meilleure vérification des sauvegardes, sans toucher aux données ni à la licence.'
+    ],
+    en: [
+      'Safer updates with a fresh checksum check immediately before installation.',
+      'Atomic program-file replacement with retained rollback copy.',
+      'Improved backup integrity checks while preserving store data and activation.'
+    ]
+  };
+''')
+   blob=notes.encode('utf-8')
+   changed.add(filename)
+    elif filename=='package.json':
    src=blob.decode()
    assert json.loads(src)['version']=='1.0.93'
    blob=replace(src,'"version": "1.0.93"','"version": "1.0.94"').encode()
@@ -169,7 +194,7 @@ def build(data):
    entry['integrity']['hash']=SHA(blob)
    entry['integrity']['blocks']=[SHA(blob[i:i+4194304]) for i in range(0,len(blob),4194304)]
   payload.extend(blob)
- assert changed=={'updater-main.cjs','backup-safety.cjs','package.json'}
+ assert changed=={'updater-main.cjs','backup-safety.cjs','package.json','release-notes.js'}
  h=json.dumps(header,separators=(',',':'),ensure_ascii=False).encode()
  padded=(len(h)+7)&~3
  return struct.pack('<4I',4,padded+4,padded,len(h))+h+b'\0'*(padded-4-len(h))+payload
