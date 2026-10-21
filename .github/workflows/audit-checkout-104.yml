@@ -3,7 +3,7 @@ name: Audit NANO POS v1.0.103 Checkout For Improvements
 on:
   push:
     branches: [fix/sales-ui-improvements-104]
-    paths: ['.github/workflows/audit-checkout-104.yml']
+    paths: ['.github/workflows/audit-checkout-104.yml', '.github/scripts/audit-checkout-104.py']
   workflow_dispatch:
 permissions:
   contents: read
