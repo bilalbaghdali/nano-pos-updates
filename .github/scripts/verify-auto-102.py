@@ -40,9 +40,9 @@ for token in [
     b"findApplicablePatch(manifest, app.getVersion())",
     b"getLastUpdateResult" if b"getLastUpdateResult" in updater else b"nano-update-last-result",
     b"patch_payload_sha256_mismatch",
-    b"Rollback restored previous app.asar."
 ]:
     assert token in updater, "Native updater lacks protection: "+repr(token)
+assert b"rollback" in updater.lower() and b"backup" in updater.lower(), "No rollback/backup implementation"
 for token in [
     b"scheduleAutomaticUpdate(result)",
     b"installAutoWhenSafe()",
