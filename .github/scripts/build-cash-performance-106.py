@@ -103,7 +103,7 @@ def build(source,target,work):
    x=entry['integrity'];x['hash']=SHA(content)
    size=int(x.get('blockSize',4194304));x['blocks']=[SHA(content[i:i+size]) for i in range(0,len(content),size)]
   output.extend(content)
-  if name in modified or name in ('browser-bridge.js','nano-payment-quality-105.js','nano-checkout-choice-104.js','nano-cash-change.js'):
+  if name in modified or name in ('browser-bridge.js','nano-payment-quality-105.js','nano-checkout-choice-104.js','nano-cash-change.js','nano-payment-ledger-102.js'):
    (work/name).parent.mkdir(parents=True,exist_ok=True)
    (work/name).write_bytes(content)
  assert modified=={'electron-main.cjs','browser-bridge.js','index.html','release-notes.js','package.json'}
