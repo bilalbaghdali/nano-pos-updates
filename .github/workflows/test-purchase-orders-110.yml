@@ -46,6 +46,8 @@ jobs:
           done
           cp development/trade/test-purchase-order-110.cjs verified/
           (cd verified && node test-purchase-order-110.cjs)
+          cp development/trade/test-purchase-order-ui-110.cjs verified/
+          (cd verified && npm install --ignore-scripts --no-save jsdom@26.1.0 && node test-purchase-order-ui-110.cjs)
           python3 - <<'PY'
           import struct,json,zipfile,hashlib
           from pathlib import Path
