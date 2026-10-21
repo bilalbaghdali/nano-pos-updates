@@ -1,0 +1,125 @@
+name: NANO POS v1.0.92 - General Improvements (Scoped Search)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-general-search-192.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-192
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout release repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify installed version and source release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text(encoding='utf-8'))
+          assert d['published'] and d['version']=='1.0.91','Base is not published NANO POS 1.0.91'
+          assert d['patches'][0]['appAsarSha256']=='55424bde8d6767ba5e2e76b3736112ca6db51d11e259e52d82a44bd6eed4d55b'
+          PY
+          if gh release view v1.0.92 >/dev/null 2>&1; then
+            echo "Release v1.0.92 already exists: refusing overwrite" >&2
+            exit 1
+          fi
+          mkdir -p incoming build
+          gh release download v1.0.91 --pattern 'NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip' --dir incoming
+          python3 - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          meta=json.loads(Path('nano-pos-update.json').read_text(encoding='utf-8'))
+          p=Path('incoming/NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==meta['patches'][0]['sha256'],'Base patch SHA mismatch'
+          PY
+      - name: Build and validate section-scoped search patch
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-general-search-192.py \
+            incoming/NANO-POS-Patch-1.0.90-to-1.0.91-VISIBLE-SECONDARY-LOGIN.zip \
+            NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip \
+            build/nano-v146-section-search.js
+          node --check build/nano-v146-section-search.js
+          python3 - <<'PY'
+          import zipfile,json,struct,hashlib
+          from pathlib import Path
+          p=Path('NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip')
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          a,b,c,n=struct.unpack_from('<4I',data)
+          h=json.loads(data[16:16+n])
+          def read(name):
+            e=h['files'][name]
+            return data[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+          assert json.loads(read('package.json'))['version']=='1.0.92'
+          js=read('nano-v146-section-search.js').decode('utf-8')
+          assert "root.addEventListener('input'" in js and "evt.stopImmediatePropagation()" in js
+          assert hashlib.sha256(read('nano-v146-section-search.js')).hexdigest()==h['files']['nano-v146-section-search.js']['integrity']['hash']
+          print('Verified 1.0.92 patch and scoped search')
+          PY
+      - name: Publish General Improvements release and verified ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create v1.0.92 NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.92 - تحسينات عامة' \
+            --notes 'تحسينات عامة: إصلاح البحث في الشريط العلوي ليعمل داخل الصفحة المفتوحة (المنتجات، فواتير البيع، فواتير الشراء وبقية الأقسام) بدل الانتقال إلى شاشة البحث العامة. الحفاظ على بيانات المتجر والتفعيل.'
+          gh release view v1.0.92 --json assets --jq '.assets[].name' | grep -Fx 'NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip'
+      - name: Publish auto-update manifest only after release upload
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,datetime
+          from pathlib import Path
+          f=Path('NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip')
+          dpath=Path('nano-pos-update.json')
+          d=json.loads(dpath.read_text(encoding='utf-8'))
+          assert d['version']=='1.0.91' and d['published']
+          features={
+            'ar':['تحسينات عامة: إصلاح بحث الشريط العلوي ليبحث داخل القسم المفتوح دون الانتقال إلى شاشة البحث العامة.','البحث في المنتجات وفواتير البيع والشراء حسب القسم الحالي مع دعم مسح البحث والضغط على Enter.','الحفاظ على قاعدة البيانات والمبيعات والمخزون والتفعيل وإعدادات المستخدم.'],
+            'fr':["Améliorations générales : recherche supérieure limitée à la section active, sans ouvrir la recherche globale.","Recherche dans les produits, factures de vente et achats; Entrée et effacement pris en charge.","Données, stocks, ventes et activation préservés."],
+            'en':['General improvements: top search is scoped to the current page instead of opening global search.','Search products, sales invoices and purchase invoices; Enter and clear supported.','Store data, inventory, sales and activation preserved.']
+          }
+          date=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          repo='bilalbaghdali/nano-pos-updates'
+          page=f'https://github.com/{repo}/releases/tag/v1.0.92'
+          direct=f'https://github.com/{repo}/releases/download/v1.0.92/{f.name}'
+          with __import__('zipfile').ZipFile(f) as z:
+            asar_sha=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          d.update(version='1.0.92',published=True,releaseDate=date,mandatory=False,importance='normal',features=features)
+          d.setdefault('releaseHistory',{})['1.0.92']={'releaseDate':date,'features':features}
+          d['patches']=[{'id':'nano-pos-v1.0.92-general-improvements',
+            'fromVersions':['1.0.91'],'directUrl':direct,'pageUrl':page,
+            'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar_sha,'fileName':f.name,'sizeBytes':f.stat().st_size,
+            'payloadType':'app-asar'}]
+          # No 1.0.92 full installer has been built: never link the older EXE.
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'تحسينات عامة: بحث داخل القسم المفتوح.','fr':'Améliorations générales : recherche dans la section courante.','en':'General improvements: current-section search.'}
+          dpath.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m "publish: NANO POS v1.0.92 general improvements"
+          git push origin HEAD:refs/heads/main
+      - name: Keep build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-v1.0.92-General-Improvements
+          path: NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip
+          if-no-files-found: error
