@@ -1,0 +1,162 @@
+name: NANO POS 1.0.103 - Publish In-App Update Fix
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-in-app-update-103.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-103
+  cancel-in-progress: false
+jobs:
+  linux_build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official v1.0.102 ASAR source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.103 >/dev/null 2>&1; then echo 'Refuse to overwrite existing release'; exit 1; fi
+          mkdir -p incoming work
+          gh release download v1.0.102 --pattern NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip --dir incoming
+          python3 - <<'PY'
+          import json,zipfile,hashlib
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text())
+          assert d['published'] and d['version']=='1.0.102'
+          f=Path('incoming/NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          print('PASS: verified production 1.0.102')
+          PY
+      - name: Build and test full in-app update flow
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-in-app-update-103.py \
+            incoming/NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip \
+            NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip work
+          node --check work/update-manager.js
+          node --check work/release-notes.js
+          cp .github/scripts/test-in-app-update-103.cjs work/
+          (cd work && node test-in-app-update-103.cjs)
+          python3 - <<'PY'
+          import hashlib,json,struct,zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          m,block,hs,n=struct.unpack_from('<4I',raw)
+          assert m==4 and block==hs+4
+          files=json.loads(raw[16:16+n])['files']
+          for name in ('package.json','release-notes.js','update-manager.js'):
+            e=files[name];blob=raw[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+            assert blob==Path('work/'+name).read_bytes()
+            if e.get('integrity'): assert hashlib.sha256(blob).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.103'
+          assert b'openUpdatePage(' not in Path('work/update-manager.js').read_bytes()
+          print('PASS: release archive contains only verified 1.0.103 app assets')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-1.0.103-in-app-payload
+          path: |
+            NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip
+            work/update-manager.js
+            work/release-notes.js
+            work/package.json
+            work/test-in-app-update-103.cjs
+          if-no-files-found: error
+  windows_test:
+    needs: linux_build
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-1.0.103-in-app-payload
+      - name: Test native update UI in Windows environment
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check update-manager.js
+            node test-in-app-update-103.cjs
+            if($LASTEXITCODE -ne 0){throw 'Internal update regression failed'}
+          }finally {Pop-Location}
+  publish:
+    needs: [linux_build,windows_test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-1.0.103-in-app-payload
+      - name: Publish official verified app-asar ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.103 >/dev/null 2>&1 || { echo 'v1.0.103 exists'; exit 1; }
+          gh release create v1.0.103 NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.103 — التحديث داخل البرنامج' \
+            --notes 'إصلاح حقيقي لزر التحديث: تنزيل الحزمة والتحقق من سلامتها ثم تثبيتها من داخل NANO POS دون فتح صفحة GitHub. يدعم الانتقال المباشر من 1.0.91 إلى 1.0.102 التي تحتوي على آلية استبدال ASAR المدمجة؛ بدءًا من 1.0.97 يقوم التنزيل والتثبيت آليًا عند شاشة الدخول. إذا لم توجد حزمة مدعومة، تُعرض رسالة داخل البرنامج بدل فتح المتصفح. يحافظ على الملفات والبيانات المحلية والتفعيل والنسخ الاحتياطية وآلية الاسترجاع؛ فحوص Windows/Linux ناجحة. الاختبارات آلية وليست تجربة على جهاز متجر.'
+          gh release view v1.0.103 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip
+      - name: Publish official in-app update manifest only after release
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,zipfile,datetime
+          from pathlib import Path
+          manifest=Path('nano-pos-update.json')
+          d=json.loads(manifest.read_text(encoding='utf8'))
+          assert d['version']=='1.0.102' and d['published']
+          f=Path('NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.103'
+          direct='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.103/'+f.name
+          notes={
+           'ar':['إصلاح زر تحديث الآن: تحميل وتثبيت الحزمة الرسمية داخل NANO POS دون فتح صفحة GitHub.',
+                 'إتاحة الانتقال المباشر من الإصدارات المدعومة ذات المحرك الداخلي إلى 1.0.103.',
+                 'التحقق من سلامة الملف وحفظ إمكانية الاسترجاع وتأجيل إعادة التشغيل خلال العمل.',
+                 'إظهار حالة عدم توفر حزمة مناسبة داخل البرنامج بدل الانتقال إلى المتصفح.'],
+           'fr':['Installer les mises à jour dans NANO POS sans redirection vers GitHub.',
+                 'Mise à niveau directe depuis les versions avec un moteur interne compatible.',
+                 'SHA-256, rollback et installation différée pendant la vente.',
+                 'Afficher les erreurs dans l’application, pas dans le navigateur.'],
+           'en':['Download and install inside NANO POS, not through GitHub in a browser.',
+                 'Direct in-app upgrade from compatible earlier versions.',
+                 'Integrity verification, rollback and checkout-safe restart.',
+                 'Display unsupported-download errors inside the app.']}
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.103',published=True,releaseDate=day,mandatory=False,importance='normal',features=notes)
+          d.setdefault('releaseHistory',{})['1.0.103']={'releaseDate':day,'features':notes}
+          d['patches']=[{
+            'id':'nano-pos-v1.0.103-no-browser-internal-updates',
+            'fromVersions':[f'1.0.{n}' for n in range(91,103)],
+            'directUrl':direct,'pageUrl':page,
+            'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,
+            'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          # No valid v1.0.103 EXE has been published, so do not advertise a fake installer.
+          # This prevents the legacy updater from turning "Update now" into "Open browser".
+          d['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          d['notes']={'ar':'التحديث والتثبيت مباشرة داخل البرنامج.',
+                      'fr':'Installation des mises à jour dans l’application.',
+                      'en':'Internal update download and installation without browser redirects.'}
+          manifest.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS v1.0.103 in-app update from compatible versions'
+          git push origin HEAD:refs/heads/main
