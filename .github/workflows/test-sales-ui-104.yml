@@ -1,0 +1,115 @@
+name: NANO POS 1.0.104 - Sales Screen Improvements Gate
+on:
+  push:
+    branches: ['fix/sales-ui-improvements-104']
+    paths:
+      - '.github/scripts/build-sales-improvements-104.py'
+      - '.github/scripts/test-sales-ui-104.cjs'
+      - '.github/assets/nano-checkout-choice-104.js'
+      - '.github/workflows/test-sales-ui-104.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate published NANO POS 1.0.103
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p incoming work
+          gh release download v1.0.103 --pattern NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip --dir incoming
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          m=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert m['version']=='1.0.103' and m['published']
+          f=Path('incoming/NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build verified checkout simplification, test with browser DOM
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-sales-improvements-104.py \
+            incoming/NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip \
+            NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip work
+          for file in nano-fast-pos.js nano-cash-change.js nano-checkout-choice-104.js release-notes.js; do node --check "work/$file"; done
+          cp .github/scripts/test-sales-ui-104.cjs work/
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-sales-ui-104.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct,json,zipfile,hashlib
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          a,b,hs,n=struct.unpack_from('<4I',raw);assert a==4 and b==hs+4
+          files=json.loads(raw[16:16+n])['files']
+          for name in ['index.html','nano-fast-pos.js','nano-cash-change.js','nano-checkout-choice-104.js',
+                       'release-notes.js','package.json','browser-bridge.js','nano-payment-ledger-102.js']:
+            item=files[name]
+            value=raw[8+b+int(item['offset']):8+b+int(item['offset'])+item['size']]
+            assert value==Path('work/'+name).read_bytes()
+            if item.get('integrity'):assert hashlib.sha256(value).hexdigest()==item['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.104'
+          assert b'nano-split-ui-102.js' not in Path('work/index.html').read_bytes()
+          print('PASS: signed-by-hash ASAR and all source files verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-104-improvements-tested
+          path: |
+            NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip
+            work/index.html
+            work/nano-fast-pos.js
+            work/nano-cash-change.js
+            work/nano-checkout-choice-104.js
+            work/browser-bridge.js
+            work/nano-payment-ledger-102.js
+            work/release-notes.js
+            work/package.json
+            work/test-sales-ui-104.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-104-improvements-tested
+      - name: Verify checkout UI and prior billing support on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check nano-fast-pos.js
+            node --check nano-cash-change.js
+            node --check nano-checkout-choice-104.js
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'Dependencies failed'}
+            node test-sales-ui-104.cjs
+            if($LASTEXITCODE -ne 0){throw 'Windows checkout regression failed'}
+          } finally {Pop-Location}
+  protected:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure business data, activation, backups and production manifest stay untouched
+        run: |
+          set -euo pipefail
+          files="$(git diff --name-only origin/main...HEAD)"
+          echo "$files"
+          if echo "$files" | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|database/|activation/|backup/|resources/)' ; then
+            echo 'Protected path unexpectedly modified';exit 1
+          fi

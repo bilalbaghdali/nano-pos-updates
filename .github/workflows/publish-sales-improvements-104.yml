@@ -1,0 +1,170 @@
+name: NANO POS 1.0.104 - Publish Improvements
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-sales-improvements-104.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-104
+  cancel-in-progress: false
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate official NANO POS v1.0.103 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.104 >/dev/null 2>&1; then echo 'Already released: stop';exit 1;fi
+          mkdir -p incoming work
+          gh release download v1.0.103 \
+            --pattern NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip --dir incoming
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.103' and m['published']
+          f=Path('incoming/NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build ASAR; test checkout without received amount or split payment
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-sales-improvements-104.py \
+            incoming/NANO-POS-Patch-1.0.102-to-1.0.103-IN-APP-UPDATES.zip \
+            NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip work
+          for name in nano-fast-pos.js nano-cash-change.js nano-checkout-choice-104.js release-notes.js; do node --check "work/$name"; done
+          cp .github/scripts/test-sales-ui-104.cjs work/
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-sales-ui-104.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct,json,zipfile,hashlib
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',data)
+          assert magic==4 and block==hs+4
+          files=json.loads(data[16:16+n])['files']
+          for name in ['index.html','nano-fast-pos.js','nano-cash-change.js','nano-checkout-choice-104.js',
+                       'release-notes.js','package.json','browser-bridge.js','nano-payment-ledger-102.js']:
+            entry=files[name]
+            content=data[8+block+int(entry['offset']):8+block+int(entry['offset'])+entry['size']]
+            assert content==Path('work/'+name).read_bytes()
+            if entry.get('integrity'):assert hashlib.sha256(content).hexdigest()==entry['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.104'
+          print('PASS: ASAR integrity, preserved sales ledger and checkout UI')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v1.0.104-improvements
+          path: |
+            NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip
+            work/index.html
+            work/nano-fast-pos.js
+            work/nano-cash-change.js
+            work/nano-checkout-choice-104.js
+            work/browser-bridge.js
+            work/nano-payment-ledger-102.js
+            work/release-notes.js
+            work/package.json
+            work/test-sales-ui-104.cjs
+          if-no-files-found: error
+  test_windows:
+    needs: build_linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v1.0.104-improvements
+      - name: Windows sale checkout regression
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check nano-fast-pos.js
+            node --check nano-cash-change.js
+            node --check nano-checkout-choice-104.js
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'Test dependencies failed'}
+            node test-sales-ui-104.cjs
+            if($LASTEXITCODE -ne 0){throw 'Sales UI regression failed'}
+          } finally {Pop-Location}
+  publish:
+    needs: [build_linux,test_windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v1.0.104-improvements
+      - name: Publish tested release with improvements tag in title and notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.104 >/dev/null 2>&1 || { echo 'Already released';exit 1; }
+          gh release create v1.0.104 NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.104 — تحسينات' \
+            --notes 'وسم: تحسينات | تحسينات عامة لشاشة البيع: إزالة حقل «المبلغ المستلم» وحاسبة الصرف النقدي الظاهرة، وإلغاء واجهتي الدفع المختلط والمجزأ. الإبقاء على طريقة الدفع الواحدة وخياري «دفع كامل» و«دين كامل»؛ لا يُمس تاريخ الفواتير ودفعاتها السابقة ولا تسويات الديون أو المخزون أو التفعيل والنسخ الاحتياطية. متاح من داخل البرنامج وفق نظام التحديث الآلي الحالي. نجحت اختبارات Windows وLinux على حزمة ASAR موثقة بالـSHA-256. لم يُختبر على جهاز متجر فعلي.'
+          gh release view v1.0.104 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip
+      - name: Update native in-app manifest only after verified official release
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,zipfile,datetime
+          from pathlib import Path
+          path=Path('nano-pos-update.json')
+          manifest=json.loads(path.read_text(encoding='utf8'))
+          assert manifest['version']=='1.0.103' and manifest['published']
+          f=Path('NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.104'
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.104/'+f.name
+          notes={
+            'ar':['تحسينات: إزالة «المبلغ المستلم» من نافذة البيع وإلغاء حاسبة الصرف الظاهرة.',
+                  'تحسينات: إزالة الدفع المختلط من شاشة إتمام البيع.',
+                  'الإبقاء على الدفع الكامل أو البيع بالدين الكامل، وطريقة دفع واحدة.',
+                  'المحافظة على الفواتير والديون السابقة والمخزون والتفعيل والنسخ الاحتياطية.'],
+            'fr':['Améliorations : retrait du montant reçu et du calcul de monnaie à la caisse.',
+                  'Suppression des options de paiement mixte et partagé.',
+                  'Paiement total ou entièrement à crédit avec un seul mode de paiement.',
+                  'Données, factures, activation et sauvegardes préservées.'],
+            'en':['Improvements: remove the received amount and change-due fields from checkout.',
+                  'Remove the mixed/split payment UI for new sales.',
+                  'Keep single-method full payment or full-credit sales.',
+                  'Preserve existing invoices, accounting records, activation and backups.']}
+          today=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          manifest.update(version='1.0.104',published=True,releaseDate=today,
+                          mandatory=False,importance='normal',features=notes)
+          manifest.setdefault('releaseHistory',{})['1.0.104']={'releaseDate':today,'features':notes}
+          manifest['patches']=[{
+            'id':'nano-pos-1.0.104-improvements',
+            'fromVersions':[f'1.0.{v}' for v in range(91,104)],
+            'directUrl':url,'pageUrl':page,
+            'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,
+            'payloadType':'app-asar'}]
+          manifest['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          manifest['notes']={'ar':'تحسينات شاشة البيع وإزالة المبلغ المستلم والدفع المختلط.',
+            'fr':'Améliorations de la caisse et suppression des paiements mixtes.',
+            'en':'Checkout improvements: no tendered-amount or split-payment controls.'}
+          path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.104 sales improvements'
+          git push origin HEAD:refs/heads/main
