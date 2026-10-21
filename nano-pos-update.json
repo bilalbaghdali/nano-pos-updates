@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.96",
+  "version": "1.0.97",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "توحيد معالجة عمليات الهواتف والكمبيوترات المرتبطة لمنع التنفيذ المتزامن المتعارض.",
-      "حفظ معرّفات ونتائج العمليات المنفذة لتجنب تكرار البيع أو تعديل المخزون عند إعادة الإرسال أو تشغيل الكمبيوتر.",
-      "حماية إعادة الإرسال: إيقاف العملية غير مؤكدة النتيجة وإظهار تنبيه لمراجعتها بدل تكرارها.",
-      "الاحتفاظ ببيانات المتجر والتفعيل وإصلاحات الفواتير السابقة؛ الجرد بالهاتف ما زال غير مفعّل."
+      "التحقق تلقائيًا من وجود تحديثات عند تشغيل NANO POS ثم دوريًا أثناء عمله.",
+      "تحميل التحديث الموثق وفحص سلامته تلقائيًا داخل البرنامج دون تنزيل ZIP يدويًا.",
+      "تثبيت التحديث وإعادة فتح البرنامج عند شاشة الدخول؛ تأجيل التثبيت أثناء المعاملات النشطة.",
+      "عرض رقم الإصدار ومميزاته، مع المحافظة على بيانات المتجر والتفعيل وإصلاحات المزامنة السابقة."
     ],
     "fr": [
-      "File unique pour les opérations de téléphones et PC reliés.",
-      "Historique durable des opérations pour éviter les doublons après reconnexion.",
-      "Les opérations au résultat incertain nécessitent une vérification au lieu d’une nouvelle exécution.",
-      "Données et activation conservées ; inventaire mobile non activé."
+      "Recherche automatique de mises à jour au lancement et périodiquement.",
+      "Téléchargement et vérification SHA-256 directement dans NANO POS.",
+      "Installation à la connexion, différée pendant les ventes actives.",
+      "Version, notes, données et activation conservées."
     ],
     "en": [
-      "Shared serialized mutation queue across connected phones and PCs.",
-      "Persistent operation ledger prevents replay duplicates after reconnect or restart.",
-      "Ambiguous results require review instead of automatic re-execution.",
-      "Store data and activation preserved; mobile stocktaking is not enabled."
+      "Automatically check for updates at startup and periodically.",
+      "Automatically download and verify official updates inside NANO POS.",
+      "Install and restart on the sign-in screen, deferring while sales are active.",
+      "Keep release notes, store data, activation and previous sync fixes."
     ]
   },
   "releaseHistory": {
@@ -1579,32 +1579,55 @@
           "Store data and activation preserved; mobile stocktaking is not enabled."
         ]
       }
+    },
+    "1.0.97": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "التحقق تلقائيًا من وجود تحديثات عند تشغيل NANO POS ثم دوريًا أثناء عمله.",
+          "تحميل التحديث الموثق وفحص سلامته تلقائيًا داخل البرنامج دون تنزيل ZIP يدويًا.",
+          "تثبيت التحديث وإعادة فتح البرنامج عند شاشة الدخول؛ تأجيل التثبيت أثناء المعاملات النشطة.",
+          "عرض رقم الإصدار ومميزاته، مع المحافظة على بيانات المتجر والتفعيل وإصلاحات المزامنة السابقة."
+        ],
+        "fr": [
+          "Recherche automatique de mises à jour au lancement et périodiquement.",
+          "Téléchargement et vérification SHA-256 directement dans NANO POS.",
+          "Installation à la connexion, différée pendant les ventes actives.",
+          "Version, notes, données et activation conservées."
+        ],
+        "en": [
+          "Automatically check for updates at startup and periodically.",
+          "Automatically download and verify official updates inside NANO POS.",
+          "Install and restart on the sign-in screen, deferring while sales are active.",
+          "Keep release notes, store data, activation and previous sync fixes."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.96-sync-integrity",
+      "id": "nano-pos-197-auto-in-app",
       "fromVersions": [
-        "1.0.95"
+        "1.0.96"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.96/NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.96",
-      "sha256": "fd40db2b0b47f6012a39dddf9567c89f4e8d157839c42a15e3dfd521ce5987c0",
-      "appAsarSha256": "a09b0fdffb6c9e2ce75011bda51ed315467ae68e6003e9eea7a62288c4b2fbfe",
-      "fileName": "NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip",
-      "sizeBytes": 31387854,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.97/NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.97",
+      "sha256": "82360f1dd33308bc059f586b46ea84cc22b31ae251348bdcec6a4fcbf3ff65eb",
+      "appAsarSha256": "6cb54593d444e93faef4f2bd5d72959e1d8268d1a69f0fa9310c55a77e360571",
+      "fileName": "NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip",
+      "sizeBytes": 31388955,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.96",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.97",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات المزامنة ومنع تكرار العمليات.",
-    "fr": "Synchronisation et protection contre les doublons.",
-    "en": "Sync integrity and duplicate-operation protection."
+    "ar": "التحديث الآلي المدمج مع البرنامج.",
+    "fr": "Mises à jour automatiques intégrées.",
+    "en": "Automatic in-app updates."
   }
 }
