@@ -1,0 +1,139 @@
+name: Publish NANO POS update
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version number (e.g. 1.0.92)
+        required: true
+        type: string
+      from_version:
+        description: Source version for patch
+        required: true
+        type: string
+      patch_url:
+        description: HTTPS URL of the ready-to-publish patch ZIP
+        required: true
+        type: string
+      patch_sha256:
+        description: Expected SHA256 of patch ZIP
+        required: true
+        type: string
+      app_asar_sha256:
+        description: Expected SHA256 of payload/app.asar
+        required: true
+        type: string
+      features_ar:
+        description: Arabic release notes
+        required: true
+        type: string
+      features_fr:
+        description: French release notes
+        required: false
+        type: string
+      features_en:
+        description: English release notes
+        required: false
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Validate inputs and download verified patch
+        env:
+          VERSION: ${{ inputs.version }}
+          FROM_VERSION: ${{ inputs.from_version }}
+          PATCH_URL: ${{ inputs.patch_url }}
+          PATCH_SHA: ${{ inputs.patch_sha256 }}
+          ASAR_SHA: ${{ inputs.app_asar_sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$FROM_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$PATCH_URL" =~ ^https:// ]]
+          [[ "$PATCH_SHA" =~ ^[a-fA-F0-9]{64}$ ]]
+          [[ "$ASAR_SHA" =~ ^[a-fA-F0-9]{64}$ ]]
+          FILENAME="NANO-POS-Patch-${FROM_VERSION}-to-${VERSION}-General-Improvements.zip"
+          echo "PATCH_FILE=$FILENAME" >> "$GITHUB_ENV"
+          curl --fail --location --retry 3 --max-time 300 --output "$FILENAME" "$PATCH_URL"
+          echo "${PATCH_SHA,,}  $FILENAME" | sha256sum -c -
+          python3 - "$FILENAME" "$ASAR_SHA" <<'PY'
+          import sys, zipfile, hashlib
+          path, expected = sys.argv[1:]
+          with zipfile.ZipFile(path) as z:
+              names = z.namelist()
+              assert "payload/app.asar" in names, "Patch is missing payload/app.asar"
+              actual = hashlib.sha256(z.read("payload/app.asar")).hexdigest()
+              assert actual == expected.lower(), "app.asar SHA256 mismatch"
+          PY
+      - name: Create GitHub release and upload patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          FEATURES_AR: ${{ inputs.features_ar }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release already exists: refusing to overwrite" >&2
+            exit 1
+          fi
+          gh release create "v$VERSION" "$PATCH_FILE" --target "$GITHUB_SHA" --title "NANO POS v$VERSION — تحسينات عامة" --notes "$FEATURES_AR" --verify-tag=false
+      - name: Update manifest after release upload succeeds
+        env:
+          VERSION: ${{ inputs.version }}
+          FROM_VERSION: ${{ inputs.from_version }}
+          PATCH_SHA: ${{ inputs.patch_sha256 }}
+          ASAR_SHA: ${{ inputs.app_asar_sha256 }}
+          FEATURES_AR: ${{ inputs.features_ar }}
+          FEATURES_FR: ${{ inputs.features_fr }}
+          FEATURES_EN: ${{ inputs.features_en }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import os,json,datetime,pathlib
+          p=pathlib.Path("nano-pos-update.json")
+          data=json.loads(p.read_text(encoding="utf-8"))
+          version=os.environ["VERSION"]
+          source=os.environ["FROM_VERSION"]
+          fn=os.environ["PATCH_FILE"]
+          url=f'https://github.com/{os.environ["REPO"]}/releases/download/v{version}/{fn}'
+          features={
+            "ar":[os.environ["FEATURES_AR"]],
+            "fr":[os.environ["FEATURES_FR"] or os.environ["FEATURES_AR"]],
+            "en":[os.environ["FEATURES_EN"] or os.environ["FEATURES_AR"]]
+          }
+          date=datetime.date.today().isoformat()
+          data["version"]=version
+          data["releaseDate"]=date
+          data["published"]=True
+          data["mandatory"]=False
+          data["importance"]="normal"
+          data["features"]=features
+          data.setdefault("releaseHistory",{})[version]={"releaseDate":date,"features":features}
+          data["patches"]=[{"id":f"nano-pos-v{version}-general-improvements",
+                            "fromVersions":[source],
+                            "directUrl":url,
+                            "pageUrl":f'https://github.com/{os.environ["REPO"]}/releases/tag/v{version}',
+                            "sha256":os.environ["PATCH_SHA"].lower(),
+                            "appAsarSha256":os.environ["ASAR_SHA"].lower(),
+                            "fileName":fn,
+                            "sizeBytes":os.path.getsize(fn),
+                            "payloadType":"app-asar"}]
+          # Do not expose an old full installer as if it were the new version.
+          data["download"]={}
+          p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add nano-pos-update.json
+          git commit -m "publish: NANO POS v${VERSION} general improvements"
+          git push
