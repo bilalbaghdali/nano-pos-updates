@@ -42,7 +42,7 @@ jobs:
           fi
           mkdir -p incoming review
           gh release download v1.0.93 --pattern 'NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip' --dir incoming
-          python -c "import json,hashlib,pathlib;d=json.load(open('nano-pos-update.json'));p=pathlib.Path('incoming/NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip');assert hashlib.sha256(p.read_bytes()).hexdigest()==d['patches'][0]['sha256']"
+          python -c "import json,hashlib,pathlib;d=json.load(open('nano-pos-update.json',encoding='utf8'));p=pathlib.Path('incoming/NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip');assert hashlib.sha256(p.read_bytes()).hexdigest()==d['patches'][0]['sha256']"
       - name: Rebuild from the exact verified v1.0.93 ASAR
         run: |
           set -euo pipefail
@@ -54,11 +54,11 @@ jobs:
           for file in updater-main.cjs backup-safety.cjs release-notes.js renderer.js update-manager.js nano-v146-section-search.js electron-main.cjs; do
             node --check "review/$file"
           done
-          node .github/tests/test-stability-194.cjs "$(pwd)/review"
+          node .github/tests/test-stability-194.cjs "review"
       - name: Simulate successful, corrupted and interrupted Windows updates
         run: |
           set -euo pipefail
-          pwsh -NoProfile -File .github/tests/test-stability-194.ps1 -SourceRoot "$(pwd)/review"
+          pwsh -NoProfile -File .github/tests/test-stability-194.ps1 -SourceRoot "review"
       - name: Publish only after successful Windows tests
         env:
           GH_TOKEN: ${{ github.token }}
