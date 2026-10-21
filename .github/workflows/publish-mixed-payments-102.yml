@@ -1,0 +1,167 @@
+name: NANO POS v1.0.102 - Publish Mixed Payments
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-mixed-payments-102.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-102
+  cancel-in-progress: false
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate official release 1.0.101
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.102 >/dev/null 2>&1; then echo 'Release exists'; exit 1; fi
+          mkdir -p source work
+          gh release download v1.0.101 --pattern NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip --dir source
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert m['version']=='1.0.101' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build v1.0.102 and verify mixed payments, debts, backups
+        run: |
+          set -euo pipefail
+          python3 development/trade/build-payment-ledger-102.py \
+            source/NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip \
+            NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip work
+          for n in browser-bridge.js nano-payment-ledger-102.js nano-split-ui-102.js release-notes.js; do node --check "work/$n"; done
+          cp development/trade/test-payment-ledger-102.cjs work/
+          cp development/trade/test-payment-bridge-102.cjs work/
+          cp development/trade/test-split-ui-102.cjs work/
+          (cd work && node test-payment-ledger-102.cjs && node test-payment-bridge-102.cjs)
+          (cd work && npm install --ignore-scripts --no-save jsdom@26.1.0 && node test-split-ui-102.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,hashlib,json,struct
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip') as z:
+            assert z.namelist()==['payload/app.asar'];data=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',data);assert magic==4 and b==hs+4
+          files=json.loads(data[16:16+n])['files']
+          for name in ['browser-bridge.js','nano-payment-ledger-102.js','nano-split-ui-102.js','index.html','release-notes.js','package.json']:
+            e=files[name];body=data[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert body==Path('work/'+name).read_bytes()
+            if 'integrity' in e:assert hashlib.sha256(body).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.102'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v102-verified
+          path: |
+            NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip
+            work/browser-bridge.js
+            work/nano-payment-ledger-102.js
+            work/nano-split-ui-102.js
+            work/index.html
+            work/release-notes.js
+            work/package.json
+            work/test-payment-ledger-102.cjs
+            work/test-payment-bridge-102.cjs
+            work/test-split-ui-102.cjs
+          if-no-files-found: error
+  test_windows:
+    needs: build_linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v102-verified
+      - name: Run full financial and UI regressions on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check browser-bridge.js
+            node --check nano-payment-ledger-102.js
+            node --check nano-split-ui-102.js
+            node test-payment-ledger-102.cjs
+            if($LASTEXITCODE -ne 0){throw 'Financial unit test failed'}
+            node test-payment-bridge-102.cjs
+            if($LASTEXITCODE -ne 0){throw 'Browser financial integration failed'}
+            npm install --ignore-scripts --no-save jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'Fixture dependency install failed'}
+            node test-split-ui-102.cjs
+            if($LASTEXITCODE -ne 0){throw 'Split UI test failed'}
+          }finally{Pop-Location}
+  publish:
+    needs: [build_linux,test_windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v102-verified
+      - name: Publish ZIP only after passing both operating systems
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.102 >/dev/null 2>&1 || { echo 'Release already exists'; exit 1; }
+          gh release create v1.0.102 NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.102 — الدفع المختلط وحماية التسديدات' \
+            --notes 'إضافة الدفع المختلط والجزئي داخل شاشة التسديد الحالية مع دعم النقد، البطاقة، CCP، الشيك، التحويل وطرق أخرى. تقسيم الدفعات يسجل في فاتورة البيع، ويظل الدين مرتبطًا بالزبون. تم تحسين حفظ البيع والمخزون والدين كوحدة واحدة عند فشل التخزين، وإضافة قناة تسديد محمية بمعرف ثابت لمنع تكرار دفعات فواتير البيع والشراء. لا يمس التحديث التفعيل أو النسخ الاحتياطية. اختبارات Windows/Linux آلية ولا تعادل اختبار جهاز متجر فعلي.'
+          gh release view v1.0.102 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip
+      - name: Activate the verified in-program update
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,zipfile,datetime
+          from pathlib import Path
+          path=Path('nano-pos-update.json')
+          d=json.loads(path.read_text(encoding='utf8'))
+          assert d['version']=='1.0.101' and d['published']
+          f=Path('NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.102'
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.102/'+f.name
+          feats={
+           'ar':['الدفع النقدي والبطاقة وCCP والشيك والتحويل في فاتورة بيع واحدة، مع إمكانية بقاء جزء دين على الزبون.',
+                 'توثيق طرق الدفع والمبالغ في سجل فاتورة البيع.',
+                 'حماية مخزون وديون عملية بيع جديدة من التغييرات الجزئية عند فشل التخزين.',
+                 'تسديدات مضمونة بعدم التكرار عبر معرف عملية ثابت لفواتير الزبائن والموردين، دون المساس بالتفعيل.'],
+           'fr':['Paiement mixte et partiel en caisse : espèces, carte, CCP, chèque et virement.',
+                 'Les paiements sont enregistrés avec la facture de vente.',
+                 'Protection atomique du stock et de la dette si la sauvegarde échoue.',
+                 'Identifiants stables pour éviter les doublons de règlements.'],
+           'en':['Mixed and partial checkout with cash, card, CCP, cheque and transfer.',
+                 'Each checkout payment is recorded on the invoice.',
+                 'Atomic rollback of new sale stock/debt changes on failed storage writes.',
+                 'Idempotent customer and supplier invoice debt settlement records.']
+          }
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.102',published=True,releaseDate=day,mandatory=False,importance='normal',features=feats)
+          d.setdefault('releaseHistory',{})['1.0.102']={'releaseDate':day,'features':feats}
+          d['patches']=[{'id':'nano-pos-v1.0.102-mixed-payments','fromVersions':['1.0.101'],
+            'directUrl':url,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'الدفع المختلط وحماية التسديدات.',
+                      'fr':'Paiements mixtes et protection des règlements.',
+                      'en':'Mixed checkout and protected payments.'}
+          path.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.102 mixed and idempotent payments'
+          git push origin HEAD:refs/heads/main
