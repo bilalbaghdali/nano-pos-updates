@@ -8,7 +8,7 @@ All updates are constructed from the SHA-256-verified **latest official ASAR**. 
 | 1.0.95 | Fast checkout, invoice edit protections | Released | Duplicate submission and edit regression checks |
 | 1.0.96 | Durable cross-device sync ledger | Released | Concurrent phone/PC and restart checks |
 | 1.0.97 | Automatic in-app updates | Released | Linux and Windows update simulations |
-| **1.0.98** | Inventory intelligence: low-stock purchase suggestions and slow-mover visibility | Next | Read-only calculations; zero database/schema mutation; Linux & Windows tests |
+| **1.0.98** | Inventory intelligence: forecast in existing low-stock list, suggested purchase quantities and days of stock coverage | Released | Read-only calculations; unchanged DB and activation; Linux & Windows tests passed |
 | **1.0.99** | UI navigation/performance, dashboard data accuracy and audit trail | Planned | UI and existing data regression tests, audit persistency checks |
 | Later | Multi-device stocktake workflows and advanced recovery safeguards | Planned, separately gated | Real-device/staging tests before production release |
 
