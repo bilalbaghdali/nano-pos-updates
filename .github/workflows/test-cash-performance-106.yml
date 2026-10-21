@@ -1,0 +1,123 @@
+name: NANO POS v1.0.106 - Cash Change and Faster Startup Tests
+on:
+  push:
+    branches: [feature/cash-change-performance-106]
+    paths:
+      - '.github/assets/nano-cash-plan-106.js'
+      - '.github/assets/nano-cash-guide-106.js'
+      - '.github/scripts/build-cash-performance-106.py'
+      - '.github/scripts/test-cash-change-106.cjs'
+      - '.github/scripts/test-cash-bridge-106.cjs'
+      - '.github/workflows/test-cash-performance-106.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtain SHA-verified current v1.0.105
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source work
+          gh release download v1.0.105 --pattern NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip --dir source
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.105' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build and test DZD cash change, backend records and startup
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-cash-performance-106.py \
+            source/NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip \
+            NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip work
+          for file in nano-cash-plan-106.js nano-cash-guide-106.js browser-bridge.js electron-main.cjs release-notes.js; do node --check "work/$file"; done
+          cp .github/scripts/test-cash-change-106.cjs work/
+          cp .github/scripts/test-cash-bridge-106.cjs work/
+          (cd work && node test-cash-bridge-106.cjs)
+          (cd work && npm install --ignore-scripts --no-save jsdom@26.1.0 && node test-cash-change-106.cjs)
+          python3 - <<'PY'
+          import hashlib,json,struct,zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            blob=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',blob)
+          assert magic==4 and b==hs+4
+          files=json.loads(blob[16:16+n])['files']
+          for name in ['browser-bridge.js','electron-main.cjs','index.html','package.json',
+           'release-notes.js','nano-cash-plan-106.js','nano-cash-guide-106.js',
+           'nano-payment-quality-105.js','nano-checkout-choice-104.js','nano-cash-change.js']:
+            e=files[name];part=blob[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert part==Path('work/'+name).read_bytes(),name
+            if 'integrity' in e:assert hashlib.sha256(part).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.106'
+          print('PASS: verified ASAR integrity and unchanged historic cash records')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-106-tested-cash-faststart
+          path: |
+            NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip
+            work/browser-bridge.js
+            work/electron-main.cjs
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/nano-cash-plan-106.js
+            work/nano-cash-guide-106.js
+            work/nano-payment-quality-105.js
+            work/nano-checkout-choice-104.js
+            work/nano-cash-change.js
+            work/test-cash-change-106.cjs
+            work/test-cash-bridge-106.cjs
+          if-no-files-found: error
+  test_windows:
+    needs: build_linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-106-tested-cash-faststart
+      - name: Verify Windows cash/credit, saved invoices and startup order
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check nano-cash-guide-106.js
+            node --check electron-main.cjs
+            node --check browser-bridge.js
+            node test-cash-bridge-106.cjs
+            if($LASTEXITCODE -ne 0){throw 'Cash change ledger test failed'}
+            npm install --ignore-scripts --no-save jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'UI dependencies failed'}
+            node test-cash-change-106.cjs
+            if($LASTEXITCODE -ne 0){throw 'Cash change UI test failed'}
+          }finally{Pop-Location}
+  protected_data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Never edit activation, backups or live store
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only origin/main...HEAD)"
+          printf '%s\n' "$changed"
+          if echo "$changed" | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|database/|activation/|backup/|resources/)' ; then
+            echo 'Protected app/user-data path changed';exit 1
+          fi
