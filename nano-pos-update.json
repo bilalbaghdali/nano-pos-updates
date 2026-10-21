@@ -3,27 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.98",
+  "version": "1.0.99",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة زر تحليل الاحتياج المتوقع داخل قائمة المنتجات الناقصة الحالية، دون إنشاء شاشة مكررة.",
-      "تقدير معدل البيع اليومي وأيام تغطية المخزون والكمية المقترحة للشراء، مع الطباعة والتصدير.",
-      "تبقى الحسابات استرشادية للقراءة فقط ولا تنشئ فاتورة شراء أو تعدل المخزون.",
-      "المحافظة على بيانات المتجر والتفعيل والتحسينات السابقة للمزامنة والتحديثات."
+      "إضافة أوامر شراء منفصلة في قسم المشتريات دون زيادة المخزون أو دين المورد عند الإنشاء.",
+      "استلام البضاعة جزئيًا أو كليًا مع فاتورة مشتريات مرتبطة بكل استلام معتمد.",
+      "منع تكرار الاستلام وتجاوز الكميات، وحفظ المخزون ورصيد المورد وحالة الطلب في عملية واحدة.",
+      "حماية فواتير الاستلام المرتبطة من الحذف أو التعديل غير المتتبع، مع حفظ بيانات المتجر والتفعيل."
     ],
     "fr": [
-      "Estimation des besoins dans la liste actuelle des ruptures de stock.",
-      "Moyenne des ventes par jour, jours de couverture, quantités suggérées et export.",
-      "Lecture seule sans achats ou mouvements de stock automatiques."
+      "Bons de commande sans mouvement de stock ni dette.",
+      "Réceptions partielles et complètes, avec factures liées.",
+      "Protection contre les doublons, dépassements et écritures partielles.",
+      "Données, sauvegardes et activation conservées."
     ],
     "en": [
-      "Demand estimation in the existing shortage list, without duplicate pages.",
-      "Average daily sales, stock coverage and suggested quantities in print and CSV.",
-      "Read-only calculations; no stock mutations or automatic purchases."
+      "Purchase orders do not affect stock or supplier debt until confirmed receipt.",
+      "Partial/full receipts post linked purchase invoices.",
+      "Duplicate, over-receipt and partial-write protection.",
+      "Protect linked receipt invoices, store data, backups and activation."
     ]
   },
   "releaseHistory": {
@@ -1621,32 +1623,55 @@
           "Read-only calculations; no stock mutations or automatic purchases."
         ]
       }
+    },
+    "1.0.99": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "إضافة أوامر شراء منفصلة في قسم المشتريات دون زيادة المخزون أو دين المورد عند الإنشاء.",
+          "استلام البضاعة جزئيًا أو كليًا مع فاتورة مشتريات مرتبطة بكل استلام معتمد.",
+          "منع تكرار الاستلام وتجاوز الكميات، وحفظ المخزون ورصيد المورد وحالة الطلب في عملية واحدة.",
+          "حماية فواتير الاستلام المرتبطة من الحذف أو التعديل غير المتتبع، مع حفظ بيانات المتجر والتفعيل."
+        ],
+        "fr": [
+          "Bons de commande sans mouvement de stock ni dette.",
+          "Réceptions partielles et complètes, avec factures liées.",
+          "Protection contre les doublons, dépassements et écritures partielles.",
+          "Données, sauvegardes et activation conservées."
+        ],
+        "en": [
+          "Purchase orders do not affect stock or supplier debt until confirmed receipt.",
+          "Partial/full receipts post linked purchase invoices.",
+          "Duplicate, over-receipt and partial-write protection.",
+          "Protect linked receipt invoices, store data, backups and activation."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.98-smart-inventory",
+      "id": "nano-pos-v1.0.99-purchase-orders",
       "fromVersions": [
-        "1.0.97"
+        "1.0.98"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.98/NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.98",
-      "sha256": "0039a0d04f90720ccb1be6f53770a77968be3e65a90c503d3a1345c4b8fa0930",
-      "appAsarSha256": "284f6fb14f6fc006b49de6dab3d6a4d0d305bb865796e6ac52b6a62d8d72ada3",
-      "fileName": "NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip",
-      "sizeBytes": 31390647,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.99/NANO-POS-Patch-1.0.98-to-1.0.99-PURCHASE-ORDERS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.99",
+      "sha256": "745be3c5bea0b9d5201ac1039c3e567927055c472848e82e0c637d3ee46d5858",
+      "appAsarSha256": "4bb28eafd2486691beb80769bfc8d0daca6bc8d2a02d2917794c95014b6c0bc4",
+      "fileName": "NANO-POS-Patch-1.0.98-to-1.0.99-PURCHASE-ORDERS.zip",
+      "sizeBytes": 31397026,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.98",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.99",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "تطوير المخزون الذكي دون المساس بالبيانات.",
-    "fr": "Inventaire intelligent et recommandations sans modifier les données.",
-    "en": "Smart inventory and safe read-only recommendations."
+    "ar": "أوامر شراء واستلامات جزئية آمنة.",
+    "fr": "Bons de commande et réceptions partielles.",
+    "en": "Purchase orders and safe partial receipts."
   }
 }
