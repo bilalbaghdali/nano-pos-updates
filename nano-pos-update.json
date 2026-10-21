@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.104",
+  "version": "1.0.105",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات: إزالة «المبلغ المستلم» من نافذة البيع وإلغاء حاسبة الصرف الظاهرة.",
-      "تحسينات: إزالة الدفع المختلط من شاشة إتمام البيع.",
-      "الإبقاء على الدفع الكامل أو البيع بالدين الكامل، وطريقة دفع واحدة.",
-      "المحافظة على الفواتير والديون السابقة والمخزون والتفعيل والنسخ الاحتياطية."
+      "ملخص الدفع يعرض المبلغ الإجمالي وطريقة الدفع وحالة التسديد الكامل أو الدين.",
+      "حماية المحاسبة والمخزون من تسجيل نفس البيع مرتين عند الضغط المتكرر أو إعادة المحاولة.",
+      "التحقق من الزبون المسجل قبل البيع بالدين ومن صحة مبلغ الفاتورة قبل التسجيل.",
+      "طريقة دفع واحدة فقط دون المبلغ المستلم أو الدفع المختلط، مع حفظ الفواتير والديون السابقة."
     ],
     "fr": [
-      "Améliorations : retrait du montant reçu et du calcul de monnaie à la caisse.",
-      "Suppression des options de paiement mixte et partagé.",
-      "Paiement total ou entièrement à crédit avec un seul mode de paiement.",
-      "Données, factures, activation et sauvegardes préservées."
+      "Résumé de la facture, du mode et du statut de règlement.",
+      "Prévention des ventes dupliquées grâce à un identifiant de transaction durable.",
+      "Vérification du client avant une vente entièrement à crédit.",
+      "Un seul mode de paiement et aucun champ montant reçu ou paiement mixte."
     ],
     "en": [
-      "Improvements: remove the received amount and change-due fields from checkout.",
-      "Remove the mixed/split payment UI for new sales.",
-      "Keep single-method full payment or full-credit sales.",
-      "Preserve existing invoices, accounting records, activation and backups."
+      "Clear invoice total, payment method and full/credit payment summary.",
+      "Persistent duplicate-sale protection for retries and repeated checkout.",
+      "Customer validation for credit and transaction amount verification.",
+      "Single payment method; no received amount or mixed checkout."
     ]
   },
   "releaseHistory": {
@@ -1761,11 +1761,34 @@
           "Preserve existing invoices, accounting records, activation and backups."
         ]
       }
+    },
+    "1.0.105": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "ملخص الدفع يعرض المبلغ الإجمالي وطريقة الدفع وحالة التسديد الكامل أو الدين.",
+          "حماية المحاسبة والمخزون من تسجيل نفس البيع مرتين عند الضغط المتكرر أو إعادة المحاولة.",
+          "التحقق من الزبون المسجل قبل البيع بالدين ومن صحة مبلغ الفاتورة قبل التسجيل.",
+          "طريقة دفع واحدة فقط دون المبلغ المستلم أو الدفع المختلط، مع حفظ الفواتير والديون السابقة."
+        ],
+        "fr": [
+          "Résumé de la facture, du mode et du statut de règlement.",
+          "Prévention des ventes dupliquées grâce à un identifiant de transaction durable.",
+          "Vérification du client avant une vente entièrement à crédit.",
+          "Un seul mode de paiement et aucun champ montant reçu ou paiement mixte."
+        ],
+        "en": [
+          "Clear invoice total, payment method and full/credit payment summary.",
+          "Persistent duplicate-sale protection for retries and repeated checkout.",
+          "Customer validation for credit and transaction amount verification.",
+          "Single payment method; no received amount or mixed checkout."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-1.0.104-improvements",
+      "id": "nano-pos-105-professional-payment-improvements",
       "fromVersions": [
         "1.0.91",
         "1.0.92",
@@ -1779,14 +1802,15 @@
         "1.0.100",
         "1.0.101",
         "1.0.102",
-        "1.0.103"
+        "1.0.103",
+        "1.0.104"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.104/NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.104",
-      "sha256": "fa7397acfa8b22eeb6e9b2fd7e68e5aaa84c4abd9bed3639db74fac5358307d0",
-      "appAsarSha256": "fbf0fdc38fac1fec62c49df0f0bba7dc5250a2297b63d4941af60778c1daca02",
-      "fileName": "NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip",
-      "sizeBytes": 31410019,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.105/NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.105",
+      "sha256": "acb96f4e5d4b23159b450add2c6a0b3a77b5b33b149593806879cc9ce67b50d0",
+      "appAsarSha256": "cca80aeebdc24b3343624535b7555d66099fd2140f0a23005dfa296aee2f3aa7",
+      "fileName": "NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip",
+      "sizeBytes": 31413047,
       "payloadType": "app-asar"
     }
   ],
@@ -1797,8 +1821,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات شاشة البيع وإزالة المبلغ المستلم والدفع المختلط.",
-    "fr": "Améliorations de la caisse et suppression des paiements mixtes.",
-    "en": "Checkout improvements: no tendered-amount or split-payment controls."
+    "ar": "تحسينات احترافية في الدفع مع منع تكرار الفواتير وحماية الأرصدة.",
+    "fr": "Améliorations de paiement et protection contre les doubles ventes.",
+    "en": "Professional payment summary and duplicate sale protection."
   }
 }
