@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.92",
+  "version": "1.0.93",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات عامة: إصلاح بحث الشريط العلوي ليبحث داخل القسم المفتوح دون الانتقال إلى شاشة البحث العامة.",
-      "البحث في المنتجات وفواتير البيع والشراء حسب القسم الحالي مع دعم مسح البحث والضغط على Enter.",
-      "الحفاظ على قاعدة البيانات والمبيعات والمخزون والتفعيل وإعدادات المستخدم."
+      "إصلاح مشكلة عدم ظهور مميزات الإصدار الحالي الناتجة عن خطأ JavaScript.",
+      "عرض المميزات الحقيقية للنسخة المثبتة دون إنترنت، ومزامنتها مع GitHub عند الاتصال.",
+      "تصحيح رقم الإصدار ولغة العرض مع الإبقاء على إصلاح البحث السابق وحماية البيانات والتفعيل."
     ],
     "fr": [
-      "Améliorations générales : recherche supérieure limitée à la section active, sans ouvrir la recherche globale.",
-      "Recherche dans les produits, factures de vente et achats; Entrée et effacement pris en charge.",
-      "Données, stocks, ventes et activation préservés."
+      "Correction de la section des nouveautés de la version actuelle et de son erreur JavaScript.",
+      "Nouveautés disponibles hors ligne, synchronisées avec GitHub selon la version installée.",
+      "Version, langue et correctif de recherche conservés; données et licence intactes."
     ],
     "en": [
-      "General improvements: top search is scoped to the current page instead of opening global search.",
-      "Search products, sales invoices and purchase invoices; Enter and clear supported.",
-      "Store data, inventory, sales and activation preserved."
+      "Fixed JavaScript error that prevented current-version highlights from showing.",
+      "Show installed-version highlights offline; synchronize correct version history from GitHub.",
+      "Version and language fixed; previous search fix and all data and licensing preserved."
     ]
   },
   "releaseHistory": {
@@ -1489,32 +1489,53 @@
           "Store data, inventory, sales and activation preserved."
         ]
       }
+    },
+    "1.0.93": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "إصلاح مشكلة عدم ظهور مميزات الإصدار الحالي الناتجة عن خطأ JavaScript.",
+          "عرض المميزات الحقيقية للنسخة المثبتة دون إنترنت، ومزامنتها مع GitHub عند الاتصال.",
+          "تصحيح رقم الإصدار ولغة العرض مع الإبقاء على إصلاح البحث السابق وحماية البيانات والتفعيل."
+        ],
+        "fr": [
+          "Correction de la section des nouveautés de la version actuelle et de son erreur JavaScript.",
+          "Nouveautés disponibles hors ligne, synchronisées avec GitHub selon la version installée.",
+          "Version, langue et correctif de recherche conservés; données et licence intactes."
+        ],
+        "en": [
+          "Fixed JavaScript error that prevented current-version highlights from showing.",
+          "Show installed-version highlights offline; synchronize correct version history from GitHub.",
+          "Version and language fixed; previous search fix and all data and licensing preserved."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.92-general-improvements",
+      "id": "nano-pos-v1.0.93-current-features-fix",
       "fromVersions": [
-        "1.0.91"
+        "1.0.91",
+        "1.0.92"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.92/NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.92",
-      "sha256": "8a2de2751e8da58abd67499cd9ee9c11e26b4bf7325e95fa105569e40b48a167",
-      "appAsarSha256": "f25a6c0ca6aaded38f7984b6bcf9edc3b1829c7846148bc0f6ad0a0c080b03e1",
-      "fileName": "NANO-POS-Patch-1.0.91-to-1.0.92-General-Improvements.zip",
-      "sizeBytes": 31388990,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.93/NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.93",
+      "sha256": "6d3470d929f3493f42c5c39acd11ab930325a22e3649bf1e113c50eac69a855f",
+      "appAsarSha256": "74725370d317031683794312bcfebd3b131c8ec64e1e4db7c4e2083814f5d269",
+      "fileName": "NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip",
+      "sizeBytes": 31385418,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.92",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.93",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة: بحث داخل القسم المفتوح.",
-    "fr": "Améliorations générales : recherche dans la section courante.",
-    "en": "General improvements: current-section search."
+    "ar": "تحسينات عامة: إصلاح مميزات الإصدار الحالي.",
+    "fr": "Améliorations générales : correction des nouveautés.",
+    "en": "General improvements: fixed current-release highlights."
   }
 }
