@@ -184,7 +184,7 @@ def build(data):
 ''')
    blob=notes.encode('utf-8')
    changed.add(filename)
-    elif filename=='package.json':
+  elif filename=='package.json':
    src=blob.decode()
    assert json.loads(src)['version']=='1.0.93'
    blob=replace(src,'"version": "1.0.93"','"version": "1.0.94"').encode()
