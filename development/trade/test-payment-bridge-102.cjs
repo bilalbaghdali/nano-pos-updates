@@ -14,6 +14,7 @@ const sample=()=>({
  let blocked=false,signals=0;
  const localStorage={getItem:k=>store.get(k)||null,setItem(k,v){if(blocked){blocked=false;throw Error('storage unavailable');}store.set(k,String(v));},removeItem:k=>store.delete(k)};
  const win={NANO_CONFIG:{distribution:{cleanBusinessDataOnFirstRun:false}},NANO_PAYMENT_LEDGER_102:require('./nano-payment-ledger-102.js'),
+   nanoLicense:{access:async()=>({allowed:true})},
    nanoNative:{pcSyncLocalChanged(){signals++;}},addEventListener(){},dispatchEvent(){}};
  const context={window:win,localStorage,sessionStorage:{getItem:()=>null,setItem(){},removeItem(){}},
    location:{protocol:'file:',port:''},navigator:{},document:{},console,JSON,Date,Math,Number,Array,Map,Set,Promise,Intl,URL,structuredClone,
