@@ -1,0 +1,19 @@
+name: Inspect POS payment flow v1.0.104
+on:
+  push:
+    branches: ['feature/payment-improvements-105']
+    paths: ['.github/workflows/audit-payment-105.yml']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit original payment flow with verified hashes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download v1.0.104 --pattern 'NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip'
+          python3 .github/scripts/audit-payment-105.py NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip

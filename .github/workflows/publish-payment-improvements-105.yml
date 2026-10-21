@@ -1,0 +1,165 @@
+name: NANO POS 1.0.105 - Publish Professional Payment Improvements
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-payment-improvements-105.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-105
+  cancel-in-progress: false
+jobs:
+  linux_build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: SHA-authenticate v1.0.104 official app archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.105 >/dev/null 2>&1 || { echo "v1.0.105 already published"; exit 1; }
+          mkdir -p source work
+          gh release download v1.0.104 --pattern NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,zipfile,hashlib
+          d=json.loads(Path('nano-pos-update.json').read_text())
+          assert d['published'] and d['version']=='1.0.104'
+          f=Path('source/NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          PY
+      - name: Build v1.0.105 and verify payment, inventory and ledger safety
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-payment-improvements-105.py \
+            source/NANO-POS-Patch-1.0.103-to-1.0.104-IMPROVEMENTS.zip \
+            NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip work
+          for p in browser-bridge.js nano-payment-quality-105.js release-notes.js; do node --check "work/$p"; done
+          cp .github/scripts/test-payment-bridge-105.cjs work/
+          cp .github/scripts/test-payment-ui-105.cjs work/
+          (cd work && node test-payment-bridge-105.cjs)
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-payment-ui-105.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct,zipfile
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip') as z:
+            assert z.namelist()==['payload/app.asar'];data=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',data)
+          assert magic==4 and block==hs+4
+          f=json.loads(data[16:16+n])['files']
+          for name in ['index.html','browser-bridge.js','nano-payment-quality-105.js',
+                       'nano-checkout-choice-104.js','nano-payment-ledger-102.js','package.json','release-notes.js']:
+            e=f[name];content=data[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+            assert content==Path('work/'+name).read_bytes()
+            if e.get('integrity'):assert hashlib.sha256(content).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.105'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-105-official-candidate
+          path: |
+            NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip
+            work/index.html
+            work/browser-bridge.js
+            work/nano-payment-quality-105.js
+            work/nano-checkout-choice-104.js
+            work/nano-payment-ledger-102.js
+            work/package.json
+            work/release-notes.js
+            work/test-payment-bridge-105.cjs
+            work/test-payment-ui-105.cjs
+          if-no-files-found: error
+  windows_test:
+    needs: linux_build
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-105-official-candidate
+      - name: Verify checkout UI, credit, idempotent receipts and failed writes
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check browser-bridge.js
+            node --check nano-payment-quality-105.js
+            node test-payment-bridge-105.cjs
+            if($LASTEXITCODE -ne 0){throw 'Payment regression failed'}
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'Fixture install failed'}
+            node test-payment-ui-105.cjs
+            if($LASTEXITCODE -ne 0){throw 'Payment UI regression failed'}
+          }finally{Pop-Location}
+  publish:
+    needs: [linux_build,windows_test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-105-official-candidate
+      - name: Publish improvements ZIP only after Windows and Linux regressions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.105 >/dev/null 2>&1 || { echo 'Release already exists';exit 1; }
+          gh release create v1.0.105 NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.105 — تحسينات احترافية لنظام الدفع' \
+            --notes 'تحسينات احترافية لشاشة تسديد المبيعات: ملخص عربي/فرنسي/إنجليزي لإجمالي الفاتورة وطريقة الدفع ونتيجة الدفع الكامل/الدين؛ تنبيه واضح عندما يحتاج البيع بالدين إلى زبون مسجل؛ منع التأكيد المتكرر لنفس البيع عبر معرّف محفوظ في فاتورته مع إعادة استعمال النتيجة دون خصم إضافي من المخزون أو إضافة دين مكرر؛ حماية المحاولة التالية عند فشل التخزين. يحتفظ النظام بطريقة دفع واحدة فقط وبخيار الدفع الكامل أو الدين الكامل، دون إعادة حقل المبلغ المستلم أو الدفع المختلط. تم الحفاظ على بيانات المتجر والتفعيل والنسخ الاحتياطية وسجلات الديون السابقة. اختبارات Linux وWindows آلية، ولا تغني عن التحقق على حاسوب متجر فعلي.'
+          gh release view v1.0.105 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip
+      - name: Enable verified update from within NANO POS
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile,datetime
+          path=Path('nano-pos-update.json')
+          d=json.loads(path.read_text(encoding='utf8'))
+          assert d['published'] and d['version']=='1.0.104'
+          f=Path('NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.105'
+          direct='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.105/'+f.name
+          features={
+            'ar':['ملخص الدفع يعرض المبلغ الإجمالي وطريقة الدفع وحالة التسديد الكامل أو الدين.',
+                  'حماية المحاسبة والمخزون من تسجيل نفس البيع مرتين عند الضغط المتكرر أو إعادة المحاولة.',
+                  'التحقق من الزبون المسجل قبل البيع بالدين ومن صحة مبلغ الفاتورة قبل التسجيل.',
+                  'طريقة دفع واحدة فقط دون المبلغ المستلم أو الدفع المختلط، مع حفظ الفواتير والديون السابقة.'],
+            'fr':['Résumé de la facture, du mode et du statut de règlement.',
+                  'Prévention des ventes dupliquées grâce à un identifiant de transaction durable.',
+                  'Vérification du client avant une vente entièrement à crédit.',
+                  'Un seul mode de paiement et aucun champ montant reçu ou paiement mixte.'],
+            'en':['Clear invoice total, payment method and full/credit payment summary.',
+                  'Persistent duplicate-sale protection for retries and repeated checkout.',
+                  'Customer validation for credit and transaction amount verification.',
+                  'Single payment method; no received amount or mixed checkout.']}
+          today=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.105',published=True,releaseDate=today,mandatory=False,importance='normal',features=features)
+          d.setdefault('releaseHistory',{})['1.0.105']={'releaseDate':today,'features':features}
+          d['patches']=[{'id':'nano-pos-105-professional-payment-improvements',
+            'fromVersions':[f'1.0.{i}' for i in range(91,105)],
+            'directUrl':direct,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          d['notes']={'ar':'تحسينات احترافية في الدفع مع منع تكرار الفواتير وحماية الأرصدة.',
+                      'fr':'Améliorations de paiement et protection contre les doubles ventes.',
+                      'en':'Professional payment summary and duplicate sale protection.'}
+          path.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS v1.0.105 professional payment improvements'
+          git push origin HEAD:refs/heads/main
