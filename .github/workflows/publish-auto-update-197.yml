@@ -1,0 +1,158 @@
+name: NANO POS v1.0.97 - Automatic In-App Updates
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-auto-update-197.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-197
+  cancel-in-progress: false
+jobs:
+  build_and_linux_tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official 1.0.96 and download update payload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.97 >/dev/null 2>&1; then
+            echo 'v1.0.97 already exists' >&2
+            exit 1
+          fi
+          mkdir -p incoming build
+          gh release download v1.0.96 --pattern NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip --dir incoming
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert d['published'] and d['version']=='1.0.96'
+          f=Path('incoming/NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          print('Official NANO POS 1.0.96 archive hash verified.')
+          PY
+      - name: Build automatic updater and run Linux tests
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-auto-update-197.py \
+            incoming/NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip \
+            NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip build
+          node --check build/update-manager.js
+          node --check build/release-notes.js
+          cp .github/scripts/test-auto-update-197.cjs build/
+          (cd build && node test-auto-update-197.cjs)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-197-verified
+          path: |
+            NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip
+            build/update-manager.js
+            build/release-notes.js
+            build/package.json
+            build/test-auto-update-197.cjs
+          retention-days: 30
+          if-no-files-found: error
+  windows_test:
+    needs: build_and_linux_tests
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-197-verified
+      - name: Validate staged and auto-updater on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          node --check build/update-manager.js
+          node --check build/release-notes.js
+          node build/test-auto-update-197.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'Windows auto-update regression test failure' }
+  publish:
+    needs: [build_and_linux_tests, windows_test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-197-verified
+      - name: Verify patch contents and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,struct,zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',data)
+          assert magic==4 and block==hs+4
+          header=json.loads(data[16:16+n])
+          def read(name):
+            e=header['files'][name]
+            return data[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+          assert json.loads(read('package.json'))['version']=='1.0.97'
+          for name in ['update-manager.js','release-notes.js']:
+            assert read(name)==Path('build/'+name).read_bytes()
+            assert hashlib.sha256(read(name)).hexdigest()==header['files'][name]['integrity']['hash']
+          print('Published payload integrity verified.')
+          PY
+          gh release create v1.0.97 NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.97 — التحديث الآلي داخل البرنامج' \
+            --notes 'فحص تلقائي للتحديثات عند فتح البرنامج وبشكل دوري؛ تنزيل التحديث وتدقيق SHA-256 من داخل NANO POS؛ تثبيت وإعادة تشغيل تلقائيًا عند شاشة الدخول، وتأجيل التثبيت إذا كان المستخدم يعمل على فاتورة، مع استمرار زر التحديث اليدوي وإمكانية إيقاف التلقائية عبر الإعداد البرمجي. يتطلب الانتقال الأول من 1.0.96 إلى 1.0.97 الضغط مرة واحدة على تحديث الآن؛ بعدها تُحمّل الإصدارات القادمة دون تنزيل ZIP يدويًا.'
+          gh release view v1.0.97 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip
+      - name: Activate automatic update release in official manifest
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,zipfile,datetime
+          from pathlib import Path
+          dpath=Path('nano-pos-update.json')
+          d=json.loads(dpath.read_text(encoding='utf8'))
+          assert d['version']=='1.0.96' and d['published']
+          f=Path('NANO-POS-Patch-1.0.96-to-1.0.97-AUTO-UPDATE.zip')
+          with zipfile.ZipFile(f) as z:asar_sha=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.97'
+          direct='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.97/'+f.name
+          notes={
+            'ar':['التحقق تلقائيًا من وجود تحديثات عند تشغيل NANO POS ثم دوريًا أثناء عمله.',
+                  'تحميل التحديث الموثق وفحص سلامته تلقائيًا داخل البرنامج دون تنزيل ZIP يدويًا.',
+                  'تثبيت التحديث وإعادة فتح البرنامج عند شاشة الدخول؛ تأجيل التثبيت أثناء المعاملات النشطة.',
+                  'عرض رقم الإصدار ومميزاته، مع المحافظة على بيانات المتجر والتفعيل وإصلاحات المزامنة السابقة.'],
+            'fr':['Recherche automatique de mises à jour au lancement et périodiquement.',
+                  'Téléchargement et vérification SHA-256 directement dans NANO POS.',
+                  'Installation à la connexion, différée pendant les ventes actives.',
+                  'Version, notes, données et activation conservées.'],
+            'en':['Automatically check for updates at startup and periodically.',
+                  'Automatically download and verify official updates inside NANO POS.',
+                  'Install and restart on the sign-in screen, deferring while sales are active.',
+                  'Keep release notes, store data, activation and previous sync fixes.']
+          }
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.97',published=True,releaseDate=day,mandatory=False,importance='normal',features=notes)
+          d.setdefault('releaseHistory',{})['1.0.97']={'releaseDate':day,'features':notes}
+          d['patches']=[{'id':'nano-pos-197-auto-in-app','fromVersions':['1.0.96'],
+            'directUrl':direct,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar_sha,'fileName':f.name,'sizeBytes':f.stat().st_size,
+            'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'التحديث الآلي المدمج مع البرنامج.',
+                      'fr':'Mises à jour automatiques intégrées.',
+                      'en':'Automatic in-app updates.'}
+          dpath.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.97 automatic in-app updater'
+          git push origin HEAD:refs/heads/main
