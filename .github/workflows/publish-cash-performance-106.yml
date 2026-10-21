@@ -77,6 +77,7 @@ jobs:
             work/nano-checkout-choice-104.js
             work/nano-cash-change.js
             work/nano-payment-ledger-102.js
+            work/nano-payment-ledger-102.js
             work/test-cash-change-106.cjs
             work/test-cash-bridge-106.cjs
           if-no-files-found: error
