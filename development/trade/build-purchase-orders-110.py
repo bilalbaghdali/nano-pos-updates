@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NANO POS v1.1.0 purchase orders, from verified official 1.0.98 ASAR only.
+"""NANO POS v1.0.99 purchase orders, from verified official 1.0.98 ASAR only.
 This builder modifies browser-bridge, index, release notes, version and adds two scripts.
 It NEVER rewrites a user's stored data/license/backups."""
 import hashlib,json,struct,sys,zipfile
@@ -27,7 +27,7 @@ def bridge(s):
  anchor="   if (channel === 'get-purchases') {"
  assert s.count(anchor)==1
  handlers=r"""
-   // --- Stage 1.1.0: purchase orders are STOCK-NEUTRAL until a verified receipt.
+   // --- Stage 1.0.99: purchase orders are STOCK-NEUTRAL until a verified receipt.
    if (channel === 'get-purchase-orders') return clone(db.purchase_orders || []);
    if (channel === 'create-purchase-order' || channel === 'confirm-purchase-order-receipt') {
      const engine=window.NANO_PURCHASE_ORDER_ENGINE_110;
@@ -76,7 +76,7 @@ def bridge(s):
  s=once(s,anchor,handlers+anchor)
  return s
 def release_notes(s):
- s=once(s,"const FALLBACK_VERSION = '1.0.98';","const FALLBACK_VERSION = '1.1.0';")
+ s=once(s,"const FALLBACK_VERSION = '1.0.98';","const FALLBACK_VERSION = '1.0.99';")
  a=s.index('  const OFFLINE = {');b=s.index('  const TITLES = {',a)
  notes="""  const OFFLINE = {
     ar:['إضافة أوامر شراء مستقلة لا تغير المخزون أو ديون الموردين عند إنشائها.',
@@ -130,7 +130,7 @@ def build(source,target,work):
    new=release_notes(old.decode('utf8')).encode('utf8');modified.add(name)
   elif name=='package.json':
    src=old.decode('utf8');assert json.loads(src)['version']=='1.0.98'
-   new=once(src,'"version": "1.0.98"','"version": "1.1.0"').encode('utf8');modified.add(name)
+   new=once(src,'"version": "1.0.98"','"version": "1.0.99"').encode('utf8');modified.add(name)
   else:new=old
   e['offset']=str(len(data));e['size']=len(new)
   if name in modified and 'integrity' in e:
@@ -152,7 +152,7 @@ def build(source,target,work):
  out=struct.pack('<4I',4,pad+4,pad,len(head))+head+b'\0'*(pad-4-len(head))+data
  with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:z.writestr('payload/app.asar',out)
  with zipfile.ZipFile(target) as z:assert sha(z.read('payload/app.asar'))==sha(out)
- print(json.dumps({'version':'1.1.0','modified':sorted(modified),
+ print(json.dumps({'version':'1.0.99','modified':sorted(modified),
     'added':['nano-purchase-order-engine.js','nano-purchase-order-ui.js'],
     'asar_sha256':sha(out),'patch_sha256':sha(target.read_bytes())}))
 if __name__=='__main__':
