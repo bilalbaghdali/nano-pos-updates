@@ -17,7 +17,7 @@ def find(name):
 print('OFFICIAL ASAR verified',hashlib.sha256(data).hexdigest())
 patterns={
  'index.html':['checkoutPaidAmount','cashTenderedAmount','checkoutPaymentMethod','checkoutModal','nanoSplitEditor102','receivedAmount','مبلغ مستلم','المبلغ المستلم','المبلغ الذي قدمه','changeAmount','amountReceived'],
- 'browser-bridge.js':['if (channel === \\'process-sale\\')','cashTenderedAmount','payment_method','paid_amount','__nanoSplit102','nano-record-settlement-102'],
+ 'browser-bridge.js':["if (channel === 'process-sale')",'cashTenderedAmount','payment_method','paid_amount','__nanoSplit102','nano-record-settlement-102'],
  'nano-split-ui-102.js':['nanoSplitEditor102','checkoutPaidAmount','process-sale','checkoutPaymentMethod'],
  'nano-payment-ledger-102.js':['function split(','function settle('],
  'release-notes.js':['FALLBACK_VERSION'],
