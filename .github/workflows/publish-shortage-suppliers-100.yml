@@ -1,0 +1,165 @@
+name: NANO POS 1.0.100 - Publish Automatic Supplier Orders
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-shortage-suppliers-100.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-100
+  cancel-in-progress: false
+jobs:
+  linux_build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate official v1.0.99 ASAR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.100 >/dev/null 2>&1; then echo 'Refuse to overwrite existing release'; exit 1; fi
+          mkdir -p source work
+          gh release download v1.0.99 --pattern NANO-POS-Patch-1.0.98-to-1.0.99-PURCHASE-ORDERS.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          m=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert m['version']=='1.0.99' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.98-to-1.0.99-PURCHASE-ORDERS.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build and validate low-stock suppliers (Linux)
+        run: |
+          set -euo pipefail
+          python3 development/trade/build-shortage-po-100.py \
+            source/NANO-POS-Patch-1.0.98-to-1.0.99-PURCHASE-ORDERS.zip \
+            NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip work
+          for n in nano-po-auto-supplier-100.js nano-po-shortage-ui-100.js nano-inventory-shortages.js release-notes.js; do node --check "work/$n"; done
+          cp development/trade/test-po-from-shortages-100.cjs work/
+          cp development/trade/test-po-shortage-ui-100.cjs work/
+          (cd work && node test-po-from-shortages-100.cjs)
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-po-shortage-ui-100.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,struct,json,hashlib
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip') as z:
+            assert z.namelist()==['payload/app.asar'];b=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',b)
+          assert magic==4 and block==hs+4
+          head=json.loads(b[16:16+n])['files']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.100'
+          for name in ['nano-inventory-shortages.js','nano-po-auto-supplier-100.js','nano-po-shortage-ui-100.js','index.html','release-notes.js','package.json']:
+            e=head[name];body=b[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+            assert body==Path('work/'+name).read_bytes()
+            if 'integrity' in e:assert hashlib.sha256(body).hexdigest()==e['integrity']['hash']
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-100-patch-reviewed
+          path: |
+            NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip
+            work/index.html
+            work/nano-inventory-shortages.js
+            work/nano-po-auto-supplier-100.js
+            work/nano-po-shortage-ui-100.js
+            work/release-notes.js
+            work/package.json
+            work/test-po-from-shortages-100.cjs
+            work/test-po-shortage-ui-100.cjs
+          if-no-files-found: error
+  windows_tests:
+    needs: linux_build
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-100-patch-reviewed
+      - name: Verify supplier ranking, new UI and unchanged update module
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check nano-inventory-shortages.js
+            node --check nano-po-auto-supplier-100.js
+            node --check nano-po-shortage-ui-100.js
+            node test-po-from-shortages-100.cjs
+            if($LASTEXITCODE -ne 0){throw 'supplier matching tests failed'}
+            npm install --ignore-scripts --no-save jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'test dependency install failed'}
+            node test-po-shortage-ui-100.cjs
+            if($LASTEXITCODE -ne 0){throw 'Windows UI tests failed'}
+          }finally{Pop-Location}
+  release:
+    needs: [linux_build,windows_tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-100-patch-reviewed
+      - name: Publish only after platform tests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.100 >/dev/null 2>&1 || { echo 'Release exists'; exit 1; }
+          gh release create v1.0.100 NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.100 — أوامر الشراء من المخزون الناقص' \
+            --notes 'من نافذة المنتجات الناقصة يمكنك إنشاء أوامر شراء عبر اختيار المورد تلقائيًا من المورد المرتبط بالمنتج أو فواتير الشراء الحديثة. يُقترح أقل سعر شراء حديث معروف مع خصم الكميات المفتوحة في أوامر شراء قائمة لمنع التكرار. تُجمّع المنتجات حسب المورد ثم تراجعها قبل الإنشاء؛ المنتجات التي لا يُعرف لها مورد تبقى للمراجعة اليدوية ولا يُخترع لها مورد. إنشاء الأوامر لا يرفع المخزون أو ديون الموردين؛ تظل الاستلامات المعتمدة فقط مسؤولة عن الترحيل. يحافظ التحديث على ملفات المتجر والتفعيل والنسخ الاحتياطية. اجتازت الشيفرة اختبارات Windows/Linux والوصول من واجهة المخزون، مع عدم وجود اختبار تشغيل متجر فعلي.'
+          gh release view v1.0.100 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip
+      - name: Enable update inside NANO POS only after release is verified
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile,datetime
+          path=Path('nano-pos-update.json')
+          d=json.loads(path.read_text(encoding='utf8'))
+          assert d['version']=='1.0.99' and d['published']
+          f=Path('NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.100'
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.100/'+f.name
+          features={
+            'ar':['إنشاء أوامر شراء مباشرة من قائمة المنتجات الناقصة مع اقتراح المورد تلقائيًا.',
+                  'اعتماد المورد المرتبط بالمنتج أو أقل سعر شراء حديث مسجل في فواتير الموردين.',
+                  'استبعاد الكميات التي تغطيها أوامر شراء مفتوحة لتفادي الشراء المكرر.',
+                  'تجميع الطلبات حسب المورد مع مراجعة الكمية والتكلفة قبل الحفظ وعدم ترحيل المخزون أو الدين عند إنشاء الأمر.'],
+            'fr':['Création de bons de commande depuis les stocks bas.',
+                  'Fournisseur préféré ou meilleur prix d’achat récent connu.',
+                  'Déduction des quantités déjà commandées, révision avant enregistrement.',
+                  'Les commandes ne modifient ni le stock ni les dettes.'],
+            'en':['Create purchase orders from the low-stock list.',
+                  'Suggest suppliers using linked supplier or lowest recent historical buying price.',
+                  'Exclude quantities already ordered but pending receipt.',
+                  'Review orders per supplier; creating orders never updates stock or supplier debt.']
+          }
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.100',published=True,releaseDate=day,mandatory=False,importance='normal',features=features)
+          d.setdefault('releaseHistory',{})['1.0.100']={'releaseDate':day,'features':features}
+          d['patches']=[{'id':'nano-pos-v1.0.100-shortage-supplier-orders',
+            'fromVersions':['1.0.99'],'directUrl':url,'pageUrl':page,
+            'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),'appAsarSha256':asar,
+            'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'أوامر شراء من المنتجات الناقصة مع اختيار المورد تلقائيًا.',
+                      'fr':'Commandes fournisseurs automatiques depuis le stock bas.',
+                      'en':'Auto-suggest supplier orders from low stock.'}
+          path.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.100 low-stock supplier purchase orders'
+          git push origin HEAD:refs/heads/main
