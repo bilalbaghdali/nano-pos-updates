@@ -64,8 +64,14 @@
   const order=(db.purchase_orders||[]).find(o=>String(o.id)===orderId);
   if(!order)fail('order_not_found');
   if(!['pending','partial','received'].includes(order.status))fail('invalid_order_status');
-  if(body.expectedRevision!=null&&Number(body.expectedRevision)!==Number(order.revision))fail('stale_order_revision');
   if(!Array.isArray(body.lines)||!body.lines.length||body.lines.length>300)fail('invalid_receipt_lines');
+  const previouslyRecorded=(order.receipts||[]).find(x=>x.receiptId===operationId);
+  if(previouslyRecorded){
+    const repeatedPayload=shaInput(body.lines.map(l=>({lineId:identifier(l?.lineId),quantityMilli:milli(l.quantity)})));
+    if(previouslyRecorded.fingerprint!==repeatedPayload)fail('receipt_conflict');
+    return {duplicate:true,result:{success:true,duplicate:true,receiptId:operationId,purchaseId:previouslyRecorded.purchaseId},snapshot:null};
+  }
+  if(body.expectedRevision!=null&&Number(body.expectedRevision)!==Number(order.revision))fail('stale_order_revision');
   const lines=[],seen=new Set();
   for(const line of body.lines){
    const key=identifier(line?.lineId);
@@ -76,11 +82,6 @@
    lines.push({lineId:key,quantityMilli:amountMilli});
   }
   const fingerprint=shaInput(lines);
-  const recorded=(order.receipts||[]).find(x=>x.receiptId===operationId);
-  if(recorded){
-   if(recorded.fingerprint!==fingerprint)fail('receipt_conflict');
-   return {duplicate:true,result:{success:true,duplicate:true,receiptId:operationId,purchaseId:recorded.purchaseId},snapshot:null};
-  }
   const snapshot=copy(db),target=snapshot.purchase_orders.find(x=>String(x.id)===orderId);
   const supplier=catalog(snapshot,order.supplierId),items=[];
   let subtotalCents=0;
