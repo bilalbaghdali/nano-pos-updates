@@ -1,0 +1,151 @@
+name: NANO POS v1.0.96 - Multi-Device Sync Integrity
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-sync-196.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-196
+  cancel-in-progress: false
+jobs:
+  build_and_linux_tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and SHA-verify official 1.0.95
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.96 >/dev/null 2>&1; then echo 'Release already exists'; exit 1; fi
+          mkdir -p incoming build
+          gh release download v1.0.95 --pattern NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip --dir incoming
+          python3 - <<'PY'
+          import json,hashlib,zipfile
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert d['published'] and d['version']=='1.0.95'
+          f=Path('incoming/NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          PY
+      - name: Build 1.0.96 from authenticated base
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-sync-196.py \
+            incoming/NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip \
+            NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip build
+          cp .github/scripts/test-sync-196.cjs build/
+          for f in build/sync-operation-guard.cjs build/mobile-sync-server.cjs build/pc-sync-service.cjs; do node --check "$f"; done
+          (cd build && node test-sync-196.cjs)
+      - name: Upload validated release and regression test files
+        uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-sync-196-tested
+          path: |
+            NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip
+            build/*.cjs
+          if-no-files-found: error
+          retention-days: 30
+  windows_regression:
+    needs: build_and_linux_tests
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-sync-196-tested
+      - name: Verify scripts on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          node --check build/sync-operation-guard.cjs
+          node --check build/mobile-sync-server.cjs
+          node --check build/pc-sync-service.cjs
+          node build/test-sync-196.cjs
+          if ($LASTEXITCODE -ne 0) { throw 'Windows regression tests failed' }
+  publish_after_tests:
+    needs: [build_and_linux_tests, windows_regression]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-sync-196-tested
+      - name: Publish release with verified ASAR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.96 >/dev/null 2>&1 || { echo 'Release exists'; exit 1; }
+          file=NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip
+          python3 - <<'PY'
+          import zipfile,json,struct,hashlib
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,block,content,n=struct.unpack_from('<4I',data)
+          assert magic==4 and block==content+4
+          h=json.loads(data[16:16+n])
+          def read(name):
+            e=h['files'][name]
+            return data[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+          assert json.loads(read('package.json'))['version']=='1.0.96'
+          for name in ['sync-operation-guard.cjs','mobile-sync-server.cjs','pc-sync-service.cjs']:
+            assert read(name)==Path('build/'+name).read_bytes()
+            assert hashlib.sha256(read(name)).hexdigest()==h['files'][name]['integrity']['hash']
+          PY
+          gh release create v1.0.96 "$file" --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.96 — تحسينات مزامنة الكمبيوتر والهواتف' \
+            --notes 'حماية المزامنة بين الكمبيوتر الرئيسي والهواتف والكمبيوترات المرتبطة: طابور موحد يمنع تداخل تنفيذ التعديلات، معرّف فريد ثابت لكل عملية هاتف، كشف إعادة إرسال العملية واسترجاع نتيجتها دون تكرار البيع، سجل دائم للعمليات بعد إعادة التشغيل، والتنبيه للعمليات مجهولة النتيجة بدل إعادة تنفيذها تلقائيًا. التعديل لا يفعّل الجرد بالهاتف المحظور في النسخة الحالية؛ ولا يضمن حل التعارضات الناتجة عن بيانات قديمة خارج سيرفر المزامنة.'
+          gh release view v1.0.96 --json assets --jq '.assets[].name' | grep -Fx "$file"
+      - name: Publish manifest only after the release is complete
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,zipfile,datetime
+          from pathlib import Path
+          path=Path('nano-pos-update.json')
+          d=json.loads(path.read_text(encoding='utf8'))
+          assert d['published'] and d['version']=='1.0.95'
+          f=Path('NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip')
+          with zipfile.ZipFile(f) as z: asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.96'
+          direct=page.replace('/tag/','/download/')+'/'+f.name
+          notes={
+            'ar':['توحيد معالجة عمليات الهواتف والكمبيوترات المرتبطة لمنع التنفيذ المتزامن المتعارض.',
+                  'حفظ معرّفات ونتائج العمليات المنفذة لتجنب تكرار البيع أو تعديل المخزون عند إعادة الإرسال أو تشغيل الكمبيوتر.',
+                  'حماية إعادة الإرسال: إيقاف العملية غير مؤكدة النتيجة وإظهار تنبيه لمراجعتها بدل تكرارها.',
+                  'الاحتفاظ ببيانات المتجر والتفعيل وإصلاحات الفواتير السابقة؛ الجرد بالهاتف ما زال غير مفعّل.'],
+            'fr':['File unique pour les opérations de téléphones et PC reliés.',
+                  'Historique durable des opérations pour éviter les doublons après reconnexion.',
+                  'Les opérations au résultat incertain nécessitent une vérification au lieu d’une nouvelle exécution.',
+                  'Données et activation conservées ; inventaire mobile non activé.'],
+            'en':['Shared serialized mutation queue across connected phones and PCs.',
+                  'Persistent operation ledger prevents replay duplicates after reconnect or restart.',
+                  'Ambiguous results require review instead of automatic re-execution.',
+                  'Store data and activation preserved; mobile stocktaking is not enabled.']
+          }
+          today=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.96',published=True,releaseDate=today,mandatory=False,importance='normal',features=notes)
+          d.setdefault('releaseHistory',{})['1.0.96']={'releaseDate':today,'features':notes}
+          d['patches']=[{'id':'nano-pos-v1.0.96-sync-integrity','fromVersions':['1.0.95'],
+            'directUrl':direct,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'تحسينات المزامنة ومنع تكرار العمليات.','fr':'Synchronisation et protection contre les doublons.',
+                      'en':'Sync integrity and duplicate-operation protection.'}
+          path.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS v1.0.96 multi-device synchronization'
+          git push origin HEAD:refs/heads/main
