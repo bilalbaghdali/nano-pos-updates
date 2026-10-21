@@ -3,27 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.95",
+  "version": "1.0.96",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح F2 لتعليق سلة البيع بدل البحث.",
-      "منع التأكيد المزدوج أثناء معالجة البيع.",
-      "حماية تعديل الفواتير من فقدان بنود المنتجات والدفعات.",
-      "الحفاظ على بيانات المتجر والمخزون والتفعيل."
+      "توحيد معالجة عمليات الهواتف والكمبيوترات المرتبطة لمنع التنفيذ المتزامن المتعارض.",
+      "حفظ معرّفات ونتائج العمليات المنفذة لتجنب تكرار البيع أو تعديل المخزون عند إعادة الإرسال أو تشغيل الكمبيوتر.",
+      "حماية إعادة الإرسال: إيقاف العملية غير مؤكدة النتيجة وإظهار تنبيه لمراجعتها بدل تكرارها.",
+      "الاحتفاظ ببيانات المتجر والتفعيل وإصلاحات الفواتير السابقة؛ الجرد بالهاتف ما زال غير مفعّل."
     ],
     "fr": [
-      "F2 suspend le panier plutôt que lancer la recherche.",
-      "Prévention de la double confirmation.",
-      "Modification de facture refusée si des produits ou lots sont manquants."
+      "File unique pour les opérations de téléphones et PC reliés.",
+      "Historique durable des opérations pour éviter les doublons après reconnexion.",
+      "Les opérations au résultat incertain nécessitent une vérification au lieu d’une nouvelle exécution.",
+      "Données et activation conservées ; inventaire mobile non activé."
     ],
     "en": [
-      "F2 suspends the POS cart instead of opening search.",
-      "Protect against duplicate checkout confirmation.",
-      "Refuse incomplete invoice edits when a product or batch is missing."
+      "Shared serialized mutation queue across connected phones and PCs.",
+      "Persistent operation ledger prevents replay duplicates after reconnect or restart.",
+      "Ambiguous results require review instead of automatic re-execution.",
+      "Store data and activation preserved; mobile stocktaking is not enabled."
     ]
   },
   "releaseHistory": {
@@ -1554,32 +1556,55 @@
           "Refuse incomplete invoice edits when a product or batch is missing."
         ]
       }
+    },
+    "1.0.96": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "توحيد معالجة عمليات الهواتف والكمبيوترات المرتبطة لمنع التنفيذ المتزامن المتعارض.",
+          "حفظ معرّفات ونتائج العمليات المنفذة لتجنب تكرار البيع أو تعديل المخزون عند إعادة الإرسال أو تشغيل الكمبيوتر.",
+          "حماية إعادة الإرسال: إيقاف العملية غير مؤكدة النتيجة وإظهار تنبيه لمراجعتها بدل تكرارها.",
+          "الاحتفاظ ببيانات المتجر والتفعيل وإصلاحات الفواتير السابقة؛ الجرد بالهاتف ما زال غير مفعّل."
+        ],
+        "fr": [
+          "File unique pour les opérations de téléphones et PC reliés.",
+          "Historique durable des opérations pour éviter les doublons après reconnexion.",
+          "Les opérations au résultat incertain nécessitent une vérification au lieu d’une nouvelle exécution.",
+          "Données et activation conservées ; inventaire mobile non activé."
+        ],
+        "en": [
+          "Shared serialized mutation queue across connected phones and PCs.",
+          "Persistent operation ledger prevents replay duplicates after reconnect or restart.",
+          "Ambiguous results require review instead of automatic re-execution.",
+          "Store data and activation preserved; mobile stocktaking is not enabled."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.95-fast-sales-invoices",
+      "id": "nano-pos-v1.0.96-sync-integrity",
       "fromVersions": [
-        "1.0.94"
+        "1.0.95"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.95/NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.95",
-      "sha256": "912fb1916f4b95eacce5746559c4f9d79436a53466ae82999e1da4fce650dda5",
-      "appAsarSha256": "61ebf0d5f4cc36d5486e1ed37b24ee5463c7c0187db5e17ef98864dcc692593f",
-      "fileName": "NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip",
-      "sizeBytes": 31387015,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.96/NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.96",
+      "sha256": "fd40db2b0b47f6012a39dddf9567c89f4e8d157839c42a15e3dfd521ce5987c0",
+      "appAsarSha256": "a09b0fdffb6c9e2ce75011bda51ed315467ae68e6003e9eea7a62288c4b2fbfe",
+      "fileName": "NANO-POS-Patch-1.0.95-to-1.0.96-MULTI-DEVICE-SYNC.zip",
+      "sizeBytes": 31387854,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.95",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.96",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات البيع السريع والفواتير.",
-    "fr": "Améliorations des ventes rapides et des factures.",
-    "en": "Fast sales and invoice improvements."
+    "ar": "تحسينات المزامنة ومنع تكرار العمليات.",
+    "fr": "Synchronisation et protection contre les doublons.",
+    "en": "Sync integrity and duplicate-operation protection."
   }
 }
