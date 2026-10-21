@@ -160,7 +160,7 @@ def build(data):
    blob=(patch_updater if filename=='updater-main.cjs' else patch_backup)(blob.decode()).encode()
    changed.add(filename)
   elif filename=='release-notes.js':
-   original=Path('.github/assets/nano-release-notes-193.js').read_bytes()
+   original=Path('.github/assets/nano-release-notes-193.js').read_bytes().replace(b'\r\n',b'\n')
    assert blob==original,'v1.0.93 release notes do not match'
    notes=blob.decode('utf-8')
    notes=replace(notes,"const FALLBACK_VERSION = '1.0.93';","const FALLBACK_VERSION = '1.0.94';")
