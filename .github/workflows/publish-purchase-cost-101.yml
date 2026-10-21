@@ -1,0 +1,155 @@
+name: NANO POS v1.0.101 - Publish Supplier Costs
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-purchase-cost-101.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-101
+  cancel-in-progress: false
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check official v1.0.100 source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.101 >/dev/null 2>&1; then echo 'Existing release, abort'; exit 1; fi
+          mkdir -p source work
+          gh release download v1.0.100 --pattern NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip --dir source
+          python3 - <<'PY'
+          import json,hashlib,zipfile
+          from pathlib import Path
+          data=json.loads(Path('nano-pos-update.json').read_text())
+          assert data['version']=='1.0.100' and data['published']
+          f=Path('source/NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==data['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==data['patches'][0]['appAsarSha256']
+          PY
+      - name: Build v1.0.101, check syntax and financial calculations
+        run: |
+          set -euo pipefail
+          python3 development/trade/build-purchase-cost-101.py \
+            source/NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip \
+            NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip work
+          for n in nano-trade-analytics-101.js nano-po-shortage-ui-100.js release-notes.js; do node --check "work/$n"; done
+          cp development/trade/test-purchase-cost-101.cjs work/
+          (cd work && node test-purchase-cost-101.cjs)
+          python3 - <<'PY'
+          import zipfile,json,struct,hashlib
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and b==hs+4
+          h=json.loads(raw[16:16+n])['files']
+          for name in ['index.html','package.json','release-notes.js','nano-trade-analytics-101.js','nano-po-shortage-ui-100.js']:
+            entry=h[name];v=raw[8+b+int(entry['offset']):8+b+int(entry['offset'])+entry['size']]
+            assert v==Path('work/'+name).read_bytes()
+            if 'integrity' in entry:assert hashlib.sha256(v).hexdigest()==entry['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.101'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-1.0.101-VERIFIED
+          path: |
+            NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip
+            work/nano-trade-analytics-101.js
+            work/nano-po-shortage-ui-100.js
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/test-purchase-cost-101.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: NANO-POS-1.0.101-VERIFIED
+      - name: Re-run exact cost regressions on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check nano-trade-analytics-101.js
+            node --check nano-po-shortage-ui-100.js
+            node test-purchase-cost-101.cjs
+            if($LASTEXITCODE -ne 0){throw 'Windows cost regression failed'}
+          }finally{Pop-Location}
+  release:
+    needs: [linux,windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: NANO-POS-1.0.101-VERIFIED
+      - name: Publish only after Windows and Linux test success
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.101 >/dev/null 2>&1 || { echo 'Release already exists'; exit 1; }
+          gh release create v1.0.101 NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.101 — مقارنة الموردين وتقدير التكلفة والربح' \
+            --notes 'إضافة مقارنة أسعار الموردين السابقة للمنتجات الناقصة، مع حساب تكاليف النقل والمصاريف والضريبة غير المستردة لكل مورد وتوزيعها بالسنتيم، وعرض التكلفة للوحدة وسعر بيع مقترح حسب هامش الربح. هذه معاينة استرشادية فقط؛ لا ترحل تكاليف أو تغير المخزون أو سعر البيع أو ديون الموردين. اختبار Linux/Windows و2000 حالة حسابية، والحفاظ على البرنامج والتفعيل والنسخ الاحتياطية. بقية الدفع المختلط والمرتجعات والربط المحاسبي تعمل ضمن مراحل مستقلة لاحقة.'
+          gh release view v1.0.101 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip
+      - name: Update official auto-update manifest once artifact exists
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,zipfile,datetime,json
+          p=Path('nano-pos-update.json');d=json.loads(p.read_text(encoding='utf8'))
+          assert d['version']=='1.0.100' and d['published']
+          f=Path('NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.101'
+          uri='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.101/'+f.name
+          notes={
+           'ar':['مقارنة أسعار الموردين التاريخية داخل أوامر الشراء من المخزون الناقص.',
+                 'حساب تكاليف النقل والمصاريف والضرائب غير المستردة المضافة حسب المورد وتوزيعها بدقة السنتيم.',
+                 'عرض التكلفة النهائية التقديرية للوحدة وسعر بيع مقترح حسب هامش الربح.',
+                 'معاينة للقراءة فقط لا تغيّر البيانات أو المخزون أو التفعيل أو ديون الموردين.'],
+           'fr':['Comparaison des prix historiques des fournisseurs.',
+                 'Estimation des frais de transport et autres frais au centime.',
+                 'Calcul du prix de revient estimé et prix de vente cible.',
+                 'Aperçu sans écritures comptables ni modification des stocks.'],
+           'en':['Compare historical supplier purchase prices.',
+                 'Estimate shipping, fees and nonrecoverable taxes to the cent.',
+                 'Preview estimated landed unit cost and margin-based selling price.',
+                 'Read-only: no accounting posts, inventory, activation or debt changes.']}
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.101',published=True,releaseDate=day,mandatory=False,importance='normal',features=notes)
+          d.setdefault('releaseHistory',{})['1.0.101']={'releaseDate':day,'features':notes}
+          d['patches']=[{'id':'nano-pos-v1.0.101-supplier-landed-cost',
+            'fromVersions':['1.0.100'],'directUrl':uri,'pageUrl':page,
+            'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),'appAsarSha256':asar,
+            'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'مقارنة الموردين والتكلفة الفعلية التقديرية.',
+                      'fr':'Comparaison fournisseurs et coût de revient estimé.',
+                      'en':'Supplier comparisons and estimated landed costs.'}
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.101 verified supplier cost preview'
+          git push origin HEAD:refs/heads/main
