@@ -1,0 +1,171 @@
+name: NANO POS 1.0.106 - Publish Cash Change and Fast Startup
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-cash-performance-106.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-publish-106
+  cancel-in-progress: false
+jobs:
+  verify_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official 1.0.105
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.106 >/dev/null 2>&1; then echo 'Release exists, refuse overwrite';exit 1;fi
+          mkdir -p source work
+          gh release download v1.0.105 --pattern NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip --dir source
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.105' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build 1.0.106 and verify receipt/cash change, synchronization and version
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-cash-performance-106.py \
+            source/NANO-POS-Patch-1.0.104-to-1.0.105-PAYMENT-IMPROVEMENTS.zip \
+            NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip work
+          for name in nano-cash-plan-106.js nano-cash-guide-106.js browser-bridge.js electron-main.cjs release-notes.js; do node --check "work/$name"; done
+          cp .github/scripts/test-cash-change-106.cjs work/
+          cp .github/scripts/test-cash-bridge-106.cjs work/
+          (cd work && node test-cash-bridge-106.cjs)
+          (cd work && npm install --ignore-scripts --no-save jsdom@26.1.0 && node test-cash-change-106.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,json,hashlib,struct
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip') as z:
+            assert z.namelist()==['payload/app.asar'];data=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',data)
+          assert magic==4 and b==hs+4
+          files=json.loads(data[16:16+n])['files']
+          for name in ['browser-bridge.js','electron-main.cjs','index.html','package.json','release-notes.js',
+            'nano-cash-plan-106.js','nano-cash-guide-106.js','nano-payment-quality-105.js',
+            'nano-checkout-choice-104.js','nano-cash-change.js','nano-payment-ledger-102.js']:
+            e=files[name];body=data[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert body==Path('work/'+name).read_bytes()
+            if 'integrity' in e:assert hashlib.sha256(body).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.106'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-106-certified-package
+          path: |
+            NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip
+            work/index.html
+            work/electron-main.cjs
+            work/browser-bridge.js
+            work/package.json
+            work/release-notes.js
+            work/nano-cash-plan-106.js
+            work/nano-cash-guide-106.js
+            work/nano-payment-quality-105.js
+            work/nano-checkout-choice-104.js
+            work/nano-cash-change.js
+            work/nano-payment-ledger-102.js
+            work/test-cash-change-106.cjs
+            work/test-cash-bridge-106.cjs
+          if-no-files-found: error
+  verify_windows:
+    needs: verify_linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-106-certified-package
+      - name: Windows verification of change, backend ledger and native start order
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check browser-bridge.js
+            node --check electron-main.cjs
+            node --check nano-cash-guide-106.js
+            node test-cash-bridge-106.cjs
+            if($LASTEXITCODE -ne 0){throw 'Windows cash receipt test failed'}
+            npm install --ignore-scripts --no-save jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'UI dependencies failed'}
+            node test-cash-change-106.cjs
+            if($LASTEXITCODE -ne 0){throw 'Cash register UI regression failed'}
+          }finally{Pop-Location}
+  publish:
+    needs: [verify_linux,verify_windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-106-certified-package
+      - name: Release only verified asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.106 >/dev/null 2>&1 || { echo 'Existing release'; exit 1; }
+          gh release create v1.0.106 NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.106 — تحسينات الصرف النقدي وسرعة الإقلاع' \
+            --notes 'وسم: تحسينات. إعادة الدفع النقدي بالصرف: إدخال المبلغ المستلم وحساب الباقي وعرض اقتراح بالفئات النقدية الجزائرية (دج) لإرجاعه؛ يمنع البيع النقدي إذا كان المبلغ غير كافٍ، ويحفظ سجل النقد والصرف في الفاتورة. يظل البيع بالدين الكامل والدفع بطريقة واحدة متاحًا دون دفع مختلط. لتحسين الإقلاع، تظهر واجهة NANO POS بعد تشغيل الخادم المحلي مباشرة دون انتظار خدمات المزامنة الاختيارية، ثم تبدأ مزامنة الهاتف والكمبيوتر في الخلفية وتحافظ على مزامنة العميل والنسخ الاحتياطية السابقة. لم تُثبت نسبة محددة لتخفيض RAM/CPU على جهاز حقيقي؛ راقب الأداء بعد التحديث. اختبارات حسابية عشوائية على 3000 حالة، واختبارات المحاسبة والمخزون والتفعيل والنسخ الاحتياطي وWindows/Linux آليًا.'
+          gh release view v1.0.106 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip
+      - name: Enable automatic in-program update only after official release
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,zipfile,datetime
+          from pathlib import Path
+          path=Path('nano-pos-update.json')
+          d=json.loads(path.read_text(encoding='utf8'))
+          assert d['version']=='1.0.105' and d['published']
+          f=Path('NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.106'
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.106/'+f.name
+          features={
+            'ar':['تحسينات: إدخال المبلغ النقدي المستلم وحساب الصرف بدقة مع اقتراح فئات الدينار الجزائري لإرجاعه.',
+                  'منع تسجيل بيع نقدي بمبلغ غير كافٍ، مع حفظ مبالغ النقد والصرف الفعلي المحسوب بالفاتورة.',
+                  'فتح نافذة البرنامج دون انتظار اكتمال تهيئة خدمات المزامنة الاختيارية، وتشغيلها بعدها.',
+                  'الحفاظ على البيع بالدين الكامل وطريقة دفع واحدة والتفعيل والنسخ الاحتياطية.'],
+            'fr':['Retour du calcul de monnaie avec répartition conseillée en DZD.',
+                  'Contrôle du montant remis et historique des espèces dans la facture.',
+                  'Démarrage de la fenêtre sans attendre les serveurs de synchronisation facultatifs.',
+                  'Ventes entièrement à crédit, licences, sauvegardes et moyens uniques préservés.'],
+            'en':['Restore customer cash tender and exact change with recommended DZD denominations.',
+                  'Block insufficient cash and record change information with the sale.',
+                  'Show window without waiting for optional phone/PC sync services to bind.',
+                  'Preserve full-credit sales, single method, licenses and backups.']}
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.106',published=True,releaseDate=day,mandatory=False,importance='normal',features=features)
+          d.setdefault('releaseHistory',{})['1.0.106']={'releaseDate':day,'features':features}
+          d['patches']=[{'id':'nano-pos-v106-cash-change-faststart',
+            'fromVersions':[f'1.0.{i}' for i in range(91,106)],
+            'directUrl':url,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          d['notes']={'ar':'تحسينات الصرف النقدي وسرعة بدء البرنامج.',
+            'fr':'Amélioration de la monnaie à rendre et du démarrage.',
+            'en':'Cash change and quicker first-window startup improvements.'}
+          path.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS v1.0.106 cash change and faster window startup'
+          git push origin HEAD:refs/heads/main
