@@ -73,8 +73,9 @@ jobs:
           $ErrorActionPreference = 'Stop'
           node --check build/update-manager.js
           node --check build/release-notes.js
-          node build/test-auto-update-197.cjs
-          if ($LASTEXITCODE -ne 0) { throw 'Windows auto-update regression test failure' }
+          Push-Location build
+          try { node test-auto-update-197.cjs; if ($LASTEXITCODE -ne 0) { throw 'Windows auto-update regression test failure' } }
+          finally { Pop-Location }
   publish:
     needs: [build_and_linux_tests, windows_test]
     runs-on: ubuntu-latest
