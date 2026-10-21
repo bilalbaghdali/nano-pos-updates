@@ -20,7 +20,7 @@
     const proposed=rate>0?Math.max(base,Math.max(0,predictedNeed+low-qty)):base;
     if(!Number.isFinite(proposed) || proposed>100000000) return {ok:false,reason:'out_of_range'};
     return {ok:true,estimated:true,stock:qty,avgDaily:rate,coverDays,
-      baselineOrder:base,order:Math.ceil(proposed*100)/100,
+      baselineOrder:base,order:Math.ceil(Number(proposed.toFixed(8))*100)/100,
       horizonDays:horizon,safetyDays:safety,
       warning:'Indicative estimate based on the available average sales rate; confirm before ordering.'};
   }
