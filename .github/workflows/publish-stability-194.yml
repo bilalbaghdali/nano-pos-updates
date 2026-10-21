@@ -1,5 +1,5 @@
 name: NANO POS 1.0.94 - Stability and Rollback
-# Gate rerun: corrected Python builder indentation
+# Gate rerun: corrected Windows newline normalization
 on:
   push:
     branches: [main]
