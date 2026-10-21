@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
 const {JSDOM}=require('jsdom');
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 (async()=>{
- const dom=new JSDOM('<!doctype html><html lang="ar"><body><div id="purchasesListView"><button onclick="togglePurchaseView(\\'new\\')">فاتورة جديدة</button></div></body></html>',{
+ const dom=new JSDOM('<!doctype html><html lang="ar"><body><div id="purchasesListView"><button onclick="togglePurchaseView">فاتورة جديدة</button></div></body></html>',{
   url:'http://localhost/',runScripts:'outside-only',pretendToBeVisual:true});
  const win=dom.window,doc=win.document;
  let orders=[],saveCount=0,receiptCount=0;
