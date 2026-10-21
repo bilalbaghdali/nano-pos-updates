@@ -81,6 +81,10 @@ def build(source,target,work):
   assert len(content)==entry['size']
   if name=='electron-main.cjs':
    content=native(content.decode('utf8')).encode('utf8');modified.add(name)
+  elif name=='browser-bridge.js':
+   content=once(content.decode('utf8'),
+      'paid:__paid105,method:__method105,',
+      'paid:__paid105,method:__method105,\n         ...(__checkout105.cashTenderedAmount == null ? {} : {cashTenderedCents:__money105(__checkout105.cashTenderedAmount)}),').encode('utf8');modified.add(name)
   elif name=='index.html':
    s=content.decode('utf8')
    s=once(s,'<script defer src="nano-payment-quality-105.js"></script>',
@@ -102,7 +106,7 @@ def build(source,target,work):
   if name in modified or name in ('browser-bridge.js','nano-payment-quality-105.js','nano-checkout-choice-104.js','nano-cash-change.js'):
    (work/name).parent.mkdir(parents=True,exist_ok=True)
    (work/name).write_bytes(content)
- assert modified=={'electron-main.cjs','index.html','release-notes.js','package.json'}
+ assert modified=={'electron-main.cjs','browser-bridge.js','index.html','release-notes.js','package.json'}
  for name in added:
   content=Path('.github/assets/'+name).read_bytes()
   head['files'][name]={'size':len(content),'offset':str(len(output)),
