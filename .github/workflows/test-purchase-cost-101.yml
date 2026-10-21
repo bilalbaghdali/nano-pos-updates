@@ -1,0 +1,104 @@
+name: NANO POS v1.0.101 - Supplier Cost Verification
+on:
+  push:
+    branches: ['feature/purchase-cost-101']
+    paths:
+      - 'development/trade/**'
+      - '.github/workflows/test-purchase-cost-101.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate official release 1.0.100
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source work
+          gh release download v1.0.100 --pattern NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip --dir source
+          python3 - <<'PY'
+          import hashlib,zipfile,json
+          from pathlib import Path
+          d=json.loads(Path('nano-pos-update.json').read_text())
+          assert d['version']=='1.0.100' and d['published']
+          f=Path('source/NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          PY
+      - name: Verify source markers, ASAR integrity and cost arithmetic
+        run: |
+          set -euo pipefail
+          python3 development/trade/build-purchase-cost-101.py \
+            source/NANO-POS-Patch-1.0.99-to-1.0.100-SUPPLIER-ORDERS.zip \
+            NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip work
+          for n in nano-trade-analytics-101.js nano-po-shortage-ui-100.js release-notes.js; do node --check "work/$n"; done
+          cp development/trade/test-purchase-cost-101.cjs work/
+          (cd work && node test-purchase-cost-101.cjs)
+          python3 - <<'PY'
+          import hashlib,zipfile,json,struct
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          magic,b,h,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and b==h+4
+          tree=json.loads(raw[16:16+n])['files']
+          for name in ['index.html','package.json','release-notes.js','nano-trade-analytics-101.js','nano-po-shortage-ui-100.js']:
+            e=tree[name];val=raw[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert val==Path('work/'+name).read_bytes()
+            if 'integrity' in e:assert hashlib.sha256(val).hexdigest()==e['integrity']['hash']
+          print('ASAR and source verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-101-unreleased
+          path: |
+            NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/nano-trade-analytics-101.js
+            work/nano-po-shortage-ui-100.js
+            work/test-purchase-cost-101.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-101-unreleased
+      - name: Run purchase cost regressions on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check nano-trade-analytics-101.js
+            node --check nano-po-shortage-ui-100.js
+            node test-purchase-cost-101.cjs
+            if($LASTEXITCODE -ne 0){throw 'Windows cost regression failed'}
+          }finally{Pop-Location}
+  protected:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          set -euo pipefail
+          files="$(git diff --name-only origin/main...HEAD)"
+          echo "$files"
+          if echo "$files" | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|database/|activation/|backup/)' ; then
+            echo 'Protected file unexpectedly modified' >&2
+            exit 1
+          fi
