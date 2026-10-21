@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.101",
+  "version": "1.0.102",
   "releaseDate": "2026-10-21",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "مقارنة أسعار الموردين التاريخية داخل أوامر الشراء من المخزون الناقص.",
-      "حساب تكاليف النقل والمصاريف والضرائب غير المستردة المضافة حسب المورد وتوزيعها بدقة السنتيم.",
-      "عرض التكلفة النهائية التقديرية للوحدة وسعر بيع مقترح حسب هامش الربح.",
-      "معاينة للقراءة فقط لا تغيّر البيانات أو المخزون أو التفعيل أو ديون الموردين."
+      "الدفع النقدي والبطاقة وCCP والشيك والتحويل في فاتورة بيع واحدة، مع إمكانية بقاء جزء دين على الزبون.",
+      "توثيق طرق الدفع والمبالغ في سجل فاتورة البيع.",
+      "حماية مخزون وديون عملية بيع جديدة من التغييرات الجزئية عند فشل التخزين.",
+      "تسديدات مضمونة بعدم التكرار عبر معرف عملية ثابت لفواتير الزبائن والموردين، دون المساس بالتفعيل."
     ],
     "fr": [
-      "Comparaison des prix historiques des fournisseurs.",
-      "Estimation des frais de transport et autres frais au centime.",
-      "Calcul du prix de revient estimé et prix de vente cible.",
-      "Aperçu sans écritures comptables ni modification des stocks."
+      "Paiement mixte et partiel en caisse : espèces, carte, CCP, chèque et virement.",
+      "Les paiements sont enregistrés avec la facture de vente.",
+      "Protection atomique du stock et de la dette si la sauvegarde échoue.",
+      "Identifiants stables pour éviter les doublons de règlements."
     ],
     "en": [
-      "Compare historical supplier purchase prices.",
-      "Estimate shipping, fees and nonrecoverable taxes to the cent.",
-      "Preview estimated landed unit cost and margin-based selling price.",
-      "Read-only: no accounting posts, inventory, activation or debt changes."
+      "Mixed and partial checkout with cash, card, CCP, cheque and transfer.",
+      "Each checkout payment is recorded on the invoice.",
+      "Atomic rollback of new sale stock/debt changes on failed storage writes.",
+      "Idempotent customer and supplier invoice debt settlement records."
     ]
   },
   "releaseHistory": {
@@ -1692,32 +1692,55 @@
           "Read-only: no accounting posts, inventory, activation or debt changes."
         ]
       }
+    },
+    "1.0.102": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "الدفع النقدي والبطاقة وCCP والشيك والتحويل في فاتورة بيع واحدة، مع إمكانية بقاء جزء دين على الزبون.",
+          "توثيق طرق الدفع والمبالغ في سجل فاتورة البيع.",
+          "حماية مخزون وديون عملية بيع جديدة من التغييرات الجزئية عند فشل التخزين.",
+          "تسديدات مضمونة بعدم التكرار عبر معرف عملية ثابت لفواتير الزبائن والموردين، دون المساس بالتفعيل."
+        ],
+        "fr": [
+          "Paiement mixte et partiel en caisse : espèces, carte, CCP, chèque et virement.",
+          "Les paiements sont enregistrés avec la facture de vente.",
+          "Protection atomique du stock et de la dette si la sauvegarde échoue.",
+          "Identifiants stables pour éviter les doublons de règlements."
+        ],
+        "en": [
+          "Mixed and partial checkout with cash, card, CCP, cheque and transfer.",
+          "Each checkout payment is recorded on the invoice.",
+          "Atomic rollback of new sale stock/debt changes on failed storage writes.",
+          "Idempotent customer and supplier invoice debt settlement records."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.101-supplier-landed-cost",
+      "id": "nano-pos-v1.0.102-mixed-payments",
       "fromVersions": [
-        "1.0.100"
+        "1.0.101"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.101/NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.101",
-      "sha256": "f7245824f41a44279fb80009767df2be1446ad4954b429dbe6e9e1a17abbd72e",
-      "appAsarSha256": "e787c99a4cec6470d0da92d81356906c5fa18215b6711f8ffbe2fd657e72b82f",
-      "fileName": "NANO-POS-Patch-1.0.100-to-1.0.101-SUPPLIER-COST.zip",
-      "sizeBytes": 31405866,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.102/NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.102",
+      "sha256": "961f9320f43a5146a17f0817dffe06469f6bebcb5664edbbe6018596eb2f82fa",
+      "appAsarSha256": "fefbdd4eb0e7517639d28e19df6a15b3c30a30f41b8169985ebc0cb519464c59",
+      "fileName": "NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip",
+      "sizeBytes": 31409487,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.101",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.102",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "مقارنة الموردين والتكلفة الفعلية التقديرية.",
-    "fr": "Comparaison fournisseurs et coût de revient estimé.",
-    "en": "Supplier comparisons and estimated landed costs."
+    "ar": "الدفع المختلط وحماية التسديدات.",
+    "fr": "Paiements mixtes et protection des règlements.",
+    "en": "Mixed checkout and protected payments."
   }
 }
