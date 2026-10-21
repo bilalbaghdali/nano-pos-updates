@@ -1,0 +1,85 @@
+name: NANO POS 1.0.94 - Stability and Rollback
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-stability-194.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-194
+  cancel-in-progress: false
+jobs:
+  test-and-publish:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout official release pipeline
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify official v1.0.93 base and fetch ZIP
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -c "import json;d=json.load(open('nano-pos-update.json',encoding='utf8'));assert d['version']=='1.0.93' and d['published'];assert d['patches'][0]['appAsarSha256']=='74725370d317031683794312bcfebd3b131c8ec64e1e4db7c4e2083814f5d269'"
+          if gh release view v1.0.94 >/dev/null 2>&1; then
+            echo 'v1.0.94 already published; refusing to overwrite' >&2
+            exit 1
+          fi
+          mkdir -p incoming review
+          gh release download v1.0.93 --pattern 'NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip' --dir incoming
+          python -c "import json,hashlib,pathlib;d=json.load(open('nano-pos-update.json'));p=pathlib.Path('incoming/NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip');assert hashlib.sha256(p.read_bytes()).hexdigest()==d['patches'][0]['sha256']"
+      - name: Rebuild from the exact verified v1.0.93 ASAR
+        run: |
+          set -euo pipefail
+          python .github/scripts/build-stability-194.py incoming/NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip incoming/build-194.json
+          python .github/scripts/verify-stability-194.py incoming/NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip review
+      - name: Check JavaScript syntax and execute regression tests
+        run: |
+          set -euo pipefail
+          for file in updater-main.cjs backup-safety.cjs release-notes.js renderer.js update-manager.js nano-v146-section-search.js electron-main.cjs; do
+            node --check "review/$file"
+          done
+          node .github/tests/test-stability-194.cjs "$(pwd)/review"
+      - name: Simulate successful, corrupted and interrupted Windows updates
+        run: |
+          set -euo pipefail
+          pwsh -NoProfile -File .github/tests/test-stability-194.ps1 -SourceRoot "$(pwd)/review"
+      - name: Publish only after successful Windows tests
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          file='NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip'
+          gh release create v1.0.94 "$file" --target "$GITHUB_SHA" --title 'NANO POS v1.0.94 - تحسينات عامة: الاستقرار وحماية البيانات' --notes 'تحسينات عامة: التحقق مرتين من بصمات التحديثات قبل التثبيت؛ الاستبدال الذري لملف التطبيق على Windows؛ حفظ نسخة سابقة متحقق منها للتراجع عند الفشل؛ رفض التحديثات الأقدم والملفات غير الموثقة؛ تحسين اكتشاف النسخ الاحتياطية غير المكتملة؛ الحفاظ على المبيعات والمخزون والتفعيل وإصلاحات البحث والمميزات السابقة.'
+          gh release view v1.0.94 --json assets --jq '.assets[].name' | grep -Fx "$file"
+      - name: Update live manifest after release asset upload
+        run: |
+          set -euo pipefail
+          python .github/scripts/publish-manifest-194.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.94 verified stability patch'
+          git push origin HEAD:refs/heads/main
+      - name: Retain verified patch artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-v1.0.94-Stability
+          path: NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip
+          if-no-files-found: error
+          retention-days: 30
