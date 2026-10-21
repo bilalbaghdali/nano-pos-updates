@@ -1721,6 +1721,10 @@
     {
       "id": "nano-pos-v1.0.102-mixed-payments",
       "fromVersions": [
+        "1.0.97",
+        "1.0.98",
+        "1.0.99",
+        "1.0.100",
         "1.0.101"
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.102/NANO-POS-Patch-1.0.101-to-1.0.102-MIXED-PAYMENT.zip",
