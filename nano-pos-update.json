@@ -3,29 +3,27 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.94",
+  "version": "1.0.95",
   "releaseDate": "2026-10-21",
   "mandatory": false,
-  "importance": "high",
+  "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تعزيز أمان التحديثات بإعادة فحص SHA-256 قبل تثبيتها ومنع الرجوع إلى نسخة أقدم.",
-      "تطبيق استبدال ذري لملفات البرنامج على Windows مع نسخة احتياطية متحقق منها للتراجع عند الفشل.",
-      "تحسين التحقق من سلامة النسخ الاحتياطية ورفض النسخ غير المكتملة، مع الحفاظ على بيانات المتجر والتفعيل.",
-      "الاحتفاظ بإصلاح البحث داخل الأقسام وعرض مميزات الإصدار الحالي."
+      "إصلاح F2 لتعليق سلة البيع بدل البحث.",
+      "منع التأكيد المزدوج أثناء معالجة البيع.",
+      "حماية تعديل الفواتير من فقدان بنود المنتجات والدفعات.",
+      "الحفاظ على بيانات المتجر والمخزون والتفعيل."
     ],
     "fr": [
-      "Vérification SHA-256 juste avant installation et refus des versions plus anciennes.",
-      "Remplacement atomique sur Windows avec sauvegarde de retour arrière vérifiée.",
-      "Détection des sauvegardes incomplètes, sans toucher aux données ni à la licence.",
-      "Correctifs de recherche et des nouveautés conservés."
+      "F2 suspend le panier plutôt que lancer la recherche.",
+      "Prévention de la double confirmation.",
+      "Modification de facture refusée si des produits ou lots sont manquants."
     ],
     "en": [
-      "Recheck update SHA-256 immediately before installation and reject downgrades.",
-      "Atomically replace the Windows app with a retained verified rollback copy.",
-      "Reject incomplete backup files while preserving store data and activation.",
-      "Preserve the previous scoped-search and release-highlights fixes."
+      "F2 suspends the POS cart instead of opening search.",
+      "Protect against duplicate checkout confirmation.",
+      "Refuse incomplete invoice edits when a product or batch is missing."
     ]
   },
   "releaseHistory": {
@@ -1535,34 +1533,53 @@
           "Preserve the previous scoped-search and release-highlights fixes."
         ]
       }
+    },
+    "1.0.95": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "إصلاح F2 لتعليق سلة البيع بدل البحث.",
+          "منع التأكيد المزدوج أثناء معالجة البيع.",
+          "حماية تعديل الفواتير من فقدان بنود المنتجات والدفعات.",
+          "الحفاظ على بيانات المتجر والمخزون والتفعيل."
+        ],
+        "fr": [
+          "F2 suspend le panier plutôt que lancer la recherche.",
+          "Prévention de la double confirmation.",
+          "Modification de facture refusée si des produits ou lots sont manquants."
+        ],
+        "en": [
+          "F2 suspends the POS cart instead of opening search.",
+          "Protect against duplicate checkout confirmation.",
+          "Refuse incomplete invoice edits when a product or batch is missing."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.94-stability-protection",
+      "id": "nano-pos-v1.0.95-fast-sales-invoices",
       "fromVersions": [
-        "1.0.91",
-        "1.0.92",
-        "1.0.93"
+        "1.0.94"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.94/NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.94",
-      "sha256": "25d102c1007614cb7310975f53b513defcae055d019782c993343fd4cdfd6aac",
-      "appAsarSha256": "becb5bf183f2ac95e9c9b6f0b414eb84c19b643d2a8c9a7f471883c45bc4fc6f",
-      "fileName": "NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip",
-      "sizeBytes": 31385889,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.95/NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.95",
+      "sha256": "912fb1916f4b95eacce5746559c4f9d79436a53466ae82999e1da4fce650dda5",
+      "appAsarSha256": "61ebf0d5f4cc36d5486e1ed37b24ee5463c7c0187db5e17ef98864dcc692593f",
+      "fileName": "NANO-POS-Patch-1.0.94-to-1.0.95-FAST-SALES-INVOICES.zip",
+      "sizeBytes": 31387015,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.94",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.95",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة: الاستقرار وحماية التحديثات والنسخ الاحتياطية.",
-    "fr": "Améliorations générales : stabilité, mises à jour et sauvegardes.",
-    "en": "General improvements: stability, rollback and backup verification."
+    "ar": "تحسينات البيع السريع والفواتير.",
+    "fr": "Améliorations des ventes rapides et des factures.",
+    "en": "Fast sales and invoice improvements."
   }
 }
