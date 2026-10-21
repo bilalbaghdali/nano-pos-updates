@@ -3,26 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.93",
+  "version": "1.0.94",
   "releaseDate": "2026-10-21",
   "mandatory": false,
-  "importance": "normal",
+  "importance": "high",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح مشكلة عدم ظهور مميزات الإصدار الحالي الناتجة عن خطأ JavaScript.",
-      "عرض المميزات الحقيقية للنسخة المثبتة دون إنترنت، ومزامنتها مع GitHub عند الاتصال.",
-      "تصحيح رقم الإصدار ولغة العرض مع الإبقاء على إصلاح البحث السابق وحماية البيانات والتفعيل."
+      "تعزيز أمان التحديثات بإعادة فحص SHA-256 قبل تثبيتها ومنع الرجوع إلى نسخة أقدم.",
+      "تطبيق استبدال ذري لملفات البرنامج على Windows مع نسخة احتياطية متحقق منها للتراجع عند الفشل.",
+      "تحسين التحقق من سلامة النسخ الاحتياطية ورفض النسخ غير المكتملة، مع الحفاظ على بيانات المتجر والتفعيل.",
+      "الاحتفاظ بإصلاح البحث داخل الأقسام وعرض مميزات الإصدار الحالي."
     ],
     "fr": [
-      "Correction de la section des nouveautés de la version actuelle et de son erreur JavaScript.",
-      "Nouveautés disponibles hors ligne, synchronisées avec GitHub selon la version installée.",
-      "Version, langue et correctif de recherche conservés; données et licence intactes."
+      "Vérification SHA-256 juste avant installation et refus des versions plus anciennes.",
+      "Remplacement atomique sur Windows avec sauvegarde de retour arrière vérifiée.",
+      "Détection des sauvegardes incomplètes, sans toucher aux données ni à la licence.",
+      "Correctifs de recherche et des nouveautés conservés."
     ],
     "en": [
-      "Fixed JavaScript error that prevented current-version highlights from showing.",
-      "Show installed-version highlights offline; synchronize correct version history from GitHub.",
-      "Version and language fixed; previous search fix and all data and licensing preserved."
+      "Recheck update SHA-256 immediately before installation and reject downgrades.",
+      "Atomically replace the Windows app with a retained verified rollback copy.",
+      "Reject incomplete backup files while preserving store data and activation.",
+      "Preserve the previous scoped-search and release-highlights fixes."
     ]
   },
   "releaseHistory": {
@@ -1509,33 +1512,57 @@
           "Version and language fixed; previous search fix and all data and licensing preserved."
         ]
       }
+    },
+    "1.0.94": {
+      "releaseDate": "2026-10-21",
+      "features": {
+        "ar": [
+          "تعزيز أمان التحديثات بإعادة فحص SHA-256 قبل تثبيتها ومنع الرجوع إلى نسخة أقدم.",
+          "تطبيق استبدال ذري لملفات البرنامج على Windows مع نسخة احتياطية متحقق منها للتراجع عند الفشل.",
+          "تحسين التحقق من سلامة النسخ الاحتياطية ورفض النسخ غير المكتملة، مع الحفاظ على بيانات المتجر والتفعيل.",
+          "الاحتفاظ بإصلاح البحث داخل الأقسام وعرض مميزات الإصدار الحالي."
+        ],
+        "fr": [
+          "Vérification SHA-256 juste avant installation et refus des versions plus anciennes.",
+          "Remplacement atomique sur Windows avec sauvegarde de retour arrière vérifiée.",
+          "Détection des sauvegardes incomplètes, sans toucher aux données ni à la licence.",
+          "Correctifs de recherche et des nouveautés conservés."
+        ],
+        "en": [
+          "Recheck update SHA-256 immediately before installation and reject downgrades.",
+          "Atomically replace the Windows app with a retained verified rollback copy.",
+          "Reject incomplete backup files while preserving store data and activation.",
+          "Preserve the previous scoped-search and release-highlights fixes."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v1.0.93-current-features-fix",
+      "id": "nano-pos-v1.0.94-stability-protection",
       "fromVersions": [
         "1.0.91",
-        "1.0.92"
+        "1.0.92",
+        "1.0.93"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.93/NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.93",
-      "sha256": "6d3470d929f3493f42c5c39acd11ab930325a22e3649bf1e113c50eac69a855f",
-      "appAsarSha256": "74725370d317031683794312bcfebd3b131c8ec64e1e4db7c4e2083814f5d269",
-      "fileName": "NANO-POS-Patch-1.0.92-to-1.0.93-RELEASE-FEATURES-FIX.zip",
-      "sizeBytes": 31385418,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.94/NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.94",
+      "sha256": "25d102c1007614cb7310975f53b513defcae055d019782c993343fd4cdfd6aac",
+      "appAsarSha256": "becb5bf183f2ac95e9c9b6f0b414eb84c19b643d2a8c9a7f471883c45bc4fc6f",
+      "fileName": "NANO-POS-Patch-1.0.93-to-1.0.94-STABILITY-PROTECTION.zip",
+      "sizeBytes": 31385889,
       "payloadType": "app-asar"
     }
   ],
   "download": {
     "directUrl": "",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.93",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.94",
     "sha256": "",
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات عامة: إصلاح مميزات الإصدار الحالي.",
-    "fr": "Améliorations générales : correction des nouveautés.",
-    "en": "General improvements: fixed current-release highlights."
+    "ar": "تحسينات عامة: الاستقرار وحماية التحديثات والنسخ الاحتياطية.",
+    "fr": "Améliorations générales : stabilité, mises à jour et sauvegardes.",
+    "en": "General improvements: stability, rollback and backup verification."
   }
 }
