@@ -1,0 +1,113 @@
+name: NANO POS v1.1.0 — Purchase Order Integration Gate
+on:
+  push:
+    branches: ['feature/purchase-sales-stage-1']
+    paths:
+      - 'development/trade/**'
+      - '.github/workflows/test-purchase-orders-110.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build_and_linux_tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official base 1.0.98 and obtain ASAR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p incoming verified
+          gh release download v1.0.98 --pattern NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip --dir incoming
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          m=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert m['version']=='1.0.98' and m['published']
+          patch=Path('incoming/NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip')
+          assert hashlib.sha256(patch.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(patch) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          print('Official 1.0.98 source SHA verified')
+          PY
+      - name: Build ASAR patch and run real bridge fixture regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 development/trade/build-purchase-orders-110.py \
+            incoming/NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip \
+            NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip verified
+          for name in browser-bridge.js index.html nano-purchase-order-engine.js nano-purchase-order-ui.js release-notes.js; do
+            case "$name" in *.js) node --check "verified/$name" ;; esac
+          done
+          cp development/trade/test-purchase-order-110.cjs verified/
+          (cd verified && node test-purchase-order-110.cjs)
+          cp development/trade/test-purchase-order-ui-110.cjs verified/
+          (cd verified && npm install --ignore-scripts --no-save jsdom@26.1.0 && node test-purchase-order-ui-110.cjs)
+          python3 - <<'PY'
+          import struct,json,zipfile,hashlib
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',data);assert magic==4 and block==hs+4
+          files=json.loads(data[16:16+n])['files']
+          for name in ['browser-bridge.js','index.html','release-notes.js','package.json','nano-purchase-order-engine.js','nano-purchase-order-ui.js']:
+            entry=files[name]
+            value=data[8+block+int(entry['offset']):8+block+int(entry['offset'])+entry['size']]
+            assert value==Path('verified/'+name).read_bytes()
+            if 'integrity' in entry:assert hashlib.sha256(value).hexdigest()==entry['integrity']['hash']
+          assert json.loads(Path('verified/package.json').read_text())['version']=='1.1.0'
+          print('ASAR test artifacts and source hashes verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v110-purchase-integration-unreleased
+          path: |
+            NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip
+            verified/*.js
+            verified/package.json
+            verified/test-purchase-order-110.cjs
+          if-no-files-found: error
+          retention-days: 14
+  windows_tests:
+    needs: build_and_linux_tests
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v110-purchase-integration-unreleased
+      - name: Windows integrated purchase/receipt regression
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          node --check verified/browser-bridge.js
+          node --check verified/nano-purchase-order-engine.js
+          node --check verified/nano-purchase-order-ui.js
+          Push-Location verified
+          try {
+            node test-purchase-order-110.cjs
+            if ($LASTEXITCODE -ne 0) { throw 'Purchase receipt Windows regression failed' }
+          } finally { Pop-Location }
+  protected_files:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure production, licensing, backups are unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          files="$(git diff --name-only origin/main...HEAD)"
+          printf '%s\n' "$files"
+          if echo "$files" | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|src/|database/|activation/|backup/)' ; then
+            echo 'Protected file modified' >&2
+            exit 1
+          fi

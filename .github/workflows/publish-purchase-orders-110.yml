@@ -1,0 +1,161 @@
+name: NANO POS v1.1.0 - Publish Purchase Orders
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-purchase-orders-110.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-publish-110
+  cancel-in-progress: false
+jobs:
+  verify_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official 1.0.98
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.1.0 >/dev/null 2>&1; then echo 'Existing release; refusing overwrite'; exit 1; fi
+          mkdir -p incoming verified
+          gh release download v1.0.98 --pattern NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip --dir incoming
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,hashlib,json
+          d=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert d['version']=='1.0.98' and d['published']
+          f=Path('incoming/NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==d['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==d['patches'][0]['appAsarSha256']
+          PY
+      - name: Build v1.1.0 and test full purchase-order adapter
+        run: |
+          set -euo pipefail
+          python3 development/trade/build-purchase-orders-110.py \
+            incoming/NANO-POS-Patch-1.0.97-to-1.0.98-SMART-INVENTORY.zip \
+            NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip verified
+          for file in browser-bridge.js nano-purchase-order-engine.js nano-purchase-order-ui.js release-notes.js; do node --check "verified/$file"; done
+          cp development/trade/test-purchase-order-110.cjs verified/
+          cp development/trade/test-purchase-order-ui-110.cjs verified/
+          (cd verified && node test-purchase-order-110.cjs)
+          (cd verified && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-purchase-order-ui-110.cjs)
+          python3 - <<'PY'
+          import zipfile,struct,json,hashlib
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            blob=z.read('payload/app.asar')
+          magic,block,header_size,n=struct.unpack_from('<4I',blob)
+          assert magic==4 and block==header_size+4
+          files=json.loads(blob[16:16+n])['files']
+          for name in ['browser-bridge.js','index.html','release-notes.js','package.json','nano-purchase-order-engine.js','nano-purchase-order-ui.js']:
+            item=files[name];data=blob[8+block+int(item['offset']):8+block+int(item['offset'])+item['size']]
+            assert data==Path('verified/'+name).read_bytes()
+            if item.get('integrity'): assert hashlib.sha256(data).hexdigest()==item['integrity']['hash']
+          assert json.loads(Path('verified/package.json').read_text())['version']=='1.1.0'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-1.1.0-VERIFIED
+          path: |
+            NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip
+            verified/browser-bridge.js
+            verified/index.html
+            verified/nano-purchase-order-engine.js
+            verified/nano-purchase-order-ui.js
+            verified/package.json
+            verified/release-notes.js
+            verified/test-purchase-order-110.cjs
+          if-no-files-found: error
+  test_windows:
+    needs: verify_linux
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: NANO-POS-1.1.0-VERIFIED
+      - name: Check Windows purchase accounting and rollback
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          node --check verified/browser-bridge.js
+          node --check verified/nano-purchase-order-engine.js
+          node --check verified/nano-purchase-order-ui.js
+          Push-Location verified
+          try {
+            node test-purchase-order-110.cjs
+            if ($LASTEXITCODE -ne 0) { throw 'Windows purchase regression failed' }
+          } finally { Pop-Location }
+  publish_release:
+    needs: [verify_linux, test_windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: NANO-POS-1.1.0-VERIFIED
+      - name: Publish tagged ZIP only after test success
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.1.0 >/dev/null 2>&1 || { echo 'Already released'; exit 1; }
+          gh release create v1.1.0 NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.1.0 — أوامر الشراء والاستلام الجزئي' \
+            --notes 'تطوير قسم المشتريات: زر أوامر الشراء لإنشاء أمر دون زيادة المخزون أو دين المورد؛ استلام جزئي/كامل يُنشئ فاتورة شراء مرتبطة ويعتمد الكميات والدين في كتابة واحدة؛ منع الاستلام المكرر وتجاوز الكميات؛ رفض تعديل أو حذف فاتورة استلام من مسار الفواتير غير المتتبع. يتضمن فحص Linux/Windows والواجهة والبيانات التجريبية، ويحافظ على التفعيل والنسخ الاحتياطية. لم يُختبر على متجر فعلي؛ يُنصح بنسخة احتياطية قبل تحديث الإنتاج. ميزات مقارنة الموردين والتكلفة التفصيلية والدفع والمرتجعات هي إصدارات لاحقة.'
+          gh release view v1.1.0 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip
+      - name: Activate the official in-app update
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,zipfile,datetime
+          from pathlib import Path
+          manifest=Path('nano-pos-update.json')
+          d=json.loads(manifest.read_text(encoding='utf8'))
+          assert d['version']=='1.0.98' and d['published']
+          f=Path('NANO-POS-Patch-1.0.98-to-1.1.0-PURCHASE-ORDERS.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          origin='https://github.com/bilalbaghdali/nano-pos-updates/releases'
+          page=origin+'/tag/v1.1.0'
+          url=origin+'/download/v1.1.0/'+f.name
+          notes={
+           'ar':['إضافة أوامر شراء منفصلة في قسم المشتريات دون زيادة المخزون أو دين المورد عند الإنشاء.',
+                 'استلام البضاعة جزئيًا أو كليًا مع فاتورة مشتريات مرتبطة بكل استلام معتمد.',
+                 'منع تكرار الاستلام وتجاوز الكميات، وحفظ المخزون ورصيد المورد وحالة الطلب في عملية واحدة.',
+                 'حماية فواتير الاستلام المرتبطة من الحذف أو التعديل غير المتتبع، مع حفظ بيانات المتجر والتفعيل.'],
+           'fr':['Bons de commande sans mouvement de stock ni dette.',
+                 'Réceptions partielles et complètes, avec factures liées.',
+                 'Protection contre les doublons, dépassements et écritures partielles.',
+                 'Données, sauvegardes et activation conservées.'],
+           'en':['Purchase orders do not affect stock or supplier debt until confirmed receipt.',
+                 'Partial/full receipts post linked purchase invoices.',
+                 'Duplicate, over-receipt and partial-write protection.',
+                 'Protect linked receipt invoices, store data, backups and activation.']
+          }
+          today=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.1.0',published=True,releaseDate=today,mandatory=False,importance='normal',features=notes)
+          d.setdefault('releaseHistory',{})['1.1.0']={'releaseDate':today,'features':notes}
+          d['patches']=[{
+           'id':'nano-pos-v1.1.0-purchase-orders','fromVersions':['1.0.98'],
+           'directUrl':url,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+           'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':page,'sha256':'','fileName':''}
+          d['notes']={'ar':'أوامر شراء واستلامات جزئية آمنة.','fr':'Bons de commande et réceptions partielles.',
+                      'en':'Purchase orders and safe partial receipts.'}
+          manifest.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.1.0 purchase orders and partial receipts'
+          git push origin HEAD:refs/heads/main
