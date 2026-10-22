@@ -58,7 +58,7 @@ jobs:
           files=json.loads(raw[16:16+n])['files']
           for name in ['browser-bridge.js','index.html','package.json','release-notes.js',
             'nano-storage-warning-112.js','nano-invoice-sequence-111.js','nano-invoice-layout-111.js',
-            'nano-payment-ledger-102.js','backup-safety.cjs','electron-main.cjs']:
+            'nano-payment-ledger-102.js','backup-safety.cjs','electron-main.cjs','renderer.js']:
             e=files[name];blob=raw[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
             assert blob==Path('work/'+name).read_bytes(),name
             if e.get('integrity'):assert hashlib.sha256(blob).hexdigest()==e['integrity']['hash'],name
@@ -80,6 +80,7 @@ jobs:
             work/nano-payment-ledger-102.js
             work/backup-safety.cjs
             work/electron-main.cjs
+            work/renderer.js
             work/test-stable-exe-112.cjs
             work/test-stability-ui-112.cjs
             work/test-fa-numbering-111.cjs
