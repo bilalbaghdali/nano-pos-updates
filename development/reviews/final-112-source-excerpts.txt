@@ -860,6 +860,286 @@ N.parse(localStorage.getItem(KEY) || JSON.stringify(initial));
 
 ### browser-bridge.js __nanoBrowserData MATCHES=0
 
+### browser-bridge.js __browserElectron MATCHES=1
+days:remaining});
+   }
+   return clone(result);
+ }
+
+   if (channel === 'get-stock-debt-summary') return { count: 0, total: 0 };
+   if (channel === 'get-stock-debt') return [];
+
+   // --- Silent Universal Fallback: ALWAYS SUCCEED LOCALLY ---
+   console.info('[Browser adapter local auto-handle]:', channel);
+   if (channel.startsWith('get-') || channel.endsWith('s')) return [];
+   return { success: true };
+ };
+
+ window.__browserElectron = {
+   contextBridge: { exposeInMainWorld: (name, value) => window[name] = value },
+   ipcRenderer: { invoke: api, on: () => {}, send: () => {} },
+   webFrame: { getZoomFactor: () => 1, setZoomFactor: z => document.body.style.zoom = z }
+ };
+
+ if (!REMOTE_WEB && !localStorage.getItem('pos_current_user') && !sessionStorage.getItem('pos_logged_out')) {
+   const activeAdmin = db.users.find(u => String(u.username || '').toLowerCase() === DEFAULT_USERNAME.toLowerCase()) || db.users[0];
+   localStorage.setItem('pos_current_user', JSON.stringify(activeAdmin));
+ }
+ function applyPcSyncSnapshot(snapshot) {
+   if (!snapshot || typeof snapshot !== 'object' || !Array.isArray(snapshot.products)) return false;
+   try {
+     db = { ...initial, ...clone(snapshot) };
+     localStorage.setItem(KEY, JSON.stringify(db));
+     window.dispatchEvent(new CustomEvent('nano-pc-sync-snapshot-applied', { detail: { revision: Number(db.revision || 0), at: Date.now() } }));
+     return true;
+   } catch (error) {
+     console.error('[NANO PC Sync] تعذر تطبيق نسخة المزامنة:', error);
+     return false;
+   }
+ }
+ if (window.nanoNative?.onPcSyncSnapshot) window.nanoNative.onPcSyncSnapshot(applyPcSyncSnapshot);
+ window.__webLocal = { getData: () => clone(db), applySnapshot: applyPcSyncSnapshot };
+})();
+
+
+### browser-bridge.js ipcRenderer MATCHES=1
+ count: 0, total: 0 };
+   if (channel === 'get-stock-debt') return [];
+
+   // --- Silent Universal Fallback: ALWAYS SUCCEED LOCALLY ---
+   console.info('[Browser adapter local auto-handle]:', channel);
+   if (channel.startsWith('get-') || channel.endsWith('s')) return [];
+   return { success: true };
+ };
+
+ window.__browserElectron = {
+   contextBridge: { exposeInMainWorld: (name, value) => window[name] = value },
+   ipcRenderer: { invoke: api, on: () => {}, send: () => {} },
+   webFrame: { getZoomFactor: () => 1, setZoomFactor: z => document.body.style.zoom = z }
+ };
+
+ if (!REMOTE_WEB && !localStorage.getItem('pos_current_user') && !sessionStorage.getItem('pos_logged_out')) {
+   const activeAdmin = db.users.find(u => String(u.username || '').toLowerCase() === DEFAULT_USERNAME.toLowerCase()) || db.users[0];
+   localStorage.setItem('pos_current_user', JSON.stringify(activeAdmin));
+ }
+ function applyPcSyncSnapshot(snapshot) {
+   if (!snapshot || typeof snapshot !== 'object' || !Array.isArray(snapshot.products)) return false;
+   try {
+     db = { ...initial, ...clone(snapshot) };
+     localStorage.setItem(KEY, JSON.stringify(db));
+     window.dispatchEvent(new CustomEvent('nano-pc-sync-snapshot-applied', { detail: { revision: Number(db.revision || 0), at: Date.now() } }));
+     return true;
+   } catch (error) {
+     console.error('[NANO PC Sync] تعذر تطبيق نسخة المزامنة:', error);
+     return false;
+   }
+ }
+ if (window.nanoNative?.onPcSyncSnapshot) window.nanoNative.onPcSyncSnapshot(applyPcSyncSnapshot);
+ window.__webLocal = { getData: () => clone(db), applySnapshot: applyPcSyncSnapshot };
+})();
+
+
+### browser-bridge.js async function invoke MATCHES=0
+
+### browser-bridge.js function invoke MATCHES=0
+
+### browser-bridge.js function handle( MATCHES=0
+
+### browser-bridge.js function invokeLocal MATCHES=0
+
+### browser-bridge.js function dispatchRpc MATCHES=0
+
+### browser-bridge.js get-products MATCHES=1
+ر صالح'); }
+   }
+   if (channel === 'nano-quote-active-price') {
+     const payload=args[0] || {};
+     const p=db.products.find(x=>String(x.id)===String(payload.productId));
+     try {
+       return { success:true, quote:window.NANO_PRICING_168.quote(p,
+         payload.quantity,db.promotions||[],payload.tier||'auto') };
+     } catch(error){ return fail(error.message || 'تعذر عرض السعر'); }
+   }
+   if (channel === 'get-products') {
+     let items = db.products.map(normalize);
+     const rawFilter = args[0];
+     const f = typeof rawFilter === 'string' ? { search: rawFilter } : (rawFilter || {});
+     if (f.search) items = items.filter(p => `${p.name} ${p.barcode}`.toLowerCase().includes(String(f.search).toLowerCase()));
+     if (f.category && f.category !== 'all') items = items.filter(p => p.category === f.category);
+     if (f.family && f.family !== 'all') items = items.filter(p => p.family === f.family);
+     if (f.supplier) items = items.filter(p => p.supplier === f.supplier);
+     if (f.stock === 'out') items = items.filter(p => p.stock <= 0);
+     if (f.stock === 'low') items = items.filter(p => p.stock <= p.min_stock);
+     if (f.page) {
+       const page = Math.max(1, Number(f.page)), perPage = Math.max(1, Number(f.perPage) || 30);
+       return { items: clone(items.slice((page - 1) * perPage, page * perPage)), total: items.length, page, perPage };
+     }
+     return clone(items);
+   }
+   if (channel === 'get-product-full') {
+     const p = db.products.find(p => p.id == args[0]);
+     return p ? clone({ ...p, batches: p.batches || [], variants: p.variants || [], barcodes: p.barcodes || [] }) : null;
+   }
+   if (channel === 'add-product') {
+     const data = clone(args[0]), p = data.product || data;
+     if (!p.name?.trim()) throw new Error('اسم المنتج مطلوب');
+     if (p.barcode && db.products.some(v => v.barcode === p.barcode)) t
+
+### browser-bridge.js add-product MATCHES=2
+(f.perPage) || 30);
+       return { items: clone(items.slice((page - 1) * perPage, page * perPage)), total: items.length, page, perPage };
+     }
+     return clone(items);
+   }
+   if (channel === 'get-product-full') {
+     const p = db.products.find(p => p.id == args[0]);
+     return p ? clone({ ...p, batches: p.batches || [], variants: p.variants || [], barcodes: p.barcodes || [] }) : null;
+   }
+   if (channel === 'add-product') {
+     const data = clone(args[0]), p = data.product || data;
+     if (!p.name?.trim()) throw new Error('اسم المنتج مطلوب');
+     if (p.barcode && db.products.some(v => v.barcode === p.barcode)) throw new Error('هذا الباركود موجود بالفعل');
+     p.id = ids();
+     const b = data.batch || { stock: 0, selling_price: 0, cost_price: 0 };
+     p.batches = [{ ...b, id: ids(), product_id: p.id, variant_id: null }];
+     normalize(p);
+     db.products.push(p);
+     save();
+     return { success: true, id: p.id, productId: p.id, product: p };
+   }
+   if (channel === 'update-product') {
+     const p = db.products.find(p => p.id == args[0]);
+     if (!p) return fail('المنتج غير موجود');
+     Object.assign(p, args[1]);
+     save();
+     return { success: true };
+   }
+   if (channel === 'delete-product') {
+     db.products = db.products.filter(p => p.id != args[0]);
+     save();
+     return { success: true };
+   }
+   if (channel === 'toggle-featured') {
+     const p = db.products.find(p => p.id == args[0]);
+     if (p) { p.is_featured = p.is_featured ? 0 : 1; save(); }
+     return { success: true };
+   }
+   if (channel === 'add-batch') {
+     const p = db.products.find(p => p.id == args[0]);
+     if (!p) return fail('المنتج غير موجود');
+     const batch = { ...args[1], id: ids(), product_id: p.id };
+     p.batches.push(batch);
+     normalize(p);
+     save();
+     return { success: true, id: batch.id };
+   }
+   if (channel ===
+ups || [];
+     p.variants = data.variants || [];
+     p.has_variants = (p.variants.length > 0) ? 1 : 0;
+     save();
+     return { success: true };
+   }
+   if (channel === 'add-variant-quick') {
+     const p = db.products.find(v => v.id == args[0]?.product_id);
+     if (p) { p.variants = p.variants || []; p.variants.push(args[0]); p.has_variants = 1; save(); }
+     return { success: true };
+   }
+   if (channel === 'add-product-barcode') {
+     const p = db.products.find(v => v.id == args[0]);
+     if (p) { p.extra_barcodes = p.extra_barcodes || []; p.extra_barcodes.push(args[1]); save(); }
+     return { success: true };
+   }
+   if (channel === 'get-variant-templates') return [];
+
+   // --- Sales & Invoicing ---
+   // Sale editing is an amendment to the ORIGINAL invoice, never a second sale.
+   if (channel === 'process-sale' && args[0]?.editSaleId != null) {
+     const request=args[0]||{}, input=request.checkout||{};
+     const original=db.sales.find(v=>String(v.id)===String(request.editSaleId));
+     if(!original)return fail('الفاتورة الأصلية غير موجودة؛ لن يتم إنشاء عملية بيع جديدة.');
+     if(Number(original.total)<0 || (original.items||[]).some(i=>Number(i.quantity)<0))
+       return fail('تعديل المرتجع يتطلب إجراء تصحيح مرتجعات مخصص.');
+     if((original.payments||[]).length ||
+        Number(original.paid_amount||0)>Number(original.initial_paid_amount??original.paid_amount??0)+0.005 ||
+        (db.sales_returns||[]).some(x=>String(x.sale_id)===String(original.id)))
+       return fail('لهذه الفاتورة تسديدات أو مرتجعات لاحقة. يرجى تسويتها من سجل المعاملات قبل تعديل الفاتورة.');
+     if(!Array.isArray(request.items)||!request.items.length)return fail('السلة فارغة.');
+     const subtotal=rounded(input.subtotal??request.items.reduce((s,i)=>s+Number(i.qty||0)*Number(i.pos_price||0),0));
+     const discount=rounded(input.discount||0),taxPe
+
+### browser-bridge.js add-customer MATCHES=2
+ter(t => ['withdrawal','cash_out'].includes(t.type)).reduce((sum,t)=>sum+Number(t.amount||0),0)),
+       total_expenses: rounded(txs.filter(t => t.type === 'expense').reduce((sum,t)=>sum+Number(t.amount||0),0)),
+     };
+     return { transactions: clone(txs.slice(page * pageSize, page * pageSize + pageSize)), totalCount: txs.length, page, pageSize, summary };
+   }
+
+   // --- Customers & Debts ---
+   if (channel === 'add-customer-payment') {
+     const c=(db.customers || []).find(v => String(v.id)===String(args[0]));
+     if (!c) return fail('الزبون غير موجود');
+     const amount=rounded(args[1]), available=customerVisibleDebt(c);
+     if (!(amount>0) || !Number.isFinite(amount) || amount>available+0.005) return fail('مبلغ التسديد يتجاوز دين الزبون.');
+     let unpaid=amount;
+     for (const sale of (db.sales || []).filter(s=>String(s.customer_id)===String(c.id)).sort((a,b)=>new Date(a.sale_date||a.created_at)-new Date(b.sale_date||b.created_at))) {
+       if (unpaid<=0) break;
+       const allocated=rounded(Math.min(unpaid,invoiceDebt(sale)));
+       if (allocated<=0) continue;
+       sale.paid_amount=rounded(Number(sale.paid_amount||0)+allocated);
+       sale.remaining_amount=invoiceDebt(sale);
+       sale.payments=Array.isArray(sale.payments)?sale.payments:[];
+       sale.payments.push({id:ids(),amount:allocated,date:args[2]||new Date().toISOString(),note:args[3]||'',source:'customer-payment'});
+       unpaid=rounded(unpaid-allocated);
+     }
+     reviseCustomerBalance(c.id,-amount);
+     if (unpaid>0 && Number(c.initial_debt)>0) c.initial_debt=rounded(Math.max(0,Number(c.initial_debt)-unpaid));
+     db.customer_payments=Array.isArray(db.customer_payments)?db.customer_payments:[];
+     const payment={id:ids(),customer_id:c.id,amount,date:args[2]||new Date().toISOString(),note:args[3]||'',unallocated:unpaid};
+     db.customer_payments.un
+v(['Name','Phone','Email','Address'], [['','','','']]));
+   if (channel === 'download-suppliers-template') return await saveExportFile('nano_suppliers_template.csv', toCsv(['Name','Phone','Email','Address'], [['','','','']]));
+
+   // --- Generic Collection Reader & Writers ---
+   if (channel.startsWith('get-') && collection[channel.slice(4)]) return clone(collection[channel.slice(4)]());
+
+   const writeMap = {
+     'add-customer': 'customers', 'add-supplier': 'suppliers', 'save-promotion': 'promotions',
+     'save-bundle': 'bundles', 'add-expense': 'expenses', 'add-capital': 'capital',
+     'create-order': 'orders', 'save-custom-template': 'templates'
+   };
+   if (writeMap[channel]) {
+     const item = { ...clone(args[0]), id: args[0]?.id || ids(), created_at: new Date().toISOString() };
+     db[writeMap[channel]] = db[writeMap[channel]] || [];
+     const arr = db[writeMap[channel]], i = arr.findIndex(p => p.id === item.id);
+     if (i < 0) arr.push(item); else arr[i] = item;
+     save();
+     return { success: true, id: item.id };
+   }
+
+   const editMap = {
+     'customer': 'customers', 'supplier': 'suppliers', 'promotion': 'promotions',
+     'bundle': 'bundles', 'expense': 'expenses', 'capital': 'capital',
+     'order': 'orders', 'custom-template': 'templates'
+   };
+   const operation = channel.match(/^(update|delete)-(.+)$/);
+   if (operation && editMap[operation[2]]) {
+     const key = editMap[operation[2]], id = args[0];
+     db[key] = db[key] || [];
+     if (operation[1] === 'delete') db[key] = db[key].filter(v => v.id != id);
+     else {
+       const item = db[key].find(v => v.id == id);
+       if (item) Object.assign(item, args[1]);
+     }
+     save();
+     return { success: true };
+   }
+
+   // --- Database Backup: Save into project path (backups/ folder) & download copy ---
+   if (channel === 'export-db-backup' || channel === 'ex
+
+### browser-bridge.js get-user-info MATCHES=0
+
 ### backup-safety.cjs function verifyBackup MATCHES=1
 atch {}
       throw error;
