@@ -3,26 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.109",
+  "version": "1.0.110",
   "releaseDate": "2026-10-22",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات: استبدال nano_received_amount_108 بعبارة «المبلغ المدفوع» في شاشة الدفع.",
-      "حذف مفتاح الترجمة غير المعرّف حتى لا يظهر بدل النص بعد تغيير اللغة.",
-      "الحفاظ على الدفع الجزئي والكريدي والصرف النقدي والمخزون والتفعيل والنسخ الاحتياطية."
+      "تصميم NANO POS عصري بالأزرق والأبيض لفواتير ووصول البيع على 58 مم و80 مم و80 مم مفصل وA4 وA5.",
+      "جعل التصميم الأزرق الخيار الافتراضي الجديد مع استمرار توفر القوالب القديمة.",
+      "إبقاء معلومات المتجر والزبون والخصومات والديون والصرف وQR، وإزالة صور المنتجات من الطباعة.",
+      "توحيد شكل معاينة الطباعة والمستند المرسل للطابعة وPDF، مع الحفاظ على اختيار لغة الطباعة."
     ],
     "fr": [
-      "Corriger le libellé du montant payé dans la caisse.",
-      "Supprimer la clé de traduction manquante qui s’affichait à la place du texte.",
-      "Les paiements partiels, la monnaie à rendre et les sauvegardes restent inchangés."
+      "Nouveau design NANO POS bleu/blanc pour factures et reçus : 58mm, 80mm, 80mm détaillé, A4 et A5.",
+      "Nouveau modèle par défaut et anciens modèles toujours disponibles.",
+      "Données, totaux, dettes et QR préservés sans photos des produits.",
+      "Aperçu identique aux impressions et aux exports PDF, choix de langue conservé."
     ],
     "en": [
-      "Fix amount paid field label in sales checkout.",
-      "Remove missing translation key that was incorrectly displayed as text.",
-      "Preserve partial payments, customer debt, change and inventory."
+      "Modern NANO POS blue-white sales invoices and receipts in 58,80,80 detailed,A4,A5.",
+      "Approved new default theme; legacy templates remain selectable.",
+      "Preserve store, customer, totals, debt and QR data but remove product pictures.",
+      "Match print and PDF output to preview and preserve AR/FR/EN language controls."
     ]
   },
   "releaseHistory": {
@@ -1870,11 +1873,34 @@
           "Preserve partial payments, customer debt, change and inventory."
         ]
       }
+    },
+    "1.0.110": {
+      "releaseDate": "2026-10-22",
+      "features": {
+        "ar": [
+          "تصميم NANO POS عصري بالأزرق والأبيض لفواتير ووصول البيع على 58 مم و80 مم و80 مم مفصل وA4 وA5.",
+          "جعل التصميم الأزرق الخيار الافتراضي الجديد مع استمرار توفر القوالب القديمة.",
+          "إبقاء معلومات المتجر والزبون والخصومات والديون والصرف وQR، وإزالة صور المنتجات من الطباعة.",
+          "توحيد شكل معاينة الطباعة والمستند المرسل للطابعة وPDF، مع الحفاظ على اختيار لغة الطباعة."
+        ],
+        "fr": [
+          "Nouveau design NANO POS bleu/blanc pour factures et reçus : 58mm, 80mm, 80mm détaillé, A4 et A5.",
+          "Nouveau modèle par défaut et anciens modèles toujours disponibles.",
+          "Données, totaux, dettes et QR préservés sans photos des produits.",
+          "Aperçu identique aux impressions et aux exports PDF, choix de langue conservé."
+        ],
+        "en": [
+          "Modern NANO POS blue-white sales invoices and receipts in 58,80,80 detailed,A4,A5.",
+          "Approved new default theme; legacy templates remain selectable.",
+          "Preserve store, customer, totals, debt and QR data but remove product pictures.",
+          "Match print and PDF output to preview and preserve AR/FR/EN language controls."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v109-payment-label-improvements",
+      "id": "nano-pos-v110-blue-print-all-sizes",
       "fromVersions": [
         "1.0.91",
         "1.0.92",
@@ -1893,14 +1919,15 @@
         "1.0.105",
         "1.0.106",
         "1.0.107",
-        "1.0.108"
+        "1.0.108",
+        "1.0.109"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.109/NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.109",
-      "sha256": "0ab2b404d8e4d11ea90ca33ea860e2799b0e4a6ce5401e16d55940bd997177f6",
-      "appAsarSha256": "5f4d6fcd36fa1dee73297e808e4133ceededbf0aa32921a0323fffee9ac0017a",
-      "fileName": "NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip",
-      "sizeBytes": 31421134,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.110/NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.110",
+      "sha256": "9e7828675015140086e8cd905c4716872d4bc17e404b5d0a8dbb8935f1d29dfd",
+      "appAsarSha256": "2de62f917f321a629148cfe9e5dd906949330f668f218809d29b68137c286ba9",
+      "fileName": "NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip",
+      "sizeBytes": 31424436,
       "payloadType": "app-asar"
     }
   ],
@@ -1911,8 +1938,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تصحيح تسمية المبلغ المدفوع في شاشة البيع.",
-    "fr": "Correction du libellé du montant payé.",
-    "en": "Paid amount label correction."
+    "ar": "تحسينات تصميم فاتورة ووصل البيع بكل المقاسات.",
+    "fr": "Design moderne des factures et tickets de caisse pour tous les formats.",
+    "en": "Modern sales invoice and receipt layouts for all paper sizes."
   }
 }
