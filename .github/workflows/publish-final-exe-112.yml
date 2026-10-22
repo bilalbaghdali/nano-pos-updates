@@ -260,13 +260,13 @@ jobs:
           if($assets -contains 'v1.0.112'){throw 'Refusing to overwrite existing release'}
           gh release create v1.0.112 $asset $patch --target $env:GITHUB_SHA --title 'NANO POS v1.0.112 — الإصدار المستقر النهائي Windows EXE' --notes 'وسم: تحسينات الاستقرار. نسخة Windows x64 كاملة بصيغة EXE، مع حزمة تحديث داخلية مستقلة. إصلاح التخزين العام للمنتجات والزبائن والموردين: فشل الكتابة يظهر للمستخدم ويرفض إرجاع نجاح زائف، وتُستعاد آخر حالة محفوظة. لم يتم تغيير منطق المبيعات والدفع الجزئي والديون والمخزون وترقيم FA والفواتير والطباعة أو خدمات المزامنة. التثبيت أو إزالة التطبيق لا يحذف مجلد userData أو ملفات التفعيل والنسخ الاحتياطية. اختبارات Windows/Linux لسلوك فشل التخزين والبيع المكرر وترقيم الفواتير، وتحقق من حجم وترويسة EXE وبصمات SHA256. ملف المثبت غير موقع بشهادة تجارية، ولم يتم إجراء اختبار متجر فعلي.'
           if($LASTEXITCODE -ne 0){throw 'GitHub release create failed'}
-          $actual=@(gh release view v1.0.112 --json assets --jq '.[].name')
+          $actual=@(gh release view v1.0.112 --json assets --jq '.assets[].name')
           if($LASTEXITCODE -ne 0){throw 'Unable to verify release'}
           if($actual -notcontains $asset -or $actual -notcontains $patch){throw 'EXE or patch missing in GitHub Release'}
       - name: Activate automatic updates and published EXE fallback
         run: |
           $ErrorActionPreference='Stop'
-          python - <<'PY'
+          @'
           import json,hashlib,datetime,zipfile
           from pathlib import Path
           path=Path('nano-pos-update.json')
@@ -314,7 +314,7 @@ jobs:
              'en':'Stable full Windows x64 EXE release with fail-closed local storage.'}
           path.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n','utf8')
           print('Manifest activated:',m['version'],'installer SHA256',m['download']['sha256'])
-          PY
+          '@ | python -
           if($LASTEXITCODE -ne 0){throw 'Manifest generation failed'}
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
