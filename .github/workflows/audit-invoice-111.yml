@@ -1,0 +1,28 @@
+name: Inspect Sales Number and Invoice Layout v1.0.110
+on:
+  push:
+    branches: [fix/real-invoice-layout-number-111]
+    paths: ['.github/workflows/audit-invoice-111.yml']
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read verified production 1.0.110
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          gh release download v1.0.110 --pattern NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip --dir source
+          python3 development/invoices/audit-111.py
+      - name: Store code excerpts for integration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add development/invoices/audit-111.txt
+          git commit -m 'audit: verified sale numbering and invoice rendering paths'
+          git push origin HEAD:refs/heads/fix/real-invoice-layout-number-111
