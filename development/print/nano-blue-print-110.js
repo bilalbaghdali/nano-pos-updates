@@ -42,6 +42,14 @@
 '.grand,.grand-total,.total-box,.total-value,.line.grand-total{background:linear-gradient(90deg,#073574,#1468d7)!important;color:white!important;border-radius:6px!important;padding:'+(mini?'5px 3px':thin?'7px 5px':'10px')+'!important;font-weight:900!important}',
 '.grand *,.grand-total *,.total-box *,.total-value *,.line.grand-total *{color:white!important}',
 '[data-role="discount-row"] *{color:#c32939!important}',
+'.np110-paid-row{background:#eaf3ff!important;border-radius:6px!important;color:#0c58be!important;font-weight:900!important}',
+'.np110-paid-row *{color:#0c58be!important}',
+'.np110-change-row{background:#e5f7ef!important;border-radius:6px!important;color:#087e56!important;font-weight:900!important}',
+'.np110-change-row *{color:#087e56!important}',
+'.np110-debt-row{background:#fff0f0!important;border-radius:6px!important;color:#b4233b!important;font-weight:900!important}',
+'.np110-debt-row *{color:#b4233b!important}',
+'.np110-document [class*="bg-black"]{background:#083a83!important;color:white!important}',
+'.np110-document .bg-black *{color:white!important}',
 '.totals,.amounts-card,.pay-table,.payment-box{max-width:100%!important;min-width:0!important;border-color:#d1e5ff!important}',
 '.barcode-wrap,.barcode-box,#thermalBarcodeWrap{max-width:100%!important}',
 '.barcode-wrap img,.barcode-box img,#thermalBarcodeImg,.qr-code img,.qrcode img{max-width:100%!important;height:auto!important}',
@@ -74,6 +82,14 @@ color===false?'html,body{filter:grayscale(1)!important;-webkit-filter:grayscale(
    if(!doc||!doc.body)return html;
    const content=doc.body.querySelector('main')||doc.body.querySelector('article')||doc.body.querySelector('.paper')||doc.body;
    content.classList.add('np110-document');
+   // Emphasize existing amounts only. Never compute or rewrite monetary values here.
+   for(const row of content.querySelectorAll('.row,.line,[data-role]')){
+     const first=row.firstElementChild;
+     const label=String(first?.textContent||'').trim().toLowerCase();
+     if(/الصرف|الباقي للزبون|change due|monnaie (à|a) rendre/.test(label))row.classList.add('np110-change-row');
+     else if(/المبلغ المدفوع|المدفوع|دفعة|paid|versé|versement/.test(label))row.classList.add('np110-paid-row');
+     else if(/الدين|المتبقي|reste à payer|remaining|credit balance|solde dû/.test(label))row.classList.add('np110-debt-row');
+   }
    const banner=doc.createElement('div');banner.className='np110-banner';
    const brand=doc.createElement('strong');brand.textContent='NANO POS';
    const sub=doc.createElement('span');sub.textContent=scope==='sale'?txt.sale:txt.receipt;
