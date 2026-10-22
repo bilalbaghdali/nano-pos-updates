@@ -1,0 +1,122 @@
+name: NANO POS v1.0.108 - Partial Credit and Change Tests
+on:
+  push:
+    branches: [fix/partial-credit-change-108]
+    paths:
+      - '.github/assets/nano-flex-core-108.js'
+      - '.github/assets/nano-flex-payment-108.js'
+      - '.github/scripts/build-flex-payment-108.py'
+      - '.github/scripts/test-flex-bridge-108.cjs'
+      - '.github/scripts/test-flex-ui-108.cjs'
+      - '.github/workflows/test-flex-payment-108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official v1.0.107 package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source work
+          gh release download v1.0.107 --pattern NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.107' and m['published']
+          f=Path('source/NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build verified v1.0.108 and test accounting, change and modal
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-flex-payment-108.py \
+            source/NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip \
+            NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip work
+          for n in browser-bridge.js nano-payment-quality-105.js nano-credit-picker-107.js nano-flex-core-108.js nano-flex-payment-108.js release-notes.js; do node --check "work/$n"; done
+          cp .github/scripts/test-flex-bridge-108.cjs work/
+          cp .github/scripts/test-flex-ui-108.cjs work/
+          (cd work && node test-flex-bridge-108.cjs)
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-flex-ui-108.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct,zipfile
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip') as z:
+            assert z.namelist()==['payload/app.asar'];data=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',data)
+          assert magic==4 and block==hs+4
+          files=json.loads(data[16:16+n])['files']
+          for name in ['index.html','package.json','release-notes.js','browser-bridge.js',
+            'nano-payment-quality-105.js','nano-credit-picker-107.js','nano-flex-core-108.js',
+            'nano-flex-payment-108.js','nano-cash-plan-106.js','nano-payment-ledger-102.js']:
+            e=files[name];content=data[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+            assert content==Path('work/'+name).read_bytes(),name
+            if e.get('integrity'):assert hashlib.sha256(content).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.108'
+          assert b'onclick="nanoCheckoutPayFull104()"' not in Path('work/index.html').read_bytes()
+          assert b'onclick="nanoOpenCreditPicker107()"' not in Path('work/index.html').read_bytes()
+          print('PASS: official ASAR SHA and customer/stock/payment code integrity')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-108-tested-package
+          path: |
+            NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/browser-bridge.js
+            work/nano-payment-quality-105.js
+            work/nano-credit-picker-107.js
+            work/nano-flex-core-108.js
+            work/nano-flex-payment-108.js
+            work/nano-cash-plan-106.js
+            work/nano-payment-ledger-102.js
+            work/test-flex-bridge-108.cjs
+            work/test-flex-ui-108.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-108-tested-package
+      - name: Repeat stock, credit and cash change regressions on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check browser-bridge.js
+            node --check nano-flex-payment-108.js
+            node test-flex-bridge-108.cjs
+            if($LASTEXITCODE -ne 0){throw 'Accounting test failure'}
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'UI test dependency failed'}
+            node test-flex-ui-108.cjs
+            if($LASTEXITCODE -ne 0){throw 'Checkout UI failed'}
+          }finally{Pop-Location}
+  protected:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure source and business data unchanged
+        run: |
+          set -euo pipefail
+          git diff --name-only origin/main...HEAD
+          if git diff --name-only origin/main...HEAD | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|database/|activation/|backup/)' ; then
+            echo 'Protected file modification';exit 1
+          fi
