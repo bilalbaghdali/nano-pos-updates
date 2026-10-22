@@ -16,8 +16,8 @@ def emit(name,text):
 bridge=get('browser-bridge.js')
 p=bridge.index("if (channel === 'process-sale')")
 emit('sale process bridge',bridge[p:p+16500])
-p=bridge.index('function invoiceDebt(')
-emit('invoice debt helpers',bridge[p:p+3000])
+p=bridge.find('const invoiceDebt')
+if p>=0: emit('invoice debt helpers',bridge[p:p+3000])
 for key in ['nano-record-settlement-102','cashTenderedAmount','nano_checkout_operation_id']:
  ps=[m.start() for m in re.finditer(re.escape(key),bridge)]
  emit('bridge refs '+key,'\n---\n'.join(bridge[max(0,p-320):p+850] for p in ps[:10]))
