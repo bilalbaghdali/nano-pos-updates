@@ -1,0 +1,180 @@
+name: NANO POS v1.0.111 - Publish FA Number and Invoice Design
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-invoice-111.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-111
+  cancel-in-progress: false
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate latest public v1.0.110 archive and no v1.0.111 collision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.111 >/dev/null 2>&1 || { echo 'Refuse existing release overwrite';exit 1; }
+          mkdir -p source work
+          gh release download v1.0.110 --pattern NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,json,hashlib
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.110' and m['published']
+          f=Path('source/NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build v1.0.111, test FA numbers and modern invoice re-render
+        run: |
+          set -euo pipefail
+          python3 development/invoices/build-invoice-layout-111.py \
+            source/NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip \
+            NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip work
+          for file in renderer.js browser-bridge.js nano-invoice-sequence-111.js nano-invoice-layout-111.js document-print-preview.js; do node --check "work/$file"; done
+          cp development/invoices/test-fa-numbering-111.cjs work/
+          cp development/invoices/test-invoice-layout-111.cjs work/
+          (cd work && node test-fa-numbering-111.cjs)
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-invoice-layout-111.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct,zipfile
+          file=Path('NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip')
+          with zipfile.ZipFile(file) as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and b==hs+4
+          files=json.loads(raw[16:16+n])['files']
+          for name in ['index.html','package.json','renderer.js','browser-bridge.js',
+                       'document-print-preview.js','nano-invoice-sequence-111.js',
+                       'nano-invoice-layout-111.js','nano-blue-print-110.js','release-notes.js',
+                       'invoice_template_modern.html','invoice_thermal_modern_80.html',
+                       'receipt_template_1.html','nano-payment-ledger-102.js']:
+            entry=files[name]
+            blob=raw[8+b+int(entry['offset']):8+b+int(entry['offset'])+entry['size']]
+            assert blob==Path('work/'+name).read_bytes(),name
+            if entry.get('integrity'):assert hashlib.sha256(blob).hexdigest()==entry['integrity']['hash'],name
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.111'
+          print('PASS: final ASAR integrity, logo/customer data preserved, no accounting file migration')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v111-invoice-release
+          path: |
+            NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip
+            work/index.html
+            work/package.json
+            work/renderer.js
+            work/browser-bridge.js
+            work/document-print-preview.js
+            work/nano-invoice-sequence-111.js
+            work/nano-invoice-layout-111.js
+            work/nano-blue-print-110.js
+            work/release-notes.js
+            work/invoice_template_modern.html
+            work/invoice_thermal_modern_80.html
+            work/receipt_template_1.html
+            work/nano-payment-ledger-102.js
+            work/test-fa-numbering-111.cjs
+            work/test-invoice-layout-111.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v111-invoice-release
+      - name: Verify sale/annual numbers and invoice print preview on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check browser-bridge.js
+            node --check renderer.js
+            node --check nano-invoice-layout-111.js
+            node test-fa-numbering-111.cjs
+            if($LASTEXITCODE -ne 0){throw 'Annual invoice numbering failed'}
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'UI dependency install failed'}
+            node test-invoice-layout-111.cjs
+            if($LASTEXITCODE -ne 0){throw 'Actual invoice layout/print regression failed'}
+          }finally{Pop-Location}
+  publish:
+    needs: [linux,windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v111-invoice-release
+      - name: Publish verified official patch and release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.111 >/dev/null 2>&1 || { echo 'Existing release, refuse overwrite';exit 1; }
+          gh release create v1.0.111 NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.111 — تحسينات تصميم الفاتورة وترقيم FA' \
+            --notes 'وسم: تحسينات. إعادة تركيب تصميم فاتورة البيع والوصل لتظهر هوية NANO POS الزرقاء بوضوح في 58مم و80مم و80مم المفصل وA4 وA5: رأس أزرق، بطاقة بيانات المتجر والزبون، رقم فاتورة بارز، جدول أزرق وأقسام مجاميع واضحة، مع بقاء الشعار وQR وحذف صور المنتجات. أرقام فواتير البيع الجديدة FA-2026-01 ثم FA-2026-02... تبدأ من 01 عند تغير السنة. يحتفظ كل بيع برقم ثابت لا يتغير عند إعادة الطباعة أو تعديل الفاتورة، وحفظ الرقم والعداد يتم ضمن نفس عملية حفظ البيع والمخزون والديون؛ تُحفظ أرقام الفواتير القديمة ولا يعاد ترقيمها. إصلاح المعاينة والطباعة وPDF على نفس التصميم وبدون تغيير محرك الدفع/التفعيل/النسخ الاحتياطية. اختبارات Linux وWindows آلية؛ لا توجد طباعة ميدانية موثّقة من جهاز المتجر.'
+          gh release view v1.0.111 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip
+      - name: Update official native updater only after verified release
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,json,hashlib,datetime
+          path=Path('nano-pos-update.json')
+          m=json.loads(path.read_text(encoding='utf8'))
+          assert m['version']=='1.0.110' and m['published']
+          f=Path('NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          base='https://github.com/bilalbaghdali/nano-pos-updates'
+          direct=base+'/releases/download/v1.0.111/'+f.name
+          page=base+'/releases/tag/v1.0.111'
+          features={
+           'ar':['إصلاح البنية الفعلية لتصميم فاتورة البيع ووصل البيع بالأزرق والأبيض على جميع مقاسات الطباعة.',
+                 'ترقيم الفواتير الجديدة بالتسلسل السنوي FA-2026-01، FA-2026-02؛ يبدأ من 01 للسنة التالية.',
+                 'حفظ رقم الفاتورة والعداد بشكل متزامن مع البيع والمخزون، وعدم تغييره بالتعديل أو إعادة الطباعة.',
+                 'الحفاظ على الفواتير القديمة وشعار المتجر وبيانات الزبون وQR دون صور منتجات، ومطابقة المعاينة للطباعة وPDF.'],
+           'fr':['Mise en page bleue réelle des factures/tickets sur tous les formats.',
+                 'Numéro annuel FA-AAAA-01, sauvegardé avec chaque vente.',
+                 'Modification et réimpression sans nouveau numéro; anciennes factures conservées.',
+                 'Logo et QR conservés, aucune photo produit, aperçu identique à PDF/impression.'],
+           'en':['Rebuilt actual invoice/receipt composition in NANO POS blue-white for all paper sizes.',
+                 'Sequential yearly sales invoice numbers FA-YYYY-01, assigned atomically on successful sale.',
+                 'Reprints and edits retain original numbers, legacy sales stay unchanged.',
+                 'Keep shop/customer data and QR but remove product photos; preview matches print and PDF.']}
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          m.update(version='1.0.111',published=True,releaseDate=day,mandatory=False,importance='normal',features=features)
+          m.setdefault('releaseHistory',{})['1.0.111']={'releaseDate':day,'features':features}
+          m['patches']=[{'id':'nano-pos-v111-rebuild-invoice-fa-numbers',
+            'fromVersions':[f'1.0.{i}' for i in range(91,111)],
+            'directUrl':direct,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          m['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          m['notes']={'ar':'إصلاح تصميم الفاتورة وترقيم FA السنوي.',
+             'fr':'Nouveau design facture et numéros FA annuels.',
+             'en':'Invoice design rebuilt and annual FA numbers.'}
+          path.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS v1.0.111 invoice design and annual FA sequence'
+          git push origin HEAD:refs/heads/main
