@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.111",
+  "version": "1.0.112",
   "releaseDate": "2026-10-22",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح البنية الفعلية لتصميم فاتورة البيع ووصل البيع بالأزرق والأبيض على جميع مقاسات الطباعة.",
-      "ترقيم الفواتير الجديدة بالتسلسل السنوي FA-2026-01، FA-2026-02؛ يبدأ من 01 للسنة التالية.",
-      "حفظ رقم الفاتورة والعداد بشكل متزامن مع البيع والمخزون، وعدم تغييره بالتعديل أو إعادة الطباعة.",
-      "الحفاظ على الفواتير القديمة وشعار المتجر وبيانات الزبون وQR دون صور منتجات، ومطابقة المعاينة للطباعة وPDF."
+      "نسخة تثبيت Windows 64-bit كاملة بصيغة EXE مع أيقونة NANO POS والاحتفاظ ببيانات المتجر والتفعيل.",
+      "تحسين سلامة حفظ المنتجات والزبائن والموردين: تنبيه فوري ورفض تأكيد العملية عندما يتعذر حفظها.",
+      "عدم استهلاك رقم مراجعة البيانات عند فشل الكتابة واستعادة آخر حالة محفوظة.",
+      "حماية المبيعات الجزئية والكريدي وترقيم FA والفواتير والطباعة والمزامنة دون تغيير بنيتها."
     ],
     "fr": [
-      "Mise en page bleue réelle des factures/tickets sur tous les formats.",
-      "Numéro annuel FA-AAAA-01, sauvegardé avec chaque vente.",
-      "Modification et réimpression sans nouveau numéro; anciennes factures conservées.",
-      "Logo et QR conservés, aucune photo produit, aperçu identique à PDF/impression."
+      "Installeur complet NANO POS Windows x64 EXE avec données et activation conservées.",
+      "Échec de sauvegarde des produits et clients signalé immédiatement, sans faux succès.",
+      "Conservation des versions des données en cas de panne d’écriture.",
+      "Ventes, crédit, numéro FA, impression et synchronisation préservés."
     ],
     "en": [
-      "Rebuilt actual invoice/receipt composition in NANO POS blue-white for all paper sizes.",
-      "Sequential yearly sales invoice numbers FA-YYYY-01, assigned atomically on successful sale.",
-      "Reprints and edits retain original numbers, legacy sales stay unchanged.",
-      "Keep shop/customer data and QR but remove product photos; preview matches print and PDF."
+      "Complete Windows x64 EXE installer preserving shop data and activation.",
+      "Fail closed on product/customer persistence errors with visible warning.",
+      "No revision increment for failed writes; restore last saved snapshot.",
+      "Maintain payments, FA invoice numbering, printing and sync."
     ]
   },
   "releaseHistory": {
@@ -1919,11 +1919,34 @@
           "Keep shop/customer data and QR but remove product photos; preview matches print and PDF."
         ]
       }
+    },
+    "1.0.112": {
+      "releaseDate": "2026-10-22",
+      "features": {
+        "ar": [
+          "نسخة تثبيت Windows 64-bit كاملة بصيغة EXE مع أيقونة NANO POS والاحتفاظ ببيانات المتجر والتفعيل.",
+          "تحسين سلامة حفظ المنتجات والزبائن والموردين: تنبيه فوري ورفض تأكيد العملية عندما يتعذر حفظها.",
+          "عدم استهلاك رقم مراجعة البيانات عند فشل الكتابة واستعادة آخر حالة محفوظة.",
+          "حماية المبيعات الجزئية والكريدي وترقيم FA والفواتير والطباعة والمزامنة دون تغيير بنيتها."
+        ],
+        "fr": [
+          "Installeur complet NANO POS Windows x64 EXE avec données et activation conservées.",
+          "Échec de sauvegarde des produits et clients signalé immédiatement, sans faux succès.",
+          "Conservation des versions des données en cas de panne d’écriture.",
+          "Ventes, crédit, numéro FA, impression et synchronisation préservés."
+        ],
+        "en": [
+          "Complete Windows x64 EXE installer preserving shop data and activation.",
+          "Fail closed on product/customer persistence errors with visible warning.",
+          "No revision increment for failed writes; restore last saved snapshot.",
+          "Maintain payments, FA invoice numbering, printing and sync."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v111-rebuild-invoice-fa-numbers",
+      "id": "nano-pos-v112-safe-saves-and-full-exe",
       "fromVersions": [
         "1.0.91",
         "1.0.92",
@@ -1944,26 +1967,27 @@
         "1.0.107",
         "1.0.108",
         "1.0.109",
-        "1.0.110"
+        "1.0.110",
+        "1.0.111"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.111/NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.111",
-      "sha256": "2bc03d0481192b0122a119ee014629b0446666945c5015610826919400d22ab8",
-      "appAsarSha256": "2003aba8a945d4761e2b1aca167047827eb55e99869fd74903dc5b324f31578c",
-      "fileName": "NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip",
-      "sizeBytes": 31427273,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.112/NANO-POS-Patch-1.0.111-to-1.0.112-STABILITY.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.112",
+      "sha256": "b8811644f4f51548b2a03aafe93123c2434035ddedec3bc2004440adfdd646ee",
+      "appAsarSha256": "5cb8bb257734fc16980468c14f91b0d12a83f4ca45fa1dd5dcc0860fa1c8fee5",
+      "fileName": "NANO-POS-Patch-1.0.111-to-1.0.112-STABILITY.zip",
+      "sizeBytes": 31428599,
       "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "",
-    "pageUrl": "",
-    "sha256": "",
-    "fileName": ""
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.112/NANO-POS-Setup-1.0.112-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.112",
+    "sha256": "bc240592b5fa3d8dfb14a9b50a5d7502b2ff844d3c3981c74ead76fbe43a4657",
+    "fileName": "NANO-POS-Setup-1.0.112-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح تصميم الفاتورة وترقيم FA السنوي.",
-    "fr": "Nouveau design facture et numéros FA annuels.",
-    "en": "Invoice design rebuilt and annual FA numbers."
+    "ar": "إصدار Windows x64 EXE مستقر، تحسين حماية الحفظ ومعلومات النسخ الاحتياطي.",
+    "fr": "Version complète EXE x64 et amélioration de la sécurité des sauvegardes.",
+    "en": "Stable full Windows x64 EXE release with fail-closed local storage."
   }
 }
