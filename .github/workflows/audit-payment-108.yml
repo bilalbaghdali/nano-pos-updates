@@ -2,7 +2,7 @@ name: Audit NANO 1.0.107 Payment Invariants
 on:
   push:
     branches: [fix/partial-credit-change-108]
-    paths: [.github/workflows/audit-payment-108.yml]
+    paths: [.github/workflows/audit-payment-108.yml, .github/scripts/audit-payment-108.py]
 permissions:
   contents: write
 jobs:
