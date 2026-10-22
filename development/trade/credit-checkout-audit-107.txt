@@ -1,3 +1,906 @@
 
-==== all customer API symbols (2 chars) ====
-[]
+==== index #checkoutModal (3150 chars) ====
+                               <th class="py-3 px-4" data-i18n="cost">التكلفة</th>
+                                <th class="py-3 px-4 text-blue-600" data-i18n="retail_wholesale">تجزئة / <span
+                                        class="text-purple-600">جملة</span>
+                                </th>
+                                <th class="py-3 px-4" data-i18n="expiry_date">تاريخ الصلاحية</th>
+                                <th class="py-3 px-4" data-i18n="supplier">المورد</th>
+                                <th class="py-3 px-4 text-left" data-i18n="action">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="batchesTableBody" class="divide-y divide-slate-100 font-medium">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    
+    <div id="checkoutModal"
+        class="hidden fixed inset-0 z-[160] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden border border-slate-200 translate-y-4 animate-slide-up">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-emerald-50 shrink-0">
+                <div>
+                    <h2 class="text-xl font-headline font-black text-emerald-800"
+                        data-i18n="complete_payment_record_sales">إتمام الدفع وتسجيل المبيعات</h2>
+                </div>
+                <button onclick="closeCheckoutModal()"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div
+                    class="bg-slate-900 rounded-2xl p-4 text-center shadow-lg shadow-slate-900/20 mb-4 relative overflow-hidden">
+                    <span class="text-xs font-bold text-slate-400 absolute top-3 left-4"
+                        data-i18n="total_required">الإجمالي المطلوب</span>
+                    <div id="checkoutTotalUI"
+                        class="text-3xl font-black font-headline text-white mt-4 tracking-tighter">0.00 <span
+                            data-i18n="dzd">د.ج</span></div>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-black text-slate-700" data-i18n="payment_method">طريقة
+                        الدفع</label>
+                    <select id="checkoutPaymentMethod" onchange="checkoutUpdateStamp()"
+                        class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl p-2.5 outline-none font-bold text-sm transition">
+                        <option value="cash" data-i18n="payment_method_cash">نقداً</option>
+                        <option value="cheque" data-i18n="payment_method_cheque">شيك</option>
+                        <optio
+
+==== index #checkoutPaymentMethod (3150 chars) ====
+ hover:bg-emerald-200 transition">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div
+                    class="bg-slate-900 rounded-2xl p-4 text-center shadow-lg shadow-slate-900/20 mb-4 relative overflow-hidden">
+                    <span class="text-xs font-bold text-slate-400 absolute top-3 left-4"
+                        data-i18n="total_required">الإجمالي المطلوب</span>
+                    <div id="checkoutTotalUI"
+                        class="text-3xl font-black font-headline text-white mt-4 tracking-tighter">0.00 <span
+                            data-i18n="dzd">د.ج</span></div>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-black text-slate-700" data-i18n="payment_method">طريقة
+                        الدفع</label>
+                    <select id="checkoutPaymentMethod" onchange="checkoutUpdateStamp()"
+                        class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl p-2.5 outline-none font-bold text-sm transition">
+                        <option value="cash" data-i18n="payment_method_cash">نقداً</option>
+                        <option value="cheque" data-i18n="payment_method_cheque">شيك</option>
+                        <option value="ccp" data-i18n="payment_method_ccp">CCP</option>
+                        <option value="virement" data-i18n="payment_method_virement">تحويل بنكي</option>
+                        <option value="card" data-i18n="payment_method_card">بطاقة</option>
+                        <option value="other" data-i18n="payment_method_other">أخرى</option>
+                    </select>
+                </div>
+
+                <div id="nanoCheckoutChoice104" class="grid grid-cols-2 gap-2">
+                    <input type="hidden" id="checkoutPaidAmount" value="0">
+                    <div id="checkoutChangeUI" hidden>0.00</div>
+                    <button type="button" onclick="nanoCheckoutPayFull104()"
+                        class="py-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 font-black"
+                        data-i18n="nano_payment_full">دفع كامل</button>
+                    <button type="button" onclick="checkoutMarkAsDebt()"
+                        class="py-3 rounded-xl bg-red-50 text-red-700 border border-red-200 font-black"
+                        data-i18n="nano_payment_credit_full">دين كامل</button>
+                </div>
+
+                
+                <div id="checkoutStampBox" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-1">
+                    <div class="flex justify-between text-xs font-bold text-amber-800">
+                        <span data-i18n="stamp_duty">حقّ الطابع (1%)</span>
+                        <span id="checkoutStampUI" class="font-black">0.00 <span data-i18n="dzd">د.ج</span></span>
+                    </div>
+                    <div class="flex justify-between text-sm font-black text-amber-900 pt-1 border-t border-amber-200">
+                        <span d
+
+==== index #posCustomerSelect (3150 chars) ====
+blue-500 disabled:opacity-40 transition-all text-[11px]"
+                        data-i18n="next">التالي</button>
+                </div>
+            </div>
+
+            
+            <div id="posCartResizer" role="separator" aria-orientation="vertical" tabindex="0"
+                title="اسحب لتغيير عرض السلة — نقرة مزدوجة لإعادة الضبط" data-i18n-title="cart_width_drag_hint">
+                <span class="pos-resizer-grip"></span>
+            </div>
+
+            
+            <div id="posCartContainer"
+                class="w-[30%] flex flex-col bg-white shadow-[10px_0_30px_rgba(0,0,0,0.05)] relative z-10 border-r border-slate-200 transition-all duration-300 ease-in-out">
+                
+                <div id="posCartHeader" class="px-6 pt-5 pb-4 flex flex-col gap-3 border-b border-slate-100 mb-2">
+                    
+                    <div class="w-full relative" id="posCustomerWidget">
+                        <input type="hidden" id="posCustomerSelect" value="">
+                        <div class="relative flex items-center gap-1.5">
+                            <div class="relative flex-1">
+                                <input type="text" id="posCustomerSearchInput" autocomplete="off"
+                                    placeholder="ابحث عن زبون بالاسم أو المعرّف..."
+                                    data-i18n-placeholder="search_customer_by_name_id"
+                                    class="w-full bg-slate-50 border-2 border-slate-200 text-xs focus:border-blue-500 rounded-xl p-2.5 outline-none font-bold shadow-inner transition pr-9 pl-10">
+                                <span
+                                    class="material-symbols-outlined absolute right-2.5 top-2.5 text-slate-400 pointer-events-none text-[16px]">person_search</span>
+                                <button type="button" onclick="openCustomerModal()" title="إضافة زبون جديد"
+                                    class="seller-blocked absolute left-1.5 top-1/2 -translate-y-1/2 p-1 bg-emerald-50 border border-emerald-200 text-emerald-600 hover:bg-emerald-100 hover:border-emerald-400 rounded-lg transition flex items-center justify-center shadow-sm dark:bg-emerald-900/20 dark:border-emerald-800/50 dark:text-emerald-400 dark:hover:bg-emerald-900/40 dark:hover:border-emerald-700"
+                                    data-i18n-title="add_new_customer">
+                                    <span class="material-symbols-outlined text-[16px]">person_add</span>
+                                </button>
+                            </div>
+                            <button type="button" id="posCustomerInfoBtn" onclick="viewPosCustomerDetails()"
+                                title="عرض ديون وتفاصيل الزبون"
+                                class="hidden p-2 bg-blue-50 border-2 border-blue-200 text-blue-600 hover:bg-blue-100 hover:border-blue-400 rounded-xl transition shrink-0"
+                                data-i18n-title="view_customer_details">
+                                <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+                            </button>
+                            <bu
+
+==== index #checkoutPaidAmount (3150 chars) ====
+tPaymentMethod" onchange="checkoutUpdateStamp()"
+                        class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl p-2.5 outline-none font-bold text-sm transition">
+                        <option value="cash" data-i18n="payment_method_cash">نقداً</option>
+                        <option value="cheque" data-i18n="payment_method_cheque">شيك</option>
+                        <option value="ccp" data-i18n="payment_method_ccp">CCP</option>
+                        <option value="virement" data-i18n="payment_method_virement">تحويل بنكي</option>
+                        <option value="card" data-i18n="payment_method_card">بطاقة</option>
+                        <option value="other" data-i18n="payment_method_other">أخرى</option>
+                    </select>
+                </div>
+
+                <div id="nanoCheckoutChoice104" class="grid grid-cols-2 gap-2">
+                    <input type="hidden" id="checkoutPaidAmount" value="0">
+                    <div id="checkoutChangeUI" hidden>0.00</div>
+                    <button type="button" onclick="nanoCheckoutPayFull104()"
+                        class="py-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 font-black"
+                        data-i18n="nano_payment_full">دفع كامل</button>
+                    <button type="button" onclick="checkoutMarkAsDebt()"
+                        class="py-3 rounded-xl bg-red-50 text-red-700 border border-red-200 font-black"
+                        data-i18n="nano_payment_credit_full">دين كامل</button>
+                </div>
+
+                
+                <div id="checkoutStampBox" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-1">
+                    <div class="flex justify-between text-xs font-bold text-amber-800">
+                        <span data-i18n="stamp_duty">حقّ الطابع (1%)</span>
+                        <span id="checkoutStampUI" class="font-black">0.00 <span data-i18n="dzd">د.ج</span></span>
+                    </div>
+                    <div class="flex justify-between text-sm font-black text-amber-900 pt-1 border-t border-amber-200">
+                        <span data-i18n="net_to_pay">الصافي للدفع</span>
+                        <span id="checkoutNetUI">0.00 <span data-i18n="dzd">د.ج</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex gap-3 items-center">
+                <button id="autoPrintReceiptBtn" type="button" onclick="toggleAutoPrintReceipt()"
+                    class="w-12 h-12 rounded-xl shadow-sm border border-slate-200 flex items-center justify-center transition active:scale-95"
+                    title="طباعة الوصل تلقائياً بعد التسديد" data-i18n-title="auto_print_receipt_after_payment">
+                    <span id="autoPrintReceiptIcon"
+                        class="material-symbols-outlined text-[22px] text-slate-400">print_disabled</span>
+                </button>
+                <button type="button" onclick="processSaleAndPrintReceipt()"
+                    class="w-12 h-12 round
+
+==== index #checkoutTotalUI (3150 chars) ====
+ bg-emerald-50 shrink-0">
+                <div>
+                    <h2 class="text-xl font-headline font-black text-emerald-800"
+                        data-i18n="complete_payment_record_sales">إتمام الدفع وتسجيل المبيعات</h2>
+                </div>
+                <button onclick="closeCheckoutModal()"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div
+                    class="bg-slate-900 rounded-2xl p-4 text-center shadow-lg shadow-slate-900/20 mb-4 relative overflow-hidden">
+                    <span class="text-xs font-bold text-slate-400 absolute top-3 left-4"
+                        data-i18n="total_required">الإجمالي المطلوب</span>
+                    <div id="checkoutTotalUI"
+                        class="text-3xl font-black font-headline text-white mt-4 tracking-tighter">0.00 <span
+                            data-i18n="dzd">د.ج</span></div>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-black text-slate-700" data-i18n="payment_method">طريقة
+                        الدفع</label>
+                    <select id="checkoutPaymentMethod" onchange="checkoutUpdateStamp()"
+                        class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl p-2.5 outline-none font-bold text-sm transition">
+                        <option value="cash" data-i18n="payment_method_cash">نقداً</option>
+                        <option value="cheque" data-i18n="payment_method_cheque">شيك</option>
+                        <option value="ccp" data-i18n="payment_method_ccp">CCP</option>
+                        <option value="virement" data-i18n="payment_method_virement">تحويل بنكي</option>
+                        <option value="card" data-i18n="payment_method_card">بطاقة</option>
+                        <option value="other" data-i18n="payment_method_other">أخرى</option>
+                    </select>
+                </div>
+
+                <div id="nanoCheckoutChoice104" class="grid grid-cols-2 gap-2">
+                    <input type="hidden" id="checkoutPaidAmount" value="0">
+                    <div id="checkoutChangeUI" hidden>0.00</div>
+                    <button type="button" onclick="nanoCheckoutPayFull104()"
+                        class="py-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 font-black"
+                        data-i18n="nano_payment_full">دفع كامل</button>
+                    <button type="button" onclick="checkoutMarkAsDebt()"
+                        class="py-3 rounded-xl bg-red-50 text-red-700 border border-red-200 font-black"
+                        data-i18n="nano_payment_credit_full">دين كامل</button>
+                </div>
+
+                
+                <div id="checkoutStampBox" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-1">
+                    <div class="flex jus
+
+==== index #customerModal (3150 chars) ====
+ion active:scale-95"
+                    title="طباعة الوصل بعد التسديد مباشرة" data-i18n-title="print_receipt_immediately">
+                    <span class="material-symbols-outlined text-[22px] text-emerald-600">receipt_long</span>
+                </button>
+                <button onclick="processSale()"
+                    class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-xl shadow-lg shadow-emerald-200 transition active:scale-95 text-xl flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">done_all</span> <span data-i18n="confirm_sale_btn">تأكيد
+                        وعمل فاتورة البيع</span>
+                    <span
+                        class="text-[11px] font-black bg-emerald-800/60 border border-emerald-400/40 px-1.5 py-0.5 rounded-md tracking-wide">F1</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="customerModal"
+        class="hidden fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200 translate-y-4 animate-slide-up">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-xl font-headline font-black text-slate-800" id="customerModalTitle"
+                    data-i18n="add_customer">إضافة زبون دائم</h2>
+                <button onclick="closeCustomerModal()"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="customerForm" onsubmit="saveCustomer(event)" class="space-y-4">
+                    <input type="hidden" id="customerId">
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700"><span data-i18n="name">الاسم</span>
+                            <span class="text-red-500">*</span></label>
+                        <input type="text" id="customerName" required
+                            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700" data-i18n="phone_number">رقم
+                            الهاتف</label>
+                        <input type="text" id="customerPhone"
+                            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700"
+                            data-i18n="address_or_state">العنوان أو الولاية</label>
+                        <input type="text" id="customer
+
+==== index #customerName (3150 chars) ====
+ items-center justify-between">
+                <h2 class="text-xl font-headline font-black text-slate-800" id="customerModalTitle"
+                    data-i18n="add_customer">إضافة زبون دائم</h2>
+                <button onclick="closeCustomerModal()"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="customerForm" onsubmit="saveCustomer(event)" class="space-y-4">
+                    <input type="hidden" id="customerId">
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700"><span data-i18n="name">الاسم</span>
+                            <span class="text-red-500">*</span></label>
+                        <input type="text" id="customerName" required
+                            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700" data-i18n="phone_number">رقم
+                            الهاتف</label>
+                        <input type="text" id="customerPhone"
+                            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700"
+                            data-i18n="address_or_state">العنوان أو الولاية</label>
+                        <input type="text" id="customerAddress"
+                            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-1.5 text-[10px] font-bold text-slate-500">NIF</label>
+                            <input type="text" id="customerNif"
+                                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1.5 text-[10px] font-bold text-slate-500">RC</label>
+                            <input type="text" id="customerRc"
+                                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1.5 text-[10px] font-bold text-slate-500">AI</label>
+                            <input type="text" id="customerAi"
+                                class="w-full bg-slate-50 borde
+
+==== renderer.js HEAD (400 chars) ====
+const _0x427934=_0x1830;(function(_0x55bfce,_0x2a3b15){const _0xb447cb=_0x1830,_0x101b62=_0x55bfce();while(!![]){try{const _0x54d590=parseInt(_0xb447cb(0x7a9))/0x1+-parseInt(_0xb447cb(0x704))/0x2+-parseInt(_0xb447cb(0x99a))/0x3*(-parseInt(_0xb447cb(0xfc3))/0x4)+-parseInt(_0xb447cb(0xef5))/0x5*(-parseInt(_0xb447cb(0x749))/0x6)+parseInt(_0xb447cb(0x86b))/0x7+-parseInt(_0xb447cb(0xee1))/0x8*(-parseIn
+
+==== renderer.js function openCheckoutModal [1] (1660 chars) ====
+0xa8b904){let _0x3b3bc9=![];try{_0x3b3bc9=document['getElementById']('settSkipQuickSaleConfirm')?.[_0x3dde5e(0xe33)];}catch(_0x3abcb4){}if(!_0x3b3bc9){if(!await showConfirm(t('confirm_quick_sale')))return;}return openCheckoutModal();}else openCheckoutModal();}function openCheckoutModal(){const _0x574906=_0x427934;let _0x5dd5f8=0x0;cart['forEach'](_0xf7b7ff=>{const _0x13e2f2=_0x1830;_0x5dd5f8+=_0xf7b7ff[_0x13e2f2(0x1025)]*_0xf7b7ff['qty'];});const _0x151548=Math['max'](0x0,_0x5dd5f8-globalCartDiscount),_0x649ada=_0x151548+_0x151548*(currentTVAPercentage/0x64);document['getElementById']('checkoutTotalUI')['innerText']=_0x649ada['toFixed'](0x2)+'\x20'+t(_0x574906(0xa00)),document[_0x574906(0x6c2)](_0x574906(0xe9b))['value']=_0x649ada['toFixed'](0x2),document['getElementById'](_0x574906(0xe9b))[_0x574906(0x674)]('min');const _0x3dfa28=document[_0x574906(0x6c2)](_0x574906(0x846));if(_0x3dfa28)_0x3dfa28[_0x574906(0xb52)]='cash';checkoutCalcChange(),checkoutUpdateStamp();const _0x4cbbf5=document[_0x574906(0x6c2)](_0x574906(0xf8e));_0x4cbbf5[_0x574906(0x43b)][_0x574906(0x3df)](_0x574906(0x89e)),_0x4cbbf5[_0x574906(0x43b)][_0x574906(0xe5b)](_0x574906(0x5e8));try{syncAutoPrintReceiptBtnUI();}catch(_0x381413){}}function checkoutCalcChange(){const _0x110ea4=_0x427934;let _0x45f2f6=0x0;cart['forEach'](_0x462660=>{_0x45f2f6+=_0x462660['selling_price']*_0x462660['qty'];});const _0x4f6e06=Math['max'](0x0,_0x45f2f6-globalCartDiscount),_0x69c58e=_0x4f6e06+_0x4f6e06*(currentTVAPercentage/0x64),_0x52afe0=parseFloat(document['getElementById']('checkoutPaidAmount')['value'])||0x0,_0xd9d235=_0x52afe0-_0x69c58e,_0x2a0589=document[_0x110ea4(0x6c2)](_0x110ea
+
+==== renderer.js function processSale( [1] (1660 chars) ====
+_0x3bf6cb['toFixed'](0x2)+'\x20<span>'+t('dzd')+_0x1bd7bb(0x403);if(_0x48db7f)_0x48db7f[_0x1bd7bb(0xbc5)]=(_0x21088e+_0x3bf6cb)[_0x1bd7bb(0x68b)](0x2)+'\x20<span>'+t('dzd')+'</span>';}else _0x1c1466[_0x1bd7bb(0x43b)][_0x1bd7bb(0xe5b)](_0x1bd7bb(0x89e));}async function processSale(){const _0x2fcfe2=_0x427934;if(cart['length']===0x0)return showToast(t(_0x2fcfe2(0x7ea)));if(!await posEnsureProduction())return;let _0x2e4499=0x0;cart[_0x2fcfe2(0x449)](_0x334f71=>{const _0x54542e=_0x2fcfe2;_0x2e4499+=_0x334f71['selling_price']*_0x334f71[_0x54542e(0xd67)];});const _0x2aadef=Math['max'](0x0,_0x2e4499-globalCartDiscount),_0x499b19=currentTVAPercentage,_0x380f75=_0x2aadef+_0x2aadef*_0x499b19/0x64,_0x469782=parseFloat(document[_0x2fcfe2(0x6c2)](_0x2fcfe2(0xe9b))[_0x2fcfe2(0xb52)])||0x0,_0x12875f=document['getElementById'](_0x2fcfe2(0x1d6))['value']||null,_0x1bb178=document[_0x2fcfe2(0x6c2)](_0x2fcfe2(0x846))?.[_0x2fcfe2(0xb52)]||'cash',_0x5a2304=isReturnMode?-0x1:0x1,_0x2447c2={'editSaleId':currentEditSaleId,'items':cart[_0x2fcfe2(0x2d8)](_0x44fc95=>({'id':_0x44fc95[_0x2fcfe2(0x284)]['id'],'qty':_0x44fc95[_0x2fcfe2(0xd67)]*_0x5a2304,'batch_id':_0x44fc95['batch_id'],'variant_id':_0x44fc95[_0x2fcfe2(0x2fd)]?.['id']||null,'pos_price':_0x44fc95['selling_price'],'product':_0x44fc95['product'],'is_wholesale':_0x44fc95[_0x2fcfe2(0x4a0)]||![],'applied_promotion_id':_0x44fc95['applied_promotion_id'],'is_custom':_0x44fc95[_0x2fcfe2(0x94d)]||![],'custom_cost_price':_0x44fc95[_0x2fcfe2(0xa89)]||null})),'checkout':{'customerId':_0x12875f,'subtotal':_0x2e4499*_0x5a2304,'taxPercentage':_0x499b19,'discount':globalCartDiscount*_0x5a2304,'total':_0x380f75*_0x5a
+
+==== renderer.js function processSaleAndPrintReceipt [1] (1660 chars) ====
+0\x20•\x20\x20');showToast(t('cash_drawer_ports_found')+':\x20'+_0x3e0c89,_0x5581ee(0x328));}}catch(_0x1b3431){showToast(t('cash_drawer_error')+':\x20'+(_0x1b3431['message']||_0x1b3431),_0x5581ee(0x2f6));}finally{if(_0x507656)_0x507656[_0x5581ee(0xf1d)]=![];}}function processSaleAndPrintReceipt(){printReceiptOnceFlag=!![],processSale();}async function loadCustomersSelect(){const _0x260899=_0x427934;try{const _0x4d1e6d=await window['api']['getCustomers']();posCustomersCache=_0x4d1e6d;const _0x3e3b75=document[_0x260899(0x6c2)]('salesLogCustomerDropdown');_0x3e3b75&&!_0x3e3b75['classList']['contains']('hidden')&&renderSalesLogCustomerFilterDropdown(salesLogCustomerFilterQuery,salesLogCustomerFilterPage);}catch(_0x31420e){}}const SALES_LOG_CUSTOMER_PAGE_SIZE=0x1e;let salesLogCustomerFilterPage=0x1,salesLogCustomerFilterQuery='',salesLogCustomerFilterWired=![];async function ensureSalesLogCustomerFilter(){const _0x1a3ab2=_0x427934;if(!posCustomersCache||posCustomersCache['length']===0x0)try{posCustomersCache=await window[_0x1a3ab2(0x620)][_0x1a3ab2(0x913)]();}catch(_0xb62510){posCustomersCache=[];}setupSalesLogCustomerFilter();}let salesLogUsersCache=null;async function ensureSalesLogUserFilter(){const _0x2226d0=_0x427934,_0x44e8fb=document['getElementById']('salesLogUserFilter');if(!_0x44e8fb)return;if(!salesLogUsersCache)try{salesLogUsersCache=await window[_0x2226d0(0x620)][_0x2226d0(0x41b)]();}catch(_0x598851){salesLogUsersCache=[];}const _0x2f19fb=_0x44e8fb['value'],_0x31e4a8=t('all_users')||'كل\x20المستخدمين';let _0x24520f=_0x2226d0(0xc82)+escapeHtml(_0x31e4a8)+_0x2226d0(0xe14);(salesLogUsersCache||[])[_0x2226d0(0x449)](_0x57553f=>{
+
+==== renderer.js function checkoutMarkAsDebt [1] (1660 chars) ====
+589['innerText']=t(_0x110ea4(0xaff))+':\x20'+Math[_0x110ea4(0xd4a)](_0xd9d235)[_0x110ea4(0x68b)](0x2)+'\x20'+t('dzd'),_0x2a0589[_0x110ea4(0xe65)]='text-sm\x20font-bold\x20text-red-600\x20mt-2\x20block\x20bg-red-50\x20py-1\x20rounded\x20inline-block\x20px-3');}function checkoutMarkAsDebt(){const _0x48f1bc=_0x427934,_0x25cf56=document['getElementById']('checkoutPaidAmount');if(_0x25cf56)_0x25cf56[_0x48f1bc(0xb52)]='0';checkoutCalcChange();if(typeof _0x25cf56?.['focus']==='function')_0x25cf56['focus']();}function closeCheckoutModal(){const _0x468d62=_0x427934,_0x4e00bd=document[_0x468d62(0x6c2)]('checkoutModal');_0x4e00bd['classList'][_0x468d62(0xe5b)](_0x468d62(0x89e)),_0x4e00bd[_0x468d62(0x43b)]['remove']('flex');}let isCartExpanded=![];function toggleCartExpand(){const _0x344321=_0x427934;isCartExpanded=!isCartExpanded;const _0x1427b9=document['getElementById'](_0x344321(0x264)),_0x2e3d8f=document[_0x344321(0x6c2)]('cartExpandIcon'),_0x8cdf40=document['getElementById']('cartExpandLabel');if(isCartExpanded){_0x1427b9[_0x344321(0x43b)][_0x344321(0x3df)](_0x344321(0x54f),_0x344321(0xec6),_0x344321(0x429)),_0x1427b9[_0x344321(0x43b)]['add']('fixed','inset-y-0',_0x344321(0x88a),_0x344321(0xdbd),_0x344321(0x281),_0x344321(0xb3d),'xl:w-[50%]','z-[150]',_0x344321(0xa10)),_0x2e3d8f[_0x344321(0xd4b)]=_0x344321(0x6bb);_0x8cdf40&&(_0x8cdf40['classList']['remove'](_0x344321(0x89e)),_0x8cdf40['innerText']=typeof t==='function'?t('collapse'):_0x344321(0xcc8));let _0x3fdd5e=document['getElementById']('cartBackdrop');!_0x3fdd5e&&(_0x3fdd5e=document[_0x344321(0x347)](_0x344321(0x92c)),_0x3fdd5e['id']=_0x344321(0xfb8),_0x3fdd5e[_0x344321(0xe65)]='fixe
+
+==== renderer.js function checkoutCalcChange [1] (1660 chars) ====
+ckoutUpdateStamp();const _0x4cbbf5=document[_0x574906(0x6c2)](_0x574906(0xf8e));_0x4cbbf5[_0x574906(0x43b)][_0x574906(0x3df)](_0x574906(0x89e)),_0x4cbbf5[_0x574906(0x43b)][_0x574906(0xe5b)](_0x574906(0x5e8));try{syncAutoPrintReceiptBtnUI();}catch(_0x381413){}}function checkoutCalcChange(){const _0x110ea4=_0x427934;let _0x45f2f6=0x0;cart['forEach'](_0x462660=>{_0x45f2f6+=_0x462660['selling_price']*_0x462660['qty'];});const _0x4f6e06=Math['max'](0x0,_0x45f2f6-globalCartDiscount),_0x69c58e=_0x4f6e06+_0x4f6e06*(currentTVAPercentage/0x64),_0x52afe0=parseFloat(document['getElementById']('checkoutPaidAmount')['value'])||0x0,_0xd9d235=_0x52afe0-_0x69c58e,_0x2a0589=document[_0x110ea4(0x6c2)](_0x110ea4(0xa76));_0xd9d235>=-0.01?(_0x2a0589['innerText']=t('change')+':\x20'+_0xd9d235['toFixed'](0x2)+'\x20'+t(_0x110ea4(0xa00)),_0x2a0589['className']=_0x110ea4(0x635)):(_0x2a0589['innerText']=t(_0x110ea4(0xaff))+':\x20'+Math[_0x110ea4(0xd4a)](_0xd9d235)[_0x110ea4(0x68b)](0x2)+'\x20'+t('dzd'),_0x2a0589[_0x110ea4(0xe65)]='text-sm\x20font-bold\x20text-red-600\x20mt-2\x20block\x20bg-red-50\x20py-1\x20rounded\x20inline-block\x20px-3');}function checkoutMarkAsDebt(){const _0x48f1bc=_0x427934,_0x25cf56=document['getElementById']('checkoutPaidAmount');if(_0x25cf56)_0x25cf56[_0x48f1bc(0xb52)]='0';checkoutCalcChange();if(typeof _0x25cf56?.['focus']==='function')_0x25cf56['focus']();}function closeCheckoutModal(){const _0x468d62=_0x427934,_0x4e00bd=document[_0x468d62(0x6c2)]('checkoutModal');_0x4e00bd['classList'][_0x468d62(0xe5b)](_0x468d62(0x89e)),_0x4e00bd[_0x468d62(0x43b)]['remove']('flex');}let isCartExpanded=![];function toggleCartExpand(){const _0x34432
+
+==== renderer.js function openAddCustomerModal [0] (0 chars) ====
+
+
+==== renderer.js function saveCustomer [1] (1660 chars) ====
+x0;document[_0x41cb5b(0x6c2)](_0x41cb5b(0xe29))['innerText']=t('edit_customer');const _0x53efec=document['getElementById'](_0x41cb5b(0x4c6));_0x53efec[_0x41cb5b(0x43b)][_0x41cb5b(0x3df)](_0x41cb5b(0x89e)),_0x53efec['classList']['add'](_0x41cb5b(0x5e8));}async function saveCustomer(_0x2a6399){const _0x506e49=_0x427934;_0x2a6399[_0x506e49(0xe5e)]();const _0x49dead=document[_0x506e49(0x6c2)](_0x506e49(0xa03))[_0x506e49(0xb52)],_0x30544d={'name':document['getElementById']('customerName')['value'][_0x506e49(0xa2d)](),'phone':document['getElementById']('customerPhone')['value']['trim'](),'address':document['getElementById'](_0x506e49(0xda9))[_0x506e49(0xb52)]['trim'](),'nif':document[_0x506e49(0x6c2)](_0x506e49(0x3ce))['value']['trim'](),'rc':document['getElementById']('customerRc')[_0x506e49(0xb52)][_0x506e49(0xa2d)](),'ai':document['getElementById'](_0x506e49(0x47d))['value'][_0x506e49(0xa2d)](),'nis':document['getElementById']('customerNis')[_0x506e49(0xb52)][_0x506e49(0xa2d)](),'initial_debt':parseFloat(document['getElementById'](_0x506e49(0xefa))?.[_0x506e49(0xb52)])||0x0,'credit_limit':parseFloat(document['getElementById'](_0x506e49(0xacc))?.[_0x506e49(0xb52)])||0x0};try{_0x49dead?await window[_0x506e49(0x620)]['updateCustomer'](_0x49dead,_0x30544d):await window[_0x506e49(0x620)]['addCustomer'](_0x30544d),closeCustomerModal(),await loadCustomersGrid(),await loadCustomersSelect(),window.dispatchEvent(new CustomEvent('nano-reference-data-changed',{detail:{type:'customer'}}));}catch(_0x35110d){showToast(t('error')+':\x20'+(_0x35110d['error']||_0x35110d[_0x506e49(0xd18)]));}}async function deleteCustomer(_0x5ca670){const _0x2c832c=_0x42
+
+==== renderer.js function addCustomer [0] (0 chars) ====
+
+
+==== renderer.js get-customers [0] (0 chars) ====
+
+
+==== renderer.js create-customer [0] (0 chars) ====
+
+
+==== renderer.js add-customer [0] (0 chars) ====
+
+
+==== renderer.js posCustomerSelect [8] (4990 chars) ====
+l':!![]});}catch(_0x55ae98){try{_0x5623b4[_0x2499b8(0x667)]();}catch(_0x4a6d2c){}}try{_0x5623b4['select']();}catch(_0x268850){}renderPosCustomerDropdown('');}function selectPosCustomer(_0x4fe43c,_0x6022c0){const _0x1719aa=_0x427934;document['getElementById']('posCustomerSelect')['value']=_0x4fe43c;const _0x556b05=document['getElementById'](_0x1719aa(0x5b1));_0x556b05[_0x1719aa(0xb52)]=_0x6022c0,document['getElementById']('posCustomerDropdown')['classList'][_0x1719aa(0xe5b)]('hidden');const _0x5af8ad=document['getElementById']('posCustomerInfoBtn'),_0x4d2ac9=document[_0x1719aa(0x6c2)]('posCustomerClearBtn');_0x4fe43c?(_0x5af8ad['classList'][_0x1719aa(0x3df)](_0x1719aa(0x89e)),_0x4d2ac9['classList'][_0x1719aa(0x3df)]('hidden')):(_0x5af8ad[_0x1719aa(0x43b)]['add']('hidden'),_0x4d2ac9[_0x1719aa(0x43b)]['add'](_0x1719aa(0x89e)));}function clearPosCustomerSelection(){selectPosCustomer('','');}function viewPosCustomerDetails(){const _0x2a16fe=document['getElementById']('posCustomerSelect')['value'];if(_0x2a16fe)openCustomerDetails(parseInt(_0x2a16fe));}function setPosCustomerById(_0x2db1c0){const _0x5bf775=_0x427934,_0x43402a=posCustomersCache['find'](_0x136bed=>String(_0x136bed['id'])===String(_0x2db1c0));_0x43402a?selectPosCustomer(_0x43402a['id'],_0x43402a[_0x5bf775(0xbe0)]):selectPosCustomer('','');}async function handleCheckoutPress(){const _0x3dde5e=_0x427934;try{const _0x7f2e1f=await window['api'][_0x3dde5e(0x662)]();if(!_0x7f2e1f[_0x3dde5e(0x94e)]&&_0x7f2e1f[_0x3dde5e(0x690)]>=_0x7f2e1f['limit']){showTrialLimitModal();return;}}catch(_0x364ddf){console['error'](_0x364ddf);}if(cart[_0x3dde5e(0x381)]===0x0)return showToast(t('cart_emp
+---
+'posCustomerClearBtn');_0x4fe43c?(_0x5af8ad['classList'][_0x1719aa(0x3df)](_0x1719aa(0x89e)),_0x4d2ac9['classList'][_0x1719aa(0x3df)]('hidden')):(_0x5af8ad[_0x1719aa(0x43b)]['add']('hidden'),_0x4d2ac9[_0x1719aa(0x43b)]['add'](_0x1719aa(0x89e)));}function clearPosCustomerSelection(){selectPosCustomer('','');}function viewPosCustomerDetails(){const _0x2a16fe=document['getElementById']('posCustomerSelect')['value'];if(_0x2a16fe)openCustomerDetails(parseInt(_0x2a16fe));}function setPosCustomerById(_0x2db1c0){const _0x5bf775=_0x427934,_0x43402a=posCustomersCache['find'](_0x136bed=>String(_0x136bed['id'])===String(_0x2db1c0));_0x43402a?selectPosCustomer(_0x43402a['id'],_0x43402a[_0x5bf775(0xbe0)]):selectPosCustomer('','');}async function handleCheckoutPress(){const _0x3dde5e=_0x427934;try{const _0x7f2e1f=await window['api'][_0x3dde5e(0x662)]();if(!_0x7f2e1f[_0x3dde5e(0x94e)]&&_0x7f2e1f[_0x3dde5e(0x690)]>=_0x7f2e1f['limit']){showTrialLimitModal();return;}}catch(_0x364ddf){console['error'](_0x364ddf);}if(cart[_0x3dde5e(0x381)]===0x0)return showToast(t('cart_empty_msg'));const _0xa8b904=document[_0x3dde5e(0x6c2)]('posCustomerSelect')['value'];if(!_0xa8b904){let _0x3b3bc9=![];try{_0x3b3bc9=document['getElementById']('settSkipQuickSaleConfirm')?.[_0x3dde5e(0xe33)];}catch(_0x3abcb4){}if(!_0x3b3bc9){if(!await showConfirm(t('confirm_quick_sale')))return;}return openCheckoutModal();}else openCheckoutModal();}function openCheckoutModal(){const _0x574906=_0x427934;let _0x5dd5f8=0x0;cart['forEach'](_0xf7b7ff=>{const _0x13e2f2=_0x1830;_0x5dd5f8+=_0xf7b7ff[_0x13e2f2(0x1025)]*_0xf7b7ff['qty'];});const _0x151548=Math['max'](0x0,_0x5dd5f8-globalCartDiscou
+---
+x3df)]('hidden')):(_0x5af8ad[_0x1719aa(0x43b)]['add']('hidden'),_0x4d2ac9[_0x1719aa(0x43b)]['add'](_0x1719aa(0x89e)));}function clearPosCustomerSelection(){selectPosCustomer('','');}function viewPosCustomerDetails(){const _0x2a16fe=document['getElementById']('posCustomerSelect')['value'];if(_0x2a16fe)openCustomerDetails(parseInt(_0x2a16fe));}function setPosCustomerById(_0x2db1c0){const _0x5bf775=_0x427934,_0x43402a=posCustomersCache['find'](_0x136bed=>String(_0x136bed['id'])===String(_0x2db1c0));_0x43402a?selectPosCustomer(_0x43402a['id'],_0x43402a[_0x5bf775(0xbe0)]):selectPosCustomer('','');}async function handleCheckoutPress(){const _0x3dde5e=_0x427934;try{const _0x7f2e1f=await window['api'][_0x3dde5e(0x662)]();if(!_0x7f2e1f[_0x3dde5e(0x94e)]&&_0x7f2e1f[_0x3dde5e(0x690)]>=_0x7f2e1f['limit']){showTrialLimitModal();return;}}catch(_0x364ddf){console['error'](_0x364ddf);}if(cart[_0x3dde5e(0x381)]===0x0)return showToast(t('cart_empty_msg'));const _0xa8b904=document[_0x3dde5e(0x6c2)]('posCustomerSelect')['value'];if(!_0xa8b904){let _0x3b3bc9=![];try{_0x3b3bc
+
+==== renderer.js function renderCustomer [1] (1660 chars) ====
+;const CUSTOMERS_PER_PAGE=0x18;async function loadCustomersGrid(){const _0x3b62b8=_0x427934;try{customersCache=await window['api'][_0x3b62b8(0x913)](),customersCurrentPage=0x1,renderCustomersPage(customersCache);}catch(_0x331f1f){console['error'](_0x331f1f);}}function renderCustomersPage(_0x336b54){const _0x355009=_0x427934,_0xca347d=document['getElementById']('customersGrid');if(!_0xca347d)return;_0xca347d['innerHTML']='';if(_0x336b54[_0x355009(0x381)]===0x0){_0xca347d[_0x355009(0xbc5)]=_0x355009(0x4e6)+t('no_customers_msg')+_0x355009(0x773),updateCustomersPagination(0x1,_0x336b54[_0x355009(0x381)]);return;}const _0x3f52b5=Math[_0x355009(0x2d7)](_0x336b54[_0x355009(0x381)]/CUSTOMERS_PER_PAGE)||0x1;if(customersCurrentPage<0x1)customersCurrentPage=0x1;if(customersCurrentPage>_0x3f52b5)customersCurrentPage=_0x3f52b5;const _0x17f0ad=(customersCurrentPage-0x1)*CUSTOMERS_PER_PAGE,_0x2751d2=_0x336b54['slice'](_0x17f0ad,_0x17f0ad+CUSTOMERS_PER_PAGE);_0x2751d2[_0x355009(0x449)](_0x393354=>{const _0x1550eb=_0x355009;_0xca347d['innerHTML']+=_0x1550eb(0x68a)+escapeHtml(_0x393354['name'])+_0x1550eb(0xef8)+(_0x393354[_0x1550eb(0x297)]||t('no_phone'))+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20flex-col\x20gap-2\x20border-t\x20border-slate-100\x20pt-4\x20mt-auto\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20onclick=\x22openCustomerDetails('+_0x393354['id']+')\x22\x20class=\x22w-full\x20py-2\x20bg-blue-50\x20text-bl
+
+==== renderer.js function openCustomerModal [1] (1660 chars) ====
+value'][_0x2c8c78(0x63e)](),_0x7d723=customersCache['filter'](_0x650e5e=>_0x650e5e[_0x2c8c78(0xbe0)][_0x2c8c78(0x63e)]()[_0x2c8c78(0xc32)](_0x2d23d0)||_0x650e5e[_0x2c8c78(0x297)]&&_0x650e5e['phone'][_0x2c8c78(0xc32)](_0x2d23d0));renderCustomersPage(_0x7d723);}function openCustomerModal(){const _0x462289=_0x427934;if(currentUser&&currentUser[_0x462289(0x1020)]===_0x462289(0xc5c))return showToast(t('access_denied')||'ليس\x20لديك\x20صلاحية\x20الوصول\x20لهذا\x20القسم',_0x462289(0x2f6));document['getElementById'](_0x462289(0x782))['reset'](),document['getElementById'](_0x462289(0xa03))['value']='',document['getElementById'](_0x462289(0xe29))['innerText']=t('add_customer');const _0x562d3a=document[_0x462289(0x6c2)](_0x462289(0x4c6));_0x562d3a['classList'][_0x462289(0x3df)]('hidden'),_0x562d3a[_0x462289(0x43b)]['add'](_0x462289(0x5e8));}function closeCustomerModal(){const _0x43efa2=_0x427934,_0x5e238c=document['getElementById']('customerModal');_0x5e238c[_0x43efa2(0x43b)][_0x43efa2(0xe5b)]('hidden'),_0x5e238c['classList']['remove']('flex');}function editCustomer(_0x4f8981){const _0x41cb5b=_0x427934,_0x1b939a=customersCache['find'](_0x29a332=>_0x29a332['id']===_0x4f8981);if(!_0x1b939a)return;document[_0x41cb5b(0x6c2)](_0x41cb5b(0xa03))['value']=_0x1b939a['id'],document['getElementById']('customerName')[_0x41cb5b(0xb52)]=_0x1b939a[_0x41cb5b(0xbe0)],document[_0x41cb5b(0x6c2)](_0x41cb5b(0x200))['value']=_0x1b939a[_0x41cb5b(0x297)]||'',document[_0x41cb5b(0x6c2)]('customerAddress')[_0x41cb5b(0xb52)]=_0x1b939a['address']||'',document[_0x41cb5b(0x6c2)](_0x41cb5b(0x3ce))[_0x41cb5b(0xb52)]=_0x1b939a[_0x41cb5b(0x2f5)]||'',document['getElementById'](_
+
+==== renderer.js function showCustomerModal [0] (0 chars) ====
+
+
+==== renderer.js function newCustomer [0] (0 chars) ====
+
+
+==== renderer.js function loadCustomers [2] (3325 chars) ====
+x328));}}catch(_0x1b3431){showToast(t('cash_drawer_error')+':\x20'+(_0x1b3431['message']||_0x1b3431),_0x5581ee(0x2f6));}finally{if(_0x507656)_0x507656[_0x5581ee(0xf1d)]=![];}}function processSaleAndPrintReceipt(){printReceiptOnceFlag=!![],processSale();}async function loadCustomersSelect(){const _0x260899=_0x427934;try{const _0x4d1e6d=await window['api']['getCustomers']();posCustomersCache=_0x4d1e6d;const _0x3e3b75=document[_0x260899(0x6c2)]('salesLogCustomerDropdown');_0x3e3b75&&!_0x3e3b75['classList']['contains']('hidden')&&renderSalesLogCustomerFilterDropdown(salesLogCustomerFilterQuery,salesLogCustomerFilterPage);}catch(_0x31420e){}}const SALES_LOG_CUSTOMER_PAGE_SIZE=0x1e;let salesLogCustomerFilterPage=0x1,salesLogCustomerFilterQuery='',salesLogCustomerFilterWired=![];async function ensureSalesLogCustomerFilter(){const _0x1a3ab2=_0x427934;if(!posCustomersCache||posCustomersCache['length']===0x0)try{posCustomersCache=await window[_0x1a3ab2(0x620)][_0x1a3ab2(0x913)]();}catch(_0xb62510){posCustomersCache=[];}setupSalesLogCustomerFilter();}let salesLogUsersCache=null;async function ensureSalesLogUserFilter(){const _0x2226d0=_0x427934,_0x44e8fb=document['getElementById']('salesLogUserFilter');if(!_0x44e8fb)return;if(!salesLogUsersCache)try{salesLogUsersCache=await window[_0x2226d0(0x620)][_0x2226d0(0x41b)]();}catch(_0x598851){salesLogUsersCache=[];}const _0x2f19fb=_0x44e8fb['value'],_0x31e4a8=t('all_users')||'كل\x20المستخدمين';let _0x24520f=_0x2226d0(0xc82)+escapeHtml(_0x31e4a8)+_0x2226d0(0xe14);(salesLogUsersCache||[])[_0x2226d0(0x449)](_0x57553f=>{const _0x570b4b=_0x2226d0,_0x33b19f=_0x57553f[_0x570b4b(0xbe0)]||_0x57553f[_0x570b4b(
+---
+20'+(_0x38214a?.[_0x37f5f6(0x2f6)]||_0x37f5f6(0xdf1)));}catch(_0x337581){showToast(t(_0x37f5f6(0x2f6))+':\x20'+(_0x337581[_0x37f5f6(0x2f6)]||_0x337581['message']||_0x337581));}}let customersCache=[],customersCurrentPage=0x1;const CUSTOMERS_PER_PAGE=0x18;async function loadCustomersGrid(){const _0x3b62b8=_0x427934;try{customersCache=await window['api'][_0x3b62b8(0x913)](),customersCurrentPage=0x1,renderCustomersPage(customersCache);}catch(_0x331f1f){console['error'](_0x331f1f);}}function renderCustomersPage(_0x336b54){const _0x355009=_0x427934,_0xca347d=document['getElementById']('customersGrid');if(!_0xca347d)return;_0xca347d['innerHTML']='';if(_0x336b54[_0x355009(0x381)]===0x0){_0xca347d[_0x355009(0xbc5)]=_0x355009(0x4e6)+t('no_customers_msg')+_0x355009(0x773),updateCustomersPagination(0x1,_0x336b54[_0x355009(0x381)]);return;}const _0x3f52b5=Math[_0x355009(0x2d7)](_0x336b54[_0x355009(0x381)]/CUSTOMERS_PER_PAGE)||0x1;if(customersCurrentPage<0x1)customersCurrentPage=0x1;if(customersCurrentPage>_0x3f52b5)customersCurrentPage=_0x3f52b5;const _0x17f0ad=(customersCurrentPage-0x1)*CUSTOMERS_PER_PAGE,_0x2751d2=_0x336b54['slice'](_0x17f0ad,_0x17f0ad+CUSTOMERS_PER_PAGE);_0x2751d2[_0x355009(0x449)](_0x393354=>{const _0x1550eb=_0x355009;_0xca347d['innerHTML']+=_0x1550eb(0x68a)+escapeHtml(_0x393354['name'])+_0x1550eb(0xef8)+(_0x393354[_0x1550eb(0x297)]||t('no_phone'))+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22flex\x20flex-col\x20gap-2\x20border-t\x20border-slate-100\
+
+==== browser-bridge.js HEAD (400 chars) ====
+/* Local browser adapter. Fully standalone local version for browser.
+   Everything runs locally via localStorage with zero external server dependencies. */
+(() => {
+ const KEY = 'lumina-browser-data-v1';
+ const loginConfig = window.NANO_CONFIG?.login || {};
+ const DEFAULT_USERNAME = String(loginConfig.username || 'admin').trim() || 'admin';
+ const DEFAULT_PASSWORD = String(loginConfig.password ||
+
+==== browser-bridge.js if (channel === 'process-sale') [1] (1660 chars) ====
+(e){
+       db.sales=prevSales;db.customers=prevCustomers;db.products=prevProducts;
+       db.cash_change_audit=prevCashAudit;db.sale_edit_audit=prevEdits;
+       return fail('فشل حفظ تعديل الفاتورة دون إنشاء بيع جديد: '+String(e.message||e));
+     }
+   }
+
+   if (channel === 'process-sale') {
+     // For v1.0.105 checkout, an operation identifier is stable across retries and
+     // persisted on the sale itself; returning a prior result must NEVER post stock
+     // or customer balances twice. Old clients remain backward compatible.
+     const __nanoId105=String(args[0]?.checkout?.nanoCheckoutRequestId||'').trim();
+     let __nanoSignature105='';
+     if(__nanoId105){
+       if(!/^n105-[a-z0-9-]{12,110}$/i.test(__nanoId105))
+         return fail('معرف تأكيد البيع غير صالح.');
+       const __checkout105=args[0]?.checkout||{}, __items105=args[0]?.items;
+       if(!Array.isArray(__items105)||!__items105.length)return fail('السلة فارغة.');
+       const __money105=value=>{
+         const n=Number(value);
+         return Number.isFinite(n)&&n>=0&&Number.isSafeInteger(Math.round(n*100)) &&
+           Math.abs(n*100-Math.round(n*100))<0.001?Math.round(n*100):null;
+       };
+       const __total105=__money105(__checkout105.total),
+         __paid105=__money105(__checkout105.paidAmount);
+       if(__total105===null||__paid105===null||!(__paid105===0||__paid105===__total105))
+         return fail('الدفع يجب أن يكون كاملًا أو دينًا كاملًا.');
+       const __method105=String(__checkout105.paymentMethod||'cash');
+       if(!['cash','card','ccp','cheque','virement','transfer','other'].includes(__method105) ||
+          Array.isArray(__checkout105.
+
+==== browser-bridge.js channel === 'get-customers' [0] (0 chars) ====
+
+
+==== browser-bridge.js channel === 'create-customer' [0] (0 chars) ====
+
+
+==== browser-bridge.js channel === 'add-customer' [0] (0 chars) ====
+
+
+==== browser-bridge.js db.customers.push( [0] (0 chars) ====
+
+
+==== browser-bridge.js db.customers.unshift( [0] (0 chars) ====
+
+
+==== browser-bridge.js function reviseCustomerBalance [1] (1660 chars) ====
+ = id => rounded((db.sales || []).filter(s => String(s.customer_id) === String(id)).reduce((sum,s) => sum + invoiceDebt(s), 0));
+ const customerVisibleDebt = customer => rounded(Math.max(0, Number(customer?.balance || 0), customerInvoiceDebt(customer?.id)));
+ function reviseCustomerBalance(id, delta) {
+   const customer = (db.customers || []).find(c => String(c.id) === String(id));
+   if (customer && Number.isFinite(delta)) customer.balance = rounded(Math.max(0, Number(customer.balance || 0) + delta));
+ }
+
+ function buildProforma(payload, previous = {}) {
+   const checkout = payload.checkout || {};
+   const customerId = checkout.customerId ?? payload.customer_id ?? previous.customer_id ?? null;
+   const customer = db.customers.find(c => c.id == customerId) || {};
+   const items = (payload.items || []).map(raw => {
+     const productId = raw.product_id ?? raw.id ?? raw.product?.id ?? null;
+     const product = db.products.find(p => p.id == productId) || raw.product || {};
+     const quantity = Number(raw.quantity ?? raw.qty ?? 0);
+     const price = Number(raw.price ?? raw.pos_price ?? raw.selling_price ?? 0);
+     return {
+       product_id: productId,
+       batch_id: raw.batch_id ?? null,
+       variant_id: raw.variant_id ?? raw.variant?.id ?? null,
+       custom_product_name: raw.custom_product_name || (raw.is_custom ? product.name : null),
+       product_name: raw.product_name || product.name || raw.custom_product_name || '',
+       barcode: raw.barcode || product.barcode || '',
+       quantity,
+       price,
+       total: rounded(quantity * price),
+     };
+   });
+   const subtotal = rounded(items.reduce((sum, item) => sum + ite
+
+==== browser-bridge.js function ensureCustomer [0] (0 chars) ====
+
+
+==== browser-bridge.js nano_checkout_operation_id [2] (3325 chars) ====
+redAmount == null ? {} : {cashTenderedCents:__money105(__checkout105.cashTenderedAmount)}),
+         discount:Number(__checkout105.discount||0),
+         taxPercentage:Number(__checkout105.taxPercentage||0)
+       });
+       const old=(db.sales||[]).find(s=>s.nano_checkout_operation_id===__nanoId105);
+       if(old){
+         if(old.nano_checkout_signature!==__nanoSignature105)
+           return fail('لا يمكن إعادة استعمال معرف الدفع لعملية مختلفة.');
+         return {success:true,id:old.id,saleId:old.id,alreadyProcessed:true,
+           paid_amount:old.paid_amount,remaining_amount:old.remaining_amount,
+           customerId:old.customer_id};
+       }
+     }
+     // Keep a snapshot before any sale stock/cash/debt mutation so failed
+     // local storage writes cannot leave only part of the sale in live memory.
+     const __nanoPriorSale102=clone(db);
+     if (Array.isArray(args[0]?.checkout?.payments)) {
+       const engine=window.NANO_PAYMENT_LEDGER_102;
+       if(!engine)return fail('split_payment_module_unavailable');
+       let split;
+       try {split=engine.split(String(args[0]?.checkout?.total),
+           args[0].checkout.payments,args[0].checkout.customerId);}
+       catch(e){return fail(e.code||'invalid_split_payment');}
+       args[0]={...args[0],checkout:{...args[0].checkout,
+         paidAmount:split.paidAmount,paymentMethod:split.paymentMethod,
+         cashTenderedAmount:null,__nanoSplit102:split}};
+     }
+     if ((args[0]?.items||[]).some(item=>Number(item?.qty)<0))
+       return fail('استخدم المرتجعات لتصحيح الكميات بدل بيع بكمية سالبة.');
+
+     // Never silently reprice a sale at confirmation: honor cart unit pric
+---
+e;
+       sale.cash_change_record = clone(audit);
+       db.cash_change_audit = Array.isArray(db.cash_change_audit) ? db.cash_change_audit : [];
+       db.cash_change_audit.unshift(audit);
+     }
+     db.sales.unshift(sale);
+     if(__nanoId105){
+        sale.nano_checkout_operation_id=__nanoId105;
+        sale.nano_checkout_signature=__nanoSignature105;
+      }
+      if (remaining > 0) reviseCustomerBalance(customer.id,remaining);
+     // Write sale, related stock updates and customer balance as one snapshot.
+     try {
+       const snapshot={...db,revision:Number(db.revision||0)+1};
+       localStorage.setItem(KEY,JSON.stringify(snapshot));
+       db=snapshot;
+       try {window.nanoNative?.pcSyncLocalChanged?.({revision:db.revision,at:Date.now()});}catch{}
+       try {window.dispatchEvent(new CustomEvent('nano-pos-data-saved',{detail:{revision:db.revision}}));}catch{}
+     } catch(error) {
+       db=__nanoPriorSale102;
+       console.error('[NANO POS] sale atomic write failed:',error);
+       return fail('sale_write_failed_no_changes');
+     }
+     if (cashRecord) {
+       try {
+         const persisted = JSON.parse(localStorage.getItem(KEY) || '{}');
+         if (!(persisted.cash_change_audit || []).some(entry => String(entry.sale_id) === String(id)))
+           return fail('تعذر حفظ سجل الصرف. يرجى التحقق من مساحة التخزين.');
+       } catch { return fail('تعذر التحقق من حفظ سجل الصرف.'); }
+     }
+     return { success:true,id,saleId:id,paid_amount:sale.paid_amount,remaining_amount:remaining,customerId:sale.customer_id };
+   }
+   if (channel === 'get-sales') {
+     const f = args[0] || {}, rows = salesFor(f);
+     if (f.page) {
+
+
+==== nano-payment-quality-105.js HEAD (400 chars) ====
+/* NANO POS 1.0.105: professional single-method checkout.
+ * No cash tendered field, no split/mixed payment; preserves existing invoice records.
+ */
+(function(root){
+ 'use strict';
+ const doc=root.document;if(!doc||root.NANO_PAYMENT_QUALITY_105)return;
+ const get=id=>doc.getElementById(id);
+ const labels={
+ ar:{summary:'ملخص تسديد الفاتورة',total:'المبلغ الإجمالي',method:'طريقة التسديد',pay:'الدفع
+
+==== nano-payment-quality-105.js function render [1] (1660 chars) ====
+
+ const warn=(message,level='error')=>{status.textContent=message;status.style.color=level==='error'?'#b91c1c':'#047857';};
+ const paid=()=>cents(get('checkoutPaidAmount')?.value||'0');
+ const credit=()=>{const total=readTotal();return total>0&&paid()===0;};
+ function render(){
+   const total=readTotal(),p=paid(),selected=get('checkoutPaymentMethod');
+   if(total===null)return;
+   if(lastTotal!==null&&lastTotal!==total&&p===lastTotal){
+     const input=get('checkoutPaidAmount');
+     if(input){input.value=money(total);input.dispatchEvent(new root.Event('input',{bubbles:true}));}
+   }
+   lastTotal=total;
+   const due=credit(),method=selected?.selectedOptions?.[0]?.textContent?.trim()||selected?.value||'';
+   heading.textContent=t().summary;amount.textContent=money(total)+' د.ج';
+   detail.textContent=t().method+': '+method+' · '+t().pay+': '+(due?t().credit:t().paid)+' · '+(due?t().creditInfo:t().complete);
+   if(!busy&&!committed){
+     status.textContent=due&&!String(get('posCustomerSelect')?.value||'').trim()?t().customer:'';
+     status.style.color='#b45309';
+   }
+ }
+ function setProcessing(on){busy=on;const buttons=modal.querySelectorAll('button[onclick]');
+   for(const btn of buttons){
+     const handler=String(btn.getAttribute('onclick')||'');
+     if(/\b(?:processSale|processSaleAndPrintReceipt)\s*\(\s*\)/.test(handler))
+       btn.disabled=on||committed;
+   }
+ }
+ function fail(error){const m=String(error?.message||error||t().error);warn(m);root.showToast?.(m,'error');return {success:false,error:m};}
+ const invoke=root.__browserElectron?.ipcRenderer?.invoke;
+ if(typeof invoke==='function'){
+   const original=invoke.bind(root.
+
+==== nano-payment-quality-105.js function onModal [1] (1660 chars) ====
+r?.success){
+         committed=true;setProcessing(false);warn('✓ '+t().paid,'info');
+       }else{setProcessing(false);warn(answer?.message||answer?.error||t().error);}
+       return answer;
+     },error=>{setProcessing(false);return fail(error)});
+   };
+ }
+ function onModal(){
+   const visible=!modal.classList.contains('hidden');
+   if(visible&&!wasVisible){busy=false;committed=false;key=uuid();lastTotal=null;render();setProcessing(false);}
+   if(!visible&&wasVisible){busy=false;committed=false;key='';lastTotal=null;status.textContent='';}
+   wasVisible=visible;
+ }
+ if(root.MutationObserver){
+   new root.MutationObserver(onModal).observe(modal,{attributes:true,attributeFilter:['class']});
+   const total=get('checkoutTotalUI');
+   if(total)new root.MutationObserver(render).observe(total,{childList:true,subtree:true,characterData:true});
+ }
+ modal.addEventListener('click',event=>{
+   const button=event.target?.closest?.('button[onclick]');
+   if(!button)return;
+   const handler=String(button.getAttribute('onclick')||'');
+   if(/\b(?:processSale|processSaleAndPrintReceipt)\s*\(\s*\)/.test(handler)){
+     if(busy||committed){event.preventDefault();event.stopImmediatePropagation();warn(committed?t().duplicate:t().processing);return;}
+     const total=readTotal(),p=paid();
+     if(total===null||p===null||!(p===0||p===total)){
+       event.preventDefault();event.stopImmediatePropagation();warn(t().invalid);return;
+     }
+     if(p===0&&total>0&&!String(get('posCustomerSelect')?.value||'').trim()){
+       event.preventDefault();event.stopImmediatePropagation();warn(t().customer);
+       get('posCustomerSelect')?.focus();return;
+     }
+   
+
+==== nano-payment-quality-105.js if(channel [1] (1660 chars) ====
+uccess:false,error:m};}
+ const invoke=root.__browserElectron?.ipcRenderer?.invoke;
+ if(typeof invoke==='function'){
+   const original=invoke.bind(root.__browserElectron.ipcRenderer);
+   root.__browserElectron.ipcRenderer.invoke=function(channel,...args){
+     if(channel!=='process-sale'||!args[0]||typeof args[0]!=='object'||args[0].editSaleId)
+       return original(channel,...args);
+     if(committed)return Promise.resolve(fail(t().duplicate));
+     if(busy)return Promise.resolve(fail(t().processing));
+     const payload=args[0],c=payload.checkout||{},total=cents(String(c.total)),value=cents(String(c.paidAmount)),method=String(c.paymentMethod||'cash');
+     if(total===null||value===null||!(value===total||value===0))
+       return Promise.resolve(fail(t().invalid));
+     if(!allowed.has(method)||Array.isArray(c.payments)||method==='mixed')
+       return Promise.resolve(fail(t().badMethod));
+     if(value===0&&total>0&&!String(c.customerId||'').trim())
+       return Promise.resolve(fail(t().customer));
+     if(!key)key=uuid();
+     const updated={...payload,checkout:{...c,nanoCheckoutRequestId:key}};
+     setProcessing(true);warn(t().processing,'info');
+     let result;
+     try{result=original(channel,updated,...args.slice(1));}
+     catch(err){setProcessing(false);return Promise.resolve(fail(err));}
+     return Promise.resolve(result).then(answer=>{
+       if(answer?.success){
+         committed=true;setProcessing(false);warn('✓ '+t().paid,'info');
+       }else{setProcessing(false);warn(answer?.message||answer?.error||t().error);}
+       return answer;
+     },error=>{setProcessing(false);return fail(error)});
+   };
+ }
+ function onM
+
+==== nano-payment-quality-105.js process-sale [1] (1660 chars) ====
+rror:m};}
+ const invoke=root.__browserElectron?.ipcRenderer?.invoke;
+ if(typeof invoke==='function'){
+   const original=invoke.bind(root.__browserElectron.ipcRenderer);
+   root.__browserElectron.ipcRenderer.invoke=function(channel,...args){
+     if(channel!=='process-sale'||!args[0]||typeof args[0]!=='object'||args[0].editSaleId)
+       return original(channel,...args);
+     if(committed)return Promise.resolve(fail(t().duplicate));
+     if(busy)return Promise.resolve(fail(t().processing));
+     const payload=args[0],c=payload.checkout||{},total=cents(String(c.total)),value=cents(String(c.paidAmount)),method=String(c.paymentMethod||'cash');
+     if(total===null||value===null||!(value===total||value===0))
+       return Promise.resolve(fail(t().invalid));
+     if(!allowed.has(method)||Array.isArray(c.payments)||method==='mixed')
+       return Promise.resolve(fail(t().badMethod));
+     if(value===0&&total>0&&!String(c.customerId||'').trim())
+       return Promise.resolve(fail(t().customer));
+     if(!key)key=uuid();
+     const updated={...payload,checkout:{...c,nanoCheckoutRequestId:key}};
+     setProcessing(true);warn(t().processing,'info');
+     let result;
+     try{result=original(channel,updated,...args.slice(1));}
+     catch(err){setProcessing(false);return Promise.resolve(fail(err));}
+     return Promise.resolve(result).then(answer=>{
+       if(answer?.success){
+         committed=true;setProcessing(false);warn('✓ '+t().paid,'info');
+       }else{setProcessing(false);warn(answer?.message||answer?.error||t().error);}
+       return answer;
+     },error=>{setProcessing(false);return fail(error)});
+   };
+ }
+ function onModal(){
+   con
+
+==== nano-payment-quality-105.js posCustomerSelect [4] (3342 chars) ====
+tContent=t().summary;amount.textContent=money(total)+' د.ج';
+   detail.textContent=t().method+': '+method+' · '+t().pay+': '+(due?t().credit:t().paid)+' · '+(due?t().creditInfo:t().complete);
+   if(!busy&&!committed){
+     status.textContent=due&&!String(get('posCustomerSelect')?.value||'').trim()?t().customer:'';
+     status.style.color='#b45309';
+   }
+ }
+ function setProcessing(on){busy=on;const buttons=modal.querySelectorAll('button[onclick]');
+   for(const btn of buttons){
+     const handler=String(btn.getAttribute('onclick')||'');
+     if(/\b(?:processSale|processSaleAndPrintReceipt)\s*\(\s*\)/.test(handler))
+       btn.disabled=on||committed;
+   }
+ }
+ function fail(error){const m=String(error?.message||error||t().error);warn(m);root.showToast?.(m,'error');return {success:false,error:m};}
+ const invoke=root.__browserElectron?.ipcRenderer?.invoke;
+ if(typeof invoke==='function'){
+   const original=invoke.bind(root.__browserElectron.ipcRenderer);
+   root.__browserElectron.ipcRenderer.invoke=function(channel,...args){
+     if(channel!=='process-sale'||!args[0]||typeof args[0]!=='object'||args[0].editSaleId)
+       return original(channel,...args);
+     if(committed)return Promise.resolve(fail(t().duplicate));
+     if(busy)return Promise.resolve(fail(t().processing));
+     const payload=args[0],c=payload.checkout||{},total=cents(String(c.total)),value=cents(String(c.paidAmount)),method=String(c.paymentMethod||'cash');
+     if(total===null||value===null||!(value===total||value===0))
+       return Promise.resolve(fail(t().invalid));
+     if(!allowed.has(method)||Array.isArray(c.payments)||method==='mixed')
+       return Promise.resol
+---
+uplicate:t().processing);return;}
+     const total=readTotal(),p=paid();
+     if(total===null||p===null||!(p===0||p===total)){
+       event.preventDefault();event.stopImmediatePropagation();warn(t().invalid);return;
+     }
+     if(p===0&&total>0&&!String(get('posCustomerSelect')?.value||'').trim()){
+       event.preventDefault();event.stopImmediatePropagation();warn(t().customer);
+       get('posCustomerSelect')?.focus();return;
+     }
+   }
+   if(handler.includes('checkoutMarkAsDebt')||handler.includes('nanoCheckoutPayFull104')){
+     root.setTimeout?.(render,0);
+   }
+ },true);
+ get('checkoutPaymentMethod')?.addEventListener('change',render);
+ get('posCustomerSelect')?.addEventListener('change',render);
+ get('checkoutPaidAmount')?.addEventListener('input',render);
+ onModal();
+ root.NANO_PAYMENT_QUALITY_105=Object.freeze({render,readTotal});
+})(typeof window!=='undefined'?window:globalThis);
+
+---
+ent.preventDefault();event.stopImmediatePropagation();warn(t().invalid);return;
+     }
+     if(p===0&&total>0&&!String(get('posCustomerSelect')?.value||'').trim()){
+       event.preventDefault();event.stopImmediatePropagation();warn(t().customer);
+       get('posCustomerSelect')?.focus();return;
+     }
+   }
+   if(handler.includes('checkoutMarkAsDebt')||handler.includes('nanoCheckoutPayFull104')){
+     root.setTimeout?.(render,0);
+   }
+ },true);
+ get('checkoutPaymentMethod')?.addEventListener('change',render);
+ get('posCustomerSelect')?.addEventListener('change',render);
+ get('checkoutPaidAmount')?.addEventListener('input',render);
+ onModal();
+ root.NANO_PAYMENT_QUALITY_105=Object.freeze({render,readTotal});
+})(typeof window!=='undefined'?window:globalThis);
+
+
+==== nano-checkout-choice-104.js HEAD (400 chars) ====
+/* NANO POS v1.0.104 — full payment or full customer credit; no received-amount entry. */
+(function(root){
+ 'use strict';
+ const doc=root.document;
+ function paidInput(){return doc?.getElementById('checkoutPaidAmount');}
+ function readTotal(){
+   const el=doc?.getElementById('checkoutTotalUI');
+   const raw=String(el?.textContent||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
+     .replace
+
+==== nano-checkout-choice-104.js function paidFull [1] (744 chars) ====
+harCodeAt(0)-1632))
+     .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).replace(/,/g,'.');
+   const match=raw.match(/\d+(?:\.\d{1,2})?/);
+   const number=Number(match?.[0]||0);
+   return Number.isFinite(number)&&number>=0?Math.round(number*100)/100:0;
+ }
+ function paidFull(){
+   const input=paidInput();if(!input)return;
+   input.value=readTotal().toFixed(2);
+   input.dispatchEvent(new Event('input',{bubbles:true}));
+   if(typeof root.checkoutCalcChange==='function')root.checkoutCalcChange();
+ }
+ // Preserve existing business rule: the full-credit button sets paidAmount=0;
+ // the backend requires a registered customer for an unpaid checkout.
+ root.nanoCheckoutPayFull104=paidFull;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+==== nano-checkout-choice-104.js readTotal [2] (1779 chars) ====
+/* NANO POS v1.0.104 — full payment or full customer credit; no received-amount entry. */
+(function(root){
+ 'use strict';
+ const doc=root.document;
+ function paidInput(){return doc?.getElementById('checkoutPaidAmount');}
+ function readTotal(){
+   const el=doc?.getElementById('checkoutTotalUI');
+   const raw=String(el?.textContent||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
+     .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).replace(/,/g,'.');
+   const match=raw.match(/\d+(?:\.\d{1,2})?/);
+   const number=Number(match?.[0]||0);
+   return Number.isFinite(number)&&number>=0?Math.round(number*100)/100:0;
+ }
+ function paidFull(){
+   const input=paidInput();if(!input)return;
+   input.value=readTotal().toFixed(2);
+   input.dispatchEvent(new Event('input',{bubbles:true}));
+   if(typeof root.checkoutCalcChange==='function')root.checkoutCalcChange();
+ }
+ // Preserve existing business rule: the full-credit button sets paidAmount=0;
+ // the backend requires a registered customer for an unpaid checkout.
+ root.nanoCheckoutPayFull104=paidFull;
+})(typeof window!=='undefined'?window:globalThis);
+
+---
+ce(/,/g,'.');
+   const match=raw.match(/\d+(?:\.\d{1,2})?/);
+   const number=Number(match?.[0]||0);
+   return Number.isFinite(number)&&number>=0?Math.round(number*100)/100:0;
+ }
+ function paidFull(){
+   const input=paidInput();if(!input)return;
+   input.value=readTotal().toFixed(2);
+   input.dispatchEvent(new Event('input',{bubbles:true}));
+   if(typeof root.checkoutCalcChange==='function')root.checkoutCalcChange();
+ }
+ // Preserve existing business rule: the full-credit button sets paidAmount=0;
+ // the backend requires a registered customer for an unpaid checkout.
+ root.nanoCheckoutPayFull104=paidFull;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+==== nano-cash-guide-106.js HEAD (400 chars) ====
+/* NANO POS v1.0.106 — cashier-friendly change; single full cash payment ONLY. */
+(function(root){
+ 'use strict';
+ const d=root.document,calculator=root.NANO_CASH_PLAN_106;
+ if(!d||!calculator||root.NANO_CASH_GUIDE_106)return;
+ const by=id=>d.getElementById(id);
+ const modal=by('checkoutModal'),anchor=by('nanoCheckoutChoice104');
+ if(!modal||!anchor)return;
+ const strings={
+  ar:{title:'المبلغ الذ
+
+==== nano-cash-guide-106.js function render [1] (1660 chars) ====
+aid=()=>calculator.cents(by('checkoutPaidAmount')?.value||'0');
+ const eligible=()=>{
+   const total=parseTotal(),value=paid();
+   return !modal.classList.contains('hidden')&&by('checkoutPaymentMethod')?.value==='cash'&&
+     total!==null&&value===total;
+ };
+ function render(){
+   const tr=t();
+   label.textContent=tr.title+' ('+tr.dinar+')';heading.textContent=tr.change;
+   panel.hidden=!eligible();
+   if(panel.hidden){return;}
+   breakdown.replaceChildren();
+   const raw=tender.value;
+   if(!raw.trim()){number.textContent='—';message.textContent=tr.empty;return;}
+   const total=parseTotal();
+   const result=calculator.plan(calculator.format(total),raw);
+   if(!result.ok){
+     number.textContent='—';
+     message.textContent=result.code==='cash_insufficient'?tr.short:tr.wrong;
+     message.style.color='#b91c1c';
+     tender.setAttribute('aria-invalid','true');return;
+   }
+   tender.setAttribute('aria-invalid','false');
+   number.textContent=calculator.format(result.changeCents)+' '+tr.dinar;
+   message.textContent=tr.show+':';
+   message.style.color='#0369a1';
+   for(const item of result.pieces){
+     const chip=d.createElement('span');
+     chip.style.cssText='background:white;border:1px solid #bfdbfe;border-radius:8px;padding:6px 9px;font-weight:800;font-size:13px';
+     chip.textContent=item.count+' × '+item.denomination+' '+tr.dinar;
+     breakdown.append(chip);
+   }
+   if(result.centimes){
+     const small=d.createElement('small');
+     small.textContent=tr.fraction+': '+String(result.centimes).padStart(2,'0');
+     breakdown.append(small);
+   }
+ }
+ const bridge=root.__browserElectron?.ipcRenderer;
+ if(bridge&&typeof bridge.i
+
+==== nano-cash-guide-106.js function eligible [0] (0 chars) ====
+
+
+==== all customer API symbols (561 chars) ====
+[('browser-bridge.js', 'add-customer', 2), ('browser-bridge.js', 'get-customers', 1), ('browser-preload.js', 'add-customer', 1), ('mobile/www/browser-bridge.js', 'add-customer', 2), ('mobile/www/browser-bridge.js', 'get-customers', 1), ('mobile/www/browser-preload.js', 'add-customer', 1), ('mobile/www/mobile-sync-bridge.js', 'add-customer', 1), ('mobile/www/mobile-sync-bridge.js', 'get-customers', 1), ('mobile/www/nano-mobile-credit.js', 'add-customer', 1), ('mobile-sync-server.cjs', 'get-customers', 1), ('nano-customer-contract.cjs', 'get-customers', 1)]
