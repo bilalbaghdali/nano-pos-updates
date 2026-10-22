@@ -103,7 +103,7 @@ def build(source,dest,work):
    integrity['blocks']=[SHA(blob[i:i+size]) for i in range(0,len(blob),size)]
   buf.extend(blob)
   if name in changed or name in ('nano-invoice-sequence-111.js','nano-invoice-layout-111.js',
-                  'nano-payment-ledger-102.js','backup-safety.cjs','electron-main.cjs'):
+                  'nano-payment-ledger-102.js','backup-safety.cjs','electron-main.cjs','renderer.js'):
    p=work/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(blob)
  assert changed=={'browser-bridge.js','index.html','package.json','release-notes.js'},changed
  name='nano-storage-warning-112.js'
