@@ -11,7 +11,7 @@ def once(src,old,new):
  assert count==1,('source_drift',old[:140],count)
  return src.replace(old,new)
 def patch_html(src):
- pattern=r'                <div id="nanoCheckoutChoice104" class="grid grid-cols-2 gap-2">.*?                </div>'
+ pattern=r'                <div id="nanoCheckoutChoice104" class="grid grid-cols-2 gap-2">.*?\n                </div>'
  replacement='''                <div id="nanoCheckoutChoice104" class="space-y-2">
                     <label for="nanoTenderAmount108" class="block text-sm font-black text-slate-700"
                         data-i18n="nano_received_amount_108">المبلغ الذي قدمه الزبون (د.ج)</label>
