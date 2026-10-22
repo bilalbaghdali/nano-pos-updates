@@ -1,0 +1,169 @@
+name: NANO POS v1.0.108 - Publish Partial Payment and Change
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-flex-payment-108.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-108
+  cancel-in-progress: false
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official 1.0.107 and build candidate patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.108 >/dev/null 2>&1 || { echo 'Already released';exit 1; }
+          mkdir -p source work
+          gh release download v1.0.107 --pattern NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip --dir source
+          python3 - <<'PY'
+          import hashlib,json,zipfile
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.107' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+          python3 .github/scripts/build-flex-payment-108.py \
+            source/NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip \
+            NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip work
+          for n in browser-bridge.js nano-flex-payment-108.js nano-flex-core-108.js nano-credit-picker-107.js nano-payment-quality-105.js; do node --check "work/$n"; done
+          cp .github/scripts/test-flex-bridge-108.cjs work/
+          cp .github/scripts/test-flex-ui-108.cjs work/
+          (cd work && node test-flex-bridge-108.cjs)
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-flex-ui-108.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile,struct
+          p=Path('NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip')
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar'];raw=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and b==hs+4
+          f=json.loads(raw[16:16+n])['files']
+          for name in ['index.html','browser-bridge.js','package.json','release-notes.js',
+            'nano-credit-picker-107.js','nano-payment-quality-105.js','nano-flex-core-108.js',
+            'nano-flex-payment-108.js','nano-cash-plan-106.js','nano-payment-ledger-102.js']:
+            e=f[name];blob=raw[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert blob==Path('work/'+name).read_bytes()
+            if 'integrity' in e:assert hashlib.sha256(blob).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.108'
+          print('PASS: full ASAR payload and patched files hash verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-108-verified-package
+          path: |
+            NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip
+            work/index.html
+            work/browser-bridge.js
+            work/package.json
+            work/release-notes.js
+            work/nano-credit-picker-107.js
+            work/nano-payment-quality-105.js
+            work/nano-flex-core-108.js
+            work/nano-flex-payment-108.js
+            work/nano-cash-plan-106.js
+            work/nano-payment-ledger-102.js
+            work/test-flex-bridge-108.cjs
+            work/test-flex-ui-108.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-108-verified-package
+      - name: Recheck money balances and credit picker on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check browser-bridge.js
+            node --check nano-flex-payment-108.js
+            node test-flex-bridge-108.cjs
+            if($LASTEXITCODE -ne 0){throw 'Backend accounting failed'}
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'UI dependencies failed'}
+            node test-flex-ui-108.cjs
+            if($LASTEXITCODE -ne 0){throw 'Partial cash credit UI failed'}
+          }finally{Pop-Location}
+  publish:
+    needs: [linux,windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-108-verified-package
+      - name: Publish only signed-by-hash tested payload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.108 >/dev/null 2>&1 || { echo 'Already released';exit 1; }
+          gh release create v1.0.108 NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.108 — تحسينات الدفع الجزئي والكريدي والصرف' \
+            --notes 'وسم: تحسينات. إزالة زري «دفع كامل» و«دين كامل» من شاشة الدفع؛ إدخال مبلغ واحد يقدمه الزبون. عند دفع أقل من الإجمالي، يحتسب البرنامج المدفوع ويقيد المتبقي دينًا على زبون موجود أو جديد عند تأكيد البيع. عند تسليم نقد أكبر من الإجمالي يُسجّل المدفوع بقيمة الفاتورة ويعرض الصرف وفئاته الجزائرية المقترحة دون دين. يظل الدفع بطريقة واحدة، مع رفض المبلغ الزائد للطرق غير النقدية. حماية تسديدات الزبائن والمخزون من التكرار وفشل الحفظ؛ التفعيل والنسخ الاحتياطية بلا تعديل. اختبارات Windows/Linux آلية؛ تجارب الأجهزة الحقيقية غير منفذة.'
+          gh release view v1.0.108 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip
+      - name: Activate automatic installation within NANO POS
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import datetime,hashlib,json,zipfile
+          manifest=Path('nano-pos-update.json')
+          d=json.loads(manifest.read_text(encoding='utf8'))
+          assert d['version']=='1.0.107' and d['published']
+          f=Path('NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.108/'+f.name
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.108'
+          features={
+            'ar':['إدخال أي مبلغ مقدم من الزبون دون زري الدفع الكامل أو الدين الكامل.',
+                  'إذا كان المبلغ أقل من قيمة الفاتورة يسجل الفرق دينًا على الزبون بعد اختياره أو إضافته.',
+                  'إذا كان المبلغ النقدي أكبر من الفاتورة يعرض الصرف والفئات المقترحة لإرجاعه.',
+                  'حماية المخزون والأرصدة وتكرار الفواتير مع الاحتفاظ بالتفعيل والنسخ الاحتياطية.'],
+            'fr':['Un montant reçu unique sans boutons paiement total ou crédit total.',
+                  'Paiement partiel: le solde est ajouté comme dette du client enregistré.',
+                  'Espèces supérieures au total: monnaie à rendre et coupures suggérées.',
+                  'Protection des stocks, des soldes, des factures et des sauvegardes.'],
+            'en':['Enter any amount from customer without full-pay or full-credit buttons.',
+                  'Underpayment records the balance as customer credit after customer selection.',
+                  'Cash overpayment shows exact change and suggested denominations.',
+                  'Safe stock and balances, duplicate invoice protection and intact backups.']
+          }
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.108',published=True,releaseDate=day,mandatory=False,importance='normal',features=features)
+          d.setdefault('releaseHistory',{})['1.0.108']={'releaseDate':day,'features':features}
+          d['patches']=[{'id':'nano-pos-v108-flexible-partial-credit-and-change',
+            'fromVersions':[f'1.0.{i}' for i in range(91,108)],
+            'directUrl':url,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          d['notes']={'ar':'تحسينات: تسديد مبلغ بأي قيمة، والدين المتبقي أو الصرف الآلي.',
+            'fr':'Améliorations: règlement partiel et monnaie à rendre.',
+            'en':'Flexible payment, customer balance and cash change.'}
+          manifest.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.108 partial credit and cash change'
+          git push origin HEAD:refs/heads/main
