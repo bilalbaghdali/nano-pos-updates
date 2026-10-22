@@ -23,7 +23,7 @@ for name in ['electron-main.cjs','browser-bridge.js','backup-safety.cjs','update
   for needle in ['ready-to-show','createWindow','showInactive','webPreferences','backgroundThrottling','onBeforeQuit','whenReady','nanoNative','loadFile(']:
    excerpt(name,s,needle,350,1200,2)
  elif name=='browser-bridge.js':
-  for needle in ['function save()','function load()','function saveDb(','function saveDatabase','function commit','function normalize','const KEY','db.sales.unshift(sale)','const snapshot={...db','save();','save()','__nanoBrowserData']:
+  for needle in ['function save()','function load()','function saveDb(','function saveDatabase','function commit','function normalize','const KEY','db.sales.unshift(sale)','const snapshot={...db','save();','save()','__nanoBrowserData','__browserElectron','ipcRenderer','async function invoke','function invoke','function handle(','function invokeLocal','function dispatchRpc','get-products','add-product','add-customer','get-user-info']:
    excerpt(name,s,needle,420,1450,3)
  elif name=='backup-safety.cjs':
   for needle in ['function verifyBackup','function writeBackup','function pruneBackups','module.exports']:
