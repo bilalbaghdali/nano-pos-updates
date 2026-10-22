@@ -24,6 +24,9 @@ def bridge(src):
      db.sales.unshift(sale);
      if(__nanoId105){""")
  src=once(src,
+   "         return {success:true,id:old.id,saleId:old.id,alreadyProcessed:true,",
+   "         return {success:true,id:old.id,saleId:old.id,invoice_number:old.invoice_number,alreadyProcessed:true,")
+ src=once(src,
    "     return { success:true,id,saleId:id,paid_amount:sale.paid_amount,remaining_amount:remaining,customerId:sale.customer_id };",
    "     return { success:true,id,saleId:id,invoice_number:sale.invoice_number,paid_amount:sale.paid_amount,remaining_amount:remaining,customerId:sale.customer_id };")
  return src
