@@ -86,7 +86,9 @@ def build(source,out,work):
    script=blob.decode('utf8')
    script=once(script,
      '<script src="nano-blue-print-110.js"></script>',
-     '<script src="nano-blue-print-110.js"></script>\n    <script src="nano-invoice-layout-111.js"></script>\n    <script src="nano-invoice-sequence-111.js"></script>')
+     '<script src="nano-blue-print-110.js"></script>\n    <script src="nano-invoice-layout-111.js"></script>')
+   script=once(script,'src="browser-bridge.js"',
+     'src="nano-invoice-sequence-111.js"></script>\n    <script src="browser-bridge.js"')
    assert script.index('src="nano-invoice-sequence-111.js"')<script.index('src="browser-bridge.js"')
    blob=script.encode('utf8');modified.add(name)
   elif name=='package.json':
