@@ -1,0 +1,215 @@
+{
+  "date_utc": "2026-10-22T12:26:35.362278+00:00",
+  "source": {
+    "repo": "bilalbaghdali/nano-pos-updates",
+    "release": "v1.0.111",
+    "official_asar_sha256": "2003aba8a945d4761e2b1aca167047827eb55e99869fd74903dc5b324f31578c",
+    "official_zip_sha256": "2bc03d0481192b0122a119ee014629b0446666945c5015610826919400d22ab8"
+  },
+  "package": {
+    "name": "nano-pos",
+    "version": "1.0.111",
+    "dependencies": [
+      "megajs"
+    ]
+  },
+  "archive": {
+    "file_count": 582,
+    "asar_bytes": 53676488,
+    "extension_counts": {
+      "": 14,
+      ".md": 56,
+      ".js": 210,
+      ".ico": 1,
+      ".png": 8,
+      ".css": 31,
+      ".woff2": 50,
+      ".jpg": 16,
+      ".cjs": 20,
+      ".html": 132,
+      ".apk": 2,
+      ".txt": 7,
+      ".json": 21,
+      ".yml": 5,
+      ".mjs": 2,
+      ".ts": 3,
+      ".py": 1,
+      ".cmd": 3
+    },
+    "large_files": [
+      [
+        "renderer.js",
+        1221836
+      ],
+      [
+        "mobile/www/renderer.js",
+        1219945
+      ],
+      [
+        "index.html",
+        1011275
+      ],
+      [
+        "mobile/www/index.html",
+        992830
+      ],
+      [
+        "assets/js/tailwind.min.js",
+        491587
+      ],
+      [
+        "mobile/www/assets/js/tailwind.min.js",
+        491587
+      ],
+      [
+        "assets/js/translations.js",
+        469702
+      ],
+      [
+        "mobile/www/assets/js/translations.js",
+        469702
+      ],
+      [
+        "node_modules/megajs/dist/main.browser-umd.js",
+        237538
+      ],
+      [
+        "assets/js/chart.umd.min.js",
+        205222
+      ],
+      [
+        "mobile/www/assets/js/chart.umd.min.js",
+        205222
+      ],
+      [
+        "manufacturing/manufacturing-ui.js",
+        141789
+      ],
+      [
+        "mobile/www/manufacturing/manufacturing-ui.js",
+        141789
+      ],
+      [
+        "browser-bridge.js",
+        124656
+      ],
+      [
+        "assets/css/tailwind-built.css",
+        124184
+      ],
+      [
+        "mobile/www/assets/css/tailwind-built.css",
+        124184
+      ]
+    ],
+    "selected_native_services": [
+      "mobile-sync-server.cjs",
+      "pc-sync-service.cjs"
+    ]
+  },
+  "index": {
+    "index_script_total": 84,
+    "index_deferred_script_count": 28,
+    "index_async_script_count": 0,
+    "index_script_dupes": [],
+    "loaded_dynamic_invoice_modules": {
+      "nano-blue-print-110.js": true,
+      "nano-invoice-layout-111.js": true,
+      "nano-invoice-sequence-111.js": true,
+      "document-print-preview.js": true
+    },
+    "receipt_template_count": 42,
+    "invoice_template_count": 28
+  },
+  "signal_counts_by_module": {
+    "browser-bridge.js": {
+      "data_localstorage_save": 3,
+      "sale_atomic_snapshot": 1,
+      "sale_duplicate_request_token": 2,
+      "sale_cash_tender_record": 6,
+      "invoice_saved_number": 7,
+      "sale_edit": 2,
+      "event_dispatched": 4,
+      "password_default": 9,
+      "password_plain_comparison": 2,
+      "license": 11,
+      "local_storage": 32,
+      "data_sync": 4,
+      "pdf": 2,
+      "activity_audit": 20
+    },
+    "renderer.js": {
+      "invoice_saved_number": 17,
+      "sale_edit": 25,
+      "api_print_invoice": 5,
+      "print_preview": 2,
+      "license": 4,
+      "local_storage": 101,
+      "pdf": 12
+    },
+    "pc-sync-service.cjs": {
+      "license": 3,
+      "operations_ledger": 7,
+      "update_sha256": 4
+    },
+    "mobile-sync-server.cjs": {
+      "license": 1,
+      "operations_ledger": 4
+    },
+    "document-print-preview.js": {
+      "api_print_invoice": 3,
+      "print_preview": 4,
+      "local_storage": 15,
+      "pdf": 3
+    },
+    "nano-blue-print-110.js": {},
+    "nano-invoice-layout-111.js": {},
+    "nano-invoice-sequence-111.js": {
+      "invoice_sequence_record": 4,
+      "invoice_saved_number": 6
+    },
+    "nano-payment-ledger-102.js": {
+      "activity_audit": 4
+    },
+    "nano-sales-safe-195.js": {},
+    "nano-stock-forecast-198.js": {}
+  },
+  "security_architecture_signals": {
+    "browser-bridge.js": {
+      "sha256": "4348bea8bb27c96713b675f557b85077028f67c47975c4b72606e8c8ba331bf4",
+      "crypto_usage": 0,
+      "default_username_marker": true,
+      "default_password_marker": true,
+      "plaintext_password_checks": 2,
+      "scrypt_bcrypt_argon": false,
+      "auth_token": true,
+      "JSON_snapshot_storage": true,
+      "file_write": false,
+      "remote_web_proxy": true
+    },
+    "pc-sync-service.cjs": {
+      "sha256": "3b31c55819d66a210cdc7339dcf476436ed79bb6e78737dcc2ebfb734e35b906",
+      "crypto_usage": 4,
+      "default_username_marker": false,
+      "default_password_marker": false,
+      "plaintext_password_checks": 0,
+      "scrypt_bcrypt_argon": false,
+      "auth_token": true,
+      "JSON_snapshot_storage": false,
+      "file_write": true,
+      "remote_web_proxy": true
+    },
+    "mobile-sync-server.cjs": {
+      "sha256": "60360465037650b6f0c2f64ada1f95c482553e767b10a533783f31ff227f75e8",
+      "crypto_usage": 4,
+      "default_username_marker": false,
+      "default_password_marker": false,
+      "plaintext_password_checks": 0,
+      "scrypt_bcrypt_argon": false,
+      "auth_token": true,
+      "JSON_snapshot_storage": false,
+      "file_write": true,
+      "remote_web_proxy": false
+    }
+  }
+}
