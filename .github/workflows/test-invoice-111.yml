@@ -1,0 +1,126 @@
+name: NANO POS v1.0.111 - Invoice Number and Design Tests
+on:
+  push:
+    branches: [fix/real-invoice-layout-number-111]
+    paths:
+      - 'development/invoices/build-invoice-layout-111.py'
+      - 'development/invoices/nano-invoice-sequence-111.js'
+      - 'development/invoices/nano-invoice-layout-111.js'
+      - 'development/invoices/test-fa-numbering-111.cjs'
+      - 'development/invoices/test-invoice-layout-111.cjs'
+      - '.github/workflows/test-invoice-111.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and verify the official 1.0.110 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source work
+          gh release download v1.0.110 --pattern NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.110' and m['published']
+          f=Path('source/NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build v1.0.111 and test sale numbering and print templates
+        run: |
+          set -euo pipefail
+          python3 development/invoices/build-invoice-layout-111.py \
+            source/NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip \
+            NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip work
+          for n in browser-bridge.js nano-invoice-sequence-111.js nano-invoice-layout-111.js renderer.js document-print-preview.js; do node --check "work/$n"; done
+          cp development/invoices/test-fa-numbering-111.cjs work/
+          cp development/invoices/test-invoice-layout-111.cjs work/
+          (cd work && node test-fa-numbering-111.cjs)
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-invoice-layout-111.cjs)
+          python3 - <<'PY'
+          import hashlib,json,struct,zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and b==hs+4
+          files=json.loads(raw[16:16+n])['files']
+          for name in ['index.html','package.json','browser-bridge.js','renderer.js',
+                       'document-print-preview.js','release-notes.js','nano-invoice-sequence-111.js',
+                       'nano-invoice-layout-111.js','nano-blue-print-110.js','invoice_template_modern.html',
+                       'invoice_thermal_modern_80.html','receipt_template_1.html','nano-payment-ledger-102.js']:
+            e=files[name];body=raw[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert body==Path('work/'+name).read_bytes(),name
+            if e.get('integrity'):assert hashlib.sha256(body).hexdigest()==e['integrity']['hash'],name
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.111'
+          print('PASS: ASAR hashes, no changes to original invoice templates or payment ledger')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-111-invoice-verified
+          path: |
+            NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip
+            work/index.html
+            work/package.json
+            work/browser-bridge.js
+            work/renderer.js
+            work/document-print-preview.js
+            work/release-notes.js
+            work/nano-invoice-sequence-111.js
+            work/nano-invoice-layout-111.js
+            work/nano-blue-print-110.js
+            work/invoice_template_modern.html
+            work/invoice_thermal_modern_80.html
+            work/receipt_template_1.html
+            work/nano-payment-ledger-102.js
+            work/test-fa-numbering-111.cjs
+            work/test-invoice-layout-111.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-111-invoice-verified
+      - name: Recheck real annual counter, sale edit and all paper sizes on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check browser-bridge.js
+            node --check renderer.js
+            node --check nano-invoice-layout-111.js
+            node test-fa-numbering-111.cjs
+            if($LASTEXITCODE -ne 0){throw 'Sale numbering regression failed'}
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'Layout test dependencies failed'}
+            node test-invoice-layout-111.cjs
+            if($LASTEXITCODE -ne 0){throw 'Print layout regression failed'}
+          } finally {Pop-Location}
+  protected:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure business backups and updater remain untouched in PR
+        run: |
+          set -euo pipefail
+          git diff --name-only origin/main...HEAD
+          if git diff --name-only origin/main...HEAD | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|database/|activation/|backup/|resources/)' ; then
+            echo 'Protected file was modified';exit 1
+          fi
