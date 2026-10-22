@@ -1,0 +1,123 @@
+name: NANO POS v1.0.112 - Stability and Final Installer Tests
+on:
+  push:
+    branches: [feature/nano-pos-stability-exe-112]
+    paths:
+      - '.github/assets/nano-storage-warning-112.js'
+      - '.github/scripts/build-stable-exe-112.py'
+      - '.github/scripts/test-stable-exe-112.cjs'
+      - '.github/scripts/test-stability-ui-112.cjs'
+      - '.github/workflows/test-stable-exe-112.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official v1.0.111 and build v1.0.112 candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source work
+          gh release download v1.0.111 --pattern NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip --dir source
+          python3 - <<'PY'
+          import zipfile,hashlib,json
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.111' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+          python3 .github/scripts/build-stable-exe-112.py \
+            source/NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip \
+            NANO-POS-Patch-1.0.111-to-1.0.112-STABILITY.zip work
+          for f in browser-bridge.js nano-storage-warning-112.js release-notes.js electron-main.cjs; do node --check "work/$f"; done
+      - name: Exercise failed data writes, rollback, sales, invoice references and UI
+        run: |
+          set -euo pipefail
+          cp .github/scripts/test-stable-exe-112.cjs work/
+          cp .github/scripts/test-stability-ui-112.cjs work/
+          cp development/invoices/test-fa-numbering-111.cjs work/
+          (cd work && node test-stable-exe-112.cjs && node test-fa-numbering-111.cjs)
+          (cd work && npm install --ignore-scripts --no-save jsdom@26.1.0 && node test-stability-ui-112.cjs)
+          python3 - <<'PY'
+          import json,hashlib,struct,zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.111-to-1.0.112-STABILITY.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and b==hs+4
+          files=json.loads(raw[16:16+n])['files']
+          for name in ['browser-bridge.js','index.html','package.json','release-notes.js',
+            'nano-storage-warning-112.js','nano-invoice-sequence-111.js','nano-invoice-layout-111.js',
+            'nano-payment-ledger-102.js','backup-safety.cjs','electron-main.cjs']:
+            e=files[name];blob=raw[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert blob==Path('work/'+name).read_bytes(),name
+            if e.get('integrity'):assert hashlib.sha256(blob).hexdigest()==e['integrity']['hash'],name
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.112'
+          print('PASS: signed-by-hash production ASAR with unchanged financial/backup/runtime modules')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-112-tested-archive
+          path: |
+            NANO-POS-Patch-1.0.111-to-1.0.112-STABILITY.zip
+            work/browser-bridge.js
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/nano-storage-warning-112.js
+            work/nano-invoice-sequence-111.js
+            work/nano-invoice-layout-111.js
+            work/nano-payment-ledger-102.js
+            work/backup-safety.cjs
+            work/electron-main.cjs
+            work/test-stable-exe-112.cjs
+            work/test-stability-ui-112.cjs
+            work/test-fa-numbering-111.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-112-tested-archive
+      - name: Revalidate safe persistence, invoice sequence and user warning on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check browser-bridge.js
+            node --check nano-storage-warning-112.js
+            node test-stable-exe-112.cjs
+            if($LASTEXITCODE -ne 0){throw 'Atomic storage tests failed'}
+            node test-fa-numbering-111.cjs
+            if($LASTEXITCODE -ne 0){throw 'Invoice numbers regression failed'}
+            npm install --ignore-scripts --no-save jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'UI dependency missing'}
+            node test-stability-ui-112.cjs
+            if($LASTEXITCODE -ne 0){throw 'UI warning failed'}
+          }finally{Pop-Location}
+  protected:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: No modifications to user files, cloud backup, activation or update manifest
+        run: |
+          set -euo pipefail
+          if git diff --name-only origin/main...HEAD | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|database/|activation/|backup/)'; then
+            echo 'Protected data changed';exit 1
+          fi
