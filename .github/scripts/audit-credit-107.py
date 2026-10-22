@@ -46,6 +46,13 @@ for name in ['renderer.js','browser-bridge.js','nano-payment-quality-105.js','na
  for token in tokens:
   matches=list(re.finditer(re.escape(token),src,re.I))
   append(name+' '+token+' ['+str(len(matches))+']','\n---\n'.join(src[max(0,m.start()-260):m.start()+1400] for m in matches[:3]),4400)
+
+for n in ['browser-bridge.js','browser-preload.js','nano-customer-contract.cjs']:
+ src=get(n)
+ for token in ['add-customer','get-customers','addCustomer','getCustomers','customerForm']:
+  matches=list(re.finditer(re.escape(token),src,re.I))
+  append(n+' '+token+' [specific '+str(len(matches))+']',
+    '\n---\n'.join(src[max(0,m.start()-400):m.start()+1650] for m in matches[:4]),9500)
 # Search source for customer API across all JS to avoid missing name.
 def walk(node,prefix=''):
  for name,e in node.items():
