@@ -15,7 +15,7 @@ assert magic==4 and block==hsize+4
 head=json.loads(raw[16:16+n])['files']
 def get(name):
  try:
-  e=head
+  e={'files':head}
   for key in name.split('/'):e=e['files'][key]
   return raw[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']].decode('utf8')
  except: return ''
