@@ -1,0 +1,28 @@
+name: Read-Only Static Review NANO POS v1.0.111
+on:
+  push:
+    branches: [audit/comprehensive-nano-pos-111]
+    paths: ['.github/workflows/static-review-111.yml']
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read production archive and compute audit indicators
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          gh release download v1.0.111 --pattern NANO-POS-Patch-1.0.110-to-1.0.111-INVOICE-FA.zip --dir source
+          python3 development/reviews/audit-v111.py
+      - name: Save report only to audit branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add development/reviews/nano-pos-v111-static-review.json
+          git commit -m 'audit: read-only verified NANO POS v1.0.111 module inventory'
+          git push origin HEAD:refs/heads/audit/comprehensive-nano-pos-111
