@@ -1,0 +1,28 @@
+name: Audit NANO 1.0.107 Payment Invariants
+on:
+  push:
+    branches: [fix/partial-credit-change-108]
+    paths: [.github/workflows/audit-payment-108.yml]
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download verified latest NANO POS
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          gh release download v1.0.107 --pattern NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip --dir source
+          python3 .github/scripts/audit-payment-108.py
+      - name: Commit limited code excerpts for exact patch planning
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add development/trade/payment-audit-108.txt
+          git commit -m 'audit: verified 1.0.107 sale payment rules'
+          git push origin HEAD:refs/heads/fix/partial-credit-change-108
