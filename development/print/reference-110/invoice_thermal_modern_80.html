@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>{{LBL_INVOICE_TITLE}} - {{INVOICE_NUMBER}}</title>
+  <style>
+    @page { margin: 0; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+      width: 100%;
+      max-width: var(--rcpt-paper-w, 80mm);
+      margin: 0 auto;
+      padding: var(--rcpt-pad-y, 3mm) var(--rcpt-pad-x, 5mm);
+      color: #000;
+      font-size: 11px;
+      line-height: 1.35;
+      background: #fff;
+      font-weight: 900;
+    }
+    .paper * { color: #000 !important; border-color: #000 !important; }
+    .paper { width: 100%; }
+    .center { text-align: center; }
+    .muted { font-size: 9px; color: #111; }
+    .sep { border-top: 1px dashed #000; margin: 6px 0; }
+    .row { display: flex; justify-content: space-between; gap: 8px; }
+    .head { display:flex; align-items:flex-start; justify-content:space-between; gap:6px; }
+    .logo { max-width: 30mm; max-height: 18mm; object-fit: contain; display:block; }
+    .shop-name { font-size: 16px; font-weight: 900; line-height: 1.2; }
+    .title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+      margin: 6px 0 4px;
+    }
+    .meta, .party { font-size: 11px; }
+    .meta .row, .party .row { padding: 1px 0; }
+    .barcode-wrap { text-align:center; margin: 7px 0; }
+    .barcode-wrap img { max-width: 100%; max-height: 40px; object-fit: contain; }
+    .barcode-no { font-size: 10px; letter-spacing: 1px; margin-top: 3px; }
+
+    .items-head {
+      display:grid;
+      grid-template-columns: 16mm 1fr 12mm 14mm 16mm;
+      gap: 2px;
+      border: 1px solid #000;
+      padding: 4px 2px;
+      font-size: 10px;
+      font-weight: 900;
+      text-align:center;
+      margin-bottom: 2px;
+    }
+
+    .t-item { border-bottom: 1px solid #d1d5db; padding: 4px 0; }
+    .t-name { font-size: 11px; font-weight: 900; margin-bottom: 2px; }
+    .t-line { display:flex; justify-content:space-between; gap:4px; font-size: 10px; }
+    .t-line .muted2 { color: #111; }
+
+    .totals .row { font-size: 11px; padding: 2px 0; }
+    .grand {
+      border-top: 2px solid #000;
+      border-bottom: 2px solid #000;
+      margin-top: 4px;
+      padding: 4px 0;
+      font-size: 15px;
+      font-weight: 900;
+    }
+    .pay-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+      font-size: 10px;
+    }
+    .pay-table th, .pay-table td {
+      border: 1px solid #000;
+      text-align: center;
+      padding: 3px 2px;
+    }
+    .footer-note {
+      text-align:center;
+      font-size: 9px;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    [data-hidden="true"] { display:none !important; }
+    @media print {
+      body { padding: var(--rcpt-pad-y, 3mm) var(--rcpt-pad-x, 5mm); }
+    }
+  </style>
+  <link href="assets/css/fonts.css" rel="stylesheet">
+</head>
+<body>
+  <main class="paper">
+    <section class="head">
+      <div style="flex:1;">
+        <div class="shop-name">{{COMPANY_NAME}}</div>
+        <div class="muted">{{COMPANY_ADDRESS}}</div>
+        <div class="muted">{{LBL_TEL}}: {{COMPANY_PHONE}}</div>
+      </div>
+      <div id="thermalLogoWrap">
+        <img class="logo" src="{{COMPANY_LOGO}}" alt="logo" id="thermalLogoImg">
+      </div>
+    </section>
+
+    <div class="sep"></div>
+
+    <div class="title">{{INVOICE_TYPE_LABEL}}</div>
+
+    <section class="meta">
+      <div class="row"><span>رقم الفاتورة:</span><span>{{INVOICE_NUMBER}}</span></div>
+      <div class="row"><span>{{LBL_DATE}}:</span><span>{{DATE}}</span></div>
+      <div class="row"><span>{{CLIENT_ROLE_LABEL}}:</span><span>{{PARTY_NAME}}</span></div>
+      <div class="row" id="thermalPartyPhoneRow"><span>هاتف:</span><span id="thermalPartyPhoneValue">{{PARTY_PHONE}}</span></div>
+    </section>
+
+    <div class="barcode-wrap" id="thermalBarcodeWrap">
+      <img src="{{BARCODE_IMAGE}}" alt="barcode" id="thermalBarcodeImg">
+      <div class="barcode-no" id="thermalBarcodeText">{{BARCODE_TEXT}}</div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="items-head">
+      <div>كود</div>
+      <div>صنف</div>
+      <div>كمية</div>
+      <div>وحدة</div>
+      <div>إجمالي</div>
+    </div>
+
+    <section data-purpose="items-table">
+      {{ITEMS_ROWS}}
+    </section>
+
+    <div class="sep"></div>
+
+    <section class="totals">
+      <div class="row"><span>{{LBL_SUBTOTAL}}</span><span>{{SUBTOTAL}}</span></div>
+      <div class="row" data-role="discount-row"><span>{{LBL_DISCOUNT}}</span><span>{{DISCOUNT}}</span></div>
+      <div class="row" data-role="tax-row"><span>{{LBL_TAX_TOTAL}}</span><span>{{TAX_TOTAL}}</span></div>
+      <div class="row" data-role="stamp-row"><span>{{LBL_STAMP}}</span><span>{{STAMP_AMOUNT}}</span></div>
+      <div class="row grand"><span>{{LBL_NET_PAY}}</span><span>{{NET_TO_PAY}}</span></div>
+      <div class="row"><span>{{LBL_OLD_BALANCE}}</span><span>{{OLD_BALANCE}}</span></div>
+      <div class="row"><span>{{LBL_REMAINING_PAY}}</span><span>{{REMAINING_DEBT}}</span></div>
+      <div class="row"><span>{{LBL_TOTAL_DEBT}}</span><span>{{TOTAL_DEBT}}</span></div>
+    </section>
+
+    <div class="sep"></div>
+
+    <div class="row" style="font-size:11px;"><span>{{LBL_MODE_PAIEMENT}}</span><span>{{PAYMENT_MODE}}</span></div>
+    <table class="pay-table">
+      <thead>
+        <tr>
+          <th>كاش</th>
+          <th>بطاقة</th>
+          <th>حوالة / شيك</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{NET_TO_PAY}}</td>
+          <td>0.00</td>
+          <td>0.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="sep"></div>
+
+    <div style="font-size:10px; line-height:1.6;">
+      <div><strong>{{LBL_TOTAL_IN_WORDS_PREFIX}}</strong></div>
+      <div>{{TOTAL_IN_WORDS}}</div>
+    </div>
+
+    <div class="footer-note">
+      <div>{{COMPANY_NAME}}</div>
+      <div>{{COMPANY_ADDRESS}}</div>
+      <div>{{COMPANY_PHONE}}</div>
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      function isEmptyValue(v) {
+        return !v || !String(v).trim() || /{{[^}]+}}/.test(String(v)) || String(v).trim() === '-' || String(v).trim() === '0.00' || String(v).trim() === '0';
+      }
+      const logo = document.getElementById('thermalLogoImg');
+      if (logo && isEmptyValue(logo.getAttribute('src'))) {
+        document.getElementById('thermalLogoWrap').setAttribute('data-hidden','true');
+      } else if (logo) {
+        logo.onerror = () => document.getElementById('thermalLogoWrap').setAttribute('data-hidden','true');
+      }
+
+      const bw = document.getElementById('thermalBarcodeWrap');
+      const bi = document.getElementById('thermalBarcodeImg');
+      const bt = document.getElementById('thermalBarcodeText');
+      if (bw && isEmptyValue(bi?.getAttribute('src')) && isEmptyValue(bt?.textContent)) {
+        bw.setAttribute('data-hidden','true');
+      } else if (bi) {
+        bi.onerror = () => {
+          if (isEmptyValue(bt?.textContent)) bw.setAttribute('data-hidden','true');
+          else bi.setAttribute('data-hidden','true');
+        };
+      }
+
+      const partyPhoneRow = document.getElementById('thermalPartyPhoneRow');
+      const partyPhoneValue = document.getElementById('thermalPartyPhoneValue');
+      if (partyPhoneRow && isEmptyValue(partyPhoneValue?.textContent)) {
+        partyPhoneRow.setAttribute('data-hidden','true');
+      }
+
+      ['discount-row','tax-row','stamp-row'].forEach(role => {
+        const row = document.querySelector(`[data-role="${role}"]`);
+        if (!row) return;
+        const value = row.lastElementChild?.textContent || '';
+        if (isEmptyValue(value)) row.setAttribute('data-hidden', 'true');
+      });
+    })();
+  </script>
+</body>
+</html>

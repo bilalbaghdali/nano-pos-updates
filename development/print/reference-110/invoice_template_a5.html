@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>{{LBL_INVOICE_TITLE}} - {{INVOICE_NUMBER}}</title>
+  <script src="assets/js/tailwind.min.js"></script>
+  <style data-purpose="page-size">
+    /* Compact half-page invoice. A5 portrait = 148mm × 210mm. */
+    @page { size: A5; margin: 0; }
+  </style>
+  <style data-purpose="typography">
+    body {
+      font-family: 'Cairo', sans-serif;
+      font-size: 9px;
+      color: #000;
+      background-color: #e5e7eb;
+    }
+  </style>
+  <style data-purpose="layout-and-borders">
+    .invoice-container {
+      width: 148mm;
+      min-height: 210mm;
+      margin: 16px auto;
+      padding: 10mm 9mm;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .rounded-box {
+      border: 1px solid #000;
+      border-radius: 8px;
+      padding: 7px 9px;
+    }
+
+    .table-border,
+    .table-border th,
+    .table-border td {
+      border: 1px solid #000;
+      border-collapse: collapse;
+    }
+
+    .table-border th { padding: 3px 2px; font-weight: bold; }
+    .table-border td { padding: 3px 2px; }
+
+    @media print {
+      body { background-color: #fff; padding: 0; margin: 0; }
+      .invoice-container {
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
+        min-height: auto;
+        padding: 6mm 7mm;
+      }
+    }
+  </style>
+  <link href="assets/css/fonts.css" rel="stylesheet">
+</head>
+
+<body class="p-2">
+  <main class="invoice-container mx-auto bg-white" data-purpose="invoice-document">
+
+    <!-- Header -->
+    <header class="flex justify-between items-start mb-4 pb-2 border-b-2 border-black">
+      <div>
+        <h1 class="text-base font-bold mb-0.5">{{COMPANY_NAME}}</h1>
+        <p class="font-bold text-[8px]">{{COMPANY_DESCRIPTION}}</p>
+        <p class="font-bold text-[8px]">{{COMPANY_ADDRESS}}</p>
+        <p class="font-bold text-[8px]">{{LBL_TEL}} : {{COMPANY_PHONE}} — {{LBL_EMAIL}} : {{COMPANY_EMAIL}}</p>
+        <p class="font-bold text-[8px]">RC : {{COMPANY_RC}} — NIF : {{COMPANY_NIF}} — AI : {{COMPANY_AI}} — NIS : {{COMPANY_NIS}}</p>
+      </div>
+      {{#if COMPANY_LOGO}}
+      <img src="{{COMPANY_LOGO}}" alt="logo" style="max-height:48px;max-width:90px;object-fit:contain;" />
+      {{/if}}
+    </header>
+
+    <!-- Client + invoice meta -->
+    <section class="flex justify-between items-start mb-3 gap-3" data-purpose="info-block">
+      <div class="w-[58%] rounded-box text-[8px] font-bold leading-snug">
+        <p>{{CLIENT_ROLE_LABEL}} : {{PARTY_NAME}}</p>
+        <p>{{LBL_ADDRESS}} {{PARTY_ADDRESS}}</p>
+        <p>RC : {{PARTY_RC}} — NIF : {{PARTY_NIF}}</p>
+      </div>
+      <div class="w-[40%] text-left">
+        <h2 class="text-sm font-bold mb-1">{{INVOICE_TYPE_LABEL}} {{INVOICE_NUMBER}}</h2>
+        <p class="text-[9px] font-bold">{{LBL_DATE}} {{DATE}}</p>
+      </div>
+    </section>
+
+    <!-- Items -->
+    <section class="mb-3" data-purpose="items-table">
+      <table class="w-full table-border text-center text-[8px] font-bold">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="w-[6%]">{{LBL_N_INDEX}}</th>
+            <th class="w-[16%]">{{LBL_REF}}</th>
+            <th class="w-[30%]">{{LBL_DESIGNATION}}</th>
+            <th class="w-[10%]">{{LBL_QTY}}</th>
+            <th class="w-[10%]">{{LBL_UNIT}}</th>
+            <th class="w-[12%]">{{LBL_UNIT_PRICE}}</th>
+            <th class="w-[6%]">{{LBL_TVA}}</th>
+            <th class="w-[12%]">{{LBL_TOTAL_HT}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ITEMS_ROWS}}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Totals (markup mirrors invoice_template_4 so the conditional row removals apply) -->
+    <section class="flex flex-col mb-3" style="align-items: flex-start;" data-purpose="totals-section">
+      <div class="w-[55%] rounded-box font-bold text-[8px]">
+        <div class="flex justify-between py-0.5">
+          <span>{{LBL_SUBTOTAL}}</span>
+          <span>{{SUBTOTAL}}</span>
+        </div>
+        <div class="flex justify-between py-0.5" data-purpose="discount-row">
+          <span>{{LBL_DISCOUNT}}</span>
+          <span>{{DISCOUNT}}</span>
+        </div>
+        <div class="flex justify-between py-1">
+          <span>{{LBL_TAX_TOTAL}}</span>
+          <span>{{TAX_TOTAL}}</span>
+        </div>
+        <div class="flex justify-between py-0.5" data-purpose="stamp-row">
+          <span>{{LBL_STAMP}}</span>
+          <span>{{STAMP_AMOUNT}}</span>
+        </div>
+        <div class="flex justify-between py-1 border-t border-black mt-1 pt-1 font-black">
+          <span>{{LBL_NET_PAY}}</span>
+          <span>{{NET_TO_PAY}}</span>
+        </div>
+        <div class="flex justify-between py-0.5 mt-1 pt-1 border-t border-dashed border-slate-400" data-purpose="old-balance-row">
+          <span>{{LBL_OLD_BALANCE}}</span>
+          <span>{{OLD_BALANCE}}</span>
+        </div>
+        <div class="flex justify-between py-0.5" data-purpose="remaining-row">
+          <span>{{LBL_REMAINING_PAY}}</span>
+          <span>{{REMAINING_DEBT}}</span>
+        </div>
+        <div class="flex justify-between py-1 border-t border-black mt-1 pt-1 font-black" data-purpose="total-debt-row">
+          <span>{{LBL_TOTAL_DEBT}}</span>
+          <span>{{TOTAL_DEBT}}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <section class="space-y-3" data-purpose="footer-details">
+      <p class="font-bold text-[8px]">{{LBL_TOTAL_IN_WORDS_PREFIX}} {{TOTAL_IN_WORDS}}</p>
+      <div class="flex justify-between items-end gap-3 mt-3" data-purpose="footer-row">
+        <div class="border border-black px-2 py-1 font-bold text-[8px]" data-purpose="payment-mode">
+          {{LBL_MODE_PAIEMENT}} {{PAYMENT_MODE}}
+        </div>
+        <div class="w-[42%] border border-black rounded-md px-2 pt-1 pb-8 text-center font-bold text-[8px]" data-purpose="signature-box">
+          {{LBL_SIGNATURE}}
+        </div>
+      </div>
+    </section>
+
+  </main>
+</body>
+
+</html>

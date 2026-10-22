@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>وصل تسليم - {{RECEIPT_NUMBER}}</title>
+  <link href="assets/css/fonts.css" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      background: #f3f4f6;
+      color: #000;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', Arial, sans-serif;
+      font-size: 12px;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 280mm;
+      background: #fff;
+      margin: 0 auto;
+      padding: 12mm 14mm;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    @media print {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+      }
+
+      .page {
+        width: 100%;
+        min-height: auto;
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14mm;
+    }
+
+    .company-name {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    .company-phone {
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .logo-img {
+      width: 26mm;
+      height: 26mm;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    /* ── Title row + client box ─────────────────────────── */
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 4mm;
+    }
+
+    .doc-title {
+      font-size: 21px;
+      font-weight: 900;
+      margin: 0;
+    }
+
+    .client-box {
+      border: 1px solid #999;
+      border-radius: 2mm;
+      padding: 2mm 4mm;
+      min-width: 60mm;
+      font-size: 12px;
+    }
+
+    .client-box .client-name { font-weight: 800; }
+    .client-box .client-code { font-weight: 600; margin-top: 1mm; }
+
+    /* ── Tables ─────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 1.2mm 2mm;
+    }
+
+    th {
+      background: #d3d3d3;
+      font-weight: 800;
+      text-align: center;
+      font-size: 11.5px;
+    }
+
+    .info-table { margin-bottom: 6mm; }
+    .info-table td { text-align: center; font-weight: 700; }
+
+    /* Items: full outer frame + bordered header, open rows (no inner grid)
+       like the source document */
+    .items-table { margin-bottom: 8mm; border: 1.5px solid #000; }
+    .items-table th.start { text-align: start; }
+    .items-table th.end { text-align: end; }
+    .items-table td { border: none; font-size: 11.5px; padding: 1mm 2mm; }
+    .items-table td.code { font-family: monospace; font-size: 11px; white-space: nowrap; }
+    .items-table td.num { text-align: end; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .items-table td.qty { text-align: end; white-space: nowrap; }
+
+    /* ── Bottom: payment mode + totals ───────────────────── */
+    .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8mm;
+    }
+
+    .payment-mode {
+      border: 1px solid #000;
+      padding: 2mm 3mm 6mm;
+      font-weight: 700;
+      min-width: 70mm;
+      align-self: flex-start;
+    }
+
+    .totals-table { width: 75mm; }
+    .totals-table td { font-weight: 800; }
+    .totals-table td.lbl { width: 45%; }
+    .totals-table td.val { text-align: end; font-variant-numeric: tabular-nums; }
+    .totals-table tr.net td { font-weight: 900; font-size: 13px; border-width: 2px; }
+
+    .amount-words {
+      margin-top: 6mm;
+      font-size: 11.5px;
+      font-weight: 700;
+      border-top: 1px solid #ccc;
+      padding-top: 2.5mm;
+    }
+
+    .page-footer {
+      margin-top: auto;
+      text-align: left;
+      font-size: 10px;
+      color: #555;
+      padding-top: 6mm;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <!-- Header: company + logo -->
+    <header class="doc-header">
+      <div>
+        <h1 class="company-name">{{COMPANY_NAME}}</h1>
+        <div class="company-phone">{{COMPANY_PHONE}}</div>
+      </div>
+      {{#if COMPANY_LOGO}}<img class="logo-img" src="{{COMPANY_LOGO}}" alt="logo" />{{/if}}
+    </header>
+
+    <!-- Title + client box -->
+    <div class="title-row">
+      <h2 class="doc-title">وصل تسليم</h2>
+      <div class="client-box">
+        <div class="client-name">{{CLIENT_NAME}}</div>
+        <div class="client-code">كود الزبون : {{CLIENT_CODE}}</div>
+      </div>
+    </div>
+
+    <!-- Info table -->
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>رقم الوصل</th>
+          <th>التاريخ</th>
+          <th>كود الزبون</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{RECEIPT_NUMBER}}</td>
+          <td>{{DATE}}</td>
+          <td>{{CLIENT_CODE}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Items table -->
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th class="start" style="width:18%">الكود</th>
+          <th class="start">التسمية</th>
+          <th class="end" style="width:9%">الكمية</th>
+          <th class="end" style="width:15%">سعر الوحدة</th>
+          <th class="end" style="width:17%">المبلغ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ITEMS_ROWS}}
+      </tbody>
+    </table>
+
+    <!-- Payment mode + totals -->
+    <div class="bottom-row">
+      <div class="payment-mode">طريقة الدفع : {{PAYMENT_MODE}}</div>
+      <table class="totals-table">
+        <tr>
+          <td class="lbl">المجموع</td>
+          <td class="val">{{SUBTOTAL}} DA</td>
+        </tr>
+        <tr class="net">
+          <td class="lbl">الصافي للدفع</td>
+          <td class="val">{{TOTAL}} DA</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Amount in words -->
+    <p class="amount-words">أُوقِف هذا الوصل على مبلغ : {{TOTAL_IN_WORDS}}</p>
+
+    <footer class="page-footer">1/1</footer>
+  </main>
+</body>
+
+</html>
