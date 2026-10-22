@@ -1,0 +1,116 @@
+name: NANO POS v1.0.110 - Modern Invoice and Receipt Layout Tests
+on:
+  push:
+    branches: [feature/modern-print-layouts-110]
+    paths:
+      - 'development/print/nano-blue-print-110.js'
+      - 'development/print/build-modern-print-110.py'
+      - 'development/print/test-blue-print-110.cjs'
+      - '.github/workflows/test-modern-print-110.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify latest official full ASAR release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source work
+          gh release download v1.0.109 --pattern NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip --dir source
+          python3 - <<'PY'
+          import zipfile,hashlib,json
+          from pathlib import Path
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.109' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build print-only patch, run five-size layout, PDF and printer parity tests
+        run: |
+          set -euo pipefail
+          python3 development/print/build-modern-print-110.py \
+            source/NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip \
+            NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip work
+          node --check work/nano-blue-print-110.js
+          node --check work/document-print-preview.js
+          cp development/print/test-blue-print-110.cjs work/
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-blue-print-110.cjs)
+          python3 - <<'PY'
+          import json,zipfile,hashlib,struct
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            data=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',data)
+          assert magic==4 and block==hs+4
+          files=json.loads(data[16:16+n])['files']
+          for name in ['document-print-preview.js','nano-blue-print-110.js','index.html','package.json',
+                       'release-notes.js','invoice_template_modern.html','receipt_template_1.html',
+                       'receipt_template_2.html','invoice_thermal_modern_80.html','browser-bridge.js']:
+            e=files[name]
+            payload=data[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+            assert payload==Path('work/'+name).read_bytes(),name
+            if 'integrity' in e:assert hashlib.sha256(payload).hexdigest()==e['integrity']['hash'],name
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.110'
+          print('PASS: verified ASAR files, templates and unchanged sale/ledger bridge')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-blue-print-110-candidate
+          path: |
+            NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip
+            work/nano-blue-print-110.js
+            work/document-print-preview.js
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/invoice_template_modern.html
+            work/receipt_template_1.html
+            work/receipt_template_2.html
+            work/invoice_thermal_modern_80.html
+            work/browser-bridge.js
+            work/test-blue-print-110.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-blue-print-110-candidate
+      - name: Check preview/native print/PDF identity on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check nano-blue-print-110.js
+            node --check document-print-preview.js
+            npm install --ignore-scripts --no-save jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'UI test dependency failed'}
+            node test-blue-print-110.cjs
+            if($LASTEXITCODE -ne 0){throw 'Print and PDF regression failed'}
+          }finally{Pop-Location}
+  protected:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure no business data or activation changes
+        run: |
+          set -euo pipefail
+          git diff --name-only origin/main...HEAD
+          if git diff --name-only origin/main...HEAD | grep -E '^(nano-pos-update\.json|app\.asar|mobile/|database/|activation/|backup/|resources/)' ; then
+            echo 'Protected user data or activation changes not allowed';exit 1
+          fi
