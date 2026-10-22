@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.107",
+  "version": "1.0.108",
   "releaseDate": "2026-10-22",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "البيع بالكريدي من شاشة الدفع عبر اختيار زبون موجود أو إضافته دون مغادرة البيع.",
-      "نافذة بحث باسم الزبون أو الهاتف مع اختيار سريع وربط الزبون بالفاتورة.",
-      "الزبون الجديد يبدأ دون ديون افتتاحية؛ يسجل الدين فقط عند تأكيد الفاتورة، دون تكرار الرصيد.",
-      "حفظ الدفع النقدي بالصرف وطريقة الدفع الواحدة والمخزون والفواتير السابقة والتفعيل."
+      "إدخال أي مبلغ مقدم من الزبون دون زري الدفع الكامل أو الدين الكامل.",
+      "إذا كان المبلغ أقل من قيمة الفاتورة يسجل الفرق دينًا على الزبون بعد اختياره أو إضافته.",
+      "إذا كان المبلغ النقدي أكبر من الفاتورة يعرض الصرف والفئات المقترحة لإرجاعه.",
+      "حماية المخزون والأرصدة وتكرار الفواتير مع الاحتفاظ بالتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
-      "Vente à crédit depuis la caisse avec choix ou création de client.",
-      "Recherche du client par nom ou téléphone directement dans la fenêtre de crédit.",
-      "Aucune dette initiale à la création; dette comptabilisée uniquement lors de la validation de la vente.",
-      "Conservation de la monnaie à rendre, des factures et des sauvegardes."
+      "Un montant reçu unique sans boutons paiement total ou crédit total.",
+      "Paiement partiel: le solde est ajouté comme dette du client enregistré.",
+      "Espèces supérieures au total: monnaie à rendre et coupures suggérées.",
+      "Protection des stocks, des soldes, des factures et des sauvegardes."
     ],
     "en": [
-      "Choose or add a customer directly from the full-credit checkout action.",
-      "Customer search by name or phone in a dedicated modal.",
-      "New customer has zero opening debt; credit is posted only on confirmed sale.",
-      "Keep cash change, single-method checkout, existing records and activation."
+      "Enter any amount from customer without full-pay or full-credit buttons.",
+      "Underpayment records the balance as customer credit after customer selection.",
+      "Cash overpayment shows exact change and suggested denominations.",
+      "Safe stock and balances, duplicate invoice protection and intact backups."
     ]
   },
   "releaseHistory": {
@@ -1830,11 +1830,34 @@
           "Keep cash change, single-method checkout, existing records and activation."
         ]
       }
+    },
+    "1.0.108": {
+      "releaseDate": "2026-10-22",
+      "features": {
+        "ar": [
+          "إدخال أي مبلغ مقدم من الزبون دون زري الدفع الكامل أو الدين الكامل.",
+          "إذا كان المبلغ أقل من قيمة الفاتورة يسجل الفرق دينًا على الزبون بعد اختياره أو إضافته.",
+          "إذا كان المبلغ النقدي أكبر من الفاتورة يعرض الصرف والفئات المقترحة لإرجاعه.",
+          "حماية المخزون والأرصدة وتكرار الفواتير مع الاحتفاظ بالتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Un montant reçu unique sans boutons paiement total ou crédit total.",
+          "Paiement partiel: le solde est ajouté comme dette du client enregistré.",
+          "Espèces supérieures au total: monnaie à rendre et coupures suggérées.",
+          "Protection des stocks, des soldes, des factures et des sauvegardes."
+        ],
+        "en": [
+          "Enter any amount from customer without full-pay or full-credit buttons.",
+          "Underpayment records the balance as customer credit after customer selection.",
+          "Cash overpayment shows exact change and suggested denominations.",
+          "Safe stock and balances, duplicate invoice protection and intact backups."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-107-credit-customer-checkout",
+      "id": "nano-pos-v108-flexible-partial-credit-and-change",
       "fromVersions": [
         "1.0.91",
         "1.0.92",
@@ -1851,14 +1874,15 @@
         "1.0.103",
         "1.0.104",
         "1.0.105",
-        "1.0.106"
+        "1.0.106",
+        "1.0.107"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.107/NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.107",
-      "sha256": "363697577cab51ebc24eacd0f59ebe0ae82b4360e389d558e93e21097ff2bdc6",
-      "appAsarSha256": "57a53244dd52b596166e5fcbc1627e372f0bde3b0d952a9e69de631cba46a500",
-      "fileName": "NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip",
-      "sizeBytes": 31419029,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.108/NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.108",
+      "sha256": "438cb777884fbceebe27a5b7f5295b5e8af9dbebe53f81a931620b9795cabefc",
+      "appAsarSha256": "16ad741ad25e13a766d060d3990e04a17ca50de21147f4c11272032228952907",
+      "fileName": "NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip",
+      "sizeBytes": 31421426,
       "payloadType": "app-asar"
     }
   ],
@@ -1869,8 +1893,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات البيع بالكريدي واختيار أو إضافة الزبون عند الدفع.",
-    "fr": "Vente à crédit : choix ou création du client en caisse.",
-    "en": "Full credit: choose or create customer during checkout."
+    "ar": "تحسينات: تسديد مبلغ بأي قيمة، والدين المتبقي أو الصرف الآلي.",
+    "fr": "Améliorations: règlement partiel et monnaie à rendre.",
+    "en": "Flexible payment, customer balance and cash change."
   }
 }
