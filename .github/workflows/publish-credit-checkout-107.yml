@@ -1,0 +1,173 @@
+name: NANO POS v1.0.107 - Publish Credit Checkout Customer Picker
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-credit-checkout-107.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-107
+  cancel-in-progress: false
+jobs:
+  verify_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify signed-by-hash official source v1.0.106
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view v1.0.107 >/dev/null 2>&1; then echo 'Refuse overwrite';exit 1;fi
+          mkdir -p source work
+          gh release download v1.0.106 --pattern NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['version']=='1.0.106' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build patch, verify customer/debt flow and no data migration
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-credit-picker-107.py \
+            source/NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip \
+            NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip work
+          node --check work/nano-credit-picker-107.js
+          node --check work/browser-bridge.js
+          cp .github/scripts/test-credit-ui-107.cjs work/
+          cp .github/scripts/test-credit-bridge-107.cjs work/
+          (cd work && node test-credit-bridge-107.cjs)
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-credit-ui-107.cjs)
+          python3 - <<'PY'
+          import zipfile,struct,json,hashlib
+          from pathlib import Path
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            blob=z.read('payload/app.asar')
+          magic,block,hs,n=struct.unpack_from('<4I',blob)
+          assert magic==4 and block==hs+4
+          h=json.loads(blob[16:16+n])['files']
+          for name in ['index.html','package.json','release-notes.js','nano-credit-picker-107.js',
+            'browser-bridge.js','nano-payment-quality-105.js','nano-cash-guide-106.js',
+            'nano-cash-plan-106.js','nano-payment-ledger-102.js','nano-checkout-choice-104.js']:
+            e=h[name];part=blob[8+block+int(e['offset']):8+block+int(e['offset'])+e['size']]
+            assert part==Path('work/'+name).read_bytes(),name
+            if 'integrity' in e:assert hashlib.sha256(part).hexdigest()==e['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.107'
+          print('PASS: validated archive, no business code changed')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-107-credit-release-payload
+          path: |
+            NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/nano-credit-picker-107.js
+            work/browser-bridge.js
+            work/nano-payment-quality-105.js
+            work/nano-cash-guide-106.js
+            work/nano-cash-plan-106.js
+            work/nano-payment-ledger-102.js
+            work/nano-checkout-choice-104.js
+            work/test-credit-ui-107.cjs
+            work/test-credit-bridge-107.cjs
+          if-no-files-found: error
+  verify_windows:
+    needs: verify_linux
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-107-credit-release-payload
+      - name: Verify UI and real ledger behavior with simulated data on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check nano-credit-picker-107.js
+            node --check browser-bridge.js
+            node test-credit-bridge-107.cjs
+            if($LASTEXITCODE -ne 0){throw 'Credit ledger regression failure'}
+            npm install --no-save --ignore-scripts jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'Fixture dependency failure'}
+            node test-credit-ui-107.cjs
+            if($LASTEXITCODE -ne 0){throw 'Credit modal regression failure'}
+          }finally{Pop-Location}
+  publish:
+    needs: [verify_linux,verify_windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-107-credit-release-payload
+      - name: Publish reviewed ZIP only after Windows and Linux
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.107 >/dev/null 2>&1 || { echo 'Release already exists';exit 1; }
+          gh release create v1.0.107 NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.107 — تحسينات البيع بالكريدي' \
+            --notes 'وسم: تحسينات. عند فتح شاشة دفع المبيعات والضغط على «دين كامل»، تظهر نافذة لاختيار زبون بالاسم أو رقم الهاتف أو إنشاء زبون جديد، ثم يعود البائع إلى فاتورة البيع مع تسجيل الزبون وإعداد الدفع بالدين الكامل. إضافة الزبون لا تُدخل دينًا افتتاحيًا ولا تُنشئ فاتورة وحدها. ينشأ الدين مرة واحدة على حساب الزبون فقط عند تأكيد الفاتورة وفق قواعد البيع الموجودة. تحافظ هذه النسخة على الصرف النقدي والدفع بطريقة واحدة ومنع فواتير البيع المكررة والتفعيل والنسخ الاحتياطية وبيانات المتجر. نجحت اختبارات Windows وLinux لمحاكاة الزبائن والفواتير والمخزون؛ لم تُجرَ تجربة بيع فعلية على جهاز متجر.'
+          gh release view v1.0.107 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip
+      - name: Enable the latest update within NANO POS after release exists
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,zipfile,datetime
+          path=Path('nano-pos-update.json')
+          m=json.loads(path.read_text(encoding='utf8'))
+          assert m['version']=='1.0.106' and m['published']
+          f=Path('NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.107'
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.107/'+f.name
+          features={
+            'ar':['البيع بالكريدي من شاشة الدفع عبر اختيار زبون موجود أو إضافته دون مغادرة البيع.',
+                  'نافذة بحث باسم الزبون أو الهاتف مع اختيار سريع وربط الزبون بالفاتورة.',
+                  'الزبون الجديد يبدأ دون ديون افتتاحية؛ يسجل الدين فقط عند تأكيد الفاتورة، دون تكرار الرصيد.',
+                  'حفظ الدفع النقدي بالصرف وطريقة الدفع الواحدة والمخزون والفواتير السابقة والتفعيل.'],
+            'fr':['Vente à crédit depuis la caisse avec choix ou création de client.',
+                  'Recherche du client par nom ou téléphone directement dans la fenêtre de crédit.',
+                  'Aucune dette initiale à la création; dette comptabilisée uniquement lors de la validation de la vente.',
+                  'Conservation de la monnaie à rendre, des factures et des sauvegardes.'],
+            'en':['Choose or add a customer directly from the full-credit checkout action.',
+                  'Customer search by name or phone in a dedicated modal.',
+                  'New customer has zero opening debt; credit is posted only on confirmed sale.',
+                  'Keep cash change, single-method checkout, existing records and activation.']
+          }
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          m.update(version='1.0.107',published=True,releaseDate=day,mandatory=False,importance='normal',features=features)
+          m.setdefault('releaseHistory',{})['1.0.107']={'releaseDate':day,'features':features}
+          m['patches']=[{'id':'nano-pos-107-credit-customer-checkout',
+            'fromVersions':[f'1.0.{i}' for i in range(91,107)],
+            'directUrl':url,'pageUrl':page,'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,'payloadType':'app-asar'}]
+          m['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          m['notes']={'ar':'تحسينات البيع بالكريدي واختيار أو إضافة الزبون عند الدفع.',
+            'fr':'Vente à crédit : choix ou création du client en caisse.',
+            'en':'Full credit: choose or create customer during checkout.'}
+          path.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS v1.0.107 customer credit checkout'
+          git push origin HEAD:refs/heads/main
