@@ -40,10 +40,10 @@ def patch_center(src):
              "frame.srcdoc=decorate(raw,L,p.paper,p.color,p.template,p.footer,scope)")
     # Fix previous pre-v1.0.110 divergence: preview used selected template/footer,
     # print/PDF dropped both and sent undecorated styles.
-    src=once(src,"const p=state(),H=decorate(raw,L,p.paper,p.color),size=PAPER[p.paper]||PAPER.A4;",
-             "const p=state(),H=decorate(raw,L,p.paper,p.color,p.template,p.footer,scope),size=PAPER[p.paper]||PAPER.A4;")
-    src=once(src,"const p=state(),H=decorate(raw,L,p.paper,p.color),size=PAPER[p.paper]||PAPER.A4;",
-             "const p=state(),H=decorate(raw,L,p.paper,p.color,p.template,p.footer,scope),size=PAPER[p.paper]||PAPER.A4;")
+    old="const p=state(),H=decorate(raw,L,p.paper,p.color),size=PAPER[p.paper]||PAPER.A4;"
+    new="const p=state(),H=decorate(raw,L,p.paper,p.color,p.template,p.footer,scope),size=PAPER[p.paper]||PAPER.A4;"
+    assert src.count(old)==2,("unexpected_preview_print_pdf_paths",src.count(old))
+    src=src.replace(old,new)
     src=once(src,"return show({html:h,kind:k,language:l,onLanguageChange:",
              "return show({html:h,kind:k,scope:k==='r'?'receipt':a[0]==='sale'?'sale':'other',language:l,onLanguageChange:")
     assert "R80D:{label:" in src
