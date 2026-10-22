@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.106",
-  "releaseDate": "2026-10-21",
+  "version": "1.0.107",
+  "releaseDate": "2026-10-22",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسينات: إدخال المبلغ النقدي المستلم وحساب الصرف بدقة مع اقتراح فئات الدينار الجزائري لإرجاعه.",
-      "منع تسجيل بيع نقدي بمبلغ غير كافٍ، مع حفظ مبالغ النقد والصرف الفعلي المحسوب بالفاتورة.",
-      "فتح نافذة البرنامج دون انتظار اكتمال تهيئة خدمات المزامنة الاختيارية، وتشغيلها بعدها.",
-      "الحفاظ على البيع بالدين الكامل وطريقة دفع واحدة والتفعيل والنسخ الاحتياطية."
+      "البيع بالكريدي من شاشة الدفع عبر اختيار زبون موجود أو إضافته دون مغادرة البيع.",
+      "نافذة بحث باسم الزبون أو الهاتف مع اختيار سريع وربط الزبون بالفاتورة.",
+      "الزبون الجديد يبدأ دون ديون افتتاحية؛ يسجل الدين فقط عند تأكيد الفاتورة، دون تكرار الرصيد.",
+      "حفظ الدفع النقدي بالصرف وطريقة الدفع الواحدة والمخزون والفواتير السابقة والتفعيل."
     ],
     "fr": [
-      "Retour du calcul de monnaie avec répartition conseillée en DZD.",
-      "Contrôle du montant remis et historique des espèces dans la facture.",
-      "Démarrage de la fenêtre sans attendre les serveurs de synchronisation facultatifs.",
-      "Ventes entièrement à crédit, licences, sauvegardes et moyens uniques préservés."
+      "Vente à crédit depuis la caisse avec choix ou création de client.",
+      "Recherche du client par nom ou téléphone directement dans la fenêtre de crédit.",
+      "Aucune dette initiale à la création; dette comptabilisée uniquement lors de la validation de la vente.",
+      "Conservation de la monnaie à rendre, des factures et des sauvegardes."
     ],
     "en": [
-      "Restore customer cash tender and exact change with recommended DZD denominations.",
-      "Block insufficient cash and record change information with the sale.",
-      "Show window without waiting for optional phone/PC sync services to bind.",
-      "Preserve full-credit sales, single method, licenses and backups."
+      "Choose or add a customer directly from the full-credit checkout action.",
+      "Customer search by name or phone in a dedicated modal.",
+      "New customer has zero opening debt; credit is posted only on confirmed sale.",
+      "Keep cash change, single-method checkout, existing records and activation."
     ]
   },
   "releaseHistory": {
@@ -1807,11 +1807,34 @@
           "Preserve full-credit sales, single method, licenses and backups."
         ]
       }
+    },
+    "1.0.107": {
+      "releaseDate": "2026-10-22",
+      "features": {
+        "ar": [
+          "البيع بالكريدي من شاشة الدفع عبر اختيار زبون موجود أو إضافته دون مغادرة البيع.",
+          "نافذة بحث باسم الزبون أو الهاتف مع اختيار سريع وربط الزبون بالفاتورة.",
+          "الزبون الجديد يبدأ دون ديون افتتاحية؛ يسجل الدين فقط عند تأكيد الفاتورة، دون تكرار الرصيد.",
+          "حفظ الدفع النقدي بالصرف وطريقة الدفع الواحدة والمخزون والفواتير السابقة والتفعيل."
+        ],
+        "fr": [
+          "Vente à crédit depuis la caisse avec choix ou création de client.",
+          "Recherche du client par nom ou téléphone directement dans la fenêtre de crédit.",
+          "Aucune dette initiale à la création; dette comptabilisée uniquement lors de la validation de la vente.",
+          "Conservation de la monnaie à rendre, des factures et des sauvegardes."
+        ],
+        "en": [
+          "Choose or add a customer directly from the full-credit checkout action.",
+          "Customer search by name or phone in a dedicated modal.",
+          "New customer has zero opening debt; credit is posted only on confirmed sale.",
+          "Keep cash change, single-method checkout, existing records and activation."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v106-cash-change-faststart",
+      "id": "nano-pos-107-credit-customer-checkout",
       "fromVersions": [
         "1.0.91",
         "1.0.92",
@@ -1827,14 +1850,15 @@
         "1.0.102",
         "1.0.103",
         "1.0.104",
-        "1.0.105"
+        "1.0.105",
+        "1.0.106"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.106/NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.106",
-      "sha256": "498e113b6be95a6d6c9fdef58dfb7321f8398711ff9d78c9cba2e1742f2e039e",
-      "appAsarSha256": "fd4f1b2b83c55fe07c3c7f932a6955119ad4f0e6c80f4fb5a1dcf3b5825e4283",
-      "fileName": "NANO-POS-Patch-1.0.105-to-1.0.106-CASH-FASTSTART.zip",
-      "sizeBytes": 31415590,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.107/NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.107",
+      "sha256": "363697577cab51ebc24eacd0f59ebe0ae82b4360e389d558e93e21097ff2bdc6",
+      "appAsarSha256": "57a53244dd52b596166e5fcbc1627e372f0bde3b0d952a9e69de631cba46a500",
+      "fileName": "NANO-POS-Patch-1.0.106-to-1.0.107-CREDIT-CUSTOMER.zip",
+      "sizeBytes": 31419029,
       "payloadType": "app-asar"
     }
   ],
@@ -1845,8 +1869,8 @@
     "fileName": ""
   },
   "notes": {
-    "ar": "تحسينات الصرف النقدي وسرعة بدء البرنامج.",
-    "fr": "Amélioration de la monnaie à rendre et du démarrage.",
-    "en": "Cash change and quicker first-window startup improvements."
+    "ar": "تحسينات البيع بالكريدي واختيار أو إضافة الزبون عند الدفع.",
+    "fr": "Vente à crédit : choix ou création du client en caisse.",
+    "en": "Full credit: choose or create customer during checkout."
   }
 }
