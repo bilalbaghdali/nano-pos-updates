@@ -1,0 +1,170 @@
+name: NANO POS v1.0.110 - Publish Modern Blue Invoices and Receipts
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-modern-print-110.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-modern-print-110
+  cancel-in-progress: false
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify official v1.0.109 production archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.110 >/dev/null 2>&1 || { echo 'Release tag already exists';exit 1; }
+          mkdir -p source work
+          gh release download v1.0.109 --pattern NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,hashlib,json
+          m=json.loads(Path('nano-pos-update.json').read_text(encoding='utf8'))
+          assert m['version']=='1.0.109' and m['published']
+          p=Path('source/NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(p) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build ASAR and prove preview, printing, PDF parity
+        run: |
+          set -euo pipefail
+          python3 development/print/build-modern-print-110.py \
+            source/NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip \
+            NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip work
+          node --check work/nano-blue-print-110.js
+          node --check work/document-print-preview.js
+          cp development/print/test-blue-print-110.cjs work/
+          (cd work && npm install --no-save --ignore-scripts jsdom@26.1.0 && node test-blue-print-110.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,struct,zipfile
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',raw)
+          assert magic==4 and b==hs+4
+          files=json.loads(raw[16:16+n])['files']
+          for name in ['document-print-preview.js','nano-blue-print-110.js','index.html',
+                       'package.json','release-notes.js','invoice_template_modern.html',
+                       'receipt_template_1.html','receipt_template_2.html','invoice_thermal_modern_80.html','browser-bridge.js']:
+            e=files[name]
+            content=raw[8+b+int(e['offset']):8+b+int(e['offset'])+e['size']]
+            assert content==Path('work/'+name).read_bytes(),name
+            if e.get('integrity'):assert hashlib.sha256(content).hexdigest()==e['integrity']['hash'],name
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.110'
+          print('PASS: all original business/invoice templates and ASAR integrity verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-v110-verified-blue-print
+          path: |
+            NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip
+            work/nano-blue-print-110.js
+            work/document-print-preview.js
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/invoice_template_modern.html
+            work/receipt_template_1.html
+            work/receipt_template_2.html
+            work/invoice_thermal_modern_80.html
+            work/browser-bridge.js
+            work/test-blue-print-110.cjs
+          if-no-files-found: error
+  test_windows:
+    needs: build_linux
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v110-verified-blue-print
+      - name: Revalidate printing and PDF at all paper sizes on Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try{
+            node --check nano-blue-print-110.js
+            node --check document-print-preview.js
+            npm install --ignore-scripts --no-save jsdom@26.1.0
+            if($LASTEXITCODE -ne 0){throw 'Test dependency unavailable'}
+            node test-blue-print-110.cjs
+            if($LASTEXITCODE -ne 0){throw 'Invoice/receipt print regression failed'}
+          }finally{Pop-Location}
+  publish:
+    needs: [build_linux,test_windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-v110-verified-blue-print
+      - name: Publish validated v1.0.110 ZIP under تحسينات
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.110 >/dev/null 2>&1 || { echo 'Release exists; refusing overwrite';exit 1; }
+          gh release create v1.0.110 NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.110 — تحسينات تصميم فواتير ووصول البيع' \
+            --notes 'وسم: تحسينات. اعتماد تصميم NANO POS الأزرق والأبيض كخيار افتراضي جديد لفواتير البيع ووصول البيع: 58 مم للحرارية الصغيرة، 80 مم قياسي، 80 مم مفصل، A4 وA5. شعار NANO POS، بيانات المتجر والزبون ورقم الفاتورة، جدول المنتجات دون صور، الإجمالي والمدفوع والصرف والدين حسب المعلومات الأصلية، QR/باركود وتذييل شكر. معاينة الطباعة ولغة AR/FR/EN وخيارات الطابعة وعدد النسخ وحفظ PDF مستمرة، وإصلاح توحيد المخرجات المطبوعة وPDF مع تصميم المعاينة. القوالب القديمة متاحة للاختيار. بيانات البيع والمخزون والتفعيل والنسخ الاحتياطية لم تتغير. اختبارات Linux/Windows آلية؛ لم تُجرَ تجربة طباعة فعلية على طابعة حرارية أو A4.'
+          gh release view v1.0.110 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip
+      - name: Enable verified internal update on production manifest
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile,datetime
+          path=Path('nano-pos-update.json')
+          m=json.loads(path.read_text(encoding='utf8'))
+          assert m['version']=='1.0.109' and m['published']
+          f=Path('NANO-POS-Patch-1.0.109-to-1.0.110-BLUE-PRINT.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.110'
+          direct='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.110/'+f.name
+          features={
+            'ar':['تصميم NANO POS عصري بالأزرق والأبيض لفواتير ووصول البيع على 58 مم و80 مم و80 مم مفصل وA4 وA5.',
+                  'جعل التصميم الأزرق الخيار الافتراضي الجديد مع استمرار توفر القوالب القديمة.',
+                  'إبقاء معلومات المتجر والزبون والخصومات والديون والصرف وQR، وإزالة صور المنتجات من الطباعة.',
+                  'توحيد شكل معاينة الطباعة والمستند المرسل للطابعة وPDF، مع الحفاظ على اختيار لغة الطباعة.'],
+            'fr':['Nouveau design NANO POS bleu/blanc pour factures et reçus : 58mm, 80mm, 80mm détaillé, A4 et A5.',
+                  'Nouveau modèle par défaut et anciens modèles toujours disponibles.',
+                  'Données, totaux, dettes et QR préservés sans photos des produits.',
+                  'Aperçu identique aux impressions et aux exports PDF, choix de langue conservé.'],
+            'en':['Modern NANO POS blue-white sales invoices and receipts in 58,80,80 detailed,A4,A5.',
+                  'Approved new default theme; legacy templates remain selectable.',
+                  'Preserve store, customer, totals, debt and QR data but remove product pictures.',
+                  'Match print and PDF output to preview and preserve AR/FR/EN language controls.']}
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          m.update(version='1.0.110',published=True,releaseDate=day,mandatory=False,importance='normal',features=features)
+          m.setdefault('releaseHistory',{})['1.0.110']={'releaseDate':day,'features':features}
+          m['patches']=[{'id':'nano-pos-v110-blue-print-all-sizes',
+            'fromVersions':[f'1.0.{n}' for n in range(91,110)],
+            'directUrl':direct,'pageUrl':page,
+            'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,
+            'payloadType':'app-asar'}]
+          m['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          m['notes']={'ar':'تحسينات تصميم فاتورة ووصل البيع بكل المقاسات.',
+            'fr':'Design moderne des factures et tickets de caisse pour tous les formats.',
+            'en':'Modern sales invoice and receipt layouts for all paper sizes.'}
+          path.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS v1.0.110 blue invoice and receipt layouts'
+          git push origin HEAD:refs/heads/main
