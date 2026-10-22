@@ -902,5 +902,196 @@ aid=()=>calculator.cents(by('checkoutPaidAmount')?.value||'0');
 ==== nano-cash-guide-106.js function eligible [0] (0 chars) ====
 
 
+==== browser-bridge.js add-customer [specific 2] (4105 chars) ====
+l','cash_out'].includes(t.type)).reduce((sum,t)=>sum+Number(t.amount||0),0)),
+       total_expenses: rounded(txs.filter(t => t.type === 'expense').reduce((sum,t)=>sum+Number(t.amount||0),0)),
+     };
+     return { transactions: clone(txs.slice(page * pageSize, page * pageSize + pageSize)), totalCount: txs.length, page, pageSize, summary };
+   }
+
+   // --- Customers & Debts ---
+   if (channel === 'add-customer-payment') {
+     const c=(db.customers || []).find(v => String(v.id)===String(args[0]));
+     if (!c) return fail('الزبون غير موجود');
+     const amount=rounded(args[1]), available=customerVisibleDebt(c);
+     if (!(amount>0) || !Number.isFinite(amount) || amount>available+0.005) return fail('مبلغ التسديد يتجاوز دين الزبون.');
+     let unpaid=amount;
+     for (const sale of (db.sales || []).filter(s=>String(s.customer_id)===String(c.id)).sort((a,b)=>new Date(a.sale_date||a.created_at)-new Date(b.sale_date||b.created_at))) {
+       if (unpaid<=0) break;
+       const allocated=rounded(Math.min(unpaid,invoiceDebt(sale)));
+       if (allocated<=0) continue;
+       sale.paid_amount=rounded(Number(sale.paid_amount||0)+allocated);
+       sale.remaining_amount=invoiceDebt(sale);
+       sale.payments=Array.isArray(sale.payments)?sale.payments:[];
+       sale.payments.push({id:ids(),amount:allocated,date:args[2]||new Date().toISOString(),note:args[3]||'',source:'customer-payment'});
+       unpaid=rounded(unpaid-allocated);
+     }
+     reviseCustomerBalance(c.id,-amount);
+     if (unpaid>0 && Number(c.initial_debt)>0) c.initial_debt=rounded(Math.max(0,Number(c.initial_debt)-unpaid));
+     db.customer_payments=Array.isArray(db.customer_payments)?db.customer_payments:[];
+     const payment={id:ids(),customer_id:c.id,amount,date:args[2]||new Date().toISOString(),note:args[3]||'',unallocated:unpaid};
+     db.customer_payments.unshift(payment);
+     save();
+     return {success:true,payment,remaining_balance:customerVisibleDebt(c)};
+   }
+   if (channel === 'get-customers-debt') return clone(db.customers.map(c=>({...c,balance:
+---
+mail','Address'], [['','','','']]));
+   if (channel === 'download-suppliers-template') return await saveExportFile('nano_suppliers_template.csv', toCsv(['Name','Phone','Email','Address'], [['','','','']]));
+
+   // --- Generic Collection Reader & Writers ---
+   if (channel.startsWith('get-') && collection[channel.slice(4)]) return clone(collection[channel.slice(4)]());
+
+   const writeMap = {
+     'add-customer': 'customers', 'add-supplier': 'suppliers', 'save-promotion': 'promotions',
+     'save-bundle': 'bundles', 'add-expense': 'expenses', 'add-capital': 'capital',
+     'create-order': 'orders', 'save-custom-template': 'templates'
+   };
+   if (writeMap[channel]) {
+     const item = { ...clone(args[0]), id: args[0]?.id || ids(), created_at: new Date().toISOString() };
+     db[writeMap[channel]] = db[writeMap[channel]] || [];
+     const arr = db[writeMap[channel]], i = arr.findIndex(p => p.id === item.id);
+     if (i < 0) arr.push(item); else arr[i] = item;
+     save();
+     return { success: true, id: item.id };
+   }
+
+   const editMap = {
+     'customer': 'customers', 'supplier': 'suppliers', 'promotion': 'promotions',
+     'bundle': 'bundles', 'expense': 'expenses', 'capital': 'capital',
+     'order': 'orders', 'custom-template': 'templates'
+   };
+   const operation = channel.match(/^(update|delete)-(.+)$/);
+   if (operation && editMap[operation[2]]) {
+     const key = editMap[operation[2]], id = args[0];
+     db[key] = db[key] || [];
+     if (operation[1] === 'delete') db[key] = db[key].filter(v => v.id != id);
+     else {
+       const item = db[key].find(v => v.id == id);
+       if (item) Object.assign(item, args[1]);
+     }
+     save();
+     return { success: true };
+   }
+
+   // --- Database Backup: Save into project path (backups/ folder) & download copy ---
+   if (channel === 'export-db-backup' || channel === 'export-database-backup') {
+     const payload = JSON.stringify(db, null, 2);
+     if (window.nanoNative?.saveFile) {
+       const fn = 'nano_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+ 
+
+==== browser-bridge.js get-customers [specific 1] (2050 chars) ====
+initial_debt)-unpaid));
+     db.customer_payments=Array.isArray(db.customer_payments)?db.customer_payments:[];
+     const payment={id:ids(),customer_id:c.id,amount,date:args[2]||new Date().toISOString(),note:args[3]||'',unallocated:unpaid};
+     db.customer_payments.unshift(payment);
+     save();
+     return {success:true,payment,remaining_balance:customerVisibleDebt(c)};
+   }
+   if (channel === 'get-customers-debt') return clone(db.customers.map(c=>({...c,balance:customerVisibleDebt(c)})).filter(c=>c.balance>0));
+   if (channel === 'get-customer-credit-summary') {
+     const c=(db.customers||[]).find(v=>String(v.id)===String(args[0]));
+     const debt=c?customerVisibleDebt(c):0;
+     return {balance:debt,debt,credit:0,credit_limit:Number(c?.credit_limit||0),invoice_debt:c?customerInvoiceDebt(c.id):0};
+   }
+   if (channel === 'get-customer-sales') {
+     // Customer details window expects sales, payments and customer (not a bare array).
+     // This is read-only: never change customer balance, invoice, or payment records here.
+     const customerId=String(args[0]);
+     const customer=(db.customers || []).find(c=>String(c.id)===customerId) || null;
+     const sales=(db.sales || []).filter(s=>String(s.customer_id)===customerId);
+     const general=(db.customer_payments || []).filter(p=>String(p.customer_id)===customerId).map(p=>({...p,amount:Number(p.amount ?? 0)}));
+     const invoice=sales.flatMap(s=>(Array.isArray(s.payments)?s.payments:[])
+       .filter(p=>p && p.source!=='customer-payment')
+       .map(p=>({...p,amount:Number(p.amount ?? 0),invoice_num:p.invoice_num ?? s.invoice_num ?? s.id,date:p.date || s.sale_date || s.created_at})));
+     return {sales:clone(sales),payments:clone([...general,...invoice]),customer:clone(customer)};
+   }
+   if (channel === 'get-customer-sales-aggregated') return [];
+
+   // --- Purchases & Suppliers ---
+   const purchaseDebt = p => Math.max(0, Number(p?.total || 0) - Number(p?.paid_amount || 0));
+   const supplierById = id => (db.suppliers || []).find(v => v.id == id);
+   con
+
+==== browser-bridge.js addCustomer [specific 0] (0 chars) ====
+
+
+==== browser-bridge.js getCustomers [specific 0] (0 chars) ====
+
+
+==== browser-bridge.js customerForm [specific 0] (0 chars) ====
+
+
+==== browser-preload.js add-customer [specific 1] (2050 chars) ====
+d),'getInvoiceDetails':_0x3a9e61=>_invoke('get-invoice-details',_0x3a9e61),'addInvoicePayment':(_0x265e29,_0x2247bd,_0x178d62,_0x3b7ed4)=>_invoke('add-invoice-payment',_0x265e29,_0x2247bd,_0x178d62,_0x3b7ed4),'deletePurchase':_0x10c367=>_invoke('delete-purchase',_0x10c367),'getCustomers':()=>_invoke(_0x508343(0xe3)),'getCustomersDebt':()=>_invoke(_0x508343(0xff)),'addCustomer':_0x20e3d9=>_invoke('add-customer',_0x20e3d9),'updateCustomer':(_0x3796c5,_0x3d69c6)=>_invoke(_0x508343(0x118),_0x3796c5,_0x3d69c6),'deleteCustomer':_0x416354=>_invoke('delete-customer',_0x416354),'getCustomerCreditSummary':(_0x4affd7,_0x2902de)=>_invoke(_0x508343(0xe6),_0x4affd7,_0x2902de),'getSales':_0x3a847b=>_invoke('get-sales',_0x3a847b),'getCashChangeAudit':_0x52a=>_invoke('get-cash-change-audit',_0x52a),'getSaleDetails':_0x4e3895=>_invoke('get-sale-details',_0x4e3895),'addSalePayment':(_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587)=>_invoke('add-sale-payment',_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587),'deleteSale':(_0x30d8da,_0x5b43b3)=>_invoke(_0x508343(0x102),_0x30d8da,_0x5b43b3),'getCustomerSales':_0x11950b=>_invoke('get-customer-sales',_0x11950b),'addCustomerPayment':(_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1)=>_invoke(_0x508343(0x103),_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1),'nextDocNumber':_0x414613=>_invoke('next-doc-number',_0x414613),'issueCreditNote':_0x9e974f=>_invoke('issue-credit-note',_0x9e974f),'getCustomerSalesAggregated':_0x2169c0=>_invoke('get-customer-sales-aggregated',_0x2169c0),'getSalesSummary':_0x2f0c6a=>_invoke('get-sales-summary',_0x2f0c6a),'getPaymentDetails':(_0x25302f,_0x494511)=>_invoke('get-payment-details',_0x25302f,_0x494511),'logDocumentPrint':_0x4c71e8=>_invoke('log-document-print',_0x4c71e8),'createProforma':_0x459866=>_invoke('create-proforma',_0x459866),'getProformas':_0x4983c2=>_invoke('get-proformas',_0x4983c2),'getProformaDetails':_0x7bffb7=>_invoke('get-proforma-details',_0x7bffb7),'updateProforma':(_0x8a8dce,_0x5c0969)=>_invoke('update-proforma',_0x8a8dce,_0x5c0969),'deleteProforma':_0x1658aa=>_invoke(_0x
+
+==== browser-preload.js get-customers [specific 0] (0 chars) ====
+
+
+==== browser-preload.js addCustomer [specific 2] (4105 chars) ====
+>_invoke('save-purchase',_0x1a681d),'getInvoiceDetails':_0x3a9e61=>_invoke('get-invoice-details',_0x3a9e61),'addInvoicePayment':(_0x265e29,_0x2247bd,_0x178d62,_0x3b7ed4)=>_invoke('add-invoice-payment',_0x265e29,_0x2247bd,_0x178d62,_0x3b7ed4),'deletePurchase':_0x10c367=>_invoke('delete-purchase',_0x10c367),'getCustomers':()=>_invoke(_0x508343(0xe3)),'getCustomersDebt':()=>_invoke(_0x508343(0xff)),'addCustomer':_0x20e3d9=>_invoke('add-customer',_0x20e3d9),'updateCustomer':(_0x3796c5,_0x3d69c6)=>_invoke(_0x508343(0x118),_0x3796c5,_0x3d69c6),'deleteCustomer':_0x416354=>_invoke('delete-customer',_0x416354),'getCustomerCreditSummary':(_0x4affd7,_0x2902de)=>_invoke(_0x508343(0xe6),_0x4affd7,_0x2902de),'getSales':_0x3a847b=>_invoke('get-sales',_0x3a847b),'getCashChangeAudit':_0x52a=>_invoke('get-cash-change-audit',_0x52a),'getSaleDetails':_0x4e3895=>_invoke('get-sale-details',_0x4e3895),'addSalePayment':(_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587)=>_invoke('add-sale-payment',_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587),'deleteSale':(_0x30d8da,_0x5b43b3)=>_invoke(_0x508343(0x102),_0x30d8da,_0x5b43b3),'getCustomerSales':_0x11950b=>_invoke('get-customer-sales',_0x11950b),'addCustomerPayment':(_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1)=>_invoke(_0x508343(0x103),_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1),'nextDocNumber':_0x414613=>_invoke('next-doc-number',_0x414613),'issueCreditNote':_0x9e974f=>_invoke('issue-credit-note',_0x9e974f),'getCustomerSalesAggregated':_0x2169c0=>_invoke('get-customer-sales-aggregated',_0x2169c0),'getSalesSummary':_0x2f0c6a=>_invoke('get-sales-summary',_0x2f0c6a),'getPaymentDetails':(_0x25302f,_0x494511)=>_invoke('get-payment-details',_0x25302f,_0x494511),'logDocumentPrint':_0x4c71e8=>_invoke('log-document-print',_0x4c71e8),'createProforma':_0x459866=>_invoke('create-proforma',_0x459866),'getProformas':_0x4983c2=>_invoke('get-proformas',_0x4983c2),'getProformaDetails':_0x7bffb7=>_invoke('get-proforma-details',_0x7bffb7),'updateProforma':(_0x8a8dce,_0x5c0969)=>_invoke('update-proforma',_0x8a8dce,_0x5c0969),'delet
+---
+dit':_0x52a=>_invoke('get-cash-change-audit',_0x52a),'getSaleDetails':_0x4e3895=>_invoke('get-sale-details',_0x4e3895),'addSalePayment':(_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587)=>_invoke('add-sale-payment',_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587),'deleteSale':(_0x30d8da,_0x5b43b3)=>_invoke(_0x508343(0x102),_0x30d8da,_0x5b43b3),'getCustomerSales':_0x11950b=>_invoke('get-customer-sales',_0x11950b),'addCustomerPayment':(_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1)=>_invoke(_0x508343(0x103),_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1),'nextDocNumber':_0x414613=>_invoke('next-doc-number',_0x414613),'issueCreditNote':_0x9e974f=>_invoke('issue-credit-note',_0x9e974f),'getCustomerSalesAggregated':_0x2169c0=>_invoke('get-customer-sales-aggregated',_0x2169c0),'getSalesSummary':_0x2f0c6a=>_invoke('get-sales-summary',_0x2f0c6a),'getPaymentDetails':(_0x25302f,_0x494511)=>_invoke('get-payment-details',_0x25302f,_0x494511),'logDocumentPrint':_0x4c71e8=>_invoke('log-document-print',_0x4c71e8),'createProforma':_0x459866=>_invoke('create-proforma',_0x459866),'getProformas':_0x4983c2=>_invoke('get-proformas',_0x4983c2),'getProformaDetails':_0x7bffb7=>_invoke('get-proforma-details',_0x7bffb7),'updateProforma':(_0x8a8dce,_0x5c0969)=>_invoke('update-proforma',_0x8a8dce,_0x5c0969),'deleteProforma':_0x1658aa=>_invoke(_0x508343(0xd8),_0x1658aa),'cancelProforma':_0x539716=>_invoke('cancel-proforma',_0x539716),'proformaToSalePayload':_0x4a140c=>_invoke('proforma-to-sale-payload',_0x4a140c),'markProformaConverted':(_0x5a07ae,_0x2c1079)=>_invoke('mark-proforma-converted',_0x5a07ae,_0x2c1079),'createOrder':_0x263d0f=>_invoke('create-order',_0x263d0f),'getOrders':_0x21552b=>_invoke('get-orders',_0x21552b),'getOrderDetails':_0x58d8ee=>_invoke('get-order-details',_0x58d8ee),'updateOrder':(_0x2c0432,_0x31602c)=>_invoke('update-order',_0x2c0432,_0x31602c),'deleteOrder':_0x33fb73=>_invoke(_0x508343(0xe0),_0x33fb73),'cancelOrder':_0x581b8f=>_invoke('cancel-order',_0x581b8f),'orderToSalePayload':_0x4495d5=>_invoke('order-to-sale-payload',_0x4495d5),'markOrderD
+
+==== browser-preload.js getCustomers [specific 4] (8215 chars) ====
+ier-return',_0x5109be),'getPurchases':()=>_invoke('get-purchases'),'savePurchase':_0x1a681d=>_invoke('save-purchase',_0x1a681d),'getInvoiceDetails':_0x3a9e61=>_invoke('get-invoice-details',_0x3a9e61),'addInvoicePayment':(_0x265e29,_0x2247bd,_0x178d62,_0x3b7ed4)=>_invoke('add-invoice-payment',_0x265e29,_0x2247bd,_0x178d62,_0x3b7ed4),'deletePurchase':_0x10c367=>_invoke('delete-purchase',_0x10c367),'getCustomers':()=>_invoke(_0x508343(0xe3)),'getCustomersDebt':()=>_invoke(_0x508343(0xff)),'addCustomer':_0x20e3d9=>_invoke('add-customer',_0x20e3d9),'updateCustomer':(_0x3796c5,_0x3d69c6)=>_invoke(_0x508343(0x118),_0x3796c5,_0x3d69c6),'deleteCustomer':_0x416354=>_invoke('delete-customer',_0x416354),'getCustomerCreditSummary':(_0x4affd7,_0x2902de)=>_invoke(_0x508343(0xe6),_0x4affd7,_0x2902de),'getSales':_0x3a847b=>_invoke('get-sales',_0x3a847b),'getCashChangeAudit':_0x52a=>_invoke('get-cash-change-audit',_0x52a),'getSaleDetails':_0x4e3895=>_invoke('get-sale-details',_0x4e3895),'addSalePayment':(_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587)=>_invoke('add-sale-payment',_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587),'deleteSale':(_0x30d8da,_0x5b43b3)=>_invoke(_0x508343(0x102),_0x30d8da,_0x5b43b3),'getCustomerSales':_0x11950b=>_invoke('get-customer-sales',_0x11950b),'addCustomerPayment':(_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1)=>_invoke(_0x508343(0x103),_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1),'nextDocNumber':_0x414613=>_invoke('next-doc-number',_0x414613),'issueCreditNote':_0x9e974f=>_invoke('issue-credit-note',_0x9e974f),'getCustomerSalesAggregated':_0x2169c0=>_invoke('get-customer-sales-aggregated',_0x2169c0),'getSalesSummary':_0x2f0c6a=>_invoke('get-sales-summary',_0x2f0c6a),'getPaymentDetails':(_0x25302f,_0x494511)=>_invoke('get-payment-details',_0x25302f,_0x494511),'logDocumentPrint':_0x4c71e8=>_invoke('log-document-print',_0x4c71e8),'createProforma':_0x459866=>_invoke('create-proforma',_0x459866),'getProformas':_0x4983c2=>_invoke('get-proformas',_0x4983c2),'getProformaDetails':_0x7bffb7=>_invoke('get-proforma-details',_0x7bffb7),'
+---
+nvoke('get-purchases'),'savePurchase':_0x1a681d=>_invoke('save-purchase',_0x1a681d),'getInvoiceDetails':_0x3a9e61=>_invoke('get-invoice-details',_0x3a9e61),'addInvoicePayment':(_0x265e29,_0x2247bd,_0x178d62,_0x3b7ed4)=>_invoke('add-invoice-payment',_0x265e29,_0x2247bd,_0x178d62,_0x3b7ed4),'deletePurchase':_0x10c367=>_invoke('delete-purchase',_0x10c367),'getCustomers':()=>_invoke(_0x508343(0xe3)),'getCustomersDebt':()=>_invoke(_0x508343(0xff)),'addCustomer':_0x20e3d9=>_invoke('add-customer',_0x20e3d9),'updateCustomer':(_0x3796c5,_0x3d69c6)=>_invoke(_0x508343(0x118),_0x3796c5,_0x3d69c6),'deleteCustomer':_0x416354=>_invoke('delete-customer',_0x416354),'getCustomerCreditSummary':(_0x4affd7,_0x2902de)=>_invoke(_0x508343(0xe6),_0x4affd7,_0x2902de),'getSales':_0x3a847b=>_invoke('get-sales',_0x3a847b),'getCashChangeAudit':_0x52a=>_invoke('get-cash-change-audit',_0x52a),'getSaleDetails':_0x4e3895=>_invoke('get-sale-details',_0x4e3895),'addSalePayment':(_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587)=>_invoke('add-sale-payment',_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587),'deleteSale':(_0x30d8da,_0x5b43b3)=>_invoke(_0x508343(0x102),_0x30d8da,_0x5b43b3),'getCustomerSales':_0x11950b=>_invoke('get-customer-sales',_0x11950b),'addCustomerPayment':(_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1)=>_invoke(_0x508343(0x103),_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1),'nextDocNumber':_0x414613=>_invoke('next-doc-number',_0x414613),'issueCreditNote':_0x9e974f=>_invoke('issue-credit-note',_0x9e974f),'getCustomerSalesAggregated':_0x2169c0=>_invoke('get-customer-sales-aggregated',_0x2169c0),'getSalesSummary':_0x2f0c6a=>_invoke('get-sales-summary',_0x2f0c6a),'getPaymentDetails':(_0x25302f,_0x494511)=>_invoke('get-payment-details',_0x25302f,_0x494511),'logDocumentPrint':_0x4c71e8=>_invoke('log-document-print',_0x4c71e8),'createProforma':_0x459866=>_invoke('create-proforma',_0x459866),'getProformas':_0x4983c2=>_invoke('get-proformas',_0x4983c2),'getProformaDetails':_0x7bffb7=>_invoke('get-proforma-details',_0x7bffb7),'updateProforma':(_0x8a8dce,_0x5c0969)=>_invo
+---
+,'getSales':_0x3a847b=>_invoke('get-sales',_0x3a847b),'getCashChangeAudit':_0x52a=>_invoke('get-cash-change-audit',_0x52a),'getSaleDetails':_0x4e3895=>_invoke('get-sale-details',_0x4e3895),'addSalePayment':(_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587)=>_invoke('add-sale-payment',_0x181d7f,_0x3dfa1e,_0xff12ac,_0xda5587),'deleteSale':(_0x30d8da,_0x5b43b3)=>_invoke(_0x508343(0x102),_0x30d8da,_0x5b43b3),'getCustomerSales':_0x11950b=>_invoke('get-customer-sales',_0x11950b),'addCustomerPayment':(_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1)=>_invoke(_0x508343(0x103),_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1),'nextDocNumber':_0x414613=>_invoke('next-doc-number',_0x414613),'issueCreditNote':_0x9e974f=>_invoke('issue-credit-note',_0x9e974f),'getCustomerSalesAggregated':_0x2169c0=>_invoke('get-customer-sales-aggregated',_0x2169c0),'getSalesSummary':_0x2f0c6a=>_invoke('get-sales-summary',_0x2f0c6a),'getPaymentDetails':(_0x25302f,_0x494511)=>_invoke('get-payment-details',_0x25302f,_0x494511),'logDocumentPrint':_0x4c71e8=>_invoke('log-document-print',_0x4c71e8),'createProforma':_0x459866=>_invoke('create-proforma',_0x459866),'getProformas':_0x4983c2=>_invoke('get-proformas',_0x4983c2),'getProformaDetails':_0x7bffb7=>_invoke('get-proforma-details',_0x7bffb7),'updateProforma':(_0x8a8dce,_0x5c0969)=>_invoke('update-proforma',_0x8a8dce,_0x5c0969),'deleteProforma':_0x1658aa=>_invoke(_0x508343(0xd8),_0x1658aa),'cancelProforma':_0x539716=>_invoke('cancel-proforma',_0x539716),'proformaToSalePayload':_0x4a140c=>_invoke('proforma-to-sale-payload',_0x4a140c),'markProformaConverted':(_0x5a07ae,_0x2c1079)=>_invoke('mark-proforma-converted',_0x5a07ae,_0x2c1079),'createOrder':_0x263d0f=>_invoke('create-order',_0x263d0f),'getOrders':_0x21552b=>_invoke('get-orders',_0x21552b),'getOrderDetails':_0x58d8ee=>_invoke('get-order-details',_0x58d8ee),'updateOrder':(_0x2c0432,_0x31602c)=>_invoke('update-order',_0x2c0432,_0x31602c),'deleteOrder':_0x33fb73=>_invoke(_0x508343(0xe0),_0x33fb73),'cancelOrder':_0x581b8f=>_invoke('cancel-order',_0x581b8f),'orderToSalePayl
+---
+0x30d8da,_0x5b43b3)=>_invoke(_0x508343(0x102),_0x30d8da,_0x5b43b3),'getCustomerSales':_0x11950b=>_invoke('get-customer-sales',_0x11950b),'addCustomerPayment':(_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1)=>_invoke(_0x508343(0x103),_0xb39955,_0x1ec88a,_0x4b4a3f,_0x201be1),'nextDocNumber':_0x414613=>_invoke('next-doc-number',_0x414613),'issueCreditNote':_0x9e974f=>_invoke('issue-credit-note',_0x9e974f),'getCustomerSalesAggregated':_0x2169c0=>_invoke('get-customer-sales-aggregated',_0x2169c0),'getSalesSummary':_0x2f0c6a=>_invoke('get-sales-summary',_0x2f0c6a),'getPaymentDetails':(_0x25302f,_0x494511)=>_invoke('get-payment-details',_0x25302f,_0x494511),'logDocumentPrint':_0x4c71e8=>_invoke('log-document-print',_0x4c71e8),'createProforma':_0x459866=>_invoke('create-proforma',_0x459866),'getProformas':_0x4983c2=>_invoke('get-proformas',_0x4983c2),'getProformaDetails':_0x7bffb7=>_invoke('get-proforma-details',_0x7bffb7),'updateProforma':(_0x8a8dce,_0x5c0969)=>_invoke('update-proforma',_0x8a8dce,_0x5c0969),'deleteProforma':_0x1658aa=>_invoke(_0x508343(0xd8),_0x1658aa),'cancelProforma':_0x539716=>_invoke('cancel-proforma',_0x539716),'proformaToSalePayload':_0x4a140c=>_invoke('proforma-to-sale-payload',_0x4a140c),'markProformaConverted':(_0x5a07ae,_0x2c1079)=>_invoke('mark-proforma-converted',_0x5a07ae,_0x2c1079),'createOrder':_0x263d0f=>_invoke('create-order',_0x263d0f),'getOrders':_0x21552b=>_invoke('get-orders',_0x21552b),'getOrderDetails':_0x58d8ee=>_invoke('get-order-details',_0x58d8ee),'updateOrder':(_0x2c0432,_0x31602c)=>_invoke('update-order',_0x2c0432,_0x31602c),'deleteOrder':_0x33fb73=>_invoke(_0x508343(0xe0),_0x33fb73),'cancelOrder':_0x581b8f=>_invoke('cancel-order',_0x581b8f),'orderToSalePayload':_0x4495d5=>_invoke('order-to-sale-payload',_0x4495d5),'markOrderDelivered':(_0x4de2b2,_0x4eb6ea)=>_invoke('mark-order-delivered',_0x4de2b2,_0x4eb6ea),'getExpenses':_0x14e164=>_invoke(_0x508343(0xfc),_0x14e164),'addExpense':_0x4b84fe=>_invoke(_0x508343(0xe8),_0x4b84fe),'deleteExpense':_0x339196=>_invoke('delete-expense',_0x339
+
+==== browser-preload.js customerForm [specific 0] (0 chars) ====
+
+
+==== nano-customer-contract.cjs add-customer [specific 0] (0 chars) ====
+
+
+==== nano-customer-contract.cjs get-customers [specific 1] (1380 chars) ====
+)) return part.customers;
+      if (Array.isArray(part.rows)) return part.rows;
+      if (Array.isArray(part.items)) return part.items;
+    }
+  }
+  if (value.snapshot && value.snapshot !== value) return extractCustomerRows(value.snapshot);
+  return null;
+}
+
+async function resolveCustomerRows(dispatchRpc, args = [], context = {}) {
+  let originalError;
+  try {
+    const direct = await dispatchRpc('get-customers', args, context);
+    const rows = extractCustomerRows(direct);
+    if (rows !== null) return rows;
+    originalError = new Error('invalid_customers_response');
+  } catch (error) { originalError = error; }
+  // The fallback is server-side ONLY, after paired-device permission was checked.
+  // Never export a full snapshot over the network: only the customer array leaves this server.
+  try {
+    const snapshot = await dispatchRpc('__nano-pc-export-snapshot', [], context);
+    const rows = extractCustomerRows(snapshot);
+    if (rows !== null) return rows;
+  } catch (error) {
+    // Do not send internal stack traces or snapshot data to the client.
+  }
+  const error = new Error('تعذر قراءة قائمة الزبائن من الكمبيوتر الرئيسي. تحقق من تشغيل البرنامج وقسم الزبائن ثم أعد المحاولة.');
+  error.code = 'CUSTOMER_LIST_UNAVAILABLE';
+  error.statusCode = 503;
+  error.cause = originalError;
+  throw error;
+}
+module.exports = { extractCustomerRows, resolveCustomerRows };
+
+==== nano-customer-contract.cjs addCustomer [specific 0] (0 chars) ====
+
+
+==== nano-customer-contract.cjs getCustomers [specific 0] (0 chars) ====
+
+
+==== nano-customer-contract.cjs customerForm [specific 0] (0 chars) ====
+
+
 ==== all customer API symbols (561 chars) ====
 [('browser-bridge.js', 'add-customer', 2), ('browser-bridge.js', 'get-customers', 1), ('browser-preload.js', 'add-customer', 1), ('mobile/www/browser-bridge.js', 'add-customer', 2), ('mobile/www/browser-bridge.js', 'get-customers', 1), ('mobile/www/browser-preload.js', 'add-customer', 1), ('mobile/www/mobile-sync-bridge.js', 'add-customer', 1), ('mobile/www/mobile-sync-bridge.js', 'get-customers', 1), ('mobile/www/nano-mobile-credit.js', 'add-customer', 1), ('mobile-sync-server.cjs', 'get-customers', 1), ('nano-customer-contract.cjs', 'get-customers', 1)]
