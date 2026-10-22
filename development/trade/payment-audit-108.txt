@@ -1,0 +1,1193 @@
+==== sale process bridge ====
+if (channel === 'process-sale') {
+     // For v1.0.105 checkout, an operation identifier is stable across retries and
+     // persisted on the sale itself; returning a prior result must NEVER post stock
+     // or customer balances twice. Old clients remain backward compatible.
+     const __nanoId105=String(args[0]?.checkout?.nanoCheckoutRequestId||'').trim();
+     let __nanoSignature105='';
+     if(__nanoId105){
+       if(!/^n105-[a-z0-9-]{12,110}$/i.test(__nanoId105))
+         return fail('معرف تأكيد البيع غير صالح.');
+       const __checkout105=args[0]?.checkout||{}, __items105=args[0]?.items;
+       if(!Array.isArray(__items105)||!__items105.length)return fail('السلة فارغة.');
+       const __money105=value=>{
+         const n=Number(value);
+         return Number.isFinite(n)&&n>=0&&Number.isSafeInteger(Math.round(n*100)) &&
+           Math.abs(n*100-Math.round(n*100))<0.001?Math.round(n*100):null;
+       };
+       const __total105=__money105(__checkout105.total),
+         __paid105=__money105(__checkout105.paidAmount);
+       if(__total105===null||__paid105===null||!(__paid105===0||__paid105===__total105))
+         return fail('الدفع يجب أن يكون كاملًا أو دينًا كاملًا.');
+       const __method105=String(__checkout105.paymentMethod||'cash');
+       if(!['cash','card','ccp','cheque','virement','transfer','other'].includes(__method105) ||
+          Array.isArray(__checkout105.payments) || __checkout105.__nanoSplit102)
+         return fail('طريقة الدفع المختلط غير متاحة.');
+       if(__paid105===0&&__total105>0 &&
+          !(db.customers||[]).some(c=>String(c.id)===String(__checkout105.customerId)))
+         return fail('اختر زبونًا مسجلًا قبل البيع بالدين.');
+       // Canonical payload fingerprint (not hash of mutable stock/customer state).
+       __nanoSignature105=JSON.stringify({
+         items:__items105.map(i=>[String(i.id??''),String(i.batch_id??''),
+           Number(i.qty),Number(i.pos_price),Boolean(i.is_custom)]),
+         customer:String(__checkout105.customerId??''),total:__total105,
+         paid:__paid105,method:__method105,
+         ...(__checkout105.cashTenderedAmount == null ? {} : {cashTenderedCents:__money105(__checkout105.cashTenderedAmount)}),
+         discount:Number(__checkout105.discount||0),
+         taxPercentage:Number(__checkout105.taxPercentage||0)
+       });
+       const old=(db.sales||[]).find(s=>s.nano_checkout_operation_id===__nanoId105);
+       if(old){
+         if(old.nano_checkout_signature!==__nanoSignature105)
+           return fail('لا يمكن إعادة استعمال معرف الدفع لعملية مختلفة.');
+         return {success:true,id:old.id,saleId:old.id,alreadyProcessed:true,
+           paid_amount:old.paid_amount,remaining_amount:old.remaining_amount,
+           customerId:old.customer_id};
+       }
+     }
+     // Keep a snapshot before any sale stock/cash/debt mutation so failed
+     // local storage writes cannot leave only part of the sale in live memory.
+     const __nanoPriorSale102=clone(db);
+     if (Array.isArray(args[0]?.checkout?.payments)) {
+       const engine=window.NANO_PAYMENT_LEDGER_102;
+       if(!engine)return fail('split_payment_module_unavailable');
+       let split;
+       try {split=engine.split(String(args[0]?.checkout?.total),
+           args[0].checkout.payments,args[0].checkout.customerId);}
+       catch(e){return fail(e.code||'invalid_split_payment');}
+       args[0]={...args[0],checkout:{...args[0].checkout,
+         paidAmount:split.paidAmount,paymentMethod:split.paymentMethod,
+         cashTenderedAmount:null,__nanoSplit102:split}};
+     }
+     if ((args[0]?.items||[]).some(item=>Number(item?.qty)<0))
+       return fail('استخدم المرتجعات لتصحيح الكميات بدل بيع بكمية سالبة.');
+
+     // Never silently reprice a sale at confirmation: honor cart unit prices.
+     // Legacy mobile clients may still submit checkout.applyOffers=true.
+     if (args[0]?.checkout?.applyOffers === true) {
+       args[0] = {...args[0], checkout:{...args[0].checkout,applyOffers:false}};
+     }
+     if ((args[0]?.items || []).some(i => Number(i.qty) < 0)) {
+     const data = args[0], c = data.checkout || {};
+     if (!data.items?.length) throw new Error('السلة فارغة');
+
+     // Validate all quantities and stock BEFORE changing any live inventory.
+     // This also catches duplicate lines for the same batch in one transaction.
+     const quantities = new Map();
+     for (const i of data.items) {
+       const quantity=Number(i.qty ?? i.quantity);
+       if(!Number.isFinite(quantity)||quantity<=0) return fail('الكمية يجب أن تكون أكبر من صفر.');
+       const price=Number(i.pos_price ?? i.selling_price ?? i.price ?? 0);
+       if(!Number.isFinite(price)||price<0) return fail('سعر البيع غير صالح.');
+       if(i.is_custom || i.batch_id == null)continue;
+       const key=String(i.batch_id);
+       quantities.set(key,(quantities.get(key)||0)+quantity);
+     }
+     const reductions=[];
+     for(const [id,qty] of quantities){
+       const p=db.products.find(p=>(p.batches||[]).some(b=>String(b.id)===id));
+       const b=(p?.batches||[]).find(b=>String(b.id)===id);
+       if(!b)return fail('تعذر العثور على دفعة المخزون المحددة. يرجى تحديث المنتجات.');
+       if(Number(b.stock||0)<qty)return fail('الكمية المطلوبة تتجاوز المخزون المتاح للمنتج: '+String(p?.name||id));
+       reductions.push({product:p,batch:b,quantity:qty});
+     }
+     for(const change of reductions){change.batch.stock=Number(change.batch.stock||0)-change.quantity;normalize(change.product)}
+
+     const subtotal = rounded(c.subtotal ?? data.items.reduce((sum, item) => sum + Number(item.qty || 0) * Number(item.pos_price || 0), 0));
+     const discount = rounded(c.discount);
+     const taxPercentage = Number(c.taxPercentage || 0);
+     const total = rounded(c.total ?? Math.max(0, subtotal - discount) * (1 + taxPercentage / 100));
+     const id = ids(), date = new Date().toISOString(), customer = db.customers.find(v => v.id == c.customerId);
+     const items = data.items.map(i => {
+       const p = db.products.find(p => p.id == i.id) || i.product || {};
+       return {
+         ...clone(i),
+         product_id: i.id,
+         product_name: p.name,
+         name: p.name,
+         barcode: p.barcode,
+         unit: p.unit,
+         quantity: Number(i.qty),
+         selling_price: Number(i.pos_price),
+         price: Number(i.pos_price),
+         total: rounded(i.qty * i.pos_price),
+         cost_price: Number(p.cost_price || 0)
+       };
+     });
+
+     const activeSession = activeCaisseSession(data.userId || 1);
+     const sale = {
+       id,
+       created_at: date,
+       sale_date: date,
+       customer_id: c.customerId || null,
+       customer_name: customer?.name || '',
+       user_id: data.userId || 1,
+       user_name: db.users[0]?.name || 'مدير المتجر',
+       caisse_session_id: activeSession?.id || null,
+       subtotal,
+       discount,
+       tax_percentage: taxPercentage,
+       total,
+       paid_amount: rounded(c.paidAmount),
+       remaining_amount: rounded(total - Number(c.paidAmount || 0)),
+       payment_method: c.paymentMethod || 'cash',
+       items_count: items.length,
+       items_qty: items.reduce((s, i) => s + i.quantity, 0),
+       items
+     };
+
+     db.sales.unshift(sale);
+     save();
+     return { success: true, id, saleId: id };
+     }
+     const data = args[0] || {}, c = data.checkout || {};
+     if (!Array.isArray(data.items) || !data.items.length) return fail('السلة فارغة');
+     const subtotal = rounded(c.subtotal ?? data.items.reduce((sum, item) => sum + Number(item.qty || 0) * Number(item.pos_price || 0), 0));
+     const discount = rounded(c.discount ?? 0);
+     const taxPercentage = Number(c.taxPercentage || 0);
+     const total = rounded(c.total ?? Math.max(0, subtotal - discount) * (1 + taxPercentage / 100));
+     const paid = Number(c.paidAmount ?? total);
+     if (![subtotal,discount,taxPercentage,total,paid].every(Number.isFinite) || total < 0 || paid < 0 || paid > total + 0.005) return fail('المبلغ المدفوع أو قيمة الفاتورة غير صالح.');
+     const remaining = rounded(Math.max(0,total-paid));
+     const customer = (db.customers || []).find(v => String(v.id) === String(c.customerId));
+     if (remaining > 0 && !customer) return fail('البيع بالدين أو التسديد الجزئي يتطلب اختيار زبون مسجّل.');
+     // Persist calculated change in cents; this is not evidence of physical handover.
+     let cashRecord = null;
+     if (c.cashTenderedAmount !== undefined && c.cashTenderedAmount !== null) {
+       const tendered = Number(c.cashTenderedAmount);
+       const paidCents = Math.round(paid * 100);
+       const tenderCents = Math.round(tendered * 100);
+       const totalCents = Math.round(total * 100);
+       if ((c.paymentMethod || 'cash') !== 'cash' ||
+           !Number.isFinite(tendered) || tendered < 0 ||
+           !Number.isSafeInteger(tenderCents) || tenderCents > 100000000000 ||
+           Math.abs(tendered * 100 - tenderCents) > 0.001 ||
+           paidCents < 0 || paidCents > totalCents ||
+           tenderCents < paidCents) {
+         return fail('المبلغ النقدي المستلم أو الصرف غير صالح.');
+       }
+       cashRecord = {
+         sale_total: rounded(totalCents/100),
+         cash_tendered_amount: rounded(tenderCents/100),
+         cash_applied_amount: rounded(paidCents/100),
+         cash_change_due: rounded((tenderCents-paidCents)/100),
+       };
+     }
+     const quantities = new Map();
+     for (const i of data.items) {
+       const qty = Number(i.qty), price = Number(i.pos_price);
+       if (!(qty > 0) || !Number.isFinite(qty) || !Number.isFinite(price) || price < 0) return fail('تحقق من كميات وأسعار المنتجات.');
+       if (i.is_custom) continue;
+       const id = i.batch_id;
+       quantities.set(id, (quantities.get(id) || 0) + qty);
+     }
+     for (const [batchId, qty] of quantities) {
+       const p = db.products.find(p => (p.batches || []).some(b => String(b.id) === String(batchId)));
+       const b = p?.batches.find(b => String(b.id) === String(batchId));
+       if (b && qty > Number(b.stock || 0) + 0.000001 && !data.allowNegativeStock) return fail('كمية البيع تتجاوز المخزون المتوفر.');
+     }
+     // Validate all monetary and stock constraints before touching persistent records.
+     for (const [batchId,qty] of quantities) {
+       const p = db.products.find(p => (p.batches || []).some(b => String(b.id) === String(batchId)));
+       const b = p?.batches.find(b => String(b.id) === String(batchId));
+       if (b) { b.stock = rounded(Number(b.stock || 0) - qty); normalize(p); }
+     }
+     const id=ids(),date=new Date().toISOString();
+     const items=data.items.map(i => {
+       const p=db.products.find(p => String(p.id)===String(i.id)) || i.product || {};
+       return {...clone(i), product_id:i.id,product_name:p.name || i.custom_product_name || '',name:p.name || i.custom_product_name || '',barcode:p.barcode || '',unit:p.unit || '',quantity:Number(i.qty),selling_price:Number(i.pos_price),price:Number(i.pos_price),total:rounded(Number(i.qty)*Number(i.pos_price)),cost_price:Number(p.cost_price || i.custom_cost_price || 0)};
+     });
+     const activeSession=activeCaisseSession(data.userId || 1);
+     const sale={ id,created_at:date,sale_date:date,customer_id:customer?.id ?? null,customer_name:customer?.name || '',user_id:data.userId || 1,user_name:db.users[0]?.name || 'مدير المتجر',caisse_session_id:activeSession?.id || null,subtotal,discount,tax_percentage:taxPercentage,total,paid_amount:rounded(paid),initial_paid_amount:rounded(paid),remaining_amount:remaining,payment_method:paid > 0 ? (c.paymentMethod || 'cash') : 'credit',payment_status:remaining > 0 ? (paid ? 'partial' : 'credit') : 'paid',received_payment_method:c.paymentMethod || 'cash',items_count:items.length,items_qty:items.reduce((s,i)=>s+i.quantity,0),payments:c.__nanoSplit102?c.__nanoSplit102.payments.map((p,i)=>({id:'NANO-CHK-'+id+'-'+i,method:p.method,amount:p.amount,date,source:'initial-checkout'})):[],items };
+     if (cashRecord) {
+       const audit = {
+         sale_id: id,
+         recorded_at: date,
+         cashier_user_id: data.userId || 1,
+         cashier_name: sale.user_name,
+         caisse_session_id: activeSession?.id || null,
+         customer_id: customer?.id ?? null,
+         ...cashRecord
+       };
+       sale.cash_tendered_amount = audit.cash_tendered_amount;
+       sale.cash_applied_amount = audit.cash_applied_amount;
+       sale.cash_change_amount = audit.cash_change_due;
+       sale.cash_change_record = clone(audit);
+       db.cash_change_audit = Array.isArray(db.cash_change_audit) ? db.cash_change_audit : [];
+       db.cash_change_audit.unshift(audit);
+     }
+     db.sales.unshift(sale);
+     if(__nanoId105){
+        sale.nano_checkout_operation_id=__nanoId105;
+        sale.nano_checkout_signature=__nanoSignature105;
+      }
+      if (remaining > 0) reviseCustomerBalance(customer.id,remaining);
+     // Write sale, related stock updates and customer balance as one snapshot.
+     try {
+       const snapshot={...db,revision:Number(db.revision||0)+1};
+       localStorage.setItem(KEY,JSON.stringify(snapshot));
+       db=snapshot;
+       try {window.nanoNative?.pcSyncLocalChanged?.({revision:db.revision,at:Date.now()});}catch{}
+       try {window.dispatchEvent(new CustomEvent('nano-pos-data-saved',{detail:{revision:db.revision}}));}catch{}
+     } catch(error) {
+       db=__nanoPriorSale102;
+       console.error('[NANO POS] sale atomic write failed:',error);
+       return fail('sale_write_failed_no_changes');
+     }
+     if (cashRecord) {
+       try {
+         const persisted = JSON.parse(localStorage.getItem(KEY) || '{}');
+         if (!(persisted.cash_change_audit || []).some(entry => String(entry.sale_id) === String(id)))
+           return fail('تعذر حفظ سجل الصرف. يرجى التحقق من مساحة التخزين.');
+       } catch { return fail('تعذر التحقق من حفظ سجل الصرف.'); }
+     }
+     return { success:true,id,saleId:id,paid_amount:sale.paid_amount,remaining_amount:remaining,customerId:sale.customer_id };
+   }
+   if (channel === 'get-sales') {
+     const f = args[0] || {}, rows = salesFor(f);
+     if (f.page) {
+       const page = Number(f.page) || 1, perPage = Number(f.perPage) || 30;
+       return { rows: clone(rows.slice((page - 1) * perPage, page * perPage)), total: rows.length, page };
+     }
+     return clone(rows.slice(0, f.limit || rows.length));
+   }
+   if (channel === 'get-cash-change-audit') {
+     const requested = Number(args[0]?.limit || 300);
+     const limit = Math.max(1, Math.min(1000, Number.isFinite(requested) ? requested : 300));
+     return clone((db.cash_change_audit || []).slice(0,limit));
+   }
+   if (channel === 'get-product-analytics') {
+     const id=args[0],product=(db.products||[]).find(p=>String(p.id)===String(id));
+     if(!product)return fail('المنتج غير موجود.');
+     const toNum=v=>Number.isFinite(Number(v))?Number(v):0;
+     let sold=0,revenue=0,profit=0,last30=0;
+     const now=Date.now(),thirty=30*86400000;
+     const variants=new Map();
+     for(const sale of db.sales||[]){
+       const when=Date.parse(sale.sale_date||sale.created_at||'');
+       for(const item of sale.items||[]){
+         if(String(item.product_id??item.id)!==String(id))continue;
+         const qty=toNum(item.quantity??item.qty);
+         if(!qty)continue;
+         const unit=toNum(item.selling_price??item.price??item.pos_price);
+         const cost=toNum(item.cost_price??product.cost_price);
+         const gross=toNum(item.total??qty*unit);
+         sold+=qty;revenue+=gross;profit+=(unit-cost)*qty;
+         if(Number.isFinite(when)&&when<=now&&when>now-thirty)last30+=qty;
+         if(item.variant_id!=null){
+           const key=String(item.variant_id);
+           const row=variants.get(key)||{variant_id:item.variant_id,
+             variant_name:String(item.variant_name||item.variant?.name||key),
+             sold_qty:0,revenue:0,remaining_stock:0};
+           row.sold_qty+=qty;row.revenue+=gross;variants.set(key,row);
+         }
+       }
+     }
+     let stock=0,valid=0,expired=0,finished=0;
+     cons
+
+==== invoice debt helpers ====
+const invoiceDebt = sale => Math.max(0, rounded(Number(sale?.total || 0) - Number(sale?.paid_amount || 0)));
+ const customerInvoiceDebt = id => rounded((db.sales || []).filter(s => String(s.customer_id) === String(id)).reduce((sum,s) => sum + invoiceDebt(s), 0));
+ const customerVisibleDebt = customer => rounded(Math.max(0, Number(customer?.balance || 0), customerInvoiceDebt(customer?.id)));
+ function reviseCustomerBalance(id, delta) {
+   const customer = (db.customers || []).find(c => String(c.id) === String(id));
+   if (customer && Number.isFinite(delta)) customer.balance = rounded(Math.max(0, Number(customer.balance || 0) + delta));
+ }
+
+ function buildProforma(payload, previous = {}) {
+   const checkout = payload.checkout || {};
+   const customerId = checkout.customerId ?? payload.customer_id ?? previous.customer_id ?? null;
+   const customer = db.customers.find(c => c.id == customerId) || {};
+   const items = (payload.items || []).map(raw => {
+     const productId = raw.product_id ?? raw.id ?? raw.product?.id ?? null;
+     const product = db.products.find(p => p.id == productId) || raw.product || {};
+     const quantity = Number(raw.quantity ?? raw.qty ?? 0);
+     const price = Number(raw.price ?? raw.pos_price ?? raw.selling_price ?? 0);
+     return {
+       product_id: productId,
+       batch_id: raw.batch_id ?? null,
+       variant_id: raw.variant_id ?? raw.variant?.id ?? null,
+       custom_product_name: raw.custom_product_name || (raw.is_custom ? product.name : null),
+       product_name: raw.product_name || product.name || raw.custom_product_name || '',
+       barcode: raw.barcode || product.barcode || '',
+       quantity,
+       price,
+       total: rounded(quantity * price),
+     };
+   });
+   const subtotal = rounded(items.reduce((sum, item) => sum + item.total, 0));
+   const discount = rounded(checkout.discount ?? payload.discount ?? previous.discount ?? 0);
+   const taxPercentage = Number(checkout.taxPercentage ?? payload.tax_percentage ?? previous.tax_percentage ?? 0);
+   const total = rounded(Math.max(0, subtotal - discount) * (1 + taxPercentage / 100));
+   const id = previous.id ?? ids();
+   return {
+     ...previous,
+     id,
+     doc_number: previous.doc_number || `PRO-${id}`,
+     created_at: previous.created_at || new Date().toISOString(),
+     updated_at: new Date().toISOString(),
+     status: previous.status || 'pending',
+     user_id: payload.userId ?? previous.user_id ?? null,
+     customer_id: customerId,
+     customer_name: customer.name || previous.customer_name || '',
+     customer_address: customer.address || previous.customer_address || '',
+     customer_phone: customer.phone || previous.customer_phone || '',
+     customer_rc: customer.rc || previous.customer_rc || '',
+     customer_nif: customer.nif || previous.customer_nif || '',
+     customer_ai: customer.ai || previous.customer_ai || '',
+     customer_nis: customer.nis || previous.customer_nis || '',
+     validity_days: Number(checkout.validityDays ?? payload.val
+
+==== bridge refs nano-record-settlement-102 ====
+spatchEvent(new CustomEvent('nano-pos-data-saved',{detail:{revision:db.revision}})); } catch {}
+     return clone(planned.result);
+   }
+
+ 
+  // New, idempotent debt payment adapter. Plan on a detached copy, persist it
+  // before touching the live cache, and reject any ambiguous or repeated payment.
+  if (channel === 'nano-record-settlement-102') {
+    try {
+      const ledger=window.NANO_PAYMENT_LEDGER_102;
+      if(!ledger) return fail('payment_planner_unavailable');
+      const planned=ledger.settle(db,args[0]||{});
+      if(planned.duplicate)return clone(planned.result);
+      localStorage.setItem(KEY,JSON.stringify(planned.next));
+      db=planned.next;
+      try {window.nanoNative?.pcSyncLocalChanged?.({revision:db.revision,at:Date.now()});}catch{}
+      try {window.dispatchEvent(new CustomEvent('nano-pos-data-saved',{detail:{revision:db.revision}}));}catch{}
+      return clone(planned.result);
+    }catch(e){
+      console.error('[NANO POS] verified settlement rejected:',e);
+      return fail(e?.code||'payment_commit_failed_no_changes');
+    }
+  }
+
+  if (channel === 'get-purchases') {
+     const changed = migratePurchaseRecords();
+     if (change
+
+==== bridge refs cashTenderedAmount ====
+  const next=Number(batch.stock||0)+delta;
+       if(!Number.isFinite(next)||(next<-.000001&&!request.allowNegativeStock))
+         return fail('الكمية المطلوبة غير متاحة لتعديل المنتج: '+String(product?.name||key));
+       stockChanges.push({product,batch,stock:next});
+     }
+     let tenderRecord=null;
+     if(input.cashTenderedAmount!=null){
+       const tender=Number(input.cashTenderedAmount),tc=Math.round(tender*100),pc=Math.round(paid*100);
+       if((input.paymentMethod||'cash')!=='cash'||!Number.isFinite(tender)||tender<0||
+         !Number.isSafeInteger(tc)||Math.abs(tender*100-tc)>.001||tc<pc)
+         return fail('المبلغ المستلم أو الصرف النقدي غير صحيح.');
+       tenderRecord={sale_total:total,cash_tendered_amount:rounded(tender),
+         cash_applied_amount:paid,cash_change_due:rounded((tc-pc)/100)};
+     }
+     const nextItems=request.items.map(item=>{
+       const p=(db.products||[]).find(p=>String(p.id)===String(item.id))||item.product||{};
+       const qty=Number(item.qty),unit=Number(item.pos_price);
+       return {...clone(item),product_id:item.id??null,
+         product_name:p.name||item.custom_product_name||'',name:p.name||item.cu
+---
+.isFinite(next)||(next<-.000001&&!request.allowNegativeStock))
+         return fail('الكمية المطلوبة غير متاحة لتعديل المنتج: '+String(product?.name||key));
+       stockChanges.push({product,batch,stock:next});
+     }
+     let tenderRecord=null;
+     if(input.cashTenderedAmount!=null){
+       const tender=Number(input.cashTenderedAmount),tc=Math.round(tender*100),pc=Math.round(paid*100);
+       if((input.paymentMethod||'cash')!=='cash'||!Number.isFinite(tender)||tender<0||
+         !Number.isSafeInteger(tc)||Math.abs(tender*100-tc)>.001||tc<pc)
+         return fail('المبلغ المستلم أو الصرف النقدي غير صحيح.');
+       tenderRecord={sale_total:total,cash_tendered_amount:rounded(tender),
+         cash_applied_amount:paid,cash_change_due:rounded((tc-pc)/100)};
+     }
+     const nextItems=request.items.map(item=>{
+       const p=(db.products||[]).find(p=>String(p.id)===String(item.id))||item.product||{};
+       const qty=Number(item.qty),unit=Number(item.pos_price);
+       return {...clone(item),product_id:item.id??null,
+         product_name:p.name||item.custom_product_name||'',name:p.name||item.custom_product_name||'',
+         barcode:p.barcode||'',unit:p
+---
+noSignature105=JSON.stringify({
+         items:__items105.map(i=>[String(i.id??''),String(i.batch_id??''),
+           Number(i.qty),Number(i.pos_price),Boolean(i.is_custom)]),
+         customer:String(__checkout105.customerId??''),total:__total105,
+         paid:__paid105,method:__method105,
+         ...(__checkout105.cashTenderedAmount == null ? {} : {cashTenderedCents:__money105(__checkout105.cashTenderedAmount)}),
+         discount:Number(__checkout105.discount||0),
+         taxPercentage:Number(__checkout105.taxPercentage||0)
+       });
+       const old=(db.sales||[]).find(s=>s.nano_checkout_operation_id===__nanoId105);
+       if(old){
+         if(old.nano_checkout_signature!==__nanoSignature105)
+           return fail('لا يمكن إعادة استعمال معرف الدفع لعملية مختلفة.');
+         return {success:true,id:old.id,saleId:old.id,alreadyProcessed:true,
+           paid_amount:old.paid_amount,remaining_amount:old.remaining_amount,
+           customerId:old.customer_id};
+       }
+     }
+     // Keep a snapshot before any sale stock/cash/debt mutation so failed
+     // local storage writes cannot leave only part of the sale in live memory.
+     const __nanoPr
+---
+?''),String(i.batch_id??''),
+           Number(i.qty),Number(i.pos_price),Boolean(i.is_custom)]),
+         customer:String(__checkout105.customerId??''),total:__total105,
+         paid:__paid105,method:__method105,
+         ...(__checkout105.cashTenderedAmount == null ? {} : {cashTenderedCents:__money105(__checkout105.cashTenderedAmount)}),
+         discount:Number(__checkout105.discount||0),
+         taxPercentage:Number(__checkout105.taxPercentage||0)
+       });
+       const old=(db.sales||[]).find(s=>s.nano_checkout_operation_id===__nanoId105);
+       if(old){
+         if(old.nano_checkout_signature!==__nanoSignature105)
+           return fail('لا يمكن إعادة استعمال معرف الدفع لعملية مختلفة.');
+         return {success:true,id:old.id,saleId:old.id,alreadyProcessed:true,
+           paid_amount:old.paid_amount,remaining_amount:old.remaining_amount,
+           customerId:old.customer_id};
+       }
+     }
+     // Keep a snapshot before any sale stock/cash/debt mutation so failed
+     // local storage writes cannot leave only part of the sale in live memory.
+     const __nanoPriorSale102=clone(db);
+     if (Array.isArray(args[0]?.checkout?.payments)) {
+ 
+---
+it=engine.split(String(args[0]?.checkout?.total),
+           args[0].checkout.payments,args[0].checkout.customerId);}
+       catch(e){return fail(e.code||'invalid_split_payment');}
+       args[0]={...args[0],checkout:{...args[0].checkout,
+         paidAmount:split.paidAmount,paymentMethod:split.paymentMethod,
+         cashTenderedAmount:null,__nanoSplit102:split}};
+     }
+     if ((args[0]?.items||[]).some(item=>Number(item?.qty)<0))
+       return fail('استخدم المرتجعات لتصحيح الكميات بدل بيع بكمية سالبة.');
+
+     // Never silently reprice a sale at confirmation: honor cart unit prices.
+     // Legacy mobile clients may still submit checkout.applyOffers=true.
+     if (args[0]?.checkout?.applyOffers === true) {
+       args[0] = {...args[0], checkout:{...args[0].checkout,applyOffers:false}};
+     }
+     if ((args[0]?.items || []).some(i => Number(i.qty) < 0)) {
+     const data = args[0], c = data.checkout || {};
+     if (!data.items?.length) throw new Error('السلة فارغة');
+
+     // Validate all quantities and stock BEFORE changing any live inventory.
+     // This also catches duplicate lines for the same batch in one transaction.
+     const quantities = 
+---
+st customer = (db.customers || []).find(v => String(v.id) === String(c.customerId));
+     if (remaining > 0 && !customer) return fail('البيع بالدين أو التسديد الجزئي يتطلب اختيار زبون مسجّل.');
+     // Persist calculated change in cents; this is not evidence of physical handover.
+     let cashRecord = null;
+     if (c.cashTenderedAmount !== undefined && c.cashTenderedAmount !== null) {
+       const tendered = Number(c.cashTenderedAmount);
+       const paidCents = Math.round(paid * 100);
+       const tenderCents = Math.round(tendered * 100);
+       const totalCents = Math.round(total * 100);
+       if ((c.paymentMethod || 'cash') !== 'cash' ||
+           !Number.isFinite(tendered) || tendered < 0 ||
+           !Number.isSafeInteger(tenderCents) || tenderCents > 100000000000 ||
+           Math.abs(tendered * 100 - tenderCents) > 0.001 ||
+           paidCents < 0 || paidCents > totalCents ||
+           tenderCents < paidCents) {
+         return fail('المبلغ النقدي المستلم أو الصرف غير صالح.');
+       }
+       cashRecord = {
+         sale_total: rounded(totalCents/100),
+         cash_tendered_amount: rounded(tenderCents/100),
+         cash_applied_amount: 
+---
+d(v => String(v.id) === String(c.customerId));
+     if (remaining > 0 && !customer) return fail('البيع بالدين أو التسديد الجزئي يتطلب اختيار زبون مسجّل.');
+     // Persist calculated change in cents; this is not evidence of physical handover.
+     let cashRecord = null;
+     if (c.cashTenderedAmount !== undefined && c.cashTenderedAmount !== null) {
+       const tendered = Number(c.cashTenderedAmount);
+       const paidCents = Math.round(paid * 100);
+       const tenderCents = Math.round(tendered * 100);
+       const totalCents = Math.round(total * 100);
+       if ((c.paymentMethod || 'cash') !== 'cash' ||
+           !Number.isFinite(tendered) || tendered < 0 ||
+           !Number.isSafeInteger(tenderCents) || tenderCents > 100000000000 ||
+           Math.abs(tendered * 100 - tenderCents) > 0.001 ||
+           paidCents < 0 || paidCents > totalCents ||
+           tenderCents < paidCents) {
+         return fail('المبلغ النقدي المستلم أو الصرف غير صالح.');
+       }
+       cashRecord = {
+         sale_total: rounded(totalCents/100),
+         cash_tendered_amount: rounded(tenderCents/100),
+         cash_applied_amount: rounded(paidCents/100),
+         cash_
+---
+g > 0 && !customer) return fail('البيع بالدين أو التسديد الجزئي يتطلب اختيار زبون مسجّل.');
+     // Persist calculated change in cents; this is not evidence of physical handover.
+     let cashRecord = null;
+     if (c.cashTenderedAmount !== undefined && c.cashTenderedAmount !== null) {
+       const tendered = Number(c.cashTenderedAmount);
+       const paidCents = Math.round(paid * 100);
+       const tenderCents = Math.round(tendered * 100);
+       const totalCents = Math.round(total * 100);
+       if ((c.paymentMethod || 'cash') !== 'cash' ||
+           !Number.isFinite(tendered) || tendered < 0 ||
+           !Number.isSafeInteger(tenderCents) || tenderCents > 100000000000 ||
+           Math.abs(tendered * 100 - tenderCents) > 0.001 ||
+           paidCents < 0 || paidCents > totalCents ||
+           tenderCents < paidCents) {
+         return fail('المبلغ النقدي المستلم أو الصرف غير صالح.');
+       }
+       cashRecord = {
+         sale_total: rounded(totalCents/100),
+         cash_tendered_amount: rounded(tenderCents/100),
+         cash_applied_amount: rounded(paidCents/100),
+         cash_change_due: rounded((tenderCents-paidCents)/100),
+       };
+    
+
+==== bridge refs nano_checkout_operation_id ====
+105,method:__method105,
+         ...(__checkout105.cashTenderedAmount == null ? {} : {cashTenderedCents:__money105(__checkout105.cashTenderedAmount)}),
+         discount:Number(__checkout105.discount||0),
+         taxPercentage:Number(__checkout105.taxPercentage||0)
+       });
+       const old=(db.sales||[]).find(s=>s.nano_checkout_operation_id===__nanoId105);
+       if(old){
+         if(old.nano_checkout_signature!==__nanoSignature105)
+           return fail('لا يمكن إعادة استعمال معرف الدفع لعملية مختلفة.');
+         return {success:true,id:old.id,saleId:old.id,alreadyProcessed:true,
+           paid_amount:old.paid_amount,remaining_amount:old.remaining_amount,
+           customerId:old.customer_id};
+       }
+     }
+     // Keep a snapshot before any sale stock/cash/debt mutation so failed
+     // local storage writes cannot leave only part of the sale in live memory.
+     const __nanoPriorSale102=clone(db);
+     if (Array.isArray(args[0]?.checkout?.payments)) {
+       const engine=window.NANO_PAYMENT_LEDGER_102;
+       if(!engine)return fail('split_payment_module_unavailable');
+       let split;
+       try {split=engine.split(String(args[0]?.checkout
+---
+mount;
+       sale.cash_change_amount = audit.cash_change_due;
+       sale.cash_change_record = clone(audit);
+       db.cash_change_audit = Array.isArray(db.cash_change_audit) ? db.cash_change_audit : [];
+       db.cash_change_audit.unshift(audit);
+     }
+     db.sales.unshift(sale);
+     if(__nanoId105){
+        sale.nano_checkout_operation_id=__nanoId105;
+        sale.nano_checkout_signature=__nanoSignature105;
+      }
+      if (remaining > 0) reviseCustomerBalance(customer.id,remaining);
+     // Write sale, related stock updates and customer balance as one snapshot.
+     try {
+       const snapshot={...db,revision:Number(db.revision||0)+1};
+       localStorage.setItem(KEY,JSON.stringify(snapshot));
+       db=snapshot;
+       try {window.nanoNative?.pcSyncLocalChanged?.({revision:db.revision,at:Date.now()});}catch{}
+       try {window.dispatchEvent(new CustomEvent('nano-pos-data-saved',{detail:{revision:db.revision}}));}catch{}
+     } catch(error) {
+       db=__nanoPriorSale102;
+       console.error('[NANO POS] sale atomic write failed:',error);
+       return fail('sale_write_failed_no_changes');
+     }
+     if (cashRecord) {
+       try {
+         co
+
+==== checkout html ====
+<div id="checkoutModal"
+        class="hidden fixed inset-0 z-[160] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden border border-slate-200 translate-y-4 animate-slide-up">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-emerald-50 shrink-0">
+                <div>
+                    <h2 class="text-xl font-headline font-black text-emerald-800"
+                        data-i18n="complete_payment_record_sales">إتمام الدفع وتسجيل المبيعات</h2>
+                </div>
+                <button onclick="closeCheckoutModal()"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 hover:bg-emerald-200 transition">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div
+                    class="bg-slate-900 rounded-2xl p-4 text-center shadow-lg shadow-slate-900/20 mb-4 relative overflow-hidden">
+                    <span class="text-xs font-bold text-slate-400 absolute top-3 left-4"
+                        data-i18n="total_required">الإجمالي المطلوب</span>
+                    <div id="checkoutTotalUI"
+                        class="text-3xl font-black font-headline text-white mt-4 tracking-tighter">0.00 <span
+                            data-i18n="dzd">د.ج</span></div>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-black text-slate-700" data-i18n="payment_method">طريقة
+                        الدفع</label>
+                    <select id="checkoutPaymentMethod" onchange="checkoutUpdateStamp()"
+                        class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl p-2.5 outline-none font-bold text-sm transition">
+                        <option value="cash" data-i18n="payment_method_cash">نقداً</option>
+                        <option value="cheque" data-i18n="payment_method_cheque">شيك</option>
+                        <option value="ccp" data-i18n="payment_method_ccp">CCP</option>
+                        <option value="virement" data-i18n="payment_method_virement">تحويل بنكي</option>
+                        <option value="card" data-i18n="payment_method_card">بطاقة</option>
+                        <option value="other" data-i18n="payment_method_other">أخرى</option>
+                    </select>
+                </div>
+
+                <div id="nanoCheckoutChoice104" class="grid grid-cols-2 gap-2">
+                    <input type="hidden" id="checkoutPaidAmount" value="0">
+                    <div id="checkoutChangeUI" hidden>0.00</div>
+                    <button type="button" onclick="nanoCheckoutPayFull104()"
+                        class="py-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 font-black"
+                        data-i18n="nano_payment_full">دفع كامل</button>
+                    <button type="button" onclick="nanoOpenCreditPicker107()"
+                        class="py-3 rounded-xl bg-red-50 text-red-700 border border-red-200 font-black"
+                        data-i18n="nano_payment_credit_full">دين كامل</button>
+                </div>
+
+                
+                <div id="checkoutStampBox" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-1">
+                    <div class="flex justify-between text-xs font-bold text-amber-800">
+                        <span data-i18n="stamp_duty">حقّ الطابع (1%)</span>
+                        <span id="checkoutStampUI" class="font-black">0.00 <span data-i18n="dzd">د.ج</span></span>
+                    </div>
+                    <div class="flex justify-between text-sm font-black text-amber-900 pt-1 border-t border-amber-200">
+                        <span data-i18n="net_to_pay">الصافي للدفع</span>
+                        <span id="checkoutNetUI">0.00 <span data-i18n="dzd">د.ج</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex gap-3 items-center">
+                <button id="autoPrintReceiptBtn" type="button" onclick="toggleAutoPrintReceipt()"
+                    class="w-12 h-12 rounded-xl shadow-sm border border-slate-200 flex items-center justify-center transition active:scale-95"
+                    title="طباعة الوصل تلقائياً بعد التسديد" data-i18n-title="auto_print_receipt_after_payment">
+                    <span id="autoPrintReceiptIcon"
+                        class="material-symbols-outlined text-[22px] text-slate-400">print_disabled</span>
+                </button>
+                <button type="button" onclick="processSaleAndPrintReceipt()"
+                    class="w-12 h-12 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 flex items-center justify-center transition active:scale-95"
+                    title="طباعة الوصل بعد التسديد مباشرة" data-i18n-title="print_receipt_immediately">
+                    <span class="material-symbols-outlined text-[22px] text-emerald-600">receipt_long</span>
+                </button>
+                <button onclick="processSale()"
+                    class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-xl shadow-lg shadow-emerald-200 transition active:scale-95 text-xl flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">done_all</span> <span data-i18n="confirm_sale_btn">تأكيد
+                        وعمل فاتورة البيع</span>
+                    <span
+                        class="text-[11px] font-black bg-emerald-800/60 border border-emerald-400/40 px-1.5 py-0.5 rounded-md tracking-wide">F1</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="customerModal"
+        class="hidden fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200 translate-y-4 animate-slide-up">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-xl font-headline font-black text-slate-800" id="customerModalTitle"
+                    data-i18n="add_customer">إضافة زبون دائم</h2>
+                <button onclick="closeCustomerModal()"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 transition">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="customerForm" onsubmit="saveCustomer(event)" class="space-y-4">
+                    <input type="hidden" id="customerId">
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700"><span data-i18n="name">الاسم</span>
+                            <span class="text-red-500">*</span></label>
+                        <input type="text" id="customerName" required
+                            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700" data-i18n="phone_number">رقم
+                            الهاتف</label>
+                        <input type="text" id="customerPhone"
+                            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-xs font-bold text-slate-700"
+                            data-i18n="address_or_state">العنوان أو الولاية</label>
+                        <input type="text" id="customerAddress"
+                            class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-1.5 text-[10px] font-bold text-slate-500">NIF</label>
+                            <input type="text" id="customerNif"
+                                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1.5 text-[10px] font-bold text-slate-500">RC</label>
+                            <input type="text" id="customerRc"
+                                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1.5 text-[10px] font-bold text-slate-500">AI</label>
+                            <input type="text" id="customerAi"
+                                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1.5 text-[10px] font-bold text-slate-500">NIS</label>
+                            <input type="text" id="customerNis"
+                                class="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-lg p-2.5 outline-none font-bold text-sm transition">
+                        </div>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                        <label class="block mb-1.5 text-xs font-bold text-amber-800"
+                            data-i18n="initial_debt_label">الدين الابتدائي (ديون سابقة قبل بدء استخدام البرنامج)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" step="0.01" min="0" id="customerInitialDebt" value="0"
+                                placeholder="0.00"
+                                class="flex-1 bg-white border border-amber-300 focus:border-amber-500 rounded-lg p-2.5 outline-none font-black text-sm text-amber-900 transition">
+                            <span class="text-xs font-bold text-amber-700" data-i18n="dzd">د.ج</span>
+                        </div>
+                        <p class="text-[10px] text-amber-700 mt-1.5 font-bold" data-i18n="initial_debt_hint">سيُضاف هذا
+                            المبلغ إلى الدين الإجمالي للزبون. اتركه 0 إذا لم يكن هناك دين سابق.</p>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <label class="block mb-1.5 text-xs font-bold text-blue-800" data-i18n="credit_limit_label">حدّ
+                            الدين (الحد الأقصى المسموح من الديون)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number"
+
+==== nano-payment-quality-105.js ====
+/* NANO POS 1.0.105: professional single-method checkout.
+ * No cash tendered field, no split/mixed payment; preserves existing invoice records.
+ */
+(function(root){
+ 'use strict';
+ const doc=root.document;if(!doc||root.NANO_PAYMENT_QUALITY_105)return;
+ const get=id=>doc.getElementById(id);
+ const labels={
+ ar:{summary:'ملخص تسديد الفاتورة',total:'المبلغ الإجمالي',method:'طريقة التسديد',pay:'الدفع',paid:'دفع كامل',credit:'دين كامل',customer:'اختر زبونًا مسجلًا قبل البيع بالدين.',processing:'جاري تسجيل الفاتورة…',duplicate:'تم تسجيل هذه العملية مسبقًا. لا تكرر التأكيد.',error:'تعذّر إتمام البيع؛ يمكنك المحاولة مجددًا.',creditInfo:'سيُسجّل المبلغ دينًا على الزبون المحدد.',complete:'ستُسدد قيمة الفاتورة بالكامل.',invalid:'يُسمح بالدفع الكامل أو الدين الكامل فقط.',badMethod:'اختر طريقة دفع واحدة صالحة.'},
+ fr:{summary:'Résumé du règlement',total:'Total',method:'Mode de paiement',pay:'Règlement',paid:'Paiement intégral',credit:'Vente à crédit',customer:'Sélectionnez un client enregistré pour la vente à crédit.',processing:'Enregistrement de la facture…',duplicate:'Cette vente a déjà été enregistrée.',error:'Échec de la vente. Vous pouvez réessayer.',creditInfo:'Le montant sera imputé sur le compte client.',complete:'La facture sera réglée intégralement.',invalid:'Choisissez paiement intégral ou crédit intégral.',badMethod:'Sélectionnez un seul mode de paiement.'},
+ en:{summary:'Payment summary',total:'Invoice total',method:'Payment method',pay:'Settlement',paid:'Paid in full',credit:'Full credit',customer:'Select a registered customer before selling on credit.',processing:'Saving invoice…',duplicate:'This sale has already been recorded.',error:'Unable to save the sale. Retry is available.',creditInfo:'The whole amount becomes customer debt.',complete:'The whole invoice is paid.',invalid:'Only full payment or full credit is permitted.',badMethod:'Choose a valid single payment method.'}
+ };
+ const language=()=>{const s=String(root.currentLanguage||doc.documentElement.lang||'ar').toLowerCase();return s.startsWith('fr')?'fr':s.startsWith('en')?'en':'ar';};
+ const t=()=>labels[language()];
+ const allowed=new Set(['cash','card','cheque','ccp','virement','transfer','other']);
+ const normalize=value=>String(value??'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).replace(/\s/g,'').replace(',','.');
+ const cents=value=>{const raw=normalize(value),m=raw.match(/^\d+(?:\.\d{1,2})?$/);if(!m)return null;const [a,b='']=raw.split('.');const n=Number(a)*100+Number((b+'00').slice(0,2));return Number.isSafeInteger(n)&&n>=0?n:null;};
+ const readTotal=()=>{const text=String(get('checkoutTotalUI')?.textContent||'');const m=text.replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).match(/\d+(?:[.,]\d{1,2})?/);return cents(m?.[0]||'0');};
+ const money=value=>(value/100).toFixed(2);
+ const modal=get('checkoutModal');if(!modal)return;
+ const summary=doc.createElement('section');summary.id='nanoPaymentSummary105';
+ summary.style.cssText='padding:12px;border:1px solid #a7f3d0;background:#ecfdf5;border-radius:12px;margin-top:10px;color:#064e3b';
+ summary.setAttribute('role','status');summary.setAttribute('aria-live','polite');
+ const row=doc.createElement('div');row.style.cssText='display:flex;justify-content:space-between;gap:14px;align-items:center';
+ const heading=doc.createElement('strong');heading.textContent=t().summary;
+ const amount=doc.createElement('strong');amount.id='nanoPaymentTotal105';
+ row.append(heading,amount);
+ const detail=doc.createElement('div');detail.id='nanoPaymentDetail105';detail.style.cssText='font-size:13px;margin-top:6px;line-height:1.6';
+ const status=doc.createElement('div');status.id='nanoPaymentWarning105';status.style.cssText='font-size:13px;font-weight:700;margin-top:6px';
+ summary.append(row,detail,status);
+ const panel=get('nanoCheckoutChoice104');
+ if(panel)panel.insertAdjacentElement('afterend',summary);
+ else modal.querySelector('.p-6')?.append(summary);
+ let busy=false,committed=false,key='',wasVisible=false,lastTotal=null;
+ const uuid=()=> 'n105-'+(root.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
+ const warn=(message,level='error')=>{status.textContent=message;status.style.color=level==='error'?'#b91c1c':'#047857';};
+ const paid=()=>cents(get('checkoutPaidAmount')?.value||'0');
+ const credit=()=>{const total=readTotal();return total>0&&paid()===0;};
+ function render(){
+   const total=readTotal(),p=paid(),selected=get('checkoutPaymentMethod');
+   if(total===null)return;
+   if(lastTotal!==null&&lastTotal!==total&&p===lastTotal){
+     const input=get('checkoutPaidAmount');
+     if(input){input.value=money(total);input.dispatchEvent(new root.Event('input',{bubbles:true}));}
+   }
+   lastTotal=total;
+   const due=credit(),method=selected?.selectedOptions?.[0]?.textContent?.trim()||selected?.value||'';
+   heading.textContent=t().summary;amount.textContent=money(total)+' د.ج';
+   detail.textContent=t().method+': '+method+' · '+t().pay+': '+(due?t().credit:t().paid)+' · '+(due?t().creditInfo:t().complete);
+   if(!busy&&!committed){
+     status.textContent=due&&!String(get('posCustomerSelect')?.value||'').trim()?t().customer:'';
+     status.style.color='#b45309';
+   }
+ }
+ function setProcessing(on){busy=on;const buttons=modal.querySelectorAll('button[onclick]');
+   for(const btn of buttons){
+     const handler=String(btn.getAttribute('onclick')||'');
+     if(/\b(?:processSale|processSaleAndPrintReceipt)\s*\(\s*\)/.test(handler))
+       btn.disabled=on||committed;
+   }
+ }
+ function fail(error){const m=String(error?.message||error||t().error);warn(m);root.showToast?.(m,'error');return {success:false,error:m};}
+ const invoke=root.__browserElectron?.ipcRenderer?.invoke;
+ if(typeof invoke==='function'){
+   const original=invoke.bind(root.__browserElectron.ipcRenderer);
+   root.__browserElectron.ipcRenderer.invoke=function(channel,...args){
+     if(channel!=='process-sale'||!args[0]||typeof args[0]!=='object'||args[0].editSaleId)
+       return original(channel,...args);
+     if(committed)return Promise.resolve(fail(t().duplicate));
+     if(busy)return Promise.resolve(fail(t().processing));
+     const payload=args[0],c=payload.checkout||{},total=cents(String(c.total)),value=cents(String(c.paidAmount)),method=String(c.paymentMethod||'cash');
+     if(total===null||value===null||!(value===total||value===0))
+       return Promise.resolve(fail(t().invalid));
+     if(!allowed.has(method)||Array.isArray(c.payments)||method==='mixed')
+       return Promise.resolve(fail(t().badMethod));
+     if(value===0&&total>0&&!String(c.customerId||'').trim())
+       return Promise.resolve(fail(t().customer));
+     if(!key)key=uuid();
+     const updated={...payload,checkout:{...c,nanoCheckoutRequestId:key}};
+     setProcessing(true);warn(t().processing,'info');
+     let result;
+     try{result=original(channel,updated,...args.slice(1));}
+     catch(err){setProcessing(false);return Promise.resolve(fail(err));}
+     return Promise.resolve(result).then(answer=>{
+       if(answer?.success){
+         committed=true;setProcessing(false);warn('✓ '+t().paid,'info');
+       }else{setProcessing(false);warn(answer?.message||answer?.error||t().error);}
+       return answer;
+     },error=>{setProcessing(false);return fail(error)});
+   };
+ }
+ function onModal(){
+   const visible=!modal.classList.contains('hidden');
+   if(visible&&!wasVisible){busy=false;committed=false;key=uuid();lastTotal=null;render();setProcessing(false);}
+   if(!visible&&wasVisible){busy=false;committed=false;key='';lastTotal=null;status.textContent='';}
+   wasVisible=visible;
+ }
+ if(root.MutationObserver){
+   new root.MutationObserver(onModal).observe(modal,{attributes:true,attributeFilter:['class']});
+   const total=get('checkoutTotalUI');
+   if(total)new root.MutationObserver(render).observe(total,{childList:true,subtree:true,characterData:true});
+ }
+ modal.addEventListener('click',event=>{
+   const button=event.target?.closest?.('button[onclick]');
+   if(!button)return;
+   const handler=String(button.getAttribute('onclick')||'');
+   if(/\b(?:processSale|processSaleAndPrintReceipt)\s*\(\s*\)/.test(handler)){
+     if(busy||committed){event.preventDefault();event.stopImmediatePropagation();warn(committed?t().duplicate:t().processing);return;}
+     const total=readTotal(),p=paid();
+     if(total===null||p===null||!(p===0||p===total)){
+       event.preventDefault();event.stopImmediatePropagation();warn(t().invalid);return;
+     }
+     if(p===0&&total>0&&!String(get('posCustomerSelect')?.value||'').trim()){
+       event.preventDefault();event.stopImmediatePropagation();warn(t().customer);
+       get('posCustomerSelect')?.focus();return;
+     }
+   }
+   if(handler.includes('checkoutMarkAsDebt')||handler.includes('nanoCheckoutPayFull104')){
+     root.setTimeout?.(render,0);
+   }
+ },true);
+ get('checkoutPaymentMethod')?.addEventListener('change',render);
+ get('posCustomerSelect')?.addEventListener('change',render);
+ get('checkoutPaidAmount')?.addEventListener('input',render);
+ onModal();
+ root.NANO_PAYMENT_QUALITY_105=Object.freeze({render,readTotal});
+})(typeof window!=='undefined'?window:globalThis);
+
+
+==== nano-cash-guide-106.js ====
+/* NANO POS v1.0.106 — cashier-friendly change; single full cash payment ONLY. */
+(function(root){
+ 'use strict';
+ const d=root.document,calculator=root.NANO_CASH_PLAN_106;
+ if(!d||!calculator||root.NANO_CASH_GUIDE_106)return;
+ const by=id=>d.getElementById(id);
+ const modal=by('checkoutModal'),anchor=by('nanoCheckoutChoice104');
+ if(!modal||!anchor)return;
+ const strings={
+  ar:{title:'المبلغ الذي قدمه الزبون',change:'الصرف الذي يُرجع للزبون',show:'طريقة إرجاع الصرف',empty:'أدخل المبلغ النقدي الذي سلّمه الزبون.',wrong:'مبلغ نقدي غير صالح؛ استعمل رقمًا بخانتين عشريتين كحد أقصى.',short:'المبلغ المقدَّم أقل من ثمن الفاتورة.',cashOnly:'يظهر حساب الصرف عند اختيار الدفع النقدي الكامل.',fraction:'باقي السنتيمات (لا يدخل في توزيع فئات الدينار)',dinar:'د.ج'},
+  fr:{title:'Montant remis par le client',change:'Monnaie à rendre',show:'Répartition conseillée',empty:'Saisissez le montant en espèces.',wrong:'Montant invalide (2 décimales max).',short:'Montant remis insuffisant.',cashOnly:'La monnaie est calculée seulement pour le paiement total en espèces.',fraction:'Centimes restants hors coupures DZD',dinar:'DZD'},
+  en:{title:'Cash handed by customer',change:'Change due',show:'Suggested denominations',empty:'Enter the cash tendered.',wrong:'Invalid cash amount (max 2 decimals).',short:'Cash tendered is less than the invoice total.',cashOnly:'Change is calculated only for a full cash sale.',fraction:'Remaining centimes not covered by DZD denominations',dinar:'DZD'}
+ };
+ const t=()=>{const x=String(root.currentLanguage||d.documentElement.lang||'ar').slice(0,2);return strings[x]||strings.ar;};
+ const panel=d.createElement('section');panel.id='nanoCashGuide106';panel.hidden=true;
+ panel.style.cssText='padding:12px;border:1px solid #93c5fd;border-radius:12px;background:#eff6ff;margin:12px 0;direction:inherit;';
+ const label=d.createElement('label');label.htmlFor='nanoCashTendered106';label.style.cssText='font-weight:800;font-size:13px;display:block;margin-bottom:6px';
+ const tender=d.createElement('input');tender.id='nanoCashTendered106';tender.type='number';tender.min='0';tender.step='0.01';tender.inputMode='decimal';tender.autocomplete='off';tender.placeholder='0.00';
+ tender.style.cssText='width:100%;font-size:19px;font-weight:800;padding:10px;border:1px solid #94a3b8;border-radius:9px;color:#0f172a';
+ const heading=d.createElement('p');heading.style.cssText='font-size:13px;margin:8px 0 4px';
+ const number=d.createElement('strong');number.id='nanoCashChange106';number.style.cssText='font-size:24px;color:#065f46;display:block';
+ const breakdown=d.createElement('div');breakdown.id='nanoCashBreakdown106';breakdown.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin-top:10px';
+ const message=d.createElement('p');message.id='nanoCashWarning106';message.style.cssText='font-size:12px;margin-top:7px';message.setAttribute('role','status');
+ panel.append(label,tender,heading,number,breakdown,message);
+ anchor.insertAdjacentElement('afterend',panel);
+ const parseTotal=()=>{
+   const raw=String(by('checkoutTotalUI')?.textContent||'').replace(/[٠-٩]/g,x=>String(x.charCodeAt(0)-1632)).replace(/[۰-۹]/g,x=>String(x.charCodeAt(0)-1776));
+   const m=raw.match(/\d+(?:[,.]\d{1,2})?/);return m?calculator.cents(m[0]):null;
+ };
+ const paid=()=>calculator.cents(by('checkoutPaidAmount')?.value||'0');
+ const eligible=()=>{
+   const total=parseTotal(),value=paid();
+   return !modal.classList.contains('hidden')&&by('checkoutPaymentMethod')?.value==='cash'&&
+     total!==null&&value===total;
+ };
+ function render(){
+   const tr=t();
+   label.textContent=tr.title+' ('+tr.dinar+')';heading.textContent=tr.change;
+   panel.hidden=!eligible();
+   if(panel.hidden){return;}
+   breakdown.replaceChildren();
+   const raw=tender.value;
+   if(!raw.trim()){number.textContent='—';message.textContent=tr.empty;return;}
+   const total=parseTotal();
+   const result=calculator.plan(calculator.format(total),raw);
+   if(!result.ok){
+     number.textContent='—';
+     message.textContent=result.code==='cash_insufficient'?tr.short:tr.wrong;
+     message.style.color='#b91c1c';
+     tender.setAttribute('aria-invalid','true');return;
+   }
+   tender.setAttribute('aria-invalid','false');
+   number.textContent=calculator.format(result.changeCents)+' '+tr.dinar;
+   message.textContent=tr.show+':';
+   message.style.color='#0369a1';
+   for(const item of result.pieces){
+     const chip=d.createElement('span');
+     chip.style.cssText='background:white;border:1px solid #bfdbfe;border-radius:8px;padding:6px 9px;font-weight:800;font-size:13px';
+     chip.textContent=item.count+' × '+item.denomination+' '+tr.dinar;
+     breakdown.append(chip);
+   }
+   if(result.centimes){
+     const small=d.createElement('small');
+     small.textContent=tr.fraction+': '+String(result.centimes).padStart(2,'0');
+     breakdown.append(small);
+   }
+ }
+ const bridge=root.__browserElectron?.ipcRenderer;
+ if(bridge&&typeof bridge.invoke==='function'){
+   const invoke=bridge.invoke.bind(bridge);
+   bridge.invoke=function(channel,...args){
+     if(channel==='process-sale'&&args[0]&&!args[0].editSaleId){
+       const payload=args[0],checkout=payload.checkout||{};
+       const total=calculator.cents(checkout.total),received=calculator.cents(checkout.paidAmount);
+       const fullCash=checkout.paymentMethod==='cash'&&total!==null&&received===total;
+       if(fullCash){
+         const calculated=calculator.plan(checkout.total,tender.value);
+         if(!calculated.ok){
+           message.textContent=calculated.code==='cash_insufficient'?t().short:!tender.value?t().empty:t().wrong;
+           message.style.color='#b91c1c';
+           tender.focus();
+           return Promise.resolve({success:false,error:calculated.code});
+         }
+         args[0]={...payload,checkout:{...checkout,
+           cashTenderedAmount:calculator.format(calculated.tenderCents)}};
+       }else if('cashTenderedAmount' in checkout){
+         const {cashTenderedAmount,...rest}=checkout;
+         args[0]={...payload,checkout:rest};
+       }
+     }
+     return invoke(channel,...args);
+   };
+ }
+ const statusFields=['checkoutPaidAmount','checkoutPaymentMethod'];
+ for(const field of statusFields)by(field)?.addEventListener(field==='checkoutPaymentMethod'?'change':'input',render);
+ tender.addEventListener('input',render);
+ let lastShown=false;
+ function onVisible(){
+   const shown=!modal.classList.contains('hidden');
+   if(shown&&!lastShown){tender.value='';render();}
+   if(!shown&&lastShown){tender.value='';breakdown.replaceChildren();}
+   lastShown=shown;
+   if(shown)render();
+ }
+ if(root.MutationObserver){
+   new root.MutationObserver(onVisible).observe(modal,{attributes:true,attributeFilter:['class']});
+   const amount=by('checkoutTotalUI');
+   if(amount)new root.MutationObserver(render).observe(amount,{characterData:true,childList:true,subtree:true});
+ }
+ onVisible();
+ root.NANO_CASH_GUIDE_106=Object.freeze({render,panel});
+})(typeof window!=='undefined'?window:globalThis);
+
+
+==== nano-checkout-choice-104.js ====
+/* NANO POS v1.0.104 — full payment or full customer credit; no received-amount entry. */
+(function(root){
+ 'use strict';
+ const doc=root.document;
+ function paidInput(){return doc?.getElementById('checkoutPaidAmount');}
+ function readTotal(){
+   const el=doc?.getElementById('checkoutTotalUI');
+   const raw=String(el?.textContent||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632))
+     .replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).replace(/,/g,'.');
+   const match=raw.match(/\d+(?:\.\d{1,2})?/);
+   const number=Number(match?.[0]||0);
+   return Number.isFinite(number)&&number>=0?Math.round(number*100)/100:0;
+ }
+ function paidFull(){
+   const input=paidInput();if(!input)return;
+   input.value=readTotal().toFixed(2);
+   input.dispatchEvent(new Event('input',{bubbles:true}));
+   if(typeof root.checkoutCalcChange==='function')root.checkoutCalcChange();
+ }
+ // Preserve existing business rule: the full-credit button sets paidAmount=0;
+ // the backend requires a registered customer for an unpaid checkout.
+ root.nanoCheckoutPayFull104=paidFull;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+==== nano-credit-picker-107.js ====
+/* NANO POS 1.0.107 — credit checkout customer picker.
+ * Never creates an invoice by itself: uses the existing complete-credit sale path.
+ * Customer creation calls the native customer API and sets initial debt to ZERO.
+ */
+(function(root){
+ 'use strict';
+ const doc=root.document;
+ if(!doc||root.NANO_CREDIT_PICKER_107)return;
+ const checkout=doc.getElementById('checkoutModal');
+ if(!checkout)return;
+ const api=()=>root.api||null;
+ const labels={
+  ar:{title:'البيع بالكريدي',desc:'اختر الزبون الذي ستُسجَّل عليه قيمة الفاتورة، أو أضف زبونًا جديدًا.',search:'ابحث بالاسم أو الهاتف',existing:'الزبائن المسجلون',new:'إضافة زبون جديد',name:'اسم الزبون *',phone:'رقم الهاتف',address:'العنوان / الولاية',create:'حفظ الزبون والبيع بالكريدي',choose:'اختيار الزبون',cancel:'إلغاء',empty:'لا يوجد زبائن مطابقون؛ يمكنك إضافة زبون جديد.',loading:'تحميل الزبائن…',missing:'أدخل اسم الزبون.',saveError:'تعذر حفظ الزبون. لم يتم تسجيل بيع.',readError:'تعذر جلب الزبائن. لم يتم تسجيل بيع.',duplicate:'يوجد زبون بنفس رقم الهاتف؛ اختره من القائمة.',credit:'دين كامل',nameRequired:'اختر زبونًا مسجلًا قبل إتمام البيع.',ready:'الزبون المحدد: '},
+  fr:{title:'Vente à crédit',desc:'Choisissez un client pour enregistrer toute la facture comme dette, ou créez un client.',search:'Chercher par nom ou téléphone',existing:'Clients enregistrés',new:'Nouveau client',name:'Nom du client *',phone:'Téléphone',address:'Adresse / Wilaya',create:'Enregistrer le client et choisir le crédit',choose:'Choisir ce client',cancel:'Annuler',empty:'Aucun client; créez-en un.',loading:'Chargement des clients…',missing:'Saisissez le nom du client.',saveError:'Échec de la création. Aucune vente enregistrée.',readError:'Clients indisponibles. Aucune vente enregistrée.',duplicate:'Ce numéro existe déjà; sélectionnez le client.',credit:'Crédit total',nameRequired:'Sélectionnez un client.',ready:'Client choisi : '},
+  en:{title:'Sell on credit',desc:'Choose an existing customer or create one to record the full invoice as customer debt.',search:'Search by name or phone',existing:'Saved customers',new:'Add customer',name:'Customer name *',phone:'Phone number',address:'Address / Wilaya',create:'Save customer and select credit',choose:'Select customer',cancel:'Cancel',empty:'No matching customers; add a new one.',loading:'Loading customers…',missing:'Enter a customer name.',saveError:'Unable to save customer. Sale has not been posted.',readError:'Unable to load customers. Sale has not been posted.',duplicate:'Phone number is already assigned; choose that customer.',credit:'Full credit',nameRequired:'Select a customer first.',ready:'Selected customer: '}
+ };
+ const t=()=>{const lang=String(root.currentLanguage||doc.documentElement.lang||'ar').slice(0,2);return labels[lang]||labels.ar;};
+ const elt=(tag,id,styles='')=>{const x=doc.createElement(tag);if(id)x.id=id;if(styles)x.style.cssText=styles;return x;};
+ const dialog=elt('div','nanoCreditOverlay107','position:fixed;inset:0;z-index:210;background:rgba(15,23,42,.72);display:none;align-items:center;justify-content:center;padding:12px;');
+ dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','nanoCreditTitle107');
+ const card=elt('section','','background:#fff;color:#0f172a;border-radius:18px;width:min(96vw,530px);max-height:90vh;overflow-y:auto;padding:20px;box-shadow:0 22px 75px rgba(0,0,0,.3);');
+ const title=elt('h2','nanoCreditTitle107','font-size:22px;font-weight:800;margin-bottom:6px');
+ const note=elt('p','nanoCreditDesc107','font-size:13px;color:#475569;margin-bottom:13px');
+ const search=elt('input','nanoCreditSearch107','width:100%;padding:11px;border:1px solid #94a3b8;border-radius:10px;margin:8px 0;');
+ search.type='search';search.autocomplete='off';
+ const status=elt('p','nanoCreditStatus107','font-size:12px;margin:6px 0;color:#b45309');
+ status.setAttribute('role','status');
+ const results=elt('div','nanoCreditList107','max-height:200px;overflow-y:auto;display:grid;gap:6px;margin:8px 0 12px;');
+ const newButton=elt('button','nanoCreditNew107','width:100%;padding:10px;background:#eff6ff;color:#1e40af;font-weight:800;border-radius:10px;border:1px solid #bfdbfe;');
+ newButton.type='button';
+ const createForm=elt('form','nanoCreditNewForm107','display:none;gap:8px;grid-template-columns:1fr;margin-top:10px;');
+ const name=elt('input','nanoCreditName107','padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:100%');
+ const phone=elt('input','nanoCreditPhone107','padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:100%');
+ const address=elt('input','nanoCreditAddress107','padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:100%');
+ name.required=true;name.maxLength=150;phone.maxLength=35;address.maxLength=250;
+ const formLabel=(input,text)=>{const wrap=elt('label','','font-size:12px;font-weight:700;display:grid;gap:4px');const cap=elt('span');cap.textContent=text;wrap.append(cap,input);return wrap;};
+ const nameWrap=formLabel(name,'');const phoneWrap=formLabel(phone,'');const addressWrap=formLabel(address,'');
+ const save=elt('button','nanoCreditSave107','padding:11px;background:#059669;color:white;font-weight:800;border-radius:9px;');
+ save.type='submit';
+ createForm.append(nameWrap,phoneWrap,addressWrap,save);
+ const cancel=elt('button','nanoCreditCancel107','padding:10px;margin-top:12px;width:100%;background:#f1f5f9;color:#334155;border-radius:9px');
+ cancel.type='button';
+ card.append(title,note,search,status,results,newButton,createForm,cancel);
+ dialog.append(card);doc.body.append(dialog);
+ let customers=[],visible=false,busy=false,sequence=0,lastFocus=null;
+ function translate(){
+  const l=t();title.textContent=l.title;note.textContent=l.desc;search.placeholder=l.search;
+  newButton.textContent=l.new;save.textContent=l.create;cancel.textContent=l.cancel;
+  nameWrap.firstChild.textContent=l.name;phoneWrap.firstChild.textContent=l.phone;addressWrap.firstChild.textContent=l.address;
+ }
+ function warning(message,bad=true){status.textContent=message||'';status.style.color=bad?'#b91c1c':'#047857';}
+ function hide(){
+  visible=false;sequence++;dialog.style.display='none';createForm.style.display='none';
+  search.value='';name.value='';phone.value='';address.value='';
+  warning('');if(lastFocus?.focus)lastFocus.focus();lastFocus=null;
+ }
+ function selectCustomer(customer){
+  if(!customer||customer.id==null||!String(customer.name||'').trim()){warning(t().nameRequired);return;}
+  // Calls the existing POS customer selector so the customer search label and info buttons stay in sync.
+  if(typeof root.selectPosCustomer==='function')root.selectPosCustomer(customer.id,customer.name);
+  else{
+    const hidden=doc.getElementById('posCustomerSelect');
+    if(hidden)hidden.value=String(customer.id);
+    const field=doc.getElementById('posCustomerSearchInput');if(field)field.value=customer.name;
+  }
+  const customerId=doc.getElementById('posCustomerSelect');
+  if(!customerId||String(customerId.value)!==String(customer.id)){
+    warning(t().nameRequired);return;
+  }
+  customerId.dispatchEvent(new root.Event('change',{bubbles:true}));
+  root.checkoutMarkAsDebt?.();
+  const paid=doc.getElementById('checkoutPaidAmount');
+  if(paid){paid.value='0';paid.dispatchEvent(new root.Event('input',{bubbles:true}));}
+  root.NANO_PAYMENT_QUALITY_105?.render?.();
+  hide();
+  // This only chooses full credit; invoice is created when cashier confirms checkout.
+ }
+ function render(){
+  results.replaceChildren();
+  const query=String(search.value||'').toLocaleLowerCase().trim();
+  const filtered=customers.filter(c=>
+    String(c?.name||'').toLocaleLowerCase().includes(query)||
+    String(c?.phone||'').includes(query)).slice(0,100);
+  if(!filtered.length){
+    const empty=elt('p','','padding:12px;text-align:center;color:#64748b;');
+    empty.textContent=t().empty;results.append(empty);
+  }
+  for(const item of filtered){
+    const btn=elt('button','','padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;text-align:start;display:flex;justify-content:space-between;gap:12px;');
+    btn.type='button';btn.disabled=busy;
+    const label=elt('strong');label.textContent=String(item.name);
+    const tel=elt('span','','font-size:12px;color:#64748b;');tel.textContent=String(item.phone||'');
+    btn.append(label,tel);btn.addEventListener('click',()=>selectCustomer(item));results.append(btn);
+  }
+ }
+ async function refresh(){
+  const list=await api()?.getCustomers?.();
+  if(!Array.isArray(list))throw new Error('customer_list_unavailable');
+  customers=list.filter(x=>x?.id!=null&&String(x.name||'').trim());
+  if(typeof root.loadCustomersSelect==='function')await root.loadCustomersSelect();
+  render();
+ }
+ async function open(){
+  if(busy)return;
+  const checkout=doc.getElementById('checkoutModal');
+  if(!checkout||checkout.classList.contains('hidden'))return;
+  if(!api()||typeof api().getCustomers!=='function')return warning(t().readError);
+  lastFocus=doc.activeElement;visible=true;dialog.style.display='flex';createForm.style.display='none';
+  translate();warning(t().loading,false);search.value='';
+  const ticket=++sequence;
+  try{await refresh();if(ticket===sequence)warning('');}
+  catch(e){if(ticket===sequence){customers=[];render();warning(t().readError);}}
+  if(ticket===sequence)search.focus();
+ }
+ async function add(event){
+  event.preventDefault();if(busy||!visible)return;
+  const n=name.value.trim(),p=phone.value.trim(),a=address.value.trim();
+  if(!n){warning(t().missing);name.focus();return;}
+  const duplicate=p&&customers.find(c=>String(c.phone||'').trim()===p);
+  if(duplicate){warning(t().duplicate);search.value=p;render();createForm.style.display='none';return;}
+  busy=true;save.disabled=true;newButton.disabled=true;warning('');
+  const ticket=sequence;
+  try{
+    if(typeof api()?.addCustomer!=='function')throw Error('customer_creation_unavailable');
+    // An initial debt would be counted twice: only the confirmed sale posts the credit.
+    const res=await api().addCustomer({name:n,phone:p,address:a,initial_debt:0,credit_limit:0,balance:0});
+    if(!res||res.success===false||res.id==null)throw Error(res?.error||'customer_creation_failed');
+    const savedId=String(res.id);
+    await refresh();
+    if(!visible||ticket!==sequence)return;
+    const created=customers.find(c=>String(c.id)===savedId);
+    if(!created)throw Error('saved_customer_unavailable');
+    selectCustomer(created);
+    root.dispatchEvent?.(new root.CustomEvent('nano-reference-data-changed',{detail:{type:'customer'}}));
+  }catch(e){if(visible&&ticket===sequence)warning(t().saveError);}
+  finally{busy=false;save.disabled=false;newButton.disabled=false;}
+ }
+ search.addEventListener('input',render);
+ newButton.addEventListener('click',()=>{createForm.style.display=createForm.style.display==='grid'?'none':'grid';if(createForm.style.display==='grid')name.focus();});
+ createForm.addEventListener('submit',add);
+ cancel.addEventListener('click',hide);
+ dialog.addEventListener('click',e=>{if(e.target===dialog&&!busy)hide();});
+ dialog.addEventListener('keydown',e=>{if(e.key==='Escape'&&!busy){e.preventDefault();hide();}});
+ // A completed or abandoned sale must never leave a credit picker over the next checkout.
+ if(root.MutationObserver){
+  new root.MutationObserver(()=>{if(checkout.classList.contains('hidden')&&visible&&!busy)hide();})
+    .observe(checkout,{attributes:true,attributeFilter:['class']});
+ }
+ root.nanoOpenCreditPicker107=open;
+ root.NANO_CREDIT_PICKER_107=Object.freeze({open,close:hide,refresh});
+})(typeof window!=='undefined'?window:globalThis);
+
+
+==== renderer async function processSale(){ ====
+async function processSale(){const _0x2fcfe2=_0x427934;if(cart['length']===0x0)return showToast(t(_0x2fcfe2(0x7ea)));if(!await posEnsureProduction())return;let _0x2e4499=0x0;cart[_0x2fcfe2(0x449)](_0x334f71=>{const _0x54542e=_0x2fcfe2;_0x2e4499+=_0x334f71['selling_price']*_0x334f71[_0x54542e(0xd67)];});const _0x2aadef=Math['max'](0x0,_0x2e4499-globalCartDiscount),_0x499b19=currentTVAPercentage,_0x380f75=_0x2aadef+_0x2aadef*_0x499b19/0x64,_0x469782=parseFloat(document[_0x2fcfe2(0x6c2)](_0x2fcfe2(0xe9b))[_0x2fcfe2(0xb52)])||0x0,_0x12875f=document['getElementById'](_0x2fcfe2(0x1d6))['value']||null,_0x1bb178=document[_0x2fcfe2(0x6c2)](_0x2fcfe2(0x846))?.[_0x2fcfe2(0xb52)]||'cash',_0x5a2304=isReturnMode?-0x1:0x1,_0x2447c2={'editSaleId':currentEditSaleId,'items':cart[_0x2fcfe2(0x2d8)](_0x44fc95=>({'id':_0x44fc95[_0x2fcfe2(0x284)]['id'],'qty':_0x44fc95[_0x2fcfe2(0xd67)]*_0x5a2304,'batch_id':_0x44fc95['batch_id'],'variant_id':_0x44fc95[_0x2fcfe2(0x2fd)]?.['id']||null,'pos_price':_0x44fc95['selling_price'],'product':_0x44fc95['product'],'is_wholesale':_0x44fc95[_0x2fcfe2(0x4a0)]||![],'applied_promotion_id':_0x44fc95['applied_promotion_id'],'is_custom':_0x44fc95[_0x2fcfe2(0x94d)]||![],'custom_cost_price':_0x44fc95[_0x2fcfe2(0xa89)]||null})),'checkout':{'customerId':_0x12875f,'subtotal':_0x2e4499*_0x5a2304,'taxPercentage':_0x499b19,'discount':globalCartDiscount*_0x5a2304,'total':_0x380f75*_0x5a2304,'paidAmount':Math[_0x2fcfe2(0x592)](_0x469782,_0x380f75)*_0x5a2304,'dueDate':null,'paymentMethod':_0x1bb178,'stampEnabled':stampDutyEnabled}};executeSalePayload(_0x2447c2,![]);}async function executeSalePayload(_0x1ebf74,_0x8b1902){const _0x4ca74f=_0x427934;const __nanoSaleSafe195=window.NANO_SALE_SAFE_195;if(__nanoSaleSafe195&&!__nanoSaleSafe195.begin())return;try{if(currentEditSaleId!=null)_0x1ebf74.editSaleId=currentEditSaleId;if(window.NANO_CASH_CHANGE_178 && typeof window.NANO_CASH_CHANGE_178.prepare==='function'){const checked=window.NANO_CASH_CHANGE_178.prepare(arguments[0]);if(!checked.ok){showToast(checked.message,'error');return;}}if(allowNegativeStock&&!isFinancialOnlyMode&&!isReturnMode&&negativeStockRequiresConfirm){const _0x191ae8=Array[_0x4ca74f(0x7c4)](_0x1ebf74[_0x4ca74f(0x591)])?_0x1ebf74['items']:[],_0x4b16c4=_0x191ae8['some'](_0x2418e3=>{const _0x3a065c=_0x4ca74f,_0x4a3b8d=_0x2418e3[_0x3a065c(0x284)];if(!_0x4a3b8d||!Array['isArray'](_0x4a3b8d[_0x3a065c(0x9f9)]))return![];const _0x386e1d=_0x4a3b8d[_0x3a065c(0x9f9)]['find'](_0x18cd83=>_0x18cd83['id']===_0x2418e3['batch_id']);if(!_0x386e1d)return!![];return(Number(_0x386e1d['stock'])||0x0)-Math[_0x3a065c(0xd4a)](_0x2418e3['qty'])<0x0;});if(_0x4b16c4){const _0x12712d=await showConfirm(t(_0x4ca74f(0x5a6)));if(!_0x12712d)return;}}if(!isReturnMode&&_0x1ebf74[_0x4ca74f(0x8c0)]&&_0x1ebf74[_0x4ca74f(0x8c0)][_0x4ca74f(0xa03)])try{const _0x2a8c7c=await window[_0x4ca74f(0x620)]['getCustomerCreditSummary'](_0x1ebf74['checkout'][_0x4ca74f(0xa03)],_0x1ebf74['editSaleId']||null);if(_0x2a8c7c&&Number(_0x2a8c7c['credit_limit'])>0x0){const _0x1c4718=Math['max'](0x0,(Number(_0x1ebf74[_0x4ca74f(0x8c0)]['total'])||0x0)-(Number(_0x1ebf74[_0x4ca74f(0x8c0)][_0x4ca74f(0xb65)])||0x0)),_0x4f300b=Number(_0x2a8c7c[_0x4ca74f(0x27e)])||0x0,_0x30db45=_0x4f300b+_0x1c4718;if(_0x30db45>Number(_0x2a8c7c[_0x4ca74f(0x35d)])){const _0x154098=(t('credit_limit_exceeded_confirm')||'')[_0x4ca74f(0xaae)]('{outstanding}',_0x4f300b['toFixed'](0x2))['replace'](_0x4ca74f(0x385),Number(_0x2a8c7c[_0x4ca74f(0x35d)])['toFixed'](0x2))[_0x4ca74f(0xaae)](_0x4ca74f(0x834),_0x30db45[_0x4ca74f(0x68b)](0x2)),_0x158ee1=await showConfirm(_0x154098);if(!_0x158ee1)return;}}}catch(_0x34bda7){}try{const _0x58031d=JSON['parse'](localStorage[_0x4ca74f(0xdce)](_0x4ca74f(0xd8d))||'{}');if(_0x58031d['id'])_0x1ebf74['userId']=_0x58031d['id'];}catch{
+
+==== renderer function openCheckoutModal(){ ====
+function openCheckoutModal(){const _0x574906=_0x427934;let _0x5dd5f8=0x0;cart['forEach'](_0xf7b7ff=>{const _0x13e2f2=_0x1830;_0x5dd5f8+=_0xf7b7ff[_0x13e2f2(0x1025)]*_0xf7b7ff['qty'];});const _0x151548=Math['max'](0x0,_0x5dd5f8-globalCartDiscount),_0x649ada=_0x151548+_0x151548*(currentTVAPercentage/0x64);document['getElementById']('checkoutTotalUI')['innerText']=_0x649ada['toFixed'](0x2)+'\x20'+t(_0x574906(0xa00)),document[_0x574906(0x6c2)](_0x574906(0xe9b))['value']=_0x649ada['toFixed'](0x2),document['getElementById'](_0x574906(0xe9b))[_0x574906(0x674)]('min');const _0x3dfa28=document[_0x574906(0x6c2)](_0x574906(0x846));if(_0x3dfa28)_0x3dfa28[_0x574906(0xb52)]='cash';checkoutCalcChange(),checkoutUpdateStamp();const _0x4cbbf5=document[_0x574906(0x6c2)](_0x574906(0xf8e));_0x4cbbf5[_0x574906(0x43b)][_0x574906(0x3df)](_0x574906(0x89e)),_0x4cbbf5[_0x574906(0x43b)][_0x574906(0xe5b)](_0x574906(0x5e8));try{syncAutoPrintReceiptBtnUI();}catch(_0x381413){}}function checkoutCalcChange(){const _0x110ea4=_0x427934;let _0x45f2f6=0x0;cart['forEach'](_0x462660=>{_0x45f2f6+=_0x462660['selling_price']*_0x462660['qty'];});const _0x4f6e06=Math['max'](0x0,_0x45f2f6-globalCartDiscount),_0x69c58e=_0x4f6e06+_0x4f6e06*(currentTVAPercentage/0x64),_0x52afe0=parseFloat(document['getElementById']('checkoutPaidAmount')['value'])||0x0,_0xd9d235=_0x52afe0-_0x69c58e,_0x2a0589=document[_0x110ea4(0x6c2)](_0x110ea4(0xa76));_0xd9d235>=-0.01?(_0x2a0589['innerText']=t('change')+':\x20'+_0xd9d235['toFixed'](0x2)+'\x20'+t(_0x110ea4(0xa00)),_0x2a0589['className']=_0x110ea4(0x635)):(_0x2a0589['innerText']=t(_0x110ea4(0xaff))+':\x20'+Math[_0x110ea4(0xd4a)](_0xd9d235)[_0x110ea4(0x68b)](0x2)+'\x20'+t('dzd'),_0x2a0589[_0x110ea4(0xe65)]='text-sm\x20font-bold\x20text-red-600\x20mt-2\x20block\x20bg-red-50\x20py-1\x20rounded\x20inline-block\x20px-3');}function checkoutMarkAsDebt(){const _0x48f1bc=_0x427934,_0x25cf56=document['getElementById']('checkoutPaidAmount');if(_0x25cf56)_0x25cf56[_0x48f1bc(0xb52)]='0';checkoutCalcChange();if(typeof _0x25cf56?.['focus']==='function')_0x25cf56['focus']();}function closeCheckoutModal(){const _0x468d62=_0x427934,_0x4e00bd=document[_0x468d62(0x6c2)]('checkoutModal');_0x4e00bd['classList'][_0x468d62(0xe5b)](_0x468d62(0x89e)),_0x4e00bd[_0x468d62(0x43b)]['remove']('flex');}let isCartExpanded=![];function toggleCartExpand(){const _0x344321=_0x427934;isCartExpanded=!isCartExpanded;const _0x1427b9=document['getElementById'](_0x344321(0x264)),_0x2e3d8f=document[_0x344321(0x6c2)]('cartExpandIcon'),_0x8cdf40=document['getElementById']('cartExpandLabel');if(isCartExpanded){_0x1427b9[_0x344321(0x43b)][_0x344321(0x3df)](_0x344321(0x54f),_0x344321(0xec6),_0x344321(0x429)),_0x1427b9[_0x344321(0x43b)]['add']('fixed','inset-y-0',_0x344321(0x88a),_0x344321(0xdbd),_0x344321(0x281),_0x344321(0xb3d),'xl:w-[50%]','z-[150]',_0x344321(0xa10)),_0x2e3d8f[_0x344321(0xd4b)]=_0x344321(0x6bb);_0x8cdf40&&(_0x8cdf40['classList']['remove'](_0x344321(0x89e)),_0x8cdf40['innerText']=typeof t==='function'?t('collapse'):_0x344321(0xcc8));let _0x3fdd5e=document['getElementById']('cartBackdrop');!_0x3fdd5e&&(_0x3fdd5e=document[_0x344321(0x347)](_0x344321(0x92c)),_0x3fdd5e['id']=_0x344321(0xfb8),_0x3fdd5e[_0x344321(0xe65)]='fixed\x20inset-0\x20bg-slate-900/50\x20backdrop-blur-sm\x20z-[140]\x20transition-opacity\x20opacity-0',_0x3fdd5e[_0x344321(0x413)]=toggleCartExpand,document[_0x344321(0x5fa)]['appendChild'](_0x3fdd5e),_0x3fdd5e['offsetHeight'],_0x3fdd5e[_0x344321(0x43b)][_0x344321(0x3df)]('opacity-0'));}else{_0x1427b9[_0x344321(0x43b)][_0x344321(0xe5b)](_0x344321(0x54f),_0x344321(0xec6),'z-50'),_0x1427b9[_0x344321(0x43b)]['remove']('fixed',_0x344321(0xb46),_0x344321(0x88a),'w-full',_0x344321(0x281),'lg:w-[60%]','xl:w-[50%]',_0x344321(0xb8e),'shadow-2xl'),_0x2e3d8f[_0x344321(0xd4b)]=
+
+==== renderer function checkoutCalcChange(){ ====
+function checkoutCalcChange(){const _0x110ea4=_0x427934;let _0x45f2f6=0x0;cart['forEach'](_0x462660=>{_0x45f2f6+=_0x462660['selling_price']*_0x462660['qty'];});const _0x4f6e06=Math['max'](0x0,_0x45f2f6-globalCartDiscount),_0x69c58e=_0x4f6e06+_0x4f6e06*(currentTVAPercentage/0x64),_0x52afe0=parseFloat(document['getElementById']('checkoutPaidAmount')['value'])||0x0,_0xd9d235=_0x52afe0-_0x69c58e,_0x2a0589=document[_0x110ea4(0x6c2)](_0x110ea4(0xa76));_0xd9d235>=-0.01?(_0x2a0589['innerText']=t('change')+':\x20'+_0xd9d235['toFixed'](0x2)+'\x20'+t(_0x110ea4(0xa00)),_0x2a0589['className']=_0x110ea4(0x635)):(_0x2a0589['innerText']=t(_0x110ea4(0xaff))+':\x20'+Math[_0x110ea4(0xd4a)](_0xd9d235)[_0x110ea4(0x68b)](0x2)+'\x20'+t('dzd'),_0x2a0589[_0x110ea4(0xe65)]='text-sm\x20font-bold\x20text-red-600\x20mt-2\x20block\x20bg-red-50\x20py-1\x20rounded\x20inline-block\x20px-3');}function checkoutMarkAsDebt(){const _0x48f1bc=_0x427934,_0x25cf56=document['getElementById']('checkoutPaidAmount');if(_0x25cf56)_0x25cf56[_0x48f1bc(0xb52)]='0';checkoutCalcChange();if(typeof _0x25cf56?.['focus']==='function')_0x25cf56['focus']();}function closeCheckoutModal(){const _0x468d62=_0x427934,_0x4e00bd=document[_0x468d62(0x6c2)]('checkoutModal');_0x4e00bd['classList'][_0x468d62(0xe5b)](_0x468d62(0x89e)),_0x4e00bd[_0x468d62(0x43b)]['remove']('flex');}let isCartExpanded=![];function toggleCartExpand(){const _0x344321=_0x427934;isCartExpanded=!isCartExpanded;const _0x1427b9=document['getElementById'](_0x344321(0x264)),_0x2e3d8f=document[_0x344321(0x6c2)]('cartExpandIcon'),_0x8cdf40=document['getElementById']('cartExpandLabel');if(isCartExpanded){_0x1427b9[_0x344321(0x43b)][_0x344321(0x3df)](_0x344321(0x54f),_0x344321(0xec6),_0x344321(0x429)),_0x1427b9[_0x344321(0x43b)]['add']('fixed','inset-y-0',_0x344321(0x88a),_0x344321(0xdbd),_0x344321(0x281),_0x344321(0xb3d),'xl:w-[50%]','z-[150]',_0x344321(0xa10)),_0x2e3d8f[_0x344321(0xd4b)]=_0x344321(0x6bb);_0x8cdf40&&(_0x8cdf40['classList']['remove'](_0x344321(0x89e)),_0x8cdf40['innerText']=typeof t==='function'?t('collapse'):_0x344321(0xcc8));let _0x3fdd5e=document['getElementById']('cartBackdrop');!_0x3fdd5e&&(_0x3fdd5e=document[_0x344321(0x347)](_0x344321(0x92c)),_0x3fdd5e['id']=_0x344321(0xfb8),_0x3fdd5e[_0x344321(0xe65)]='fixed\x20inset-0\x20bg-slate-900/50\x20backdrop-blur-sm\x20z-[140]\x20transition-opacity\x20opacity-0',_0x3fdd5e[_0x344321(0x413)]=toggleCartExpand,document[_0x344321(0x5fa)]['appendChild'](_0x3fdd5e),_0x3fdd5e['offsetHeight'],_0x3fdd5e[_0x344321(0x43b)][_0x344321(0x3df)]('opacity-0'));}else{_0x1427b9[_0x344321(0x43b)][_0x344321(0xe5b)](_0x344321(0x54f),_0x344321(0xec6),'z-50'),_0x1427b9[_0x344321(0x43b)]['remove']('fixed',_0x344321(0xb46),_0x344321(0x88a),'w-full',_0x344321(0x281),'lg:w-[60%]','xl:w-[50%]',_0x344321(0xb8e),'shadow-2xl'),_0x2e3d8f[_0x344321(0xd4b)]=_0x344321(0x1c0);_0x8cdf40&&(_0x8cdf40['classList'][_0x344321(0xe5b)](_0x344321(0x89e)),_0x8cdf40[_0x344321(0xd4b)]='');const _0x150b12=document['getElementById']('cartBackdrop');_0x150b12&&(_0x150b12['classList']['add']('opacity-0'),setTimeout(()=>_0x150b12['remove'](),0x12c));}const _0x1a2a48=document[_0x344321(0x6c2)](_0x344321(0x213));if(_0x1a2a48)_0x1a2a48[_0x344321(0x43b)][_0x344321(0xea9)](_0x344321(0x89e),isCartExpanded);applyPosCartWidth();}async function processSaleDirectly(){const _0x1d7199=_0x427934;if(!await posEnsureProduction())return;let _0x4a94d4=0x0;cart[_0x1d7199(0x449)](_0x441318=>{const _0x4edfe3=_0x1d7199;_0x4a94d4+=_0x441318[_0x4edfe3(0x1025)]*_0x441318['qty'];});const _0x34356b=Math['max'](0x0,_0x4a94d4-globalCartDiscount),_0x66f142=currentTVAPercentage,_0x19202e=_0x34356b+_0x34356b*_0x66f142/0x64,_0x2026b6=isReturnMode?-0x1:0x1,_0x3344f8={'editSaleId':currentEditSaleId,'items':cart[_0x1d7199(0x2d8)](_0x786ea=>({'id':_0x78
