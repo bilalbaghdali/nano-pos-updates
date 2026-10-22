@@ -80,7 +80,8 @@ def build(source,out,work):
    # The original print engine had a FAC fallback that would prefix "FA-..."
    # with FAC. Recognize the stored FA numbering as a finished reference.
    script=blob.decode('utf8')
-   script=once(script,"!/^(FAC|AV|FR)-/i","!/^(FA|FAC|AV|FR)-/i")
+   assert script.count("!/^(FAC|AV|FR)-/i")==2,'Expected both invoice print branches'
+   script=script.replace("!/^(FAC|AV|FR)-/i","!/^(FA|FAC|AV|FR)-/i")
    blob=script.encode('utf8');modified.add(name)
   elif name=='index.html':
    script=blob.decode('utf8')
