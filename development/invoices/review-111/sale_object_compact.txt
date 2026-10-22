@@ -1,0 +1,81 @@
+ };
+     }
+     const quantities = new Map();
+     for (const i of data.items) {
+       const qty = Number(i.qty), price = Number(i.pos_price);
+       if (!(qty > 0) || !Number.isFinite(qty) || !Number.isFinite(price) || price < 0) return fail('تحقق من كميات وأسعار المنتجات.');
+       if (i.is_custom) continue;
+       const id = i.batch_id;
+       quantities.set(id, (quantities.get(id) || 0) + qty);
+     }
+     for (const [batchId, qty] of quantities) {
+       const p = db.products.find(p => (p.batches || []).some(b => String(b.id) === String(batchId)));
+       const b = p?.batches.find(b => String(b.id) === String(batchId));
+       if (b && qty > Number(b.stock || 0) + 0.000001 && !data.allowNegativeStock) return fail('كمية البيع تتجاوز المخزون المتوفر.');
+     }
+     // Validate all monetary and stock constraints before touching persistent records.
+     for (const [batchId,qty] of quantities) {
+       const p = db.products.find(p => (p.batches || []).some(b => String(b.id) === String(batchId)));
+       const b = p?.batches.find(b => String(b.id) === String(batchId));
+       if (b) { b.stock = rounded(Number(b.stock || 0) - qty); normalize(p); }
+     }
+     const id=ids(),date=new Date().toISOString();
+     const items=data.items.map(i => {
+       const p=db.products.find(p => String(p.id)===String(i.id)) || i.product || {};
+       return {...clone(i), product_id:i.id,product_name:p.name || i.custom_product_name || '',name:p.name || i.custom_product_name || '',barcode:p.barcode || '',unit:p.unit || '',quantity:Number(i.qty),selling_price:Number(i.pos_price),price:Number(i.pos_price),total:rounded(Number(i.qty)*Number(i.pos_price)),cost_price:Number(p.cost_price || i.custom_cost_price || 0)};
+     });
+     const activeSession=activeCaisseSession(data.userId || 1);
+     const sale={ id,created_at:date,sale_date:date,customer_id:customer?.id ?? null,customer_name:customer?.name || '',user_id:data.userId || 1,user_name:db.users[0]?.name || 'مدير المتجر',caisse_session_id:activeSession?.id || null,subtotal,discount,tax_percentage:taxPercentage,total,paid_amount:rounded(paid),initial_paid_amount:rounded(paid),remaining_amount:remaining,payment_method:paid > 0 ? (c.paymentMethod || 'cash') : 'credit',payment_status:remaining > 0 ? (paid ? 'partial' : 'credit') : 'paid',received_payment_method:c.paymentMethod || 'cash',items_count:items.length,items_qty:items.reduce((s,i)=>s+i.quantity,0),payments:c.__nanoSplit102?c.__nanoSplit102.payments.map((p,i)=>({id:'NANO-CHK-'+id+'-'+i,method:p.method,amount:p.amount,date,source:'initial-checkout'})):[],items };
+     if (cashRecord) {
+       const audit = {
+         sale_id: id,
+         recorded_at: date,
+         cashier_user_id: data.userId || 1,
+         cashier_name: sale.user_name,
+         caisse_session_id: activeSession?.id || null,
+         customer_id: customer?.id ?? null,
+         ...cashRecord
+       };
+       sale.cash_tendered_amount = audit.cash_tendered_amount;
+       sale.cash_applied_amount = audit.cash_applied_amount;
+       sale.cash_change_amount = audit.cash_change_due;
+       sale.cash_change_record = clone(audit);
+       db.cash_change_audit = Array.isArray(db.cash_change_audit) ? db.cash_change_audit : [];
+       db.cash_change_audit.unshift(audit);
+     }
+     db.sales.unshift(sale);
+     if(__nanoId105){
+        sale.nano_checkout_operation_id=__nanoId105;
+        sale.nano_checkout_signature=__nanoSignature105;
+      }
+      if (remaining > 0) reviseCustomerBalance(customer.id,remaining);
+     // Write sale, related stock updates and customer balance as one snapshot.
+     try {
+       const snapshot={...db,revision:Number(db.revision||0)+1};
+       localStorage.setItem(KEY,JSON.stringify(snapshot));
+       db=snapshot;
+       try {window.nanoNative?.pcSyncLocalChanged?.({revision:db.revision,at:Date.now()});}catch{}
+       try {window.dispatchEvent(new CustomEvent('nano-pos-data-saved',{detail:{revision:db.revision}}));}catch{}
+     } catch(error) {
+       db=__nanoPriorSale102;
+       console.error('[NANO POS] sale atomic write failed:',error);
+       return fail('sale_write_failed_no_changes');
+     }
+     if (cashRecord) {
+       try {
+         const persisted = JSON.parse(localStorage.getItem(KEY) || '{}');
+         if (!(persisted.cash_change_audit || []).some(entry => String(entry.sale_id) === String(id)))
+           return fail('تعذر حفظ سجل الصرف. يرجى التحقق من مساحة التخزين.');
+       } catch { return fail('تعذر التحقق من حفظ سجل الصرف.'); }
+     }
+     return { success:true,id,saleId:id,paid_amount:sale.paid_amount,remaining_amount:remaining,customerId:sale.customer_id };
+   }
+   if (channel === 'get-sales') {
+     const f = args[0] || {}, rows = salesFor(f);
+     if (f.page) {
+       const page = Number(f.page) || 1, perPage = Number(f.perPage) || 30;
+       return { rows: clone(rows.slice((page - 1) * perPage, page * perPage)), total: rows.length, page };
+     }
+     return clone(rows.slice(0, f.limit || rows.length));
+   }
+   if (

@@ -1,0 +1,10 @@
+w.NanoCurrency?.load)await window.NanoCurrency.load();refreshFrame();const list=await window.nanoNative?.getPrinters?.();if(Array.isArray(list)){for(const p of list)printerSel.add(new Option((p.displayName||p.name)+(p.isDefault?' ★':''),p.name));printerSel.value=[...printerSel.options].some(x=>x.value===prefs.printer)?prefs.printer:''}}catch{}})();
+  return o;
+}
+window.NanoDocumentPreview={show};
+async function W(fn,k,a){const x=[...a],m=x[3]??'print';if(m!=='print')return fn.apply(window,x);x[3]='html';let h=await fn.apply(window,x),l=LANGS.includes(x[4])?x[4]:lang(h,x[4]);return show({html:h,kind:k,scope:k==='r'?'receipt':a[0]==='sale'?'sale':'other',language:l,onLanguageChange:async n=>localize(await fn.call(window,a[0],a[1],a[2],'html',n),n),print:async n=>fn.call(window,a[0],a[1],a[2],'print',n),pdf:async n=>fn.call(window,a[0],a[1],a[2],'pdf',n)})}
+if(typeof I==='function'){const n=(...a)=>W(I,'i',a);window.printInvoice=n;try{printInvoice=n}catch(_){}}
+if(typeof R==='function'){const n=(...a)=>W(R,'r',a);window.printReceipt=n;try{printReceipt=n}catch(_){}}
+async function cap(id,l){if(typeof P!=='function')throw Error('Pro-forma unavailable');let z=null,O=window.NanoDocumentPreview.show;window.NanoDocumentPreview.show=x=>(z=x,null);try{await P.call(window,id,l)}finally{window.NanoDocumentPreview.show=O}if(!z?.html)throw Error(ui().e);z.html=localize(z.html,l||z.language||lang(z.html));return z}
+if(typeof P==='function'){const n=async(id,l=null)=>{const z=await cap(id,l),L=l||z.language||lang(z.html);return show({html:z.html,kind:'p',language:L,onLanguageChange:async x=>(await cap(id,x)).html,print:async x=>{const d=await cap(id,x);return d.print?.(x,d.html)},pdf:async x=>{const d=await cap(id,x);return d.pdf?.(x,d.html)}})};window.printProforma=n;try{printProforma=n}catch(_){}}
+})();

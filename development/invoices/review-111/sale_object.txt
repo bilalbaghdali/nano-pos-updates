@@ -1,0 +1,101 @@
+  if(i.is_custom || i.batch_id == null)continue;
+       const key=String(i.batch_id);
+       quantities.set(key,(quantities.get(key)||0)+quantity);
+     }
+     const reductions=[];
+     for(const [id,qty] of quantities){
+       const p=db.products.find(p=>(p.batches||[]).some(b=>String(b.id)===id));
+       const b=(p?.batches||[]).find(b=>String(b.id)===id);
+       if(!b)return fail('تعذر العثور على دفعة المخزون المحددة. يرجى تحديث المنتجات.');
+       if(Number(b.stock||0)<qty)return fail('الكمية المطلوبة تتجاوز المخزون المتاح للمنتج: '+String(p?.name||id));
+       reductions.push({product:p,batch:b,quantity:qty});
+     }
+     for(const change of reductions){change.batch.stock=Number(change.batch.stock||0)-change.quantity;normalize(change.product)}
+
+     const subtotal = rounded(c.subtotal ?? data.items.reduce((sum, item) => sum + Number(item.qty || 0) * Number(item.pos_price || 0), 0));
+     const discount = rounded(c.discount);
+     const taxPercentage = Number(c.taxPercentage || 0);
+     const total = rounded(c.total ?? Math.max(0, subtotal - discount) * (1 + taxPercentage / 100));
+     const id = ids(), date = new Date().toISOString(), customer = db.customers.find(v => v.id == c.customerId);
+     const items = data.items.map(i => {
+       const p = db.products.find(p => p.id == i.id) || i.product || {};
+       return {
+         ...clone(i),
+         product_id: i.id,
+         product_name: p.name,
+         name: p.name,
+         barcode: p.barcode,
+         unit: p.unit,
+         quantity: Number(i.qty),
+         selling_price: Number(i.pos_price),
+         price: Number(i.pos_price),
+         total: rounded(i.qty * i.pos_price),
+         cost_price: Number(p.cost_price || 0)
+       };
+     });
+
+     const activeSession = activeCaisseSession(data.userId || 1);
+     const sale = {
+       id,
+       created_at: date,
+       sale_date: date,
+       customer_id: c.customerId || null,
+       customer_name: customer?.name || '',
+       user_id: data.userId || 1,
+       user_name: db.users[0]?.name || 'مدير المتجر',
+       caisse_session_id: activeSession?.id || null,
+       subtotal,
+       discount,
+       tax_percentage: taxPercentage,
+       total,
+       paid_amount: rounded(c.paidAmount),
+       remaining_amount: rounded(total - Number(c.paidAmount || 0)),
+       payment_method: c.paymentMethod || 'cash',
+       items_count: items.length,
+       items_qty: items.reduce((s, i) => s + i.quantity, 0),
+       items
+     };
+
+     db.sales.unshift(sale);
+     save();
+     return { success: true, id, saleId: id };
+     }
+     const data = args[0] || {}, c = data.checkout || {};
+     if (!Array.isArray(data.items) || !data.items.length) return fail('السلة فارغة');
+     const subtotal = rounded(c.subtotal ?? data.items.reduce((sum, item) => sum + Number(item.qty || 0) * Number(item.pos_price || 0), 0));
+     const discount = rounded(c.discount ?? 0);
+     const taxPercentage = Number(c.taxPercentage || 0);
+     const total = rounded(c.total ?? Math.max(0, subtotal - discount) * (1 + taxPercentage / 100));
+     const paid = Number(c.paidAmount ?? total);
+     if (![subtotal,discount,taxPercentage,total,paid].every(Number.isFinite) || total < 0 || paid < 0 || paid > total + 0.005) return fail('المبلغ المدفوع أو قيمة الفاتورة غير صالح.');
+     const remaining = rounded(Math.max(0,total-paid));
+     const customer = (db.customers || []).find(v => String(v.id) === String(c.customerId));
+     if (remaining > 0 && !customer) return fail('البيع بالدين أو التسديد الجزئي يتطلب اختيار زبون مسجّل.');
+     // Persist calculated change in cents; this is not evidence of physical handover.
+     let cashRecord = null;
+     if (c.cashTenderedAmount !== undefined && c.cashTenderedAmount !== null) {
+       const tendered = Number(c.cashTenderedAmount);
+       const paidCents = Math.round(paid * 100);
+       const tenderCents = Math.round(tendered * 100);
+       const totalCents = Math.round(total * 100);
+       if ((c.paymentMethod || 'cash') !== 'cash' ||
+           !Number.isFinite(tendered) || tendered < 0 ||
+           !Number.isSafeInteger(tenderCents) || tenderCents > 100000000000 ||
+           Math.abs(tendered * 100 - tenderCents) > 0.001 ||
+           paidCents < 0 || paidCents > totalCents ||
+           tenderCents < paidCents ||
+           (tenderCents<totalCents?paidCents!==tenderCents:paidCents!==totalCents)) {
+         return fail('المبلغ النقدي المستلم أو الصرف غير صالح.');
+       }
+       cashRecord = {
+         sale_total: rounded(totalCents/100),
+         cash_tendered_amount: rounded(tenderCents/100),
+         cash_applied_amount: rounded(paidCents/100),
+         cash_change_due: rounded((tenderCents-paidCents)/100),
+       };
+     }
+     const quantities = new Map();
+     for (const i of data.items) {
+       const qty = Number(i.qty), price = Number(i.pos_price);
+       if (!(qty > 0) || !Number.isFinite(qty) || !Number.isFinite(price) || price < 0) return fail('تحقق من كميات وأسعار المنتجات.');
+       if (i.is_c

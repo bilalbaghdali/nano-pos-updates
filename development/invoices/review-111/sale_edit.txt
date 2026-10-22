@@ -1,0 +1,126 @@
+& Invoicing ---
+   // Sale editing is an amendment to the ORIGINAL invoice, never a second sale.
+   if (channel === 'process-sale' && args[0]?.editSaleId != null) {
+     const request=args[0]||{}, input=request.checkout||{};
+     const original=db.sales.find(v=>String(v.id)===String(request.editSaleId));
+     if(!original)return fail('الفاتورة الأصلية غير موجودة؛ لن يتم إنشاء عملية بيع جديدة.');
+     if(Number(original.total)<0 || (original.items||[]).some(i=>Number(i.quantity)<0))
+       return fail('تعديل المرتجع يتطلب إجراء تصحيح مرتجعات مخصص.');
+     if((original.payments||[]).length ||
+        Number(original.paid_amount||0)>Number(original.initial_paid_amount??original.paid_amount??0)+0.005 ||
+        (db.sales_returns||[]).some(x=>String(x.sale_id)===String(original.id)))
+       return fail('لهذه الفاتورة تسديدات أو مرتجعات لاحقة. يرجى تسويتها من سجل المعاملات قبل تعديل الفاتورة.');
+     if(!Array.isArray(request.items)||!request.items.length)return fail('السلة فارغة.');
+     const subtotal=rounded(input.subtotal??request.items.reduce((s,i)=>s+Number(i.qty||0)*Number(i.pos_price||0),0));
+     const discount=rounded(input.discount||0),taxPercentage=Number(input.taxPercentage||0);
+     const total=rounded(input.total??Math.max(0,subtotal-discount)*(1+taxPercentage/100));
+     const paid=rounded(input.paidAmount??total),remaining=rounded(Math.max(0,total-paid));
+     if(![subtotal,discount,taxPercentage,total,paid].every(Number.isFinite)||
+        subtotal<0||discount<0||total<0||paid<0||paid>total+0.005)
+       return fail('المبلغ المدفوع أو إجمالي الفاتورة غير صالح.');
+     const customer=(db.customers||[]).find(v=>String(v.id)===String(input.customerId));
+     if(remaining>0&&!customer)return fail('الدفع الجزئي يتطلب اختيار زبون مسجّل.');
+     const newStock=new Map();
+     const oldStock=new Map();
+     for(const i of original.items||[]){
+       if(i.is_custom||i.batch_id==null)continue;
+       const key=String(i.batch_id);
+       oldStock.set(key,(oldStock.get(key)||0)+Number(i.quantity||i.qty||0));
+     }
+     for(const item of request.items){
+       const qty=Number(item.qty),unitPrice=Number(item.pos_price);
+       if(!Number.isFinite(qty)||qty<=0||!Number.isFinite(unitPrice)||unitPrice<0)
+         return fail('الكمية أو السعر غير صالح.');
+       if(item.is_custom||item.batch_id==null)continue;
+       const key=String(item.batch_id);
+       newStock.set(key,(newStock.get(key)||0)+qty);
+     }
+     const stockChanges=[];
+     for(const key of new Set([...oldStock.keys(),...newStock.keys()])){
+       const product=(db.products||[]).find(p=>(p.batches||[]).some(b=>String(b.id)===key));
+       const batch=(product?.batches||[]).find(b=>String(b.id)===key);
+       if(!batch)return fail('تعذّر تحديد دفعة مخزون الفاتورة. لم يتم تعديلها.');
+       const delta=(oldStock.get(key)||0)-(newStock.get(key)||0);
+       const next=Number(batch.stock||0)+delta;
+       if(!Number.isFinite(next)||(next<-.000001&&!request.allowNegativeStock))
+         return fail('الكمية المطلوبة غير متاحة لتعديل المنتج: '+String(product?.name||key));
+       stockChanges.push({product,batch,stock:next});
+     }
+     let tenderRecord=null;
+     if(input.cashTenderedAmount!=null){
+       const tender=Number(input.cashTenderedAmount),tc=Math.round(tender*100),pc=Math.round(paid*100);
+       if((input.paymentMethod||'cash')!=='cash'||!Number.isFinite(tender)||tender<0||
+         !Number.isSafeInteger(tc)||Math.abs(tender*100-tc)>.001||tc<pc)
+         return fail('المبلغ المستلم أو الصرف النقدي غير صحيح.');
+       tenderRecord={sale_total:total,cash_tendered_amount:rounded(tender),
+         cash_applied_amount:paid,cash_change_due:rounded((tc-pc)/100)};
+     }
+     const nextItems=request.items.map(item=>{
+       const p=(db.products||[]).find(p=>String(p.id)===String(item.id))||item.product||{};
+       const qty=Number(item.qty),unit=Number(item.pos_price);
+       return {...clone(item),product_id:item.id??null,
+         product_name:p.name||item.custom_product_name||'',name:p.name||item.custom_product_name||'',
+         barcode:p.barcode||'',unit:p.unit||'',quantity:qty,
+         selling_price:unit,price:unit,total:rounded(qty*unit),
+         cost_price:Number(p.cost_price||item.custom_cost_price||0)};
+     });
+     const oldCustomer=(db.customers||[]).find(c=>String(c.id)===String(original.customer_id));
+     const oldRemaining=rounded(Math.max(0,Number(original.remaining_amount||0)));
+     // All validation above precedes any data mutation; save rollback snapshots.
+     const prevSales=clone(db.sales),prevCustomers=clone(db.customers),
+           prevProducts=clone(db.products),prevCashAudit=clone(db.cash_change_audit||[]),
+           prevEdits=clone(db.sale_edit_audit||[]);
+     const editTime=new Date().toISOString(),revision=Number(original.edit_revision||0)+1;
+     try{
+       stockChanges.forEach(x=>{x.batch.stock=rounded(x.stock);normalize(x.product);});
+       if(oldRemaining>0&&oldCustomer)reviseCustomerBalance(oldCustomer.id,-oldRemaining);
+       if(remaining>0)reviseCustomerBalance(customer.id,remaining);
+       const previous=clone(original);
+       Object.assign(original,{customer_id:customer?.id??null,customer_name:customer?.name||'',
+         subtotal,discount,tax_percentage:taxPercentage,total,
+         paid_amount:paid,initial_paid_amount:paid,remaining_amount:remaining,
+         payment_method:paid>0?(input.paymentMethod||'cash'):'credit',
+         received_payment_method:input.paymentMethod||'cash',
+         payment_status:remaining>0?(paid?'partial':'credit'):'paid',
+         items:nextItems,items_count:nextItems.length,
+         items_qty:nextItems.reduce((s,i)=>s+i.quantity,0),
+         modified_at:editTime,edit_revision:revision,last_modified_by:request.userId||original.user_id});
+       // Cash-receipt history is append-only; preserve original record and save amendment.
+       if(tenderRecord){
+         const change={sale_id:original.id,recorded_at:editTime,cashier_user_id:request.userId||original.user_id,
+           cashier_name:original.user_name,caisse_session_id:original.caisse_session_id,
+           customer_id:customer?.id??null,revision,kind:'amended_sale',...tenderRecord};
+         db.cash_change_audit=Array.isArray(db.cash_change_audit)?db.cash_change_audit:[];
+         db.cash_change_audit.unshift(change);
+         Object.assign(original,{cash_tendered_amount:tenderRecord.cash_tendered_amount,
+           cash_applied_amount:tenderRecord.cash_applied_amount,
+           cash_change_amount:tenderRecord.cash_change_due,cash_change_record:clone(change)});
+       }
+       db.sale_edit_audit=Array.isArray(db.sale_edit_audit)?db.sale_edit_audit:[];
+       db.sale_edit_audit.unshift({sale_id:original.id,edited_at:editTime,revision,
+         edited_by:request.userId||original.user_id,original_total:previous.total,
+         updated_total:total,original_customer_id:previous.customer_id,new_customer_id:customer?.id??null,
+         original_items:previous.items,updated_items:clone(nextItems)});
+       save();
+       return {success:true,id:original.id,saleId:original.id,updated:true,
+         paid_amount:paid,remaining_amount:remaining,customerId:original.customer_id};
+     }catch(e){
+       db.sales=prevSales;db.customers=prevCustomers;db.products=prevProducts;
+       db.cash_change_audit=prevCashAudit;db.sale_edit_audit=prevEdits;
+       return fail('فشل حفظ تعديل الفاتورة دون إنشاء بيع جديد: '+String(e.message||e));
+     }
+   }
+
+   if (channel === 'process-sale') {
+     // For v1.0.105 checkout, an operation identifier is stable across retries and
+     // persisted on the sale itself; returning a prior result must NEVER post stock
+     // or customer balances twice. Old clients remain backward compatible.
+     const __nanoId105=String(args[0]?.checkout?.nanoCheckoutRequestId||'').trim();
+     let __nanoSignature105='';
+     if(__nanoId105){
+       if(!/^n105-[a-z0-9-]{12,110}$/i.test(__nanoId105))
+         return fail('معرف تأكيد البيع غير صالح.');
+       const __checkout105=args[0]?.checkout||{}, __items105=args[0]?.items;
+       if(!Array.isArray(__items105)||!__items105.length)return fail('السلة فارغة.');
+       const __money105=value=>{
+      
