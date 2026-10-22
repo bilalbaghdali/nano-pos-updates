@@ -25,7 +25,7 @@ def append(title,text,max_len=7000):
 html=get('index.html')
 for ident in ['checkoutModal','checkoutPaymentMethod','posCustomerSelect','checkoutPaidAmount','checkoutTotalUI',
               'addCustomerModal','customerModal','customerName','newCustomerName','customerAddModal']:
- m=re.search(r'id=["\\']'+re.escape(ident)+r'["\\']',html)
+ m=re.search(r'''id=["']'''+re.escape(ident)+r'''["']''',html)
  if m: append('index #'+ident,html[max(0,m.start()-950):m.start()+2200],3300)
 for name in ['renderer.js','browser-bridge.js','nano-payment-quality-105.js','nano-checkout-choice-104.js','nano-cash-guide-106.js']:
  src=get(name)
