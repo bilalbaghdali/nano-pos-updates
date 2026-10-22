@@ -1,0 +1,168 @@
+name: NANO POS v1.0.109 - Publish Label Improvement
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-payment-label-109.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-109
+  cancel-in-progress: false
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify v1.0.108 official source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.109 >/dev/null 2>&1 || { echo 'Already published'; exit 1; }
+          mkdir -p source work
+          gh release download v1.0.108 --pattern NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip --dir source
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          m=json.loads(Path('nano-pos-update.json').read_text())
+          assert m['published'] and m['version']=='1.0.108'
+          f=Path('source/NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip')
+          assert hashlib.sha256(f.read_bytes()).hexdigest()==m['patches'][0]['sha256']
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()==m['patches'][0]['appAsarSha256']
+          PY
+      - name: Build and test unmodified backend with label fix
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/build-payment-label-109.py \
+            source/NANO-POS-Patch-1.0.107-to-1.0.108-PARTIAL-CREDIT-CHANGE.zip \
+            NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip work
+          node --check work/browser-bridge.js
+          node --check work/nano-flex-payment-108.js
+          cp .github/scripts/test-payment-label-109.cjs work/
+          cp .github/scripts/test-flex-bridge-108.cjs work/
+          (cd work && node test-payment-label-109.cjs && node test-flex-bridge-108.cjs)
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,struct,zipfile,json
+          with zipfile.ZipFile('NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip') as z:
+            assert z.namelist()==['payload/app.asar']
+            raw=z.read('payload/app.asar')
+          magic,b,hs,n=struct.unpack_from('<4I',raw);assert magic==4 and b==hs+4
+          header=json.loads(raw[16:16+n])['files']
+          for name in ['index.html','package.json','release-notes.js','browser-bridge.js',
+                       'nano-flex-payment-108.js','nano-flex-core-108.js','nano-cash-plan-106.js',
+                       'nano-payment-quality-105.js','nano-credit-picker-107.js','nano-payment-ledger-102.js']:
+            f=header[name]
+            blob=raw[8+b+int(f['offset']):8+b+int(f['offset'])+f['size']]
+            assert blob==Path('work/'+name).read_bytes(),name
+            if 'integrity' in f:assert hashlib.sha256(blob).hexdigest()==f['integrity']['hash']
+          assert json.loads(Path('work/package.json').read_text())['version']=='1.0.109'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-109-checked-asset
+          path: |
+            NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip
+            work/index.html
+            work/package.json
+            work/release-notes.js
+            work/browser-bridge.js
+            work/nano-flex-payment-108.js
+            work/nano-flex-core-108.js
+            work/nano-cash-plan-106.js
+            work/nano-payment-quality-105.js
+            work/nano-credit-picker-107.js
+            work/nano-payment-ledger-102.js
+            work/test-payment-label-109.cjs
+            work/test-flex-bridge-108.cjs
+          if-no-files-found: error
+  windows:
+    needs: linux
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-109-checked-asset
+      - name: Repeat checkout label and accounting tests
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Push-Location work
+          try {
+            node --check browser-bridge.js
+            node --check nano-flex-payment-108.js
+            node test-payment-label-109.cjs
+            if ($LASTEXITCODE -ne 0) { throw 'Label regression failed' }
+            node test-flex-bridge-108.cjs
+            if ($LASTEXITCODE -ne 0) { throw 'Accounting regression failed' }
+          } finally { Pop-Location }
+  publish:
+    needs: [linux,windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: nano-pos-109-checked-asset
+      - name: Publish official package after passed tests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ! gh release view v1.0.109 >/dev/null 2>&1 || { echo 'Already released'; exit 1; }
+          gh release create v1.0.109 NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip \
+            --target "$GITHUB_SHA" \
+            --title 'NANO POS v1.0.109 — تحسينات تسمية المبلغ المدفوع' \
+            --notes 'وسم: تحسينات. تصحيح تسمية حقل الدفع في شاشة البيع إلى «المبلغ المدفوع» وحذف مفتاح الترجمة غير المعروف nano_received_amount_108 الذي كان يظهر بدل النص. لا تغييرات في محرك البيع والدين الجزئي والصرف النقدي والمخزون أو التفعيل والنسخ الاحتياطية. اختبارات انحدار الحسابات على Windows وLinux، ومطابقة SHA-256 لحزمة ASAR المنشورة. لم تُختبر على جهاز المتجر الفعلي.'
+          gh release view v1.0.109 --json assets --jq '.assets[].name' | grep -Fx NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip
+      - name: Enable native in-app update manifest
+        run: |
+          python3 - <<'PY'
+          import datetime,hashlib,json,zipfile
+          from pathlib import Path
+          path=Path('nano-pos-update.json')
+          d=json.loads(path.read_text(encoding='utf8'))
+          assert d['version']=='1.0.108' and d['published']
+          f=Path('NANO-POS-Patch-1.0.108-to-1.0.109-PAYMENT-LABEL.zip')
+          with zipfile.ZipFile(f) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          page='https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.109'
+          url='https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.109/'+f.name
+          features={
+            'ar':['تحسينات: استبدال nano_received_amount_108 بعبارة «المبلغ المدفوع» في شاشة الدفع.',
+                  'حذف مفتاح الترجمة غير المعرّف حتى لا يظهر بدل النص بعد تغيير اللغة.',
+                  'الحفاظ على الدفع الجزئي والكريدي والصرف النقدي والمخزون والتفعيل والنسخ الاحتياطية.'],
+            'fr':['Corriger le libellé du montant payé dans la caisse.',
+                  'Supprimer la clé de traduction manquante qui s’affichait à la place du texte.',
+                  'Les paiements partiels, la monnaie à rendre et les sauvegardes restent inchangés.'],
+            'en':['Fix amount paid field label in sales checkout.',
+                  'Remove missing translation key that was incorrectly displayed as text.',
+                  'Preserve partial payments, customer debt, change and inventory.']
+          }
+          today=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d.update(version='1.0.109',published=True,releaseDate=today,mandatory=False,importance='normal',features=features)
+          d.setdefault('releaseHistory',{})['1.0.109']={'releaseDate':today,'features':features}
+          d['patches']=[{'id':'nano-pos-v109-payment-label-improvements',
+            'fromVersions':[f'1.0.{i}' for i in range(91,109)],
+            'directUrl':url,'pageUrl':page,
+            'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),
+            'appAsarSha256':asar,'fileName':f.name,'sizeBytes':f.stat().st_size,
+            'payloadType':'app-asar'}]
+          d['download']={'directUrl':'','pageUrl':'','sha256':'','fileName':''}
+          d['notes']={'ar':'تصحيح تسمية المبلغ المدفوع في شاشة البيع.',
+            'fr':'Correction du libellé du montant payé.',
+            'en':'Paid amount label correction.'}
+          path.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS v1.0.109 payment label improvements'
+          git push origin HEAD:refs/heads/main
