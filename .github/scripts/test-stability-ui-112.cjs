@@ -1,0 +1,27 @@
+'use strict';
+const fs=require('node:fs'),assert=require('node:assert/strict'),{JSDOM}=require('jsdom');
+const html=fs.readFileSync('index.html','utf8');
+assert.equal(JSON.parse(fs.readFileSync('package.json','utf8')).version,'1.0.112');
+assert.equal((html.match(/src="nano-storage-warning-112.js"/g)||[]).length,1);
+assert.ok(html.indexOf('src="browser-bridge.js"')<html.indexOf('src="nano-storage-warning-112.js"'));
+assert.ok(html.indexOf('src="nano-invoice-sequence-111.js"')<html.indexOf('src="browser-bridge.js"'));
+assert.ok(html.includes('src="nano-invoice-layout-111.js"'));
+assert.ok(html.includes('src="nano-flex-payment-108.js"'));
+assert.ok(html.includes('src="nano-blue-print-110.js"'));
+const dom=new JSDOM('<!doctype html><html lang="ar"><body></body></html>',{
+ url:'http://localhost',runScripts:'outside-only'});
+const w=dom.window;w.eval(fs.readFileSync('nano-storage-warning-112.js','utf8'));
+w.dispatchEvent(new w.CustomEvent('nano-storage-save-failed',{detail:{code:'storage_write_failed'}}));
+let alert=w.document.getElementById('nano-storage-save-failed-112');
+assert.ok(alert);
+assert.equal(alert.getAttribute('role'),'alert');
+assert.match(alert.textContent,/تعذر حفظ التعديلات/);
+w.dispatchEvent(new w.CustomEvent('nano-storage-save-failed'));
+assert.equal(w.document.querySelectorAll('#nano-storage-save-failed-112').length,1);
+alert.querySelector('button').click();
+assert.equal(w.document.querySelector('#nano-storage-save-failed-112'),null);
+w.document.documentElement.lang='fr';
+w.dispatchEvent(new w.CustomEvent('nano-storage-save-failed'));
+assert.match(w.document.querySelector('#nano-storage-save-failed-112').textContent,/Impossible de sauvegarder/);
+dom.window.close();
+console.log('PASS: blocking storage warning visible/reusable/dismissable AR/FR, startup module dependencies preserved');
