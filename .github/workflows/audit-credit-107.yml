@@ -2,7 +2,7 @@ name: Audit NANO POS customer and credit checkout 107
 on:
   push:
     branches: [feature/credit-customer-checkout-107]
-    paths: [.github/workflows/audit-credit-107.yml]
+    paths: [.github/workflows/audit-credit-107.yml, .github/scripts/audit-credit-107.py]
 permissions:
   contents: write
 jobs:
