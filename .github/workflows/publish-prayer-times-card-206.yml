@@ -76,6 +76,7 @@ jobs:
           # Sync the branch before generating JSON so the manifest is based on the latest revision.
           git pull --rebase origin main
           if($LASTEXITCODE -ne 0){throw 'Could not sync main before manifest generation'}
+          if(!(Test-Path '.github/scripts/publish-manifest-206.py')){throw 'Manifest script missing from checked-out main revision'}
           python .github/scripts/publish-manifest-206.py
           if($LASTEXITCODE -ne 0){throw 'Manifest generation failed'}
           git add nano-pos-update.json
@@ -91,5 +92,5 @@ jobs:
           gh release view v2.0.6 -R bilalbaghdali/nano-pos-updates
           $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
           if($m.version -ne '2.0.6' -or !$m.published){throw 'Published manifest verification failed'}
-          if(!($m.patches | Where-Object {$_.id -eq 'nano-pos-v118-prayer-sidebar-v206'})){throw 'Published patch missing from manifest'}
+          if(!($m.patches | Where-Object {$_.id -eq 'nano-pos-v118-prayer-home-card-v206'})){throw 'Published patch missing from manifest'}
           Write-Host 'PASS: v2.0.6 release asset and automatic-update manifest are published.'
