@@ -76,6 +76,7 @@ jobs:
           # Sync the branch before generating JSON so the manifest is based on the latest revision.
           git pull --rebase origin main
           if($LASTEXITCODE -ne 0){throw 'Could not sync main before manifest generation'}
+          New-Item -ItemType Directory -Force -Path .github/scripts | Out-Null
           @'
           import json,hashlib,zipfile,datetime
           from pathlib import Path
