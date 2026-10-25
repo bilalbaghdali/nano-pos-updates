@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/publish-prayer-sidebar-205.yml'
+      - '.github/workflows/publish-prayer-icon-205.yml'
       - '.github/scripts/build-prayer-icon-205.py'
       - '.github/scripts/publish-manifest-205.py'
   workflow_dispatch:
