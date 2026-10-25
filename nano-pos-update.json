@@ -3,28 +3,28 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.114",
+  "version": "1.0.115",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تحسين تصميم زر تغيير اللغة ليتناسق مع ألوان وأزرار الواجهة.",
-      "عرض اللغة الحالية مع أيقونة موحدة وقائمة اختيار مرتبة.",
-      "تحسين التناسق على شاشات الكمبيوتر والهاتف وإظهار اللغة المختارة بوضوح.",
+      "وضع زر تغيير اللغة بين التنبيهات وزر اقتران الهاتف على نفس المستوى.",
+      "الحفاظ على عرض اللغة الحالية والقائمة المنسقة.",
+      "ضبط المحاذاة الأفقية مع عناصر شريط الأدوات على الكمبيوتر والهاتف.",
       "الحفاظ على وظائف البرنامج وبياناته ولغة طباعة الفواتير المستقلة."
     ],
     "fr": [
-      "Amélioration du bouton de langue pour mieux correspondre au style de l’interface.",
-      "Affichage de la langue active avec une icône cohérente et un menu soigné.",
-      "Meilleure adaptation aux écrans d’ordinateur et de téléphone.",
+      "Placement du bouton de langue entre les notifications et l’association du téléphone, sur la même ligne.",
+      "Conservation de l’affichage de la langue active et du menu soigné.",
+      "Alignement horizontal dans la barre d’outils sur ordinateur et mobile.",
       "Conservation des fonctions, des données et de la langue d’impression indépendante."
     ],
     "en": [
-      "Refined the language button to better match the app interface and controls.",
-      "Shows the active language with a consistent icon and a cleaner selection menu.",
-      "Improved visual consistency on desktop and mobile screens.",
+      "Placed the language button between notifications and phone pairing on the same toolbar row.",
+      "Preserved the active-language display and refined menu.",
+      "Aligned the control horizontally with toolbar items on desktop and mobile.",
       "Preserves app functionality, data, and the independent print-language setting."
     ]
   },
@@ -1988,28 +1988,51 @@
           "Preserves app functionality, data, and the independent print-language setting."
         ]
       }
+    },
+    "1.0.115": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "وضع زر تغيير اللغة بين التنبيهات وزر اقتران الهاتف على نفس المستوى.",
+          "الحفاظ على عرض اللغة الحالية والقائمة المنسقة.",
+          "ضبط المحاذاة الأفقية مع عناصر شريط الأدوات على الكمبيوتر والهاتف.",
+          "الحفاظ على وظائف البرنامج وبياناته ولغة طباعة الفواتير المستقلة."
+        ],
+        "fr": [
+          "Placement du bouton de langue entre les notifications et l’association du téléphone, sur la même ligne.",
+          "Conservation de l’affichage de la langue active et du menu soigné.",
+          "Alignement horizontal dans la barre d’outils sur ordinateur et mobile.",
+          "Conservation des fonctions, des données et de la langue d’impression indépendante."
+        ],
+        "en": [
+          "Placed the language button between notifications and phone pairing on the same toolbar row.",
+          "Preserved the active-language display and refined menu.",
+          "Aligned the control horizontally with toolbar items on desktop and mobile.",
+          "Preserves app functionality, data, and the independent print-language setting."
+        ]
+      }
     }
   },
   "patches": [
     {
       "id": "nano-pos-v114-language-switch-polish",
       "fromVersions": [
-        "1.0.113"
+        "1.0.114"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.114/NANO-POS-Patch-1.0.113-to-1.0.114-LANGUAGE-SWITCH.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.114",
-      "sha256": "baa9eb21482b91a9b1801b2320e35c0832cec2bad3ed5ba79d0a623780bfddc0",
-      "appAsarSha256": "34e747049c79f9d616f5ac97af7c90622bd95a8c36c56c3fcb857538117f247f",
-      "fileName": "NANO-POS-Patch-1.0.113-to-1.0.114-LANGUAGE-SWITCH.zip",
-      "sizeBytes": 31424713,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.115/NANO-POS-Patch-1.0.114-to-1.0.115-LANGUAGE-SWITCH.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.115",
+      "sha256": "787accd6ca8decdb32f0e56a206d16523b1b502ce267cc3eeab31b2f2cb10b6b",
+      "appAsarSha256": "2cba5033edd27f77ebb8431ebc85ab27fe42eb031b3e570fa3136b6cdeacadfc",
+      "fileName": "NANO-POS-Patch-1.0.114-to-1.0.115-LANGUAGE-SWITCH.zip",
+      "sizeBytes": 31425174,
       "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.114/NANO-POS-Setup-1.0.114-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.114",
-    "sha256": "8f5d651cb495f4e65cbf86b56e02236e5b0ec740cdea86350401546beaa52d12",
-    "fileName": "NANO-POS-Setup-1.0.114-x64.exe"
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.115/NANO-POS-Setup-1.0.115-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.115",
+    "sha256": "448b85d40ce4166a8e077d2928196bf05e6e384990851aec87e291b0ffd210b1",
+    "fileName": "NANO-POS-Setup-1.0.115-x64.exe"
   },
   "notes": {
     "ar": "تحسين تناسق زر تغيير اللغة مع الواجهة وتوضيح اللغة الحالية. مثبت Windows x64 وتحديث داخلي.",
