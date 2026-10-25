@@ -1,4 +1,4 @@
-/* NANO POS v1.0.114 — refined, compact interface-language control. */
+/* NANO POS v1.0.115 — place language control inline between notifications and phone pairing. */
 (function (root) {
   'use strict';
   const doc = root.document;
@@ -16,7 +16,7 @@
   const style = doc.createElement('style');
   style.id = 'nanoLanguageSwitch114Style';
   style.textContent = [
-    '.nano-language-switch-113{position:relative;display:inline-flex;align-items:center;margin-inline-start:6px;flex:0 0 auto}',
+    '.nano-language-switch-113{position:relative;display:inline-flex;align-items:center;align-self:center;vertical-align:middle;margin:0 6px;flex:0 0 auto;order:initial}',
     '.nano-language-switch-113-trigger{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 11px;border:1px solid var(--border-color,#dbe2ea);border-radius:10px;background:var(--card-bg,#fff);color:var(--text-color,#334155);font:inherit;font-size:12px;font-weight:600;line-height:1.2;cursor:pointer;white-space:nowrap;box-shadow:0 1px 2px rgba(15,23,42,.04);transition:background .16s ease,border-color .16s ease,box-shadow .16s ease}',
     '.nano-language-switch-113-trigger:hover{background:var(--hover-bg,#f8fafc);border-color:var(--primary-color,#94a3b8)}',
     '.nano-language-switch-113-trigger[aria-expanded="true"]{border-color:var(--primary-color,#64748b);box-shadow:0 0 0 3px rgba(100,116,139,.12)}',
@@ -117,6 +117,40 @@
     trigger.setAttribute('aria-expanded', 'true');
     menu.querySelector('button')?.focus();
   }
+  function findPairingControl() {
+    const candidates = Array.from(doc.querySelectorAll('button,a,[role="button"],input[type="button"],input[type="submit"]'));
+    return candidates.find(el => {
+      const label = [el.id, el.className, el.getAttribute('aria-label'), el.getAttribute('title'), el.innerText, el.value]
+        .filter(Boolean).join(' ').toLowerCase();
+      return /(اقتران\s*الهاتف|ربط\s*الهاتف|pair\s*(a\s*)?phone|phone\s*pairing|pairing\s*phone|connect\s*phone)/i.test(label);
+    }) || null;
+  }
+  function directChildUnder(node, ancestor) {
+    let current = node;
+    while (current && current.parentElement !== ancestor) current = current.parentElement;
+    return current && current.parentElement === ancestor ? current : null;
+  }
+  function insertInline(wrapper, anchor, pairing) {
+    // Use the nearest common ancestor so the language control is a sibling
+    // on the same toolbar row, immediately before the phone-pairing control.
+    if (pairing && anchor && anchor.parentElement) {
+      const ancestors = new Set();
+      for (let n = anchor; n; n = n.parentElement) ancestors.add(n);
+      let common = pairing;
+      while (common && !ancestors.has(common)) common = common.parentElement;
+      if (common) {
+        const pairChild = directChildUnder(pairing, common);
+        const anchorChild = directChildUnder(anchor, common);
+        if (pairChild && anchorChild && pairChild !== anchorChild) {
+          common.insertBefore(wrapper, pairChild);
+          return;
+        }
+      }
+      anchor.insertAdjacentElement('afterend', wrapper);
+      return;
+    }
+    anchor.insertAdjacentElement('afterend', wrapper);
+  }
   function init() {
     if (doc.getElementById('nanoLanguageSwitch113')) return;
     const anchor = doc.getElementById('notificationToggle');
@@ -138,7 +172,7 @@
     trigger.setAttribute('aria-expanded', 'false');
     trigger.addEventListener('click', openMenu);
     wrapper.append(trigger);
-    anchor.insertAdjacentElement('afterend', wrapper);
+    insertInline(wrapper, anchor, findPairingControl());
     doc.addEventListener('click', event => {
       if (menu && !wrapper.contains(event.target)) closeMenu(false);
     });
