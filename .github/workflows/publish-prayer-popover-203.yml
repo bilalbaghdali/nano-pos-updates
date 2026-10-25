@@ -52,7 +52,7 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Patch builder failed'}
           node --check work/renderer.js
           if($LASTEXITCODE -ne 0){throw 'Renderer syntax check failed'}
-          python -c "import zipfile,struct,json; z=zipfile.ZipFile('NANO-POS-Patch-1.0.118-to-2.0.3-PRAYER-POPOVER.zip'); assert z.namelist()==['payload/app.asar']; b=z.read('payload/app.asar'); m,bl,hs,n=struct.unpack_from('<4I',b); f=json.loads(b[16:16+n])['files']; d=8+bl; e=f['package.json']; p=json.loads(b[d+int(e['offset']):d+int(e['offset'])+e['size']]); assert p['version']=='2.0.3'; e=f['renderer.js']; s=b[d+int(e['offset']):d+int(e['offset'])+e['size']].decode(); assert '__nanoCartSpeechV202' in s and 'speechSynthesis.speak' in s and '__nanoPrayerTimesV202' in s and 'api.aladhan.com' in s and 'اختيار الموقع' in s and 'currentUser is not defined' not in s; print('PASS v2.0.3 package, cart speech, prayer timings, location selector, alerts and ASAR structure')"
+          python -c "import zipfile,struct,json; z=zipfile.ZipFile('NANO-POS-Patch-1.0.118-to-2.0.3-PRAYER-POPOVER.zip'); assert z.namelist()==['payload/app.asar']; b=z.read('payload/app.asar'); m,bl,hs,n=struct.unpack_from('<4I',b); f=json.loads(b[16:16+n])['files']; d=8+bl; e=f['package.json']; p=json.loads(b[d+int(e['offset']):d+int(e['offset'])+e['size']]); assert p['version']=='2.0.3'; e=f['renderer.js']; s=b[d+int(e['offset']):d+int(e['offset'])+e['size']].decode(); assert '__nanoCartSpeechV202' in s and 'speechSynthesis.speak' in s and '__nanoPrayerTimesV203' in s and 'api.aladhan.com' in s and 'اختيار الموقع' in s and 'currentUser is not defined' not in s; print('PASS v2.0.3 package, cart speech, prayer timings, location selector, alerts and ASAR structure')"
           if($LASTEXITCODE -ne 0){throw 'Final ASAR audit failed'}
       - name: Create release and upload generated patch
         env:
@@ -61,7 +61,7 @@ jobs:
           $ErrorActionPreference='Stop'
           gh release view v2.0.3 -R bilalbaghdali/nano-pos-updates *> $null
           if($LASTEXITCODE -ne 0){
-            gh release create v2.0.3 NANO-POS-Patch-1.0.118-to-2.0.3-PRAYER-POPOVER.zip -R bilalbaghdali/nano-pos-updates --target $env:GITHUB_SHA --title 'NANO POS v2.0.3 — مواقيت الصلاة' --notes 'مواقيت الصلاة بجانب محتوى الآيات والأحاديث عبر بطاقة عائمة، مع اختيار المدينة والدولة وتنبيه مرئي قبل الصلاة بعشر دقائق. يتضمن إصلاحات نطق سعر المنتج السابقة. مبني من الإصدار المستقر 1.0.118.'
+            gh release create v2.0.3 NANO-POS-Patch-1.0.118-to-2.0.3-PRAYER-POPOVER.zip -R bilalbaghdali/nano-pos-updates --target $env:GITHUB_SHA --title 'NANO POS v2.0.3 — مواقيت الصلاة' --notes 'مواقيت الصلاة بجانب محتوى الآيات والأحاديث داخل نافذة منبثقة من أيقونة الشريط العلوي، مع اختيار المدينة والدولة وتنبيه مرئي قبل الصلاة بعشر دقائق. يتضمن إصلاحات نطق سعر المنتج السابقة. مبني من الإصدار المستقر 1.0.118.'
             if($LASTEXITCODE -ne 0){throw 'GitHub release creation failed'}
           }
           gh release upload v2.0.3 NANO-POS-Patch-1.0.118-to-2.0.3-PRAYER-POPOVER.zip -R bilalbaghdali/nano-pos-updates --clobber
