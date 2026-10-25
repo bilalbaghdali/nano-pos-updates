@@ -65,9 +65,9 @@ jobs:
             if($LASTEXITCODE -ne 0){throw 'GitHub release creation failed'}
           }
           gh release upload v2.0.6 NANO-POS-Patch-1.0.118-to-2.0.6-PRAYER-HOME-CARD.zip -R bilalbaghdali/nano-pos-updates --clobber
-  if($LASTEXITCODE -ne 0){throw 'GitHub release asset upload failed'}
-  gh release edit v2.0.6 -R bilalbaghdali/nano-pos-updates --title 'NANO POS v2.0.6 — تحسينات عامة' --notes 'تحسينات عامة: عرض مواقيت الصلاة في المساحة الفارغة من الصفحة الرئيسية، مع العد التنازلي للصلاة القادمة والتاريخين الميلادي والهجري وإمكانية تغيير المنطقة. مبني من الإصدار المستقر 1.0.118.'
           if($LASTEXITCODE -ne 0){throw 'GitHub release asset upload failed'}
+          gh release edit v2.0.6 -R bilalbaghdali/nano-pos-updates --title 'NANO POS v2.0.6 — تحسينات عامة' --notes 'تحسينات عامة: عرض مواقيت الصلاة في المساحة الفارغة من الصفحة الرئيسية، مع العد التنازلي للصلاة القادمة والتاريخين الميلادي والهجري وإمكانية تغيير المنطقة. مبني من الإصدار المستقر 1.0.118.'
+          if($LASTEXITCODE -ne 0){throw 'GitHub release metadata update failed'}
       - name: Publish v2.0.6 manifest only after release asset exists
         run: |
           $ErrorActionPreference='Stop'
