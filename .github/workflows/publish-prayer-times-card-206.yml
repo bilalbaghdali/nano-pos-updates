@@ -102,7 +102,7 @@ jobs:
           git add nano-pos-update.json
           git commit -m 'Publish NANO POS 2.0.6 automatic update manifest'
           if($LASTEXITCODE -ne 0){throw 'Manifest commit failed'}
-          git push origin HEAD:main
+          git push origin HEAD:refs/heads/main
           if($LASTEXITCODE -ne 0){throw 'Manifest push failed'}
       - name: Verify published release and manifest
         env:
