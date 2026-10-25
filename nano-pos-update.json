@@ -3,29 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.118",
+  "version": "2.0.0",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "الإبقاء على شريط البحث الموسع وإصلاح موضع زر اللغة في الشريط العلوي.",
-      "وضع زر اللغة بجانب التواصل مع الدعم في الشريط العلوي فقط وإزالة نسخته من الشريط الجانبي.",
-      "تقليل أعمال تهيئة شريط الأدوات والفحوص المتكررة غير الضرورية.",
-      "الحفاظ على بيانات المتجر ووظائف البرنامج ولغة طباعة الفواتير المستقلة."
+      "إشعار مرئي عند إضافة منتج إلى السلة.",
+      "نطق سعر المنتج المضاف بلغة واجهة البرنامج: العربية أو الفرنسية أو الإنجليزية.",
+      "تحسينات عامة مع الحفاظ على بيانات المتجر."
     ],
     "fr": [
-      "Conservation de la recherche élargie et correction de la position du sélecteur de langue.",
-      "Placement du sélecteur juste à côté du contact du support, uniquement dans la barre supérieure.",
-      "Réduction des opérations répétées inutiles lors de l’initialisation de la barre d’outils.",
-      "Conservation des données, des fonctions et de la langue d’impression indépendante."
+      "Notification visuelle lors de l’ajout d’un produit au panier.",
+      "Lecture vocale du prix dans la langue de l’interface : arabe, français ou anglais.",
+      "Améliorations générales sans modifier les données du magasin."
     ],
     "en": [
-      "Kept the wider top search bar while correcting the language selector placement.",
-      "Placed the language selector immediately beside Contact Support in the top toolbar only.",
-      "Reduced unnecessary repeated toolbar initialization work.",
-      "Preserved store data, app functions, and the independent print language."
+      "Visual notification when a product is added to the cart.",
+      "Speak the added product price in the interface language: Arabic, French, or English.",
+      "General improvements while preserving store data."
     ]
   },
   "releaseHistory": {
@@ -2083,6 +2080,26 @@
         ]
       },
       "label": "تحسينات عامة"
+    },
+    "2.0.0": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "إشعار مرئي عند إضافة منتج إلى السلة.",
+          "نطق سعر المنتج المضاف بلغة واجهة البرنامج: العربية أو الفرنسية أو الإنجليزية.",
+          "تحسينات عامة مع الحفاظ على بيانات المتجر."
+        ],
+        "fr": [
+          "Notification visuelle lors de l’ajout d’un produit au panier.",
+          "Lecture vocale du prix dans la langue de l’interface : arabe, français ou anglais.",
+          "Améliorations générales sans modifier les données du magasin."
+        ],
+        "en": [
+          "Visual notification when a product is added to the cart.",
+          "Speak the added product price in the interface language: Arabic, French, or English.",
+          "General improvements while preserving store data."
+        ]
+      }
     }
   },
   "patches": [
@@ -2123,6 +2140,19 @@
       "appAsarSha256": "48552f35646194927d6765963110dbeb91d49bf19accfbd383371d74167e0a6a",
       "fileName": "NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip",
       "sizeBytes": 31426744,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v118-cart-price-speech-v200",
+      "fromVersions": [
+        "1.0.118"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.0/NANO-POS-Patch-1.0.118-to-2.0.0-GENERAL-IMPROVEMENTS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.0",
+      "sha256": "2ba670f66ca1b63d2e7a58eb8a6b6bf498052db4c2290c01b43f42d2b509a9d3",
+      "appAsarSha256": "5c2ea4f150d548ba47553ef489b94eceeda6175517c134629544c26cd7b28224",
+      "fileName": "NANO-POS-Patch-1.0.118-to-2.0.0-GENERAL-IMPROVEMENTS.zip",
+      "sizeBytes": 31428418,
       "payloadType": "app-asar"
     }
   ],
