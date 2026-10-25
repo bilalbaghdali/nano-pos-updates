@@ -3,7 +3,7 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
@@ -2100,6 +2100,26 @@
           "General improvements while preserving store data."
         ]
       }
+    },
+    "2.0.1": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "إشعار مرئي عند إضافة منتج إلى السلة.",
+          "نطق سعر المنتج المضاف بلغة واجهة البرنامج: العربية أو الفرنسية أو الإنجليزية.",
+          "تحسينات عامة مع الحفاظ على بيانات المتجر."
+        ],
+        "fr": [
+          "Notification visuelle lors de l’ajout d’un produit au panier.",
+          "Lecture vocale du prix dans la langue de l’interface : arabe, français ou anglais.",
+          "Améliorations générales sans modifier les données du magasin."
+        ],
+        "en": [
+          "Visual notification when a product is added to the cart.",
+          "Speak the added product price in the interface language: Arabic, French, or English.",
+          "General improvements while preserving store data."
+        ]
+      }
     }
   },
   "patches": [
@@ -2153,6 +2173,19 @@
       "appAsarSha256": "5c2ea4f150d548ba47553ef489b94eceeda6175517c134629544c26cd7b28224",
       "fileName": "NANO-POS-Patch-1.0.118-to-2.0.0-GENERAL-IMPROVEMENTS.zip",
       "sizeBytes": 31428418,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v118-cart-price-speech-v201",
+      "fromVersions": [
+        "1.0.118"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.1/NANO-POS-Patch-1.0.118-to-2.0.1-GENERAL-IMPROVEMENTS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.1",
+      "sha256": "13adfad13c844b5b5cbf3c445764309952a9832be35f3ee1d3efbe73e29c9178",
+      "appAsarSha256": "6abfb4d81fe934334e9d8abdc96e2aaf55379391e53afef57e94b03ec0c2219c",
+      "fileName": "NANO-POS-Patch-1.0.118-to-2.0.1-GENERAL-IMPROVEMENTS.zip",
+      "sizeBytes": 31429039,
       "payloadType": "app-asar"
     }
   ],
