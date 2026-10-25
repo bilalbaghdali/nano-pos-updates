@@ -3,26 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إشعار مرئي عند إضافة منتج إلى السلة.",
-      "نطق سعر المنتج المضاف بلغة واجهة البرنامج: العربية أو الفرنسية أو الإنجليزية.",
-      "تحسينات عامة مع الحفاظ على بيانات المتجر."
+      "عرض مواقيت الصلاة اليومية في بطاقة واضحة داخل البرنامج.",
+      "زر لاختيار المدينة والدولة وحفظ الموقع المختار.",
+      "تنبيه مرئي قبل كل صلاة بعشر دقائق، مع تحديث المواقيت يوميًا.",
+      "الإبقاء على ميزة نطق سعر المنتج السابقة."
     ],
     "fr": [
-      "Notification visuelle lors de l’ajout d’un produit au panier.",
-      "Lecture vocale du prix dans la langue de l’interface : arabe, français ou anglais.",
-      "Améliorations générales sans modifier les données du magasin."
+      "Affichage des horaires de prière quotidiens dans une carte dédiée.",
+      "Bouton de sélection et mémorisation de la ville et du pays.",
+      "Alerte visuelle dix minutes avant chaque prière et mise à jour quotidienne.",
+      "Conservation de la lecture vocale du prix des produits."
     ],
     "en": [
-      "Visual notification when a product is added to the cart.",
-      "Speak the added product price in the interface language: Arabic, French, or English.",
-      "General improvements while preserving store data."
+      "Displays daily prayer times in a dedicated in-app card.",
+      "Choose and save the city and country with a location button.",
+      "Visual alert ten minutes before each prayer; refreshes daily.",
+      "Keeps the existing cart-price speech feature."
     ]
   },
   "releaseHistory": {
@@ -2120,6 +2123,29 @@
           "General improvements while preserving store data."
         ]
       }
+    },
+    "2.0.2": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "عرض مواقيت الصلاة اليومية في بطاقة واضحة داخل البرنامج.",
+          "زر لاختيار المدينة والدولة وحفظ الموقع المختار.",
+          "تنبيه مرئي قبل كل صلاة بعشر دقائق، مع تحديث المواقيت يوميًا.",
+          "الإبقاء على ميزة نطق سعر المنتج السابقة."
+        ],
+        "fr": [
+          "Affichage des horaires de prière quotidiens dans une carte dédiée.",
+          "Bouton de sélection et mémorisation de la ville et du pays.",
+          "Alerte visuelle dix minutes avant chaque prière et mise à jour quotidienne.",
+          "Conservation de la lecture vocale du prix des produits."
+        ],
+        "en": [
+          "Displays daily prayer times in a dedicated in-app card.",
+          "Choose and save the city and country with a location button.",
+          "Visual alert ten minutes before each prayer; refreshes daily.",
+          "Keeps the existing cart-price speech feature."
+        ]
+      }
     }
   },
   "patches": [
@@ -2186,6 +2212,21 @@
       "appAsarSha256": "6abfb4d81fe934334e9d8abdc96e2aaf55379391e53afef57e94b03ec0c2219c",
       "fileName": "NANO-POS-Patch-1.0.118-to-2.0.1-GENERAL-IMPROVEMENTS.zip",
       "sizeBytes": 31429039,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v118-prayer-times-v202",
+      "fromVersions": [
+        "1.0.118",
+        "2.0.0",
+        "2.0.1"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.2/NANO-POS-Patch-1.0.118-to-2.0.2-PRAYER-TIMES.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.2",
+      "sha256": "f76799b2cddd4c5070bbffdad013e6bc3ce459c14dec2eaf81190693f710939f",
+      "appAsarSha256": "f034d657623885625fa405e3cf0e910737e4992c30a009928afa6f5981aa508a",
+      "fileName": "NANO-POS-Patch-1.0.118-to-2.0.2-PRAYER-TIMES.zip",
+      "sizeBytes": 31431766,
       "payloadType": "app-asar"
     }
   ],
