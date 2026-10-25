@@ -76,6 +76,7 @@ jobs:
           # Sync the branch before generating JSON so the manifest is based on the latest revision.
           git pull --rebase origin main
           if($LASTEXITCODE -ne 0){throw 'Could not sync main before manifest generation'}
+          New-Item -ItemType Directory -Force -Path .github/scripts | Out-Null
           @'
           import json,hashlib,zipfile,datetime
           from pathlib import Path
@@ -93,7 +94,7 @@ jobs:
           data['version']='2.0.6'; data['releaseDate']=date; data['published']=True; data['mandatory']=False; data['importance']='normal'; data['features']=features
           data.setdefault('releaseHistory',{})['2.0.6']={'releaseDate':date,'features':features,'label':'تحسينات عامة'}
           data['patches']=[p for p in data.get('patches',[]) if p.get('id')!='nano-pos-v118-prayer-home-card-v206']+[entry]
-          Path('nano-pos-update.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')
+          Path('nano-pos-update.json').write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
           print('Manifest prepared with verified patch hashes.')
           '@ | Set-Content -Encoding utf8 .github/scripts/publish-manifest-206.py
           python .github/scripts/publish-manifest-206.py
