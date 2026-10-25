@@ -41,7 +41,7 @@ jobs:
           gh release download v1.0.114 -R bilalbaghdali/nano-pos-updates --pattern $baseName --dir source
           if($LASTEXITCODE -ne 0){throw 'Cannot download stable v1.0.114 patch'}
           $base="source\$baseName"
-          $expected=$manifest.patches | Where-Object { $_.id -eq 'nano-pos-v113-global-language-switch' } | Select-Object -First 1
+          $expected=$manifest.patches | Where-Object { $_.id -eq 'nano-pos-v114-language-switch-polish' } | Select-Object -First 1
           if(!$expected){throw 'Manifest does not identify the official v1.0.114 base patch'}
           if((Get-FileHash $base -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected.sha256){throw 'Base ZIP SHA256 mismatch'}
           python -c "import zipfile,hashlib; z=zipfile.ZipFile(r'$base'); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='$($expected.appAsarSha256)'"
