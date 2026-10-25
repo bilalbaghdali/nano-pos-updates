@@ -6,8 +6,8 @@ SPEECH = r"""
 ;
 /* NANO POS v2.0.2: reliable cart change detection and price speech */
 (function(){
-  if (window.__nanoCartSpeechV201) return;
-  window.__nanoCartSpeechV201 = true;
+  if (window.__nanoCartSpeechV202) return;
+  window.__nanoCartSpeechV202 = true;
   var activeList=null, listObserver=null, lastSignature='', timer=null;
   function uiLang(){
     var lang=(window.currentLanguage || document.getElementById('settLanguage')?.value || document.documentElement.lang || '').toLowerCase();
