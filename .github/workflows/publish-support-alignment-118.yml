@@ -1,0 +1,242 @@
+name: NANO POS v1.0.118 - Support Button Placement
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-support-alignment-118.yml'
+      - '.github/scripts/build-support-alignment-118.py'
+      - '.github/assets/nano-language-support-alignment-118.js'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-support-alignment-118
+  cancel-in-progress: true
+jobs:
+  build-test-publish:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify official v1.0.117 base patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $manifest=Get-Content nano-pos-update.json -Raw | ConvertFrom-Json
+          if($manifest.version -ne '1.0.117' -or !$manifest.published){throw 'Expected published stable base v1.0.117'}
+          gh release view v1.0.118 *> $null
+          if($LASTEXITCODE -eq 0){throw 'Release v1.0.118 already exists; refusing to overwrite'}
+          New-Item -ItemType Directory -Force -Path source,work,icon-build | Out-Null
+          $baseName='NANO-POS-Patch-1.0.116-to-1.0.117-TOOLBAR-ALIGNMENT.zip'
+          gh release download v1.0.117 -R bilalbaghdali/nano-pos-updates --pattern $baseName --dir source
+          if($LASTEXITCODE -ne 0){throw 'Cannot download stable v1.0.117 patch'}
+          $base="source\\$baseName"
+          $expected=$manifest.patches | Where-Object { $_.id -eq 'nano-pos-v116-toolbar-alignment' } | Select-Object -First 1
+          if(!$expected){throw 'Manifest does not identify the official v1.0.117 base patch'}
+          if((Get-FileHash $base -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected.sha256){throw 'Base ZIP SHA256 mismatch'}
+          python -c "import zipfile,hashlib; z=zipfile.ZipFile(r'$base'); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='$($expected.appAsarSha256)'"
+          if($LASTEXITCODE -ne 0){throw 'Base app.asar SHA256 mismatch'}
+      - name: Build v1.0.118 support placement patch and audit
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/build-support-alignment-118.py source/NANO-POS-Patch-1.0.116-to-1.0.117-TOOLBAR-ALIGNMENT.zip NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip work
+          if($LASTEXITCODE -ne 0){throw 'Patch build failed'}
+          node --check .github/assets/nano-language-support-alignment-118.js
+          if($LASTEXITCODE -ne 0){throw 'General improvements JavaScript syntax check failed'}
+          python -c "import json,struct,zipfile; z=zipfile.ZipFile('NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip'); assert z.namelist()==['payload/app.asar']; b=z.read('payload/app.asar'); magic,block,hs,n=struct.unpack_from('<4I',b); assert magic==4 and block==hs+4; f=json.loads(b[16:16+n])['files']; assert 'nano-operations-center.js' not in f and 'nano-financial-review.js' not in f; assert 'nano-language-switch-113.js' in f; d=8+block; e=f['package.json']; p=json.loads(b[d+int(e['offset']):d+int(e['offset'])+e['size']]); assert p['version']=='1.0.118'; e=f['nano-language-switch-113.js']; js=b[d+int(e['offset']):d+int(e['offset'])+e['size']].decode(); assert 'nano-compact-global-search' in js and 'findSupportControl' in js and 'NANO_GENERAL_IMPROVEMENTS_118' in js and 'Contact Support control was not found' in js; print('PASS: v1.0.118 support-alignment ASAR audit')"
+          if($LASTEXITCODE -ne 0){throw 'Final ASAR audit failed'}
+      - name: Reuse verified NANO POS v1.0.112 icon
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh run download 39781598059 -R bilalbaghdali/nano-pos-updates --name nano-pos-112-tested-release-assets --dir prior-artifact
+          if($LASTEXITCODE -ne 0){throw 'Cannot download previously verified product icon'}
+          $source='prior-artifact\\icon-build\\NANO-POS-Icon.ico'
+          if(!(Test-Path $source)){throw 'Verified NANO POS icon missing from prior artifact'}
+          Copy-Item $source 'icon-build\\NANO-POS-Icon.ico' -Force
+          if((Get-Item 'icon-build\\NANO-POS-Icon.ico').Length -lt 1000){throw 'Icon file is invalid'}
+      - name: Package Electron Windows x64 runtime
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path runtime-fetch | Out-Null
+          Push-Location runtime-fetch
+          npm init -y | Out-Null
+          npm install --no-audit --no-fund --save-exact electron@38.0.0
+          if($LASTEXITCODE -ne 0){throw 'Electron runtime download failed'}
+          Pop-Location
+          $runtime='runtime-fetch\\node_modules\\electron\\dist'
+          if(!(Test-Path "$runtime\\electron.exe")){throw 'Electron x64 executable missing'}
+          Copy-Item -Path $runtime -Destination electron-app -Recurse
+          Rename-Item 'electron-app\\electron.exe' 'NANO POS.exe'
+          Copy-Item 'work\\app.asar' 'electron-app\\resources\\app.asar' -Force
+          Copy-Item 'icon-build\\NANO-POS-Icon.ico' 'electron-app\\NANO-POS-Icon.ico'
+          if((Get-FileHash 'work\\app.asar' -Algorithm SHA256).Hash -ne (Get-FileHash 'electron-app\\resources\\app.asar' -Algorithm SHA256).Hash){throw 'ASAR changed while packaging'}
+      - name: Embed product icon and version metadata
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path tools-rcedit | Out-Null
+          Push-Location tools-rcedit
+          npm init -y | Out-Null
+          npm install --no-audit --no-fund --save-exact rcedit
+          if($LASTEXITCODE -ne 0){throw 'rcedit install failed'}
+          @'
+          const path=require('node:path');
+          const rcedit=require('rcedit').rcedit;
+          const exe=path.resolve('../electron-app/NANO POS.exe');
+          const icon=path.resolve('../icon-build/NANO-POS-Icon.ico');
+          (async()=>{await rcedit(exe,{icon,'file-version':'1.0.118','product-version':'1.0.118','version-string':{'ProductName':'NANO POS','FileDescription':'NANO POS','CompanyName':'NANO POS'}})})().catch(e=>{console.error(e);process.exit(1)});
+          '@ | Set-Content embed-icon.cjs -Encoding utf8
+          node embed-icon.cjs
+          if($LASTEXITCODE -ne 0){throw 'Could not embed Windows icon/version'}
+          Pop-Location
+          Add-Type -AssemblyName System.Drawing
+          $icon=[System.Drawing.Icon]::ExtractAssociatedIcon((Resolve-Path 'electron-app\\NANO POS.exe').Path)
+          if($null -eq $icon){throw 'Invalid Windows executable icon'}
+          $icon.Dispose()
+      - name: Build full Windows x64 installer
+        run: |
+          $ErrorActionPreference='Stop'
+          $nsis='C:\\Program Files (x86)\\NSIS\\makensis.exe'
+          if(!(Test-Path $nsis)){
+            choco install nsis -y --no-progress
+            if(!(Test-Path $nsis)){throw 'NSIS compiler unavailable'}
+          }
+          @'
+          Unicode true
+          !include "MUI2.nsh"
+          !include "x64.nsh"
+          Name "NANO POS"
+          OutFile "NANO-POS-Setup-1.0.118-x64.exe"
+          Icon "icon-build\\NANO-POS-Icon.ico"
+          UninstallIcon "icon-build\\NANO-POS-Icon.ico"
+          InstallDir "$LOCALAPPDATA\\Programs\\NANO POS"
+          InstallDirRegKey HKCU "Software\\NANO POS" "InstallDir"
+          RequestExecutionLevel user
+          SetCompressor /SOLID zlib
+          !define MUI_ABORTWARNING
+          !insertmacro MUI_PAGE_WELCOME
+          !insertmacro MUI_PAGE_DIRECTORY
+          !insertmacro MUI_PAGE_INSTFILES
+          !insertmacro MUI_PAGE_FINISH
+          !insertmacro MUI_UNPAGE_CONFIRM
+          !insertmacro MUI_UNPAGE_INSTFILES
+          !insertmacro MUI_LANGUAGE "English"
+          Section "Install" SecMain
+            SetShellVarContext current
+            SetOutPath "$INSTDIR"
+            File /r "electron-app\\*"
+            WriteRegStr HKCU "Software\\NANO POS" "InstallDir" "$INSTDIR"
+            WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\NANO POS" "DisplayName" "NANO POS"
+            WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\NANO POS" "DisplayVersion" "1.0.118"
+            WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\NANO POS" "Publisher" "NANO POS"
+            WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\NANO POS" "InstallLocation" "$INSTDIR"
+            WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\NANO POS" "DisplayIcon" "$INSTDIR\\NANO POS.exe"
+            WriteRegStr HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\NANO POS" "UninstallString" '"$INSTDIR\\Uninstall.exe"'
+            WriteUninstaller "$INSTDIR\\Uninstall.exe"
+            CreateDirectory "$SMPROGRAMS\\NANO POS"
+            CreateShortCut "$SMPROGRAMS\\NANO POS\\NANO POS.lnk" "$INSTDIR\\NANO POS.exe" "" "$INSTDIR\\NANO-POS-Icon.ico" 0
+            CreateShortCut "$DESKTOP\\NANO POS.lnk" "$INSTDIR\\NANO POS.exe" "" "$INSTDIR\\NANO-POS-Icon.ico" 0
+          SectionEnd
+          Section "Uninstall"
+            SetShellVarContext current
+            Delete "$DESKTOP\\NANO POS.lnk"
+            Delete "$SMPROGRAMS\\NANO POS\\NANO POS.lnk"
+            RMDir "$SMPROGRAMS\\NANO POS"
+            DeleteRegKey HKCU "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\NANO POS"
+            DeleteRegKey HKCU "Software\\NANO POS"
+            RMDir /r "$INSTDIR"
+          SectionEnd
+          '@ | Set-Content installer.nsi -Encoding utf8
+          & $nsis installer.nsi
+          if($LASTEXITCODE -ne 0){throw 'NSIS installer build failed'}
+          $exe='NANO-POS-Setup-1.0.118-x64.exe'
+          if(!(Test-Path $exe) -or (Get-Item $exe).Length -lt 20000000){throw 'Full installer missing or too small'}
+          $bytes=[IO.File]::ReadAllBytes((Resolve-Path $exe).Path)[0..1]
+          if($bytes[0] -ne 77 -or $bytes[1] -ne 90){throw 'Installer is not a Windows executable'}
+      - name: Publish release assets with support-alignment label
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $asset='NANO-POS-Setup-1.0.118-x64.exe'
+          $patch='NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip'
+          gh release create v1.0.118 $asset $patch --target $env:GITHUB_SHA --title 'NANO POS v1.0.118 — إصلاح موضع زر اللغة' --notes 'إصلاح محدد لموضع زر اللغة: يظهر بجانب زر التواصل مع الدعم في الشريط العلوي فقط، وإزالة النسخة القديمة من الشريط الجانبي ومنع إنشاء نسخة مكررة. يحافظ الإصدار على اتساع البحث والبيانات الحالية. يتضمن مثبت Windows x64 وحزمة تحديث داخلية.'
+          if($LASTEXITCODE -ne 0){throw 'GitHub release creation failed'}
+          $actual=@(gh release view v1.0.118 --json assets --jq '.assets[].name')
+          if($LASTEXITCODE -ne 0 -or $actual -notcontains $asset -or $actual -notcontains $patch){throw 'Release assets are missing'}
+      - name: Update stable manifest after release verification
+        run: |
+          $ErrorActionPreference='Stop'
+          @'
+          import json,hashlib,datetime,zipfile
+          from pathlib import Path
+          mpath=Path('nano-pos-update.json')
+          m=json.loads(mpath.read_text('utf-8'))
+          assert m['version']=='1.0.117' and m['published']
+          patch=Path('NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip')
+          exe=Path('NANO-POS-Setup-1.0.118-x64.exe')
+          assert exe.read_bytes()[:2]==b'MZ'
+          with zipfile.ZipFile(patch) as z:
+            assert z.namelist()==['payload/app.asar']
+            asar_sha=hashlib.sha256(z.read('payload/app.asar')).hexdigest()
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          base='https://github.com/bilalbaghdali/nano-pos-updates/releases'
+          patch_url=base+'/download/v1.0.118/'+patch.name
+          exe_url=base+'/download/v1.0.118/'+exe.name
+          page=base+'/tag/v1.0.118'
+          features={
+            'ar':['الإبقاء على شريط البحث الموسع وإصلاح موضع زر اللغة في الشريط العلوي.',
+                  'وضع زر اللغة بجانب التواصل مع الدعم في الشريط العلوي فقط وإزالة نسخته من الشريط الجانبي.',
+                  'تقليل أعمال تهيئة شريط الأدوات والفحوص المتكررة غير الضرورية.',
+                  'الحفاظ على بيانات المتجر ووظائف البرنامج ولغة طباعة الفواتير المستقلة.'],
+            'fr':['Conservation de la recherche élargie et correction de la position du sélecteur de langue.',
+                  'Placement du sélecteur juste à côté du contact du support, uniquement dans la barre supérieure.',
+                  'Réduction des opérations répétées inutiles lors de l’initialisation de la barre d’outils.',
+                  'Conservation des données, des fonctions et de la langue d’impression indépendante.'],
+            'en':['Kept the wider top search bar while correcting the language selector placement.',
+                  'Placed the language selector immediately beside Contact Support in the top toolbar only.',
+                  'Reduced unnecessary repeated toolbar initialization work.',
+                  'Preserved store data, app functions, and the independent print language.']}
+          m.setdefault('releaseHistory',{})['1.0.118']={'releaseDate':day,'features':features,'label':'تحسينات عامة'}
+          m.update(version='1.0.118',published=True,releaseDate=day,mandatory=False,importance='normal',features=features)
+          new_patch={'id':'nano-pos-v117-support-alignment','fromVersions':['1.0.117'],
+            'directUrl':patch_url,'pageUrl':page,'sha256':hashlib.sha256(patch.read_bytes()).hexdigest(),
+            'appAsarSha256':asar_sha,'fileName':patch.name,'sizeBytes':patch.stat().st_size,'payloadType':'app-asar'}
+          m['patches']=[p for p in m.get('patches',[]) if p.get('id')!=new_patch['id']]+[new_patch]
+          m['download']={'directUrl':exe_url,'pageUrl':page,'sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),'fileName':exe.name}
+          m['notes']={'ar':'إصلاح موضع زر اللغة بجانب التواصل مع الدعم في الشريط العلوي فقط وإزالة نسخته من الشريط الجانبي.', 
+            'fr':'Correction du sélecteur de langue à côté du contact du support dans la barre supérieure, sans doublon dans le panneau latéral.',
+            'en':'Fixed language selector beside Contact Support in the top toolbar only; removed the sidebar copy and prevented duplicates.'}
+          mpath.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('Manifest v1.0.118 ready with verified patch and installer hashes')
+          '@ | Set-Content update_manifest.py -Encoding utf8
+          python update_manifest.py
+          if($LASTEXITCODE -ne 0){throw 'Manifest update failed'}
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'publish: NANO POS 1.0.118 support alignment'
+          if($LASTEXITCODE -ne 0){throw 'Manifest commit failed'}
+          git push origin HEAD:refs/heads/main
+          if($LASTEXITCODE -ne 0){throw 'Manifest push failed'}
+      - name: Retain release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-v1.0.118-Support-Alignment
+          path: |
+            NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip
+            NANO-POS-Setup-1.0.118-x64.exe
+            work/app.asar
+          if-no-files-found: error
+          retention-days: 30
