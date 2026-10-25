@@ -3,7 +3,7 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
@@ -2146,6 +2146,29 @@
           "Keeps the existing cart-price speech feature."
         ]
       }
+    },
+    "2.0.3": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "عرض مواقيت الصلاة اليومية في بطاقة واضحة داخل البرنامج.",
+          "زر لاختيار المدينة والدولة وحفظ الموقع المختار.",
+          "تنبيه مرئي قبل كل صلاة بعشر دقائق، مع تحديث المواقيت يوميًا.",
+          "الإبقاء على ميزة نطق سعر المنتج السابقة."
+        ],
+        "fr": [
+          "Affichage des horaires de prière quotidiens dans une carte dédiée.",
+          "Bouton de sélection et mémorisation de la ville et du pays.",
+          "Alerte visuelle dix minutes avant chaque prière et mise à jour quotidienne.",
+          "Conservation de la lecture vocale du prix des produits."
+        ],
+        "en": [
+          "Displays daily prayer times in a dedicated in-app card.",
+          "Choose and save the city and country with a location button.",
+          "Visual alert ten minutes before each prayer; refreshes daily.",
+          "Keeps the existing cart-price speech feature."
+        ]
+      }
     }
   },
   "patches": [
@@ -2227,6 +2250,22 @@
       "appAsarSha256": "f034d657623885625fa405e3cf0e910737e4992c30a009928afa6f5981aa508a",
       "fileName": "NANO-POS-Patch-1.0.118-to-2.0.2-PRAYER-TIMES.zip",
       "sizeBytes": 31431766,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v118-prayer-popover-v203",
+      "fromVersions": [
+        "1.0.118",
+        "2.0.0",
+        "2.0.1",
+        "2.0.2"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.3/NANO-POS-Patch-1.0.118-to-2.0.3-PRAYER-POPOVER.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.3",
+      "sha256": "7cb6012f01ecbf6aa01da0f16cd152ec203575aa268f0c9b26fabbeb71f1419f",
+      "appAsarSha256": "f55be05f0f011cd7aafad273a70a5b4d28215793a7b2f77dca38563ea85cb712",
+      "fileName": "NANO-POS-Patch-1.0.118-to-2.0.3-PRAYER-POPOVER.zip",
+      "sizeBytes": 31432878,
       "payloadType": "app-asar"
     }
   ],
