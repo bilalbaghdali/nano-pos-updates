@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.115",
+  "version": "1.0.116",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "وضع زر تغيير اللغة بين التنبيهات وزر اقتران الهاتف على نفس المستوى.",
-      "الحفاظ على عرض اللغة الحالية والقائمة المنسقة.",
-      "ضبط المحاذاة الأفقية مع عناصر شريط الأدوات على الكمبيوتر والهاتف.",
-      "الحفاظ على وظائف البرنامج وبياناته ولغة طباعة الفواتير المستقلة."
+      "تصغير شريط البحث العلوي لتوفير مساحة وتحسين وضوح الأدوات.",
+      "وضع اختيار اللغة بجانب زر الاتصال بالدعم على المستوى الأفقي نفسه.",
+      "تقليل أعمال تهيئة شريط الأدوات والفحوص المتكررة غير الضرورية.",
+      "الحفاظ على بيانات المتجر ووظائف البرنامج ولغة طباعة الفواتير المستقلة."
     ],
     "fr": [
-      "Placement du bouton de langue entre les notifications et l’association du téléphone, sur la même ligne.",
-      "Conservation de l’affichage de la langue active et du menu soigné.",
-      "Alignement horizontal dans la barre d’outils sur ordinateur et mobile.",
-      "Conservation des fonctions, des données et de la langue d’impression indépendante."
+      "Réduction de la barre de recherche supérieure pour libérer de l’espace.",
+      "Placement du choix de langue à côté du contact du support sur la même ligne.",
+      "Réduction des opérations répétées inutiles lors de l’initialisation de la barre d’outils.",
+      "Conservation des données, des fonctions et de la langue d’impression indépendante."
     ],
     "en": [
-      "Placed the language button between notifications and phone pairing on the same toolbar row.",
-      "Preserved the active-language display and refined menu.",
-      "Aligned the control horizontally with toolbar items on desktop and mobile.",
-      "Preserves app functionality, data, and the independent print-language setting."
+      "Reduced the top search bar to free up toolbar space.",
+      "Placed the language selector beside Contact Support on the same row.",
+      "Reduced unnecessary repeated toolbar initialization work.",
+      "Preserved store data, app functions, and the independent print language."
     ]
   },
   "releaseHistory": {
@@ -2011,32 +2011,56 @@
           "Preserves app functionality, data, and the independent print-language setting."
         ]
       }
+    },
+    "1.0.116": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "تصغير شريط البحث العلوي لتوفير مساحة وتحسين وضوح الأدوات.",
+          "وضع اختيار اللغة بجانب زر الاتصال بالدعم على المستوى الأفقي نفسه.",
+          "تقليل أعمال تهيئة شريط الأدوات والفحوص المتكررة غير الضرورية.",
+          "الحفاظ على بيانات المتجر ووظائف البرنامج ولغة طباعة الفواتير المستقلة."
+        ],
+        "fr": [
+          "Réduction de la barre de recherche supérieure pour libérer de l’espace.",
+          "Placement du choix de langue à côté du contact du support sur la même ligne.",
+          "Réduction des opérations répétées inutiles lors de l’initialisation de la barre d’outils.",
+          "Conservation des données, des fonctions et de la langue d’impression indépendante."
+        ],
+        "en": [
+          "Reduced the top search bar to free up toolbar space.",
+          "Placed the language selector beside Contact Support on the same row.",
+          "Reduced unnecessary repeated toolbar initialization work.",
+          "Preserved store data, app functions, and the independent print language."
+        ]
+      },
+      "label": "تحسينات عامة"
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v114-language-switch-polish",
+      "id": "nano-pos-v115-general-improvements",
       "fromVersions": [
-        "1.0.114"
+        "1.0.115"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.115/NANO-POS-Patch-1.0.114-to-1.0.115-LANGUAGE-SWITCH.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.115",
-      "sha256": "787accd6ca8decdb32f0e56a206d16523b1b502ce267cc3eeab31b2f2cb10b6b",
-      "appAsarSha256": "2cba5033edd27f77ebb8431ebc85ab27fe42eb031b3e570fa3136b6cdeacadfc",
-      "fileName": "NANO-POS-Patch-1.0.114-to-1.0.115-LANGUAGE-SWITCH.zip",
-      "sizeBytes": 31425174,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.116/NANO-POS-Patch-1.0.115-to-1.0.116-GENERAL-IMPROVEMENTS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.116",
+      "sha256": "38e928dbef7e2175f7c757cacd31c36fb11b62214495d2de8e2d93f96254e438",
+      "appAsarSha256": "5fabe9e9f29e07e58b41205bce849eb9dd11972406e019d840fe6aa27f9c4af9",
+      "fileName": "NANO-POS-Patch-1.0.115-to-1.0.116-GENERAL-IMPROVEMENTS.zip",
+      "sizeBytes": 31425829,
       "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.115/NANO-POS-Setup-1.0.115-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.115",
-    "sha256": "448b85d40ce4166a8e077d2928196bf05e6e384990851aec87e291b0ffd210b1",
-    "fileName": "NANO-POS-Setup-1.0.115-x64.exe"
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.116/NANO-POS-Setup-1.0.116-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.116",
+    "sha256": "43e840481b404c99814add51d3ff436cf7b4f2fc93f6f3fd5e228967285bda53",
+    "fileName": "NANO-POS-Setup-1.0.116-x64.exe"
   },
   "notes": {
-    "ar": "تحسين تناسق زر تغيير اللغة مع الواجهة وتوضيح اللغة الحالية. مثبت Windows x64 وتحديث داخلي.",
-    "fr": "Amélioration de l’intégration visuelle du bouton de langue et affichage de la langue active. Installateur Windows x64 et mise à jour intégrée.",
-    "en": "Polished language-switch styling and active-language display. Windows x64 installer and in-app patch."
+    "ar": "تحسينات عامة: شريط بحث أصغر، اختيار اللغة بجانب الاتصال بالدعم، وتقليل تهيئة عناصر الشريط المتكررة.",
+    "fr": "Améliorations générales : recherche plus compacte, langue à côté du support et moins d’initialisations répétées.",
+    "en": "General improvements: compact search, language beside support, and fewer repeated toolbar initializations."
   }
 }
