@@ -11,7 +11,7 @@ permissions:
   contents: write
 concurrency:
   group: nano-pos-toolbar-alignment-117
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   build-test-publish:
     runs-on: windows-latest
@@ -123,7 +123,7 @@ jobs:
           InstallDir "$LOCALAPPDATA\\Programs\\NANO POS"
           InstallDirRegKey HKCU "Software\\NANO POS" "InstallDir"
           RequestExecutionLevel user
-          SetCompressor /SOLID lzma
+          SetCompressor /SOLID zlib
           !define MUI_ABORTWARNING
           !insertmacro MUI_PAGE_WELCOME
           !insertmacro MUI_PAGE_DIRECTORY
