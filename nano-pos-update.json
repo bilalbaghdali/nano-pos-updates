@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "عرض مواقيت الصلاة اليومية في بطاقة واضحة داخل البرنامج.",
+      "لوحة جانبية قابلة للفتح والإغلاق لمواقيت الصلاة، لا تظهر فوق واجهة البرنامج عند الإغلاق.",
       "زر لاختيار المدينة والدولة وحفظ الموقع المختار.",
       "تنبيه مرئي قبل كل صلاة بعشر دقائق، مع تحديث المواقيت يوميًا.",
       "الإبقاء على ميزة نطق سعر المنتج السابقة."
     ],
     "fr": [
-      "Affichage des horaires de prière quotidiens dans une carte dédiée.",
+      "Panneau latéral repliable pour les horaires de prière, masqué lorsqu’il n’est pas utilisé.",
       "Bouton de sélection et mémorisation de la ville et du pays.",
       "Alerte visuelle dix minutes avant chaque prière et mise à jour quotidienne.",
       "Conservation de la lecture vocale du prix des produits."
     ],
     "en": [
-      "Displays daily prayer times in a dedicated in-app card.",
+      "Adds a collapsible side panel for prayer times, hidden when not in use.",
       "Choose and save the city and country with a location button.",
       "Visual alert ten minutes before each prayer; refreshes daily.",
       "Keeps the existing cart-price speech feature."
@@ -2169,6 +2169,29 @@
           "Keeps the existing cart-price speech feature."
         ]
       }
+    },
+    "2.0.4": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "لوحة جانبية قابلة للفتح والإغلاق لمواقيت الصلاة، لا تظهر فوق واجهة البرنامج عند الإغلاق.",
+          "زر لاختيار المدينة والدولة وحفظ الموقع المختار.",
+          "تنبيه مرئي قبل كل صلاة بعشر دقائق، مع تحديث المواقيت يوميًا.",
+          "الإبقاء على ميزة نطق سعر المنتج السابقة."
+        ],
+        "fr": [
+          "Panneau latéral repliable pour les horaires de prière, masqué lorsqu’il n’est pas utilisé.",
+          "Bouton de sélection et mémorisation de la ville et du pays.",
+          "Alerte visuelle dix minutes avant chaque prière et mise à jour quotidienne.",
+          "Conservation de la lecture vocale du prix des produits."
+        ],
+        "en": [
+          "Adds a collapsible side panel for prayer times, hidden when not in use.",
+          "Choose and save the city and country with a location button.",
+          "Visual alert ten minutes before each prayer; refreshes daily.",
+          "Keeps the existing cart-price speech feature."
+        ]
+      }
     }
   },
   "patches": [
@@ -2266,6 +2289,23 @@
       "appAsarSha256": "f55be05f0f011cd7aafad273a70a5b4d28215793a7b2f77dca38563ea85cb712",
       "fileName": "NANO-POS-Patch-1.0.118-to-2.0.3-PRAYER-POPOVER.zip",
       "sizeBytes": 31432878,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v118-prayer-sidebar-v204",
+      "fromVersions": [
+        "1.0.118",
+        "2.0.0",
+        "2.0.1",
+        "2.0.2",
+        "2.0.3"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.4/NANO-POS-Patch-1.0.118-to-2.0.4-PRAYER-SIDEBAR.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.4",
+      "sha256": "3fa85dc84c904a88fa4a9c460f43cc23c347e880c86d8ee1e0658f06db0d4ac8",
+      "appAsarSha256": "8e0084eb7c4f7bfc99b10e932c5b5f9da2d588f09c04b6c8aaa747bc9ab21e53",
+      "fileName": "NANO-POS-Patch-1.0.118-to-2.0.4-PRAYER-SIDEBAR.zip",
+      "sizeBytes": 31432918,
       "payloadType": "app-asar"
     }
   ],
