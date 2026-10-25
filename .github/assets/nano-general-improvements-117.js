@@ -10,7 +10,7 @@
     { code: 'fr', label: 'Français', short: 'FR' },
     { code: 'en', label: 'English', short: 'EN' }
   ];
-  let menu = null, trigger = null, wrapper = null;
+  let menu = null, trigger = null, wrapper = null, supportControl = null;
 
   const style = doc.createElement('style');
   style.id = 'nanoGeneralImprovements117Style';
