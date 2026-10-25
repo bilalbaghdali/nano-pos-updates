@@ -97,7 +97,7 @@ jobs:
           gh release view v2.0.11 -R bilalbaghdali/nano-pos-updates
           $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
           if($m.version -ne '2.0.11' -or !$m.published){throw 'Published manifest verification failed'}
-          if(!($m.patches | Where-Object {$_.id -eq 'nano-pos-v118-prayer-card-fix-v211'})){throw 'Published patch missing from manifest'}
+          if(!($m.patches | Where-Object {$_.id -eq 'nano-pos-v118-prayer-card-visibility-v211'})){throw 'Published patch missing from manifest'}
           $p=$m.patches[0]
-          if($p.id -ne 'nano-pos-v118-prayer-card-fix-v211' -or !($p.fromVersions -contains '2.0.8') -or !($p.fromVersions -contains '1.0.34')){throw 'Universal patch is not first or supported-version coverage is incomplete'}
+          if($p.id -ne 'nano-pos-v118-prayer-card-visibility-v211' -or !($p.fromVersions -contains '2.0.10') -or !($p.fromVersions -contains '1.0.34')){throw 'Universal patch is not first or supported-version coverage is incomplete'}
           Write-Host 'PASS: v2.0.11 release asset and automatic-update manifest are published.'
