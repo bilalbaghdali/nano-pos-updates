@@ -2386,10 +2386,10 @@
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.6/NANO-POS-Patch-1.0.118-to-2.0.6-PRAYER-HOME-CARD.zip",
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.6",
-      "sha256": "13e80f304099fbd6d4af91b4894c88567b431953034314d3dee3d76ee6237f9d",
-      "appAsarSha256": "0af7d9bf7bd5020ecf92b04d41e79a682e50414bfe31accf7fc422064e81e4a0",
+      "sha256": "928e4cfc9dbc886589e171d1bda715acf377a7cc422a74f0bfbebedc33fe7896",
+      "appAsarSha256": "b6e63d45c8dddb4dd904602db09dc709db9431df1da05c608c7861fd263b5a46",
       "fileName": "NANO-POS-Patch-1.0.118-to-2.0.6-PRAYER-HOME-CARD.zip",
-      "sizeBytes": 31434920,
+      "sizeBytes": 31434988,
       "payloadType": "app-asar"
     }
   ],
