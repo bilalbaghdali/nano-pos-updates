@@ -3,27 +3,27 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "عرض مواقيت الصلاة في المساحة الفارغة المقابلة لعبارة المدير العام في الشاشة الرئيسية دون تغطية الأيقونات، مع العد التنازلي للصلاة القادمة والتاريخين الميلادي والهجري.",
+      "إصلاح نهائي لظهور بطاقة مواقيت الصلاة في الشاشة الرئيسية حتى عند اختلاف بنية أو لغة ترويسة الحساب.",
       "اختيار المدينة والدولة وحفظ الموقع المختار.",
       "تنبيه مرئي قبل كل صلاة بعشر دقائق مع تحديث المواقيت يوميًا.",
       "الإبقاء على ميزة نطق سعر المنتج السابقة."
     ],
     "fr": [
-      "Horaires de prière dans l’espace libre en face du profil Directeur général sur l’accueil, sans masquer les icônes, avec compte à rebours et dates hégirienne et grégorienne.",
+      "Améliorations générales : horaires de prière sur l’accueil, compte à rebours, dates hégirienne et grégorienne et changement de région.",
       "Sélection et mémorisation de la ville et du pays.",
       "Alerte visuelle dix minutes avant chaque prière et mise à jour quotidienne.",
       "Conservation de la lecture vocale du prix des produits."
     ],
     "en": [
-      "Prayer times in the empty home-screen space opposite the General Manager profile, without covering icons, with next-prayer countdown and Hijri/Gregorian dates.",
-      "Choose and save the city and country.",
+      "General improvements: fix for reliably displaying the prayer-times card on the home dashboard, next-prayer countdown, Hijri/Gregorian dates and region selection.",
+      "Choose and save the city and country with a location button.",
       "Visual alert ten minutes before each prayer; refreshes daily.",
       "Keeps the existing cart-price speech feature."
     ]
@@ -2239,6 +2239,30 @@
         ]
       },
       "label": "تحسينات عامة"
+    },
+    "2.0.7": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "إصلاح نهائي لظهور بطاقة مواقيت الصلاة في الشاشة الرئيسية حتى عند اختلاف بنية أو لغة ترويسة الحساب.",
+          "اختيار المدينة والدولة وحفظ الموقع المختار.",
+          "تنبيه مرئي قبل كل صلاة بعشر دقائق مع تحديث المواقيت يوميًا.",
+          "الإبقاء على ميزة نطق سعر المنتج السابقة."
+        ],
+        "fr": [
+          "Améliorations générales : horaires de prière sur l’accueil, compte à rebours, dates hégirienne et grégorienne et changement de région.",
+          "Sélection et mémorisation de la ville et du pays.",
+          "Alerte visuelle dix minutes avant chaque prière et mise à jour quotidienne.",
+          "Conservation de la lecture vocale du prix des produits."
+        ],
+        "en": [
+          "General improvements: fix for reliably displaying the prayer-times card on the home dashboard, next-prayer countdown, Hijri/Gregorian dates and region selection.",
+          "Choose and save the city and country with a location button.",
+          "Visual alert ten minutes before each prayer; refreshes daily.",
+          "Keeps the existing cart-price speech feature."
+        ]
+      },
+      "label": "تحسينات عامة"
     }
   },
   "patches": [
@@ -2390,6 +2414,26 @@
       "appAsarSha256": "b6e63d45c8dddb4dd904602db09dc709db9431df1da05c608c7861fd263b5a46",
       "fileName": "NANO-POS-Patch-1.0.118-to-2.0.6-PRAYER-HOME-CARD.zip",
       "sizeBytes": 31434988,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v118-prayer-card-fix-v207",
+      "fromVersions": [
+        "1.0.118",
+        "2.0.0",
+        "2.0.1",
+        "2.0.2",
+        "2.0.3",
+        "2.0.4",
+        "2.0.5",
+        "2.0.6"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.7/NANO-POS-Patch-1.0.118-to-2.0.7-PRAYER-CARD-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.7",
+      "sha256": "25c9351cf8499594a0475c36ad465eed267fda9d7d8c61735f5a4b7f739f17e2",
+      "appAsarSha256": "fb4643132e371b2c46abaff2f38eace1f75516d83e2902e6ca6fb0999a0180fe",
+      "fileName": "NANO-POS-Patch-1.0.118-to-2.0.7-PRAYER-CARD-FIX.zip",
+      "sizeBytes": 31435070,
       "payloadType": "app-asar"
     }
   ],
