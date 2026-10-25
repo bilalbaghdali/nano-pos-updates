@@ -3,27 +3,27 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.117",
+  "version": "1.0.118",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "توسيع شريط البحث العلوي لتسهيل الوصول إلى البحث دون ازدحام الأدوات.",
-      "محاذاة زر اختيار اللغة مع ارتفاع وأسلوب الأزرار العلوية ووضعه بجانب الاتصال بالدعم.",
+      "الإبقاء على شريط البحث الموسع وإصلاح موضع زر اللغة في الشريط العلوي.",
+      "وضع زر اللغة بجانب التواصل مع الدعم في الشريط العلوي فقط وإزالة نسخته من الشريط الجانبي.",
       "تقليل أعمال تهيئة شريط الأدوات والفحوص المتكررة غير الضرورية.",
       "الحفاظ على بيانات المتجر ووظائف البرنامج ولغة طباعة الفواتير المستقلة."
     ],
     "fr": [
-      "Élargissement de la recherche supérieure pour faciliter l’accès sans encombrer la barre.",
-      "Alignement du sélecteur de langue sur la hauteur et le style des boutons voisins, près du support.",
+      "Conservation de la recherche élargie et correction de la position du sélecteur de langue.",
+      "Placement du sélecteur juste à côté du contact du support, uniquement dans la barre supérieure.",
       "Réduction des opérations répétées inutiles lors de l’initialisation de la barre d’outils.",
       "Conservation des données, des fonctions et de la langue d’impression indépendante."
     ],
     "en": [
-      "Widened the top search bar while keeping the toolbar organized.",
-      "Matched the language selector height and appearance to neighboring top buttons, beside Contact Support.",
+      "Kept the wider top search bar while correcting the language selector placement.",
+      "Placed the language selector immediately beside Contact Support in the top toolbar only.",
       "Reduced unnecessary repeated toolbar initialization work.",
       "Preserved store data, app functions, and the independent print language."
     ]
@@ -2059,6 +2059,30 @@
         ]
       },
       "label": "تحسينات عامة"
+    },
+    "1.0.118": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "الإبقاء على شريط البحث الموسع وإصلاح موضع زر اللغة في الشريط العلوي.",
+          "وضع زر اللغة بجانب التواصل مع الدعم في الشريط العلوي فقط وإزالة نسخته من الشريط الجانبي.",
+          "تقليل أعمال تهيئة شريط الأدوات والفحوص المتكررة غير الضرورية.",
+          "الحفاظ على بيانات المتجر ووظائف البرنامج ولغة طباعة الفواتير المستقلة."
+        ],
+        "fr": [
+          "Conservation de la recherche élargie et correction de la position du sélecteur de langue.",
+          "Placement du sélecteur juste à côté du contact du support, uniquement dans la barre supérieure.",
+          "Réduction des opérations répétées inutiles lors de l’initialisation de la barre d’outils.",
+          "Conservation des données, des fonctions et de la langue d’impression indépendante."
+        ],
+        "en": [
+          "Kept the wider top search bar while correcting the language selector placement.",
+          "Placed the language selector immediately beside Contact Support in the top toolbar only.",
+          "Reduced unnecessary repeated toolbar initialization work.",
+          "Preserved store data, app functions, and the independent print language."
+        ]
+      },
+      "label": "تحسينات عامة"
     }
   },
   "patches": [
@@ -2087,17 +2111,30 @@
       "fileName": "NANO-POS-Patch-1.0.116-to-1.0.117-TOOLBAR-ALIGNMENT.zip",
       "sizeBytes": 31426519,
       "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v117-support-alignment",
+      "fromVersions": [
+        "1.0.117"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.118/NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.118",
+      "sha256": "ac72c1be57d0c461d31f18df0a736a2f89ed6964d7ce52742c25efaaf1388d7d",
+      "appAsarSha256": "48552f35646194927d6765963110dbeb91d49bf19accfbd383371d74167e0a6a",
+      "fileName": "NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip",
+      "sizeBytes": 31426744,
+      "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.117/NANO-POS-Setup-1.0.117-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.117",
-    "sha256": "62699e0062107165b7bfe7f02ea0879ee25dda82d3520303e2deaac1041d9b4e",
-    "fileName": "NANO-POS-Setup-1.0.117-x64.exe"
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.118/NANO-POS-Setup-1.0.118-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.118",
+    "sha256": "216d7ca9a71f9bae879c860fcd86c2c2603fe38685338e4b232e197480d310a3",
+    "fileName": "NANO-POS-Setup-1.0.118-x64.exe"
   },
   "notes": {
-    "ar": "تحسينات عامة: شريط بحث أوسع، زر لغة منسق مع أزرار الشريط العلوي ومحاذٍ لزر الدعم، وتقليل التهيئة المتكررة.",
-    "fr": "Améliorations générales : recherche élargie, sélecteur de langue aligné sur la barre près du support, moins d’initialisations répétées.",
-    "en": "General improvements: wider search, a language selector aligned with toolbar buttons beside support, and fewer repeated initializations."
+    "ar": "إصلاح موضع زر اللغة بجانب التواصل مع الدعم في الشريط العلوي فقط وإزالة نسخته من الشريط الجانبي.",
+    "fr": "Correction du sélecteur de langue à côté du contact du support dans la barre supérieure, sans doublon dans le panneau latéral.",
+    "en": "Fixed language selector beside Contact Support in the top toolbar only; removed the sidebar copy and prevented duplicates."
   }
 }
