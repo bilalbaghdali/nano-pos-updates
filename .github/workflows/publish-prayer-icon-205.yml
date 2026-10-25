@@ -4,7 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/publish-prayer-sidebar-205.yml'
-      - '.github/scripts/build-prayer-sidebar-205.py'
+      - '.github/scripts/build-prayer-icon-205.py'
       - '.github/scripts/publish-manifest-205.py'
   workflow_dispatch:
 permissions:
@@ -48,7 +48,7 @@ jobs:
       - name: Build v2.0.5 and run syntax and archive checks
         run: |
           $ErrorActionPreference='Stop'
-          python .github/scripts/build-prayer-sidebar-205.py source/NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip NANO-POS-Patch-1.0.118-to-2.0.5-PRAYER-SIDEBAR.zip work
+          python .github/scripts/build-prayer-icon-205.py source/NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip NANO-POS-Patch-1.0.118-to-2.0.5-PRAYER-SIDEBAR.zip work
           if($LASTEXITCODE -ne 0){throw 'Patch builder failed'}
           node --check work/renderer.js
           if($LASTEXITCODE -ne 0){throw 'Renderer syntax check failed'}
