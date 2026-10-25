@@ -104,7 +104,7 @@ SPEECH = r"""
 PRAYER = r"""
 ;
 (function(){
- if(window.__nanoPrayerSidebarV207)return;window.__nanoPrayerSidebarV206=true;
+ if(window.__nanoPrayerSidebarV207)return;window.__nanoPrayerSidebarV207=true;
  var STORE='__nanoPrayerLocationV202',tab=null,panel=null,lastAlert='',minuteTimer=null,refreshTimer=null,busy=false,timings=null,fetchedDay='';
  var DEFAULT={city:'Algiers',country:'Algeria',method:'3'};
  function loadLocation(){try{return Object.assign({},DEFAULT,JSON.parse(localStorage.getItem(STORE)||'{}'));}catch(e){return DEFAULT;}}
