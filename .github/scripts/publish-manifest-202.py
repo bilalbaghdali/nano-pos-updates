@@ -10,7 +10,7 @@ features={
  'en':['Displays daily prayer times in a dedicated in-app card.','Choose and save the city and country with a location button.','Visual alert ten minutes before each prayer; refreshes daily.','Keeps the existing cart-price speech feature.']
 }
 fn=path.name
-entry={'id':'nano-pos-v118-prayer-times-v202','fromVersions':['1.0.118'],'directUrl':f'https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.2/{fn}','pageUrl':'https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.2','sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'appAsarSha256':hashlib.sha256(asar).hexdigest(),'fileName':fn,'sizeBytes':path.stat().st_size,'payloadType':'app-asar'}
+entry={'id':'nano-pos-v118-prayer-times-v202','fromVersions':['1.0.118','2.0.0','2.0.1'],'directUrl':f'https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.2/{fn}','pageUrl':'https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.2','sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'appAsarSha256':hashlib.sha256(asar).hexdigest(),'fileName':fn,'sizeBytes':path.stat().st_size,'payloadType':'app-asar'}
 data['version']='2.0.2'; data['releaseDate']=date; data['published']=True; data['mandatory']=False; data['importance']='normal'; data['features']=features
 data.setdefault('releaseHistory',{})['2.0.2']={'releaseDate':date,'features':features}
 data['patches']=[p for p in data.get('patches',[]) if p.get('id')!='nano-pos-v118-prayer-times-v202']+[entry]
