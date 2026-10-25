@@ -79,7 +79,10 @@ jobs:
           if($LASTEXITCODE -ne 0 -or !$currentSha){throw 'Could not read current manifest SHA'}
           $bytes=[System.IO.File]::ReadAllBytes((Resolve-Path 'nano-pos-update.json'))
           $content=[Convert]::ToBase64String($bytes)
-          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json -f message='Publish NANO POS 2.0.6 automatic update manifest' -f sha=$currentSha -f content=$content
+          $body=@{message='Publish NANO POS 2.0.6 automatic update manifest';sha=$currentSha;content=$content} | ConvertTo-Json -Compress
+          $bodyPath=Join-Path $env:RUNNER_TEMP 'manifest-publish.json'
+          [System.IO.File]::WriteAllText($bodyPath,$body,[System.Text.UTF8Encoding]::new($false))
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --input $bodyPath
           if($LASTEXITCODE -ne 0){throw 'GitHub Contents API manifest publication failed'}
       - name: Verify published release and manifest
         env:
