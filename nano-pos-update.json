@@ -1969,39 +1969,6 @@
   },
   "patches": [
     {
-      "id": "nano-pos-v112-safe-saves-and-full-exe",
-      "fromVersions": [
-        "1.0.91",
-        "1.0.92",
-        "1.0.93",
-        "1.0.94",
-        "1.0.95",
-        "1.0.96",
-        "1.0.97",
-        "1.0.98",
-        "1.0.99",
-        "1.0.100",
-        "1.0.101",
-        "1.0.102",
-        "1.0.103",
-        "1.0.104",
-        "1.0.105",
-        "1.0.106",
-        "1.0.107",
-        "1.0.108",
-        "1.0.109",
-        "1.0.110",
-        "1.0.111"
-      ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.112/NANO-POS-Patch-1.0.111-to-1.0.112-STABILITY.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.112",
-      "sha256": "b8811644f4f51548b2a03aafe93123c2434035ddedec3bc2004440adfdd646ee",
-      "appAsarSha256": "5cb8bb257734fc16980468c14f91b0d12a83f4ca45fa1dd5dcc0860fa1c8fee5",
-      "fileName": "NANO-POS-Patch-1.0.111-to-1.0.112-STABILITY.zip",
-      "sizeBytes": 31428599,
-      "payloadType": "app-asar"
-    },
-    {
       "id": "nano-pos-v113-global-language-switch",
       "fromVersions": [
         "1.0.112"
