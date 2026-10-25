@@ -102,8 +102,16 @@ jobs:
           git add nano-pos-update.json
           git commit -m 'Publish NANO POS 2.0.6 automatic update manifest'
           if($LASTEXITCODE -ne 0){throw 'Manifest commit failed'}
+          # Rebase again immediately before pushing; another workflow commit may have landed meanwhile.
+          git pull --rebase origin refs/heads/main
+          if($LASTEXITCODE -ne 0){throw 'Could not rebase manifest commit onto latest main'}
           git push origin HEAD:refs/heads/main
-          if($LASTEXITCODE -ne 0){throw 'Manifest push failed'}
+          if($LASTEXITCODE -ne 0){
+            git pull --rebase origin refs/heads/main
+            if($LASTEXITCODE -ne 0){throw 'Could not rebase after rejected manifest push'}
+            git push origin HEAD:refs/heads/main
+            if($LASTEXITCODE -ne 0){throw 'Manifest push failed after retry'}
+          }
       - name: Verify published release and manifest
         env:
           GH_TOKEN: ${{ github.token }}
