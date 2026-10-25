@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.113",
+  "version": "1.0.114",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إزالة زري مركز العمليات والمراجعة المالية من الواجهة الرئيسية.",
-      "استبدالهما بزر موحد لتغيير لغة واجهة البرنامج إلى العربية أو الفرنسية أو الإنجليزية.",
-      "حفظ لغة الواجهة المختارة باستخدام إعدادات البرنامج الأصلية، مع إبقاء لغة طباعة الفواتير مستقلة.",
-      "الحفاظ على البيع والمخزون والفواتير والديون والتفعيل والنسخ الاحتياطية دون تعديل بيانات المتجر."
+      "تحسين تصميم زر تغيير اللغة ليتناسق مع ألوان وأزرار الواجهة.",
+      "عرض اللغة الحالية مع أيقونة موحدة وقائمة اختيار مرتبة.",
+      "تحسين التناسق على شاشات الكمبيوتر والهاتف وإظهار اللغة المختارة بوضوح.",
+      "الحفاظ على وظائف البرنامج وبياناته ولغة طباعة الفواتير المستقلة."
     ],
     "fr": [
-      "Suppression des boutons Centre des opérations et Revue financière de l’accueil.",
-      "Remplacement par un bouton unique pour changer l’interface en arabe, français ou anglais.",
-      "Enregistrement de la langue choisie via les paramètres existants, sans modifier la langue d’impression.",
-      "Conservation des ventes, du stock, des factures, des dettes, de l’activation et des sauvegardes."
+      "Amélioration du bouton de langue pour mieux correspondre au style de l’interface.",
+      "Affichage de la langue active avec une icône cohérente et un menu soigné.",
+      "Meilleure adaptation aux écrans d’ordinateur et de téléphone.",
+      "Conservation des fonctions, des données et de la langue d’impression indépendante."
     ],
     "en": [
-      "Removed the Operations Center and Financial Review buttons from the main interface.",
-      "Replaced them with one global interface-language button for Arabic, French, and English.",
-      "Persists the selected interface language through existing settings; print language remains separate.",
-      "Preserves sales, inventory, invoices, debts, activation, backups, and store data."
+      "Refined the language button to better match the app interface and controls.",
+      "Shows the active language with a consistent icon and a cleaner selection menu.",
+      "Improved visual consistency on desktop and mobile screens.",
+      "Preserves app functionality, data, and the independent print-language setting."
     ]
   },
   "releaseHistory": {
@@ -1965,32 +1965,55 @@
           "Preserves sales, inventory, invoices, debts, activation, backups, and store data."
         ]
       }
+    },
+    "1.0.114": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "تحسين تصميم زر تغيير اللغة ليتناسق مع ألوان وأزرار الواجهة.",
+          "عرض اللغة الحالية مع أيقونة موحدة وقائمة اختيار مرتبة.",
+          "تحسين التناسق على شاشات الكمبيوتر والهاتف وإظهار اللغة المختارة بوضوح.",
+          "الحفاظ على وظائف البرنامج وبياناته ولغة طباعة الفواتير المستقلة."
+        ],
+        "fr": [
+          "Amélioration du bouton de langue pour mieux correspondre au style de l’interface.",
+          "Affichage de la langue active avec une icône cohérente et un menu soigné.",
+          "Meilleure adaptation aux écrans d’ordinateur et de téléphone.",
+          "Conservation des fonctions, des données et de la langue d’impression indépendante."
+        ],
+        "en": [
+          "Refined the language button to better match the app interface and controls.",
+          "Shows the active language with a consistent icon and a cleaner selection menu.",
+          "Improved visual consistency on desktop and mobile screens.",
+          "Preserves app functionality, data, and the independent print-language setting."
+        ]
+      }
     }
   },
   "patches": [
     {
-      "id": "nano-pos-v113-global-language-switch",
+      "id": "nano-pos-v114-language-switch-polish",
       "fromVersions": [
-        "1.0.112"
+        "1.0.113"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.113/NANO-POS-Patch-1.0.112-to-1.0.113-LANGUAGE-SWITCH.zip",
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.113",
-      "sha256": "fe45e1cde2c40c31a9c518c4548828699ec66697c32e29abd5027c83dcd51033",
-      "appAsarSha256": "e72db87477b444a0b740223f262c70099eebd76b4d45eb98eb214709d95eaa6b",
-      "fileName": "NANO-POS-Patch-1.0.112-to-1.0.113-LANGUAGE-SWITCH.zip",
-      "sizeBytes": 31423802,
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.114/NANO-POS-Patch-1.0.113-to-1.0.114-LANGUAGE-SWITCH.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.114",
+      "sha256": "baa9eb21482b91a9b1801b2320e35c0832cec2bad3ed5ba79d0a623780bfddc0",
+      "appAsarSha256": "34e747049c79f9d616f5ac97af7c90622bd95a8c36c56c3fcb857538117f247f",
+      "fileName": "NANO-POS-Patch-1.0.113-to-1.0.114-LANGUAGE-SWITCH.zip",
+      "sizeBytes": 31424713,
       "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.113/NANO-POS-Setup-1.0.113-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.113",
-    "sha256": "d78d96e3917039a5dd9d0d922913bc0670cb7a4fc550963199124930c9213f8a",
-    "fileName": "NANO-POS-Setup-1.0.113-x64.exe"
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.114/NANO-POS-Setup-1.0.114-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.114",
+    "sha256": "8f5d651cb495f4e65cbf86b56e02236e5b0ec740cdea86350401546beaa52d12",
+    "fileName": "NANO-POS-Setup-1.0.114-x64.exe"
   },
   "notes": {
-    "ar": "إزالة مركز العمليات والمراجعة المالية من الواجهة الرئيسية واستبدالهما بزر تغيير لغة البرنامج. Windows x64 EXE وتحديث داخلي.",
-    "fr": "Remplacement des raccourcis Centre des opérations et Revue financière par un bouton de langue. Installateur Windows x64 et mise à jour intégrée.",
-    "en": "Replaced the Operations Center and Financial Review shortcuts with a global language switch. Windows x64 installer and in-app patch."
+    "ar": "تحسين تناسق زر تغيير اللغة مع الواجهة وتوضيح اللغة الحالية. مثبت Windows x64 وتحديث داخلي.",
+    "fr": "Amélioration de l’intégration visuelle du bouton de langue et affichage de la langue active. Installateur Windows x64 et mise à jour intégrée.",
+    "en": "Polished language-switch styling and active-language display. Windows x64 installer and in-app patch."
   }
 }
