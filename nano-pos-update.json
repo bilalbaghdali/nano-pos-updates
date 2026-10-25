@@ -3,29 +3,29 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.112",
-  "releaseDate": "2026-10-22",
+  "version": "1.0.113",
+  "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "نسخة تثبيت Windows 64-bit كاملة بصيغة EXE مع أيقونة NANO POS والاحتفاظ ببيانات المتجر والتفعيل.",
-      "تحسين سلامة حفظ المنتجات والزبائن والموردين: تنبيه فوري ورفض تأكيد العملية عندما يتعذر حفظها.",
-      "عدم استهلاك رقم مراجعة البيانات عند فشل الكتابة واستعادة آخر حالة محفوظة.",
-      "حماية المبيعات الجزئية والكريدي وترقيم FA والفواتير والطباعة والمزامنة دون تغيير بنيتها."
+      "إزالة زري مركز العمليات والمراجعة المالية من الواجهة الرئيسية.",
+      "استبدالهما بزر موحد لتغيير لغة واجهة البرنامج إلى العربية أو الفرنسية أو الإنجليزية.",
+      "حفظ لغة الواجهة المختارة باستخدام إعدادات البرنامج الأصلية، مع إبقاء لغة طباعة الفواتير مستقلة.",
+      "الحفاظ على البيع والمخزون والفواتير والديون والتفعيل والنسخ الاحتياطية دون تعديل بيانات المتجر."
     ],
     "fr": [
-      "Installeur complet NANO POS Windows x64 EXE avec données et activation conservées.",
-      "Échec de sauvegarde des produits et clients signalé immédiatement, sans faux succès.",
-      "Conservation des versions des données en cas de panne d’écriture.",
-      "Ventes, crédit, numéro FA, impression et synchronisation préservés."
+      "Suppression des boutons Centre des opérations et Revue financière de l’accueil.",
+      "Remplacement par un bouton unique pour changer l’interface en arabe, français ou anglais.",
+      "Enregistrement de la langue choisie via les paramètres existants, sans modifier la langue d’impression.",
+      "Conservation des ventes, du stock, des factures, des dettes, de l’activation et des sauvegardes."
     ],
     "en": [
-      "Complete Windows x64 EXE installer preserving shop data and activation.",
-      "Fail closed on product/customer persistence errors with visible warning.",
-      "No revision increment for failed writes; restore last saved snapshot.",
-      "Maintain payments, FA invoice numbering, printing and sync."
+      "Removed the Operations Center and Financial Review buttons from the main interface.",
+      "Replaced them with one global interface-language button for Arabic, French, and English.",
+      "Persists the selected interface language through existing settings; print language remains separate.",
+      "Preserves sales, inventory, invoices, debts, activation, backups, and store data."
     ]
   },
   "releaseHistory": {
@@ -1942,6 +1942,29 @@
           "Maintain payments, FA invoice numbering, printing and sync."
         ]
       }
+    },
+    "1.0.113": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "إزالة زري مركز العمليات والمراجعة المالية من الواجهة الرئيسية.",
+          "استبدالهما بزر موحد لتغيير لغة واجهة البرنامج إلى العربية أو الفرنسية أو الإنجليزية.",
+          "حفظ لغة الواجهة المختارة باستخدام إعدادات البرنامج الأصلية، مع إبقاء لغة طباعة الفواتير مستقلة.",
+          "الحفاظ على البيع والمخزون والفواتير والديون والتفعيل والنسخ الاحتياطية دون تعديل بيانات المتجر."
+        ],
+        "fr": [
+          "Suppression des boutons Centre des opérations et Revue financière de l’accueil.",
+          "Remplacement par un bouton unique pour changer l’interface en arabe, français ou anglais.",
+          "Enregistrement de la langue choisie via les paramètres existants, sans modifier la langue d’impression.",
+          "Conservation des ventes, du stock, des factures, des dettes, de l’activation et des sauvegardes."
+        ],
+        "en": [
+          "Removed the Operations Center and Financial Review buttons from the main interface.",
+          "Replaced them with one global interface-language button for Arabic, French, and English.",
+          "Persists the selected interface language through existing settings; print language remains separate.",
+          "Preserves sales, inventory, invoices, debts, activation, backups, and store data."
+        ]
+      }
     }
   },
   "patches": [
@@ -1977,17 +2000,30 @@
       "fileName": "NANO-POS-Patch-1.0.111-to-1.0.112-STABILITY.zip",
       "sizeBytes": 31428599,
       "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v113-global-language-switch",
+      "fromVersions": [
+        "1.0.112"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.113/NANO-POS-Patch-1.0.112-to-1.0.113-LANGUAGE-SWITCH.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.113",
+      "sha256": "fe45e1cde2c40c31a9c518c4548828699ec66697c32e29abd5027c83dcd51033",
+      "appAsarSha256": "e72db87477b444a0b740223f262c70099eebd76b4d45eb98eb214709d95eaa6b",
+      "fileName": "NANO-POS-Patch-1.0.112-to-1.0.113-LANGUAGE-SWITCH.zip",
+      "sizeBytes": 31423802,
+      "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.112/NANO-POS-Setup-1.0.112-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.112",
-    "sha256": "bc240592b5fa3d8dfb14a9b50a5d7502b2ff844d3c3981c74ead76fbe43a4657",
-    "fileName": "NANO-POS-Setup-1.0.112-x64.exe"
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.113/NANO-POS-Setup-1.0.113-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.113",
+    "sha256": "d78d96e3917039a5dd9d0d922913bc0670cb7a4fc550963199124930c9213f8a",
+    "fileName": "NANO-POS-Setup-1.0.113-x64.exe"
   },
   "notes": {
-    "ar": "إصدار Windows x64 EXE مستقر، تحسين حماية الحفظ ومعلومات النسخ الاحتياطي.",
-    "fr": "Version complète EXE x64 et amélioration de la sécurité des sauvegardes.",
-    "en": "Stable full Windows x64 EXE release with fail-closed local storage."
+    "ar": "إزالة مركز العمليات والمراجعة المالية من الواجهة الرئيسية واستبدالهما بزر تغيير لغة البرنامج. Windows x64 EXE وتحديث داخلي.",
+    "fr": "Remplacement des raccourcis Centre des opérations et Revue financière par un bouton de langue. Installateur Windows x64 et mise à jour intégrée.",
+    "en": "Replaced the Operations Center and Financial Review shortcuts with a global language switch. Windows x64 installer and in-app patch."
   }
 }
