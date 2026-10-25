@@ -1,0 +1,16 @@
+name: Stop superseded NANO POS v1.0.117 build
+on:
+  push:
+    paths:
+      - '.github/workflows/cancel-stale-toolbar-117.yml'
+permissions:
+  actions: write
+concurrency:
+  group: nano-pos-toolbar-alignment-117
+  cancel-in-progress: true
+jobs:
+  cancel-stale-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark older build as superseded
+        run: echo "Superseding the first v1.0.117 build so the corrected language-toolbar state can be released."
