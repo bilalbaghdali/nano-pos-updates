@@ -1,6 +1,6 @@
 import json,hashlib,zipfile,datetime
 from pathlib import Path
-path=Path('NANO-POS-Patch-1.0.118-to-2.0.2-GENERAL-IMPROVEMENTS.zip')
+path=Path('NANO-POS-Patch-1.0.118-to-2.0.2-PRAYER-TIMES.zip')
 with zipfile.ZipFile(path) as z: asar=z.read('payload/app.asar')
 data=json.loads(Path('nano-pos-update.json').read_text(encoding='utf-8'))
 date=datetime.date.today().isoformat()
