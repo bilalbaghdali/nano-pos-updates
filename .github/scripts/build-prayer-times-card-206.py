@@ -197,13 +197,15 @@ PRAYER = r"""
     if(r.width>=720&&r.height>=38&&r.height<=220&&(st.display==='flex'||st.display==='grid'||/header|topbar|top-bar|navbar|welcome|user-info|profile/i.test(String(p.className||'')+' '+String(p.id||'')))){row=p;break;}
    }
   }
-  if(row&&profile&&!row.contains(homeCard)){
+  if(row&&profile){
    var c=theme();css(homeCard,'position:relative;display:block;flex:0 1 440px;width:min(440px,48%);max-width:48%;min-width:280px;box-sizing:border-box;margin:4px 12px;padding:10px 12px;border:1px solid '+c.border+';border-radius:12px;background:'+c.surface+';color:'+c.text+';box-shadow:0 3px 12px #0002;z-index:1;font:12px/1.45 system-ui,sans-serif;');
    var btn=homeCard.querySelector('#__nphLoc');btn.style.cssText='border:1px solid '+c.border+';background:transparent;color:inherit;border-radius:8px;padding:4px 7px;cursor:pointer;font:600 11px system-ui';
    if(homeCard.parentElement!==row)row.insertBefore(homeCard,profile);
    if(getComputedStyle(row).display!=='flex'&&getComputedStyle(row).display!=='grid'){row.style.display='flex';row.style.alignItems='center';row.style.justifyContent='space-between';row.style.flexWrap='wrap';}
    row.style.gap=row.style.gap||'10px';
-   homeCard.style.order='-1';
+   /* Keep the card in the same header row and place it on the physical side opposite the manager profile. */
+   var rr=row.getBoundingClientRect(),pr=profile.getBoundingClientRect();
+   homeCard.style.order=(pr.left+pr.width/2>rr.left+rr.width/2)?'-1':'1';
   }else{
    var welcome=Array.from(document.querySelectorAll('h1,h2,h3,h4,p,span,strong,div')).filter(function(e){var x=(e.innerText||e.textContent||'').trim();return x.length<100&&/(مرحبا|مرحباً|مرحبًا|welcome|bonjour|bienvenue)/i.test(x)&&e.getBoundingClientRect().width>0;});
    welcome.sort(function(x,y){return (x.innerText||x.textContent||'').length-(y.innerText||y.textContent||'').length;});
