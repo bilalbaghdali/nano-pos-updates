@@ -54,13 +54,17 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Language switch JavaScript syntax check failed'}
           python -c "import json,struct,zipfile; z=zipfile.ZipFile('NANO-POS-Patch-1.0.112-to-1.0.113-LANGUAGE-SWITCH.zip'); assert z.namelist()==['payload/app.asar']; b=z.read('payload/app.asar'); magic,block,hs,n=struct.unpack_from('<4I',b); assert magic==4 and block==hs+4; f=json.loads(b[16:16+n])['files']; assert 'nano-operations-center.js' not in f and 'nano-financial-review.js' not in f; assert 'nano-language-switch-113.js' in f; d=8+block; e=f['package.json']; p=json.loads(b[d+int(e['offset']):d+int(e['offset'])+e['size']]); assert p['version']=='1.0.113'; e=f['index.html']; h=b[d+int(e['offset']):d+int(e['offset'])+e['size']].decode(); assert 'nano-language-switch-113.js' in h and 'nano-operations-center.js' not in h and 'nano-financial-review.js' not in h; print('PASS: v1.0.113 UI patch and package integrity')"
           if($LASTEXITCODE -ne 0){throw 'Final ASAR audit failed'}
-      - name: Generate Windows application icon
+      - name: Reuse verified NANO POS v1.0.112 icon
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
-          python -m pip install --disable-pip-version-check pillow cairosvg
-          if($LASTEXITCODE -ne 0){throw 'Icon dependencies failed'}
-          python -c "import cairosvg; from PIL import Image; cairosvg.svg2png(url='.github/assets/nano-pos-store-icon.svg',write_to='icon-build/NANO-POS-Icon.png',output_width=1024,output_height=1024); im=Image.open('icon-build/NANO-POS-Icon.png').convert('RGBA'); im.save('icon-build/NANO-POS-Icon.ico',sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)]); assert Image.open('icon-build/NANO-POS-Icon.ico').size==(256,256)"
-          if($LASTEXITCODE -ne 0){throw 'Icon generation failed'}
+          gh run download 39781598059 -R bilalbaghdali/nano-pos-updates --name nano-pos-112-tested-release-assets --dir prior-artifact
+          if($LASTEXITCODE -ne 0){throw 'Cannot download previously verified product icon'}
+          $source='prior-artifact\icon-build\NANO-POS-Icon.ico'
+          if(!(Test-Path $source)){throw 'Verified NANO POS icon missing from prior artifact'}
+          Copy-Item $source 'icon-build\NANO-POS-Icon.ico' -Force
+          if((Get-Item 'icon-build\NANO-POS-Icon.ico').Length -lt 1000){throw 'Icon file is invalid'}
       - name: Package Electron Windows x64 runtime
         run: |
           $ErrorActionPreference='Stop'
