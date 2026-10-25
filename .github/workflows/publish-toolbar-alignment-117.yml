@@ -10,7 +10,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: nano-pos-toolbar-alignment-117
+  group: nano-pos-toolbar-alignment-117-fast
   cancel-in-progress: true
 jobs:
   build-test-publish:
