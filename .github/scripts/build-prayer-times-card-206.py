@@ -180,12 +180,12 @@ PRAYER = r"""
   if(homeCard&&homeCard.isConnected)return;
   var a=Array.from(document.querySelectorAll('h1,h2,h3,h4,p,span,strong,div')).filter(function(e){var x=(e.innerText||e.textContent||'').trim();return x.length<100&&/(مرحبا|مرحباً|مرحبًا|welcome|bonjour|bienvenue)/i.test(x)&&e.getBoundingClientRect().width>0;});
   a.sort(function(x,y){return (x.innerText||x.textContent||'').length-(y.innerText||y.textContent||'').length;});if(!a.length)return;
-  var hero=a[0];for(var i=0;i<7&&hero.parentElement;i++){var r=hero.getBoundingClientRect();if(r.width>850&&r.height>280)break;hero=hero.parentElement;}
-  if(getComputedStyle(hero).position==='static')hero.style.position='relative';
+  var hero=a[0];
+  /* Keep the card in normal document flow beside the welcome area; never overlay dashboard icons. */
   homeCard=document.createElement('section');homeCard.id='__nanoPrayerHomeCard';
   homeCard.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong id="__nphTitle"></strong><button id="__nphLoc" type="button"></button></div><div id="__nphDates" style="font-size:11px;margin-top:5px"></div><div id="__nphNext" style="margin-top:7px;padding:7px;border-radius:8px;font-weight:800"></div><div id="__nphRows" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:7px"></div>';
-  var c=theme();css(homeCard,'position:absolute;left:14%;top:8%;width:52%;max-width:560px;box-sizing:border-box;padding:13px 15px;border:1px solid '+c.border+';border-radius:13px;background:'+c.surface+';color:'+c.text+';box-shadow:0 5px 18px #0002;z-index:2;font:12px/1.5 system-ui,sans-serif;');
-  css(homeCard.querySelector('#__nphNext'),'background:'+c.primary+';color:#fff;');var btn=homeCard.querySelector('#__nphLoc');btn.style.cssText='border:1px solid '+c.border+';background:transparent;color:inherit;border-radius:8px;padding:4px 7px;cursor:pointer;font:600 11px system-ui';btn.addEventListener('click',chooseLocation);hero.appendChild(homeCard);renderHome();
+  var c=theme();css(homeCard,'position:relative;display:block;float:none;clear:both;margin:12px 0 8px;inset:auto;width:min(100%,560px);max-width:100%;box-sizing:border-box;padding:13px 15px;border:1px solid '+c.border+';border-radius:13px;background:'+c.surface+';color:'+c.text+';box-shadow:0 5px 18px #0002;z-index:1;font:12px/1.5 system-ui,sans-serif;');
+  css(homeCard.querySelector('#__nphNext'),'background:'+c.primary+';color:#fff;');var btn=homeCard.querySelector('#__nphLoc');btn.style.cssText='border:1px solid '+c.border+';background:transparent;color:inherit;border-radius:8px;padding:4px 7px;cursor:pointer;font:600 11px system-ui';btn.addEventListener('click',chooseLocation);hero.insertAdjacentElement('afterend',homeCard);renderHome();
  }
  function renderHome(){
   if(!homeCard||!homeCard.isConnected)return;var c=theme(),l=lang(),now=new Date(),next=null;homeCard.dir=l==='ar'?'rtl':'ltr';
