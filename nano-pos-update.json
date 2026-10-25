@@ -3,27 +3,27 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "1.0.116",
+  "version": "1.0.117",
   "releaseDate": "2026-10-25",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تصغير شريط البحث العلوي لتوفير مساحة وتحسين وضوح الأدوات.",
-      "وضع اختيار اللغة بجانب زر الاتصال بالدعم على المستوى الأفقي نفسه.",
+      "توسيع شريط البحث العلوي لتسهيل الوصول إلى البحث دون ازدحام الأدوات.",
+      "محاذاة زر اختيار اللغة مع ارتفاع وأسلوب الأزرار العلوية ووضعه بجانب الاتصال بالدعم.",
       "تقليل أعمال تهيئة شريط الأدوات والفحوص المتكررة غير الضرورية.",
       "الحفاظ على بيانات المتجر ووظائف البرنامج ولغة طباعة الفواتير المستقلة."
     ],
     "fr": [
-      "Réduction de la barre de recherche supérieure pour libérer de l’espace.",
-      "Placement du choix de langue à côté du contact du support sur la même ligne.",
+      "Élargissement de la recherche supérieure pour faciliter l’accès sans encombrer la barre.",
+      "Alignement du sélecteur de langue sur la hauteur et le style des boutons voisins, près du support.",
       "Réduction des opérations répétées inutiles lors de l’initialisation de la barre d’outils.",
       "Conservation des données, des fonctions et de la langue d’impression indépendante."
     ],
     "en": [
-      "Reduced the top search bar to free up toolbar space.",
-      "Placed the language selector beside Contact Support on the same row.",
+      "Widened the top search bar while keeping the toolbar organized.",
+      "Matched the language selector height and appearance to neighboring top buttons, beside Contact Support.",
       "Reduced unnecessary repeated toolbar initialization work.",
       "Preserved store data, app functions, and the independent print language."
     ]
@@ -2035,6 +2035,30 @@
         ]
       },
       "label": "تحسينات عامة"
+    },
+    "1.0.117": {
+      "releaseDate": "2026-10-25",
+      "features": {
+        "ar": [
+          "توسيع شريط البحث العلوي لتسهيل الوصول إلى البحث دون ازدحام الأدوات.",
+          "محاذاة زر اختيار اللغة مع ارتفاع وأسلوب الأزرار العلوية ووضعه بجانب الاتصال بالدعم.",
+          "تقليل أعمال تهيئة شريط الأدوات والفحوص المتكررة غير الضرورية.",
+          "الحفاظ على بيانات المتجر ووظائف البرنامج ولغة طباعة الفواتير المستقلة."
+        ],
+        "fr": [
+          "Élargissement de la recherche supérieure pour faciliter l’accès sans encombrer la barre.",
+          "Alignement du sélecteur de langue sur la hauteur et le style des boutons voisins, près du support.",
+          "Réduction des opérations répétées inutiles lors de l’initialisation de la barre d’outils.",
+          "Conservation des données, des fonctions et de la langue d’impression indépendante."
+        ],
+        "en": [
+          "Widened the top search bar while keeping the toolbar organized.",
+          "Matched the language selector height and appearance to neighboring top buttons, beside Contact Support.",
+          "Reduced unnecessary repeated toolbar initialization work.",
+          "Preserved store data, app functions, and the independent print language."
+        ]
+      },
+      "label": "تحسينات عامة"
     }
   },
   "patches": [
@@ -2050,17 +2074,30 @@
       "fileName": "NANO-POS-Patch-1.0.115-to-1.0.116-GENERAL-IMPROVEMENTS.zip",
       "sizeBytes": 31425829,
       "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v116-toolbar-alignment",
+      "fromVersions": [
+        "1.0.116"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.117/NANO-POS-Patch-1.0.116-to-1.0.117-TOOLBAR-ALIGNMENT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.117",
+      "sha256": "4b62b2215fed9f966467311e9a9e7800cf0435b97ec42960f2a98093e457cdda",
+      "appAsarSha256": "8fe5e8d69d975d9fedd262da7d152b46b0bda0774a48e47ba345e5411fbe2e5d",
+      "fileName": "NANO-POS-Patch-1.0.116-to-1.0.117-TOOLBAR-ALIGNMENT.zip",
+      "sizeBytes": 31426519,
+      "payloadType": "app-asar"
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.116/NANO-POS-Setup-1.0.116-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.116",
-    "sha256": "43e840481b404c99814add51d3ff436cf7b4f2fc93f6f3fd5e228967285bda53",
-    "fileName": "NANO-POS-Setup-1.0.116-x64.exe"
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.117/NANO-POS-Setup-1.0.117-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.117",
+    "sha256": "62699e0062107165b7bfe7f02ea0879ee25dda82d3520303e2deaac1041d9b4e",
+    "fileName": "NANO-POS-Setup-1.0.117-x64.exe"
   },
   "notes": {
-    "ar": "تحسينات عامة: شريط بحث أصغر، اختيار اللغة بجانب الاتصال بالدعم، وتقليل تهيئة عناصر الشريط المتكررة.",
-    "fr": "Améliorations générales : recherche plus compacte, langue à côté du support et moins d’initialisations répétées.",
-    "en": "General improvements: compact search, language beside support, and fewer repeated toolbar initializations."
+    "ar": "تحسينات عامة: شريط بحث أوسع، زر لغة منسق مع أزرار الشريط العلوي ومحاذٍ لزر الدعم، وتقليل التهيئة المتكررة.",
+    "fr": "Améliorations générales : recherche élargie, sélecteur de langue aligné sur la barre près du support, moins d’initialisations répétées.",
+    "en": "General improvements: wider search, a language selector aligned with toolbar buttons beside support, and fewer repeated initializations."
   }
 }
