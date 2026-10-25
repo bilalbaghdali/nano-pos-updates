@@ -71,14 +71,18 @@ jobs:
       - name: Publish v2.0.6 manifest only after release asset exists
         run: |
           $ErrorActionPreference='Stop'
-          python .github/scripts/publish-manifest-206.py
-          if($LASTEXITCODE -ne 0){throw 'Manifest generation failed'}
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Sync the branch before generating JSON so the manifest is based on the latest revision.
+          git pull --rebase origin main
+          if($LASTEXITCODE -ne 0){throw 'Could not sync main before manifest generation'}
+          python .github/scripts/publish-manifest-206.py
+          if($LASTEXITCODE -ne 0){throw 'Manifest generation failed'}
           git add nano-pos-update.json
           git commit -m 'Publish NANO POS 2.0.6 automatic update manifest'
-          git pull --rebase origin main
-          git push
+          if($LASTEXITCODE -ne 0){throw 'Manifest commit failed'}
+          git push origin HEAD:main
+          if($LASTEXITCODE -ne 0){throw 'Manifest push failed'}
       - name: Verify published release and manifest
         env:
           GH_TOKEN: ${{ github.token }}
