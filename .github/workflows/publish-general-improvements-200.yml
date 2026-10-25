@@ -1,0 +1,102 @@
+name: NANO POS v2.0.0 — General Improvements (build and publish without manual ZIP upload)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-general-improvements-200.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-v2.0.0
+  cancel-in-progress: false
+jobs:
+  build-test-publish:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify stable v1.0.118 base and avoid duplicate release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $manifest=Get-Content nano-pos-update.json -Raw | ConvertFrom-Json
+          if($manifest.version -ne '1.0.118' -or !$manifest.published){throw 'Expected current published stable v1.0.118'}
+          gh release view v2.0.0 -R bilalbaghdali/nano-pos-updates *> $null
+          if($LASTEXITCODE -eq 0){throw 'Release v2.0.0 already exists; refusing to overwrite'}
+          New-Item -ItemType Directory -Force -Path source,work | Out-Null
+          $baseName='NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip'
+          gh release download v1.0.118 -R bilalbaghdali/nano-pos-updates --pattern $baseName --dir source
+          if($LASTEXITCODE -ne 0){throw 'Could not download official v1.0.118 base patch'}
+          $base="source\\$baseName"
+          $expected=$manifest.patches | Where-Object { $_.fromVersions -contains '1.0.117' -and $_.appAsarSha256 -eq '48552f35646194927d6765963110dbeb91d49bf19accfbd383371d74167e0a6a' } | Select-Object -First 1
+          if(!$expected){throw 'Manifest does not identify the expected official base patch'}
+          if((Get-FileHash $base -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected.sha256){throw 'Base ZIP SHA256 mismatch'}
+          python -c "import zipfile,hashlib; z=zipfile.ZipFile(r'$base'); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='$($expected.appAsarSha256)'"
+          if($LASTEXITCODE -ne 0){throw 'Base ASAR integrity check failed'}
+      - name: Build v2.0.0 and run syntax and archive checks
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/build-general-improvements-200.py source/NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip NANO-POS-Patch-1.0.118-to-2.0.0-GENERAL-IMPROVEMENTS.zip work
+          if($LASTEXITCODE -ne 0){throw 'Patch builder failed'}
+          node --check work/renderer.js
+          if($LASTEXITCODE -ne 0){throw 'Renderer syntax check failed'}
+          python -c "import zipfile,struct,json; z=zipfile.ZipFile('NANO-POS-Patch-1.0.118-to-2.0.0-GENERAL-IMPROVEMENTS.zip'); assert z.namelist()==['payload/app.asar']; b=z.read('payload/app.asar'); m,bl,hs,n=struct.unpack_from('<4I',b); f=json.loads(b[16:16+n])['files']; d=8+bl; e=f['package.json']; p=json.loads(b[d+int(e['offset']):d+int(e['offset'])+e['size']]); assert p['version']=='2.0.0'; e=f['renderer.js']; s=b[d+int(e['offset']):d+int(e['offset'])+e['size']].decode(); assert '__nanoCartSpeechV200' in s and 'speechSynthesis.speak' in s and 'currentUser is not defined' not in s; print('PASS v2.0.0 package, localized cart notice/speech and ASAR structure')"
+          if($LASTEXITCODE -ne 0){throw 'Final ASAR audit failed'}
+      - name: Create release and upload generated patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release create v2.0.0 NANO-POS-Patch-1.0.118-to-2.0.0-GENERAL-IMPROVEMENTS.zip -R bilalbaghdali/nano-pos-updates --target $env:GITHUB_SHA --title 'NANO POS v2.0.0 — تحسينات عامة' --notes 'تحسينات عامة: إشعار مرئي عند إضافة منتج إلى السلة، ونطق سعر المنتج بلغة واجهة البرنامج (العربية/الفرنسية/الإنجليزية). حزمة تحديث مبنية من الإصدار المستقر 1.0.118.'
+          if($LASTEXITCODE -ne 0){throw 'GitHub release creation or asset upload failed'}
+      - name: Publish v2.0.0 manifest only after release asset exists
+        run: |
+          $ErrorActionPreference='Stop'
+          python - <<'PY'
+          import json,hashlib,zipfile,datetime
+          from pathlib import Path
+          path=Path('NANO-POS-Patch-1.0.118-to-2.0.0-GENERAL-IMPROVEMENTS.zip')
+          with zipfile.ZipFile(path) as z: asar=z.read('payload/app.asar')
+          data=json.loads(Path('nano-pos-update.json').read_text(encoding='utf-8'))
+          date=datetime.date.today().isoformat()
+          features={
+            'ar':['إشعار مرئي عند إضافة منتج إلى السلة.','نطق سعر المنتج المضاف بلغة واجهة البرنامج: العربية أو الفرنسية أو الإنجليزية.','تحسينات عامة مع الحفاظ على بيانات المتجر.'],
+            'fr':['Notification visuelle lors de l’ajout d’un produit au panier.','Lecture vocale du prix dans la langue de l’interface : arabe, français ou anglais.','Améliorations générales sans modifier les données du magasin.'],
+            'en':['Visual notification when a product is added to the cart.','Speak the added product price in the interface language: Arabic, French, or English.','General improvements while preserving store data.']
+          }
+          fn=path.name
+          entry={'id':'nano-pos-v118-cart-price-speech-v200','fromVersions':['1.0.118'],'directUrl':f'https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.0/{fn}','pageUrl':'https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.0','sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'appAsarSha256':hashlib.sha256(asar).hexdigest(),'fileName':fn,'sizeBytes':path.stat().st_size,'payloadType':'app-asar'}
+          data['version']='2.0.0'; data['releaseDate']=date; data['published']=True; data['mandatory']=False; data['importance']='normal'; data['features']=features
+          data.setdefault('releaseHistory',{})['2.0.0']={'releaseDate':date,'features':features}
+          data['patches']=[p for p in data.get('patches',[]) if p.get('id')!='nano-pos-v118-cart-price-speech-v200']+[entry]
+          Path('nano-pos-update.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('Manifest prepared with verified patch hashes.')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nano-pos-update.json
+          git commit -m 'Publish NANO POS 2.0.0 automatic update manifest'
+          git push
+      - name: Verify published release and manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release view v2.0.0 -R bilalbaghdali/nano-pos-updates
+          $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
+          if($m.version -ne '2.0.0' -or !$m.published){throw 'Published manifest verification failed'}
+          if(!($m.patches | Where-Object {$_.id -eq 'nano-pos-v118-cart-price-speech-v200'})){throw 'Published patch missing from manifest'}
+          Write-Host 'PASS: v2.0.0 release asset and automatic-update manifest are published.'
