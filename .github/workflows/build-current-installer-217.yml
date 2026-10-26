@@ -1,0 +1,205 @@
+name: NANO POS v2.0.17 — Current Release Windows x64 Installer
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-current-installer-217.yml'
+      - '.github/scripts/package-current-installer-217.py'
+      - '.github/CURRENT-RELEASE-INSTALLER-2.0.17.md'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-reference-installer-v2.0.17
+  cancel-in-progress: false
+jobs:
+  build-test-publish-installer:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download official v2.0.17 release patch and verify SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path source,extracted | Out-Null
+          $patch='NANO-POS-Patch-1.0.118-to-2.0.17-STATISTICS-CHARTS-AUTOMATIC.zip'
+          gh release download v2.0.17 -R bilalbaghdali/nano-pos-updates --pattern $patch --dir source
+          if($LASTEXITCODE -ne 0){throw 'Could not download v2.0.17 release patch'}
+          python .github/scripts/package-current-installer-217.py "source\$patch" "extracted\app.asar" extracted
+          if($LASTEXITCODE -ne 0){throw 'Release patch or ASAR integrity check failed'}
+      - name: Syntax-check the current-release app and inspect package identity
+        run: |
+          $ErrorActionPreference='Stop'
+          node --check extracted/renderer.js
+          if($LASTEXITCODE -ne 0){throw 'v2.0.17 renderer syntax check failed'}
+          if(Test-Path extracted/electron-main.cjs){
+            node --check extracted/electron-main.cjs
+            if($LASTEXITCODE -ne 0){throw 'v2.0.17 Electron main syntax check failed'}
+          }
+          Write-Host 'PASS: v2.0.17 app files and syntax validated.'
+      - name: Create official multi-size NANO POS icon
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path icon-build,icon-render | Out-Null
+          Push-Location icon-render
+          npm init -y | Out-Null
+          npm install --no-audit --no-fund --save-exact @resvg/resvg-js@2.6.2
+          if($LASTEXITCODE -ne 0){Pop-Location;throw 'Windows-compatible SVG renderer install failed'}
+          @'
+          const fs=require('node:fs');
+          const path=require('node:path');
+          const {Resvg}=require('@resvg/resvg-js');
+          const svg=fs.readFileSync(path.resolve('../.github/assets/nano-pos-store-icon.svg'),'utf8');
+          const png=new Resvg(svg,{fitTo:{mode:'width',value:1024}}).render().asPng();
+          fs.writeFileSync(path.resolve('../icon-build/NANO-POS-Icon.png'),png);
+          '@ | Set-Content render-icon.cjs -Encoding utf8
+          node render-icon.cjs
+          if($LASTEXITCODE -ne 0){Pop-Location;throw 'PNG icon rendering failed'}
+          Pop-Location
+          python -m pip install --disable-pip-version-check pillow
+          if($LASTEXITCODE -ne 0){throw 'Pillow install failed'}
+          python -c "from PIL import Image; i=Image.open('icon-build/NANO-POS-Icon.png').convert('RGBA'); i.save('icon-build/NANO-POS-Icon.ico',sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)]); assert Image.open('icon-build/NANO-POS-Icon.ico').size==(256,256)"
+          if($LASTEXITCODE -ne 0){throw 'ICO icon verification failed'}
+      - name: Package verified v2.0.17 ASAR into Electron Windows x64 runtime
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path runtime-fetch,electron-app | Out-Null
+          Push-Location runtime-fetch
+          npm init -y | Out-Null
+          npm install --no-audit --no-fund --save-exact electron@38.0.0
+          if($LASTEXITCODE -ne 0){Pop-Location;throw 'Electron Windows x64 runtime download failed'}
+          Pop-Location
+          $runtime='runtime-fetch\node_modules\electron\dist'
+          if(!(Test-Path "$runtime\electron.exe")){throw 'Electron executable missing'}
+          Copy-Item -Path "$runtime\*" -Destination 'electron-app' -Recurse -Force
+          if(!(Test-Path 'electron-app\electron.exe')){throw 'Electron runtime packaging failed'}
+          Rename-Item 'electron-app\electron.exe' 'NANO POS.exe'
+          New-Item -ItemType Directory -Force -Path 'electron-app\resources' | Out-Null
+          Copy-Item 'extracted\app.asar' 'electron-app\resources\app.asar' -Force
+          Copy-Item 'icon-build\NANO-POS-Icon.ico' 'electron-app\NANO-POS-Icon.ico' -Force
+          $asarA=(Get-FileHash 'extracted\app.asar' -Algorithm SHA256).Hash
+          $asarB=(Get-FileHash 'electron-app\resources\app.asar' -Algorithm SHA256).Hash
+          if($asarA -ne $asarB){throw 'Reference ASAR changed during runtime packaging'}
+      - name: Embed version 2.0.17 and product icon into executable
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path tools-rcedit | Out-Null
+          Push-Location tools-rcedit
+          npm init -y | Out-Null
+          npm install --no-audit --no-fund --save-exact rcedit
+          if($LASTEXITCODE -ne 0){Pop-Location;throw 'Executable metadata tool install failed'}
+          @'
+          const path=require('node:path');
+          const rcedit=require('rcedit').rcedit;
+          const exe=path.resolve('../electron-app/NANO POS.exe');
+          const icon=path.resolve('../icon-build/NANO-POS-Icon.ico');
+          (async()=>{await rcedit(exe,{icon,
+            'file-version':'2.0.17','product-version':'2.0.17',
+            'version-string':{'ProductName':'NANO POS',
+              'FileDescription':'NANO POS 2.0.17',
+              'CompanyName':'NANO POS'}})
+          })().catch(e=>{console.error(e);process.exit(1)});
+          '@ | Set-Content embed-icon.cjs -Encoding utf8
+          node embed-icon.cjs
+          if($LASTEXITCODE -ne 0){Pop-Location;throw 'Could not embed product icon/version'}
+          Pop-Location
+          Add-Type -AssemblyName System.Drawing
+          $icon=[System.Drawing.Icon]::ExtractAssociatedIcon((Resolve-Path 'electron-app\NANO POS.exe').Path)
+          if($null -eq $icon){throw 'Executable has no readable icon'}
+          $icon.Dispose()
+      - name: Compile full Program Files Windows x64 installer
+        run: |
+          $ErrorActionPreference='Stop'
+          $nsis='C:\Program Files (x86)\NSIS\makensis.exe'
+          if(!(Test-Path $nsis)){
+            choco install nsis -y --no-progress
+            if(!(Test-Path $nsis)){throw 'NSIS compiler unavailable'}
+          }
+          @'
+          Unicode true
+          !include "MUI2.nsh"
+          !include "x64.nsh"
+          Name "NANO POS 2.0.17"
+          OutFile "NANO-POS-Setup-2.0.17-x64.exe"
+          Icon "icon-build\NANO-POS-Icon.ico"
+          UninstallIcon "icon-build\NANO-POS-Icon.ico"
+          InstallDir "$PROGRAMFILES64\NANO POS"
+          InstallDirRegKey HKLM "Software\NANO POS" "InstallDir"
+          RequestExecutionLevel admin
+          SetCompressor /SOLID lzma
+          !define MUI_ABORTWARNING
+          !define MUI_WELCOMEPAGE_TITLE "Welcome to NANO POS 2.0.17"
+          !define MUI_WELCOMEPAGE_TEXT "Install NANO POS 2.0.17, the current release. Your shop data, activation and backup folders are preserved."
+          !insertmacro MUI_PAGE_WELCOME
+          !insertmacro MUI_PAGE_DIRECTORY
+          !insertmacro MUI_PAGE_INSTFILES
+          !insertmacro MUI_PAGE_FINISH
+          !insertmacro MUI_UNPAGE_CONFIRM
+          !insertmacro MUI_UNPAGE_INSTFILES
+          !insertmacro MUI_LANGUAGE "English"
+          Section "Install" SecMain
+            SetShellVarContext all
+            SetOutPath "$INSTDIR"
+            File /r "electron-app\*"
+            WriteRegStr HKLM "Software\NANO POS" "InstallDir" "$INSTDIR"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "DisplayName" "NANO POS 2.0.17"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "DisplayVersion" "2.0.17"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "Publisher" "NANO POS"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "InstallLocation" "$INSTDIR"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "DisplayIcon" "$INSTDIR\NANO POS.exe"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS" "UninstallString" '"$INSTDIR\Uninstall.exe"'
+            WriteUninstaller "$INSTDIR\Uninstall.exe"
+            CreateDirectory "$SMPROGRAMS\NANO POS"
+            CreateShortCut "$SMPROGRAMS\NANO POS\NANO POS.lnk" "$INSTDIR\NANO POS.exe" "" "$INSTDIR\NANO-POS-Icon.ico" 0
+            CreateShortCut "$DESKTOP\NANO POS.lnk" "$INSTDIR\NANO POS.exe" "" "$INSTDIR\NANO-POS-Icon.ico" 0
+          SectionEnd
+          Section "Uninstall"
+            SetShellVarContext all
+            Delete "$DESKTOP\NANO POS.lnk"
+            Delete "$SMPROGRAMS\NANO POS\NANO POS.lnk"
+            RMDir "$SMPROGRAMS\NANO POS"
+            DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\NANO POS"
+            DeleteRegKey HKLM "Software\NANO POS"
+            RMDir /r "$INSTDIR"
+            ; Electron userData, database, activation and backups are outside $INSTDIR.
+          SectionEnd
+          '@ | Set-Content installer.nsi -Encoding utf8
+          & $nsis installer.nsi
+          if($LASTEXITCODE -ne 0){throw 'NSIS installer compilation failed'}
+          $exe='NANO-POS-Setup-2.0.17-x64.exe'
+          if(!(Test-Path $exe) -or (Get-Item $exe).Length -lt 50000000){throw 'Installer missing or too small'}
+          $bytes=[IO.File]::ReadAllBytes((Resolve-Path $exe).Path)[0..1]
+          if($bytes[0] -ne 77 -or $bytes[1] -ne 90){throw 'Installer is not a Windows executable'}
+          $sha=(Get-FileHash $exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$sha  $exe" | Set-Content 'NANO-POS-Setup-2.0.17-x64-SHA256.txt' -Encoding ascii
+          Get-FileHash $exe -Algorithm SHA256 | Format-List
+      - name: Publish installer to the v2.0.17 current release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release upload v2.0.17 'NANO-POS-Setup-2.0.17-x64.exe' 'NANO-POS-Setup-2.0.17-x64-SHA256.txt' -R bilalbaghdali/nano-pos-updates --clobber
+          if($LASTEXITCODE -ne 0){throw 'Could not publish current release installer'}
+          $assets=@(gh release view v2.0.17 -R bilalbaghdali/nano-pos-updates --json assets --jq '.assets[].name')
+          if($LASTEXITCODE -ne 0){throw 'Could not verify release assets'}
+          if($assets -notcontains 'NANO-POS-Setup-2.0.17-x64.exe' -or $assets -notcontains 'NANO-POS-Setup-2.0.17-x64-SHA256.txt'){throw 'Installer or checksum file is missing from the release'}
+          Write-Host 'PASS: Windows x64 installer and SHA-256 file are published to v2.0.17.'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NANO-POS-Setup-2.0.17-x64
+          path: |
+            NANO-POS-Setup-2.0.17-x64.exe
+            NANO-POS-Setup-2.0.17-x64-SHA256.txt
+          if-no-files-found: error
+          retention-days: 30
