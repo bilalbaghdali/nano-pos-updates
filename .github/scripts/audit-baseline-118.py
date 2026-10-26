@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json,re,struct,sys,zipfile
 from pathlib import Path
+if hasattr(sys.stdout,'reconfigure'): sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 def unpack_asar(raw):
     magic,block,hs,n=struct.unpack_from('<4I',raw)
