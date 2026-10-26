@@ -1,0 +1,103 @@
+name: NANO POS v2.0.12 — Prayer Times Visibility Fix (build and publish without manual ZIP upload)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-prayer-times-card-212.yml'
+      - '.github/scripts/build-prayer-times-card-212.py'
+      - '.github/scripts/publish-manifest-212.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-v2.0.12
+  cancel-in-progress: false
+jobs:
+  build-test-publish:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify stable v1.0.118 base and avoid duplicate release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $manifest=Get-Content nano-pos-update.json -Raw | ConvertFrom-Json
+          if(!$manifest.published){throw 'Update manifest must be published'}
+          gh release view v2.0.12 -R bilalbaghdali/nano-pos-updates *> $null
+          if($LASTEXITCODE -eq 0){Write-Host 'Release v2.0.12 exists; asset will be refreshed after the build.'}
+          New-Item -ItemType Directory -Force -Path source,work | Out-Null
+          $baseName='NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip'
+          gh release download v1.0.118 -R bilalbaghdali/nano-pos-updates --pattern $baseName --dir source
+          if($LASTEXITCODE -ne 0){throw 'Could not download official v1.0.118 base patch'}
+          $base="source\\$baseName"
+          python -c "import zipfile,hashlib; z=zipfile.ZipFile(r'$base'); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='48552f35646194927d6765963110dbeb91d49bf19accfbd383371d74167e0a6a'"
+          if($LASTEXITCODE -ne 0){throw 'Base ASAR integrity check failed'}
+      - name: Build v2.0.12 and run syntax and archive checks
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/build-prayer-times-card-212.py source/NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip NANO-POS-Patch-1.0.118-to-2.0.12-PRAYER-TIMES-FAILSAFE-VISIBILITY-FIX.zip work
+          if($LASTEXITCODE -ne 0){throw 'Patch builder failed'}
+          node --check work/renderer.js
+          if($LASTEXITCODE -ne 0){throw 'Renderer syntax check failed'}
+          python -c "import zipfile,struct,json; z=zipfile.ZipFile('NANO-POS-Patch-1.0.118-to-2.0.12-PRAYER-TIMES-FAILSAFE-VISIBILITY-FIX.zip'); assert z.namelist()==['payload/app.asar']; b=z.read('payload/app.asar'); m,bl,hs,n=struct.unpack_from('<4I',b); f=json.loads(b[16:16+n])['files']; d=8+bl; e=f['package.json']; p=json.loads(b[d+int(e['offset']):d+int(e['offset'])+e['size']]); assert p['version']=='2.0.12'; e=f['renderer.js']; s=b[d+int(e['offset']):d+int(e['offset'])+e['size']].decode(); assert '__nanoCartSpeechV202' in s and 'speechSynthesis.speak' in s and '__nanoPrayerSidebarV212' in s and 'renderHome' in s and '__nanoPrayerHomeCard' in s and 'hijri' in s and 'api.aladhan.com' in s and 'اختيار الموقع' in s and 'currentUser is not defined' not in s; print('PASS v2.0.12 package, cart speech, home prayer times card placement fix, next prayer countdown, Hijri/Gregorian dates, location selector and ASAR structure')"
+          if($LASTEXITCODE -ne 0){throw 'Final ASAR audit failed'}
+      - name: Prepare v2.0.12 manifest with exact patch hashes
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/publish-manifest-212.py
+          if($LASTEXITCODE -ne 0){throw 'Manifest preparation failed'}
+      - name: Create release and upload generated patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release view v2.0.12 -R bilalbaghdali/nano-pos-updates *> $null
+          if($LASTEXITCODE -ne 0){
+            gh release create v2.0.12 NANO-POS-Patch-1.0.118-to-2.0.12-PRAYER-TIMES-FAILSAFE-VISIBILITY-FIX.zip -R bilalbaghdali/nano-pos-updates --target $env:GITHUB_SHA --title 'NANO POS v2.0.12 — إصلاحات' --notes 'إصلاحات: إصلاح موضع بطاقة مواقيت الصلاة بجانب المدير العام، وتحديث شامل من الإصدارات المدعومة السابقة. مبني من الإصدار المستقر 1.0.118.'
+            if($LASTEXITCODE -ne 0){throw 'GitHub release creation failed'}
+          }
+          gh release upload v2.0.12 NANO-POS-Patch-1.0.118-to-2.0.12-PRAYER-TIMES-FAILSAFE-VISIBILITY-FIX.zip -R bilalbaghdali/nano-pos-updates --clobber
+          if($LASTEXITCODE -ne 0){throw 'GitHub release asset upload failed'}
+          gh release edit v2.0.12 -R bilalbaghdali/nano-pos-updates --title 'NANO POS v2.0.12 — إصلاحات' --notes 'إصلاحات: إصلاح موضع بطاقة مواقيت الصلاة بجانب المدير العام، وتحديث شامل من الإصدارات المدعومة السابقة. مبني من الإصدار المستقر 1.0.118.'
+          if($LASTEXITCODE -ne 0){throw 'GitHub release metadata update failed'}
+      - name: Publish v2.0.12 manifest only after release asset exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          # Publish the generated manifest through GitHub's contents API to avoid shallow-clone rebase conflicts.
+          $ErrorActionPreference='Stop'
+          $currentSha=gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha
+          if($LASTEXITCODE -ne 0 -or !$currentSha){throw 'Could not read current manifest SHA'}
+          $bytes=[System.IO.File]::ReadAllBytes((Resolve-Path 'nano-pos-update.json'))
+          $content=[Convert]::ToBase64String($bytes)
+          $body=@{message='Publish NANO POS 2.0.12 automatic update manifest';sha=$currentSha;content=$content} | ConvertTo-Json -Compress
+          $bodyPath=Join-Path $env:RUNNER_TEMP 'manifest-publish.json'
+          [System.IO.File]::WriteAllText($bodyPath,$body,[System.Text.UTF8Encoding]::new($false))
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --input $bodyPath
+          if($LASTEXITCODE -ne 0){throw 'GitHub Contents API manifest publication failed'}
+      - name: Verify published release and manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release view v2.0.12 -R bilalbaghdali/nano-pos-updates
+          $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
+          if($m.version -ne '2.0.12' -or !$m.published){throw 'Published manifest verification failed'}
+          if(!($m.patches | Where-Object {$_.id -eq 'nano-pos-v118-prayer-card-visibility-v212'})){throw 'Published patch missing from manifest'}
+          $p=$m.patches[0]
+          if($p.id -ne 'nano-pos-v118-prayer-card-visibility-v212' -or !($p.fromVersions -contains '2.0.10') -or !($p.fromVersions -contains '1.0.34')){throw 'Universal patch is not first or supported-version coverage is incomplete'}
+          Write-Host 'PASS: v2.0.12 release asset and automatic-update manifest are published.'
