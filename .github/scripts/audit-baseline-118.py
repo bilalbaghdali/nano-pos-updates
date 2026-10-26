@@ -22,7 +22,7 @@ def main(zip_path, output):
         tree,files=unpack_asar(z.read('payload/app.asar'))
     text={}
     for p,b in files.items():
-        if p.endswith(('.js','.html','.json','.css')) and len(b)<12_000_000:
+        if p.endswith(('.js','.cjs','.mjs','.html','.json','.css')) and len(b)<12_000_000:
             try: text[p]=b.decode('utf-8')
             except UnicodeDecodeError: pass
     full='\n'.join(text.values())
