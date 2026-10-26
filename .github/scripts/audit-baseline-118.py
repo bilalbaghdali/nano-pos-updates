@@ -26,6 +26,16 @@ def main(zip_path, output):
             try: text[p]=b.decode('utf-8')
             except UnicodeDecodeError: pass
     full='\n'.join(text.values())
+    # Export root-level app code to a short-lived CI artifact so patches can target the verified source.
+    source_dir=Path('source-audit')
+    source_dir.mkdir(parents=True,exist_ok=True)
+    selected=[]
+    for p,b in files.items():
+        if '/' not in p and (p.endswith(('.js','.html','.json','.css'))):
+            out=source_dir/p
+            out.write_bytes(b)
+            selected.append((p,len(b)))
+    print(f'Exported {len(selected)} root-level source files for inspection; no customer database or backup files are included.')
     package=json.loads(files['package.json'].decode())
     sections=[
       ('Update/Integrity',['autoUpdater','sha256','checkForUpdates','update-config','patch','rollback','checksum','integrity','app-update']),
