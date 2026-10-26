@@ -38,4 +38,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: nano-pos-baseline-audit
-          path: nano-pos-baseline-audit.txt
+          path: |
+            nano-pos-baseline-audit.txt
+            source-audit/
