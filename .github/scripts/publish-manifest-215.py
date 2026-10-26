@@ -6,7 +6,7 @@ data=json.loads(Path('nano-pos-update.json').read_text(encoding='utf-8'))
 date=datetime.date.today().isoformat()
 features={
  'ar':['إصلاح تثبيت بطاقة مواقيت الصلاة داخل البنر الرئيسي بجانب المدير العام ومنع انتقالها بين العناصر.','إصلاح تحليل أوقات الصلاة وعرض الصلوات الست بما فيها الشروق مع التاريخين والعد التنازلي.','حفظ المنطقة المختارة وتحديث المواقيت يوميًا دون تغيير بيانات المتجر.','الإبقاء على ميزة نطق سعر المنتج السابقة.'],
- 'fr':['Keeps the prayer card fixed in the main banner beside the General Manager instead of moving it between elements.','Repairs prayer-time parsing and shows all six times, including sunrise, with dates and countdown.','Saves the selected region and refreshes prayer times daily without changing store data.','Conservation de la lecture vocale du prix des produits.'],
+ 'fr':['Maintient la carte des horaires de prière dans la bannière principale, à côté du Directeur général, sans déplacement intempestif.','Corrige l’analyse des horaires et affiche les six horaires, lever du soleil inclus, avec les dates et le compte à rebours.','Conserve la région choisie et actualise les horaires chaque jour sans modifier les données du magasin.','Conserve la lecture vocale du prix des produits.'],
  'en':['Keeps the prayer card in the main banner beside the General Manager and prevents it moving between elements.','Fixes prayer-time parsing and shows all six times, including sunrise, dates, and countdown.','Preserves the selected region and refreshes timings daily without changing store data.','Keeps the existing cart-price speech feature.']
 }
 fn=path.name
