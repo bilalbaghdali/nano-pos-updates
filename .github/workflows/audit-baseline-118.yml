@@ -1,4 +1,5 @@
 name: NANO POS stable baseline feature audit
+# Re-run to assess the requested all-in-one improvements against the exact verified 1.0.118 source.
 on:
   push:
     branches: [main]
