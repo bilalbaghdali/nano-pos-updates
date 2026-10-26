@@ -2812,10 +2812,10 @@
     }
   ],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v1.0.118/NANO-POS-Setup-1.0.118-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v1.0.118",
-    "sha256": "216d7ca9a71f9bae879c860fcd86c2c2603fe38685338e4b232e197480d310a3",
-    "fileName": "NANO-POS-Setup-1.0.118-x64.exe"
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.17/NANO-POS-Setup-2.0.17-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.17",
+    "sha256": "1bd0a0f8e0cf505a2cd80f206890595403dce5156ab72810c41e482f1282a9fb",
+    "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
     "ar": "إصلاح موضع زر اللغة بجانب التواصل مع الدعم في الشريط العلوي فقط وإزالة نسخته من الشريط الجانبي.",
