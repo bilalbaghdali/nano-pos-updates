@@ -51,11 +51,24 @@ jobs:
       - name: Create official multi-size NANO POS icon
         run: |
           $ErrorActionPreference='Stop'
-          New-Item -ItemType Directory -Force -Path icon-build | Out-Null
-          python -m pip install --disable-pip-version-check pillow cairosvg
-          if($LASTEXITCODE -ne 0){throw 'Icon tooling install failed'}
-          python -c "import cairosvg; cairosvg.svg2png(url='.github/assets/nano-pos-store-icon.svg',write_to='icon-build/NANO-POS-Icon.png',output_width=1024,output_height=1024)"
-          if($LASTEXITCODE -ne 0){throw 'PNG icon generation failed'}
+          New-Item -ItemType Directory -Force -Path icon-build,icon-render | Out-Null
+          Push-Location icon-render
+          npm init -y | Out-Null
+          npm install --no-audit --no-fund --save-exact @resvg/resvg-js@2.6.2
+          if($LASTEXITCODE -ne 0){Pop-Location;throw 'Windows-compatible SVG renderer install failed'}
+          @'
+          const fs=require('node:fs');
+          const path=require('node:path');
+          const {Resvg}=require('@resvg/resvg-js');
+          const svg=fs.readFileSync(path.resolve('../.github/assets/nano-pos-store-icon.svg'),'utf8');
+          const png=new Resvg(svg,{fitTo:{mode:'width',value:1024}}).render().asPng();
+          fs.writeFileSync(path.resolve('../icon-build/NANO-POS-Icon.png'),png);
+          '@ | Set-Content render-icon.cjs -Encoding utf8
+          node render-icon.cjs
+          if($LASTEXITCODE -ne 0){Pop-Location;throw 'PNG icon rendering failed'}
+          Pop-Location
+          python -m pip install --disable-pip-version-check pillow
+          if($LASTEXITCODE -ne 0){throw 'Pillow install failed'}
           python -c "from PIL import Image; i=Image.open('icon-build/NANO-POS-Icon.png').convert('RGBA'); i.save('icon-build/NANO-POS-Icon.ico',sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)]); assert Image.open('icon-build/NANO-POS-Icon.ico').size==(256,256)"
           if($LASTEXITCODE -ne 0){throw 'ICO icon verification failed'}
       - name: Package verified v2.0.16 ASAR into Electron Windows x64 runtime
