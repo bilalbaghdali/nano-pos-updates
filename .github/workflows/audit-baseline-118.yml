@@ -1,0 +1,41 @@
+name: NANO POS stable baseline feature audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-baseline-118.yml'
+      - '.github/scripts/audit-baseline-118.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit-stable-base:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download and verify the stable 1.0.118 base patch
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path source | Out-Null
+          gh release download v1.0.118 -R bilalbaghdali/nano-pos-updates --pattern 'NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip' --dir source
+          if($LASTEXITCODE -ne 0){throw 'Could not download stable base patch'}
+          python -c "import hashlib,zipfile; z=zipfile.ZipFile(r'source/NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip'); assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='48552f35646194927d6765963110dbeb91d49bf19accfbd383371d74167e0a6a'; print('PASS: stable base SHA-256 verified')"
+          if($LASTEXITCODE -ne 0){throw 'Stable base ASAR hash mismatch'}
+      - name: Audit existing functions for safe combined enhancement
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/audit-baseline-118.py source/NANO-POS-Patch-1.0.117-to-1.0.118-SUPPORT-ALIGNMENT.zip nano-pos-baseline-audit.txt
+          if($LASTEXITCODE -ne 0){throw 'Source feature audit failed'}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nano-pos-baseline-audit
+          path: nano-pos-baseline-audit.txt
