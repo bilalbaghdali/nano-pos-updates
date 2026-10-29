@@ -1,0 +1,105 @@
+name: NANO POS v2.0.19 — Motherboard ID and activation recovery
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-hardware-id-219.yml'
+      - '.github/scripts/build-hardware-id-219.py'
+      - '.github/scripts/publish-manifest-219.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-hardware-id-v2.0.19
+  cancel-in-progress: false
+jobs:
+  build-test-publish:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download and verify the official v2.0.18 base patch
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path source,work | Out-Null
+          $patch='NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip'
+          gh release download v2.0.18 -R bilalbaghdali/nano-pos-updates --pattern $patch --dir source
+          if($LASTEXITCODE -ne 0){throw 'Could not download official v2.0.18 base patch'}
+          python -c "import hashlib,zipfile; p=r'source/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip'; z=zipfile.ZipFile(p); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='b1fc5bceadfe4ae42cfdd145d7fef9fe3f45a4d18e182d598516c9d3d0e0987d'"
+          if($LASTEXITCODE -ne 0){throw 'The v2.0.18 app.asar did not match the expected SHA-256'}
+      - name: Build motherboard-derived ID and same-hardware recovery
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/build-hardware-id-219.py source/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip NANO-POS-Patch-2.0.18-to-2.0.19-MOTHERBOARD-ID-RECOVERY.zip work
+          if($LASTEXITCODE -ne 0){throw 'Hardware ID patch build or integrity audit failed; nothing will be published'}
+      - name: Syntax-check changed JavaScript
+        run: |
+          $ErrorActionPreference='Stop'
+          foreach($f in @('license-client.js','license-ui.js','electron-main.cjs','electron-native-preload.cjs')){
+            $path=Join-Path 'work' $f
+            if(!(Test-Path $path)){throw "Expected patched source was not written: $path"}
+            node --check $path
+            if($LASTEXITCODE -ne 0){throw "JavaScript syntax error in $f"}
+          }
+      - name: Prepare v2.0.19 manifest and release notes
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/publish-manifest-219.py
+          if($LASTEXITCODE -ne 0){throw 'Could not prepare the v2.0.19 manifest'}
+          @'
+          NANO POS v2.0.19 — تحسينات عامة
+
+          - معرف جديد ثابت مشتق من الرقم التسلسلي للوحة الأم، مع UUID النظام كبديل عند غياب رقم صالح.
+          - الحفاظ على معرّفات التفعيل القائمة أثناء التحديث، دون تغيير قاعدة البيانات أو النسخ الاحتياطية.
+          - إضافة ملف استرداد للتفعيل يمكن استعادته على الكمبيوتر نفسه بعد إعادة تثبيت Windows.
+          - يتطلب الاسترداد حفظ ملف .nano-recovery خارج الكمبيوتر (مثل USB أو MEGA) قبل الفورمات.
+          - إبقاء التحقق من توقيع الترخيص وميزات الإصدار السابقة، بما فيها نطق الأسعار والإحصائيات.
+          '@ | Set-Content -Path RELEASE_NOTES.md -Encoding utf8
+      - name: Publish verified v2.0.19 release patch
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release create v2.0.19 NANO-POS-Patch-2.0.18-to-2.0.19-MOTHERBOARD-ID-RECOVERY.zip --repo bilalbaghdali/nano-pos-updates --title 'NANO POS v2.0.19 — تحسينات عامة' --notes-file RELEASE_NOTES.md
+          if($LASTEXITCODE -ne 0){throw 'Could not publish v2.0.19 release; manifest will not be updated'}
+      - name: Publish automatic-update manifest
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $currentSha=gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha
+          if($LASTEXITCODE -ne 0 -or !$currentSha){throw 'Could not read current manifest SHA'}
+          $bytes=[System.IO.File]::ReadAllBytes((Resolve-Path 'nano-pos-update.json'))
+          $content=[Convert]::ToBase64String($bytes)
+          $body=@{message='Publish NANO POS v2.0.19 motherboard ID and activation recovery';sha=$currentSha;content=$content} | ConvertTo-Json -Compress
+          $bodyPath=Join-Path $env:RUNNER_TEMP 'manifest-publish-219.json'
+          [System.IO.File]::WriteAllText($bodyPath,$body,[System.Text.UTF8Encoding]::new($false))
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --input $bodyPath
+          if($LASTEXITCODE -ne 0){throw 'v2.0.19 manifest publication failed'}
+      - name: Verify release asset and automatic update manifest
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
+          if($m.version -ne '2.0.19' -or !$m.published){throw 'Published manifest version check failed'}
+          $p=$m.patches[0]
+          if($p.id -ne 'nano-pos-v118-motherboard-id-recovery-v219' -or !($p.fromVersions -contains '2.0.18')){throw 'v2.0.19 patch entry is missing'}
+          $verify=Join-Path $env:RUNNER_TEMP 'published-v219.zip'
+          Invoke-WebRequest -Uri $p.directUrl -OutFile $verify
+          $actual=(Get-FileHash $verify -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($actual -ne $p.sha256){throw 'Published patch SHA-256 does not match the manifest'}
+          $rel=gh release view v2.0.19 -R bilalbaghdali/nano-pos-updates --json assets --jq '.assets[].name'
+          if($LASTEXITCODE -ne 0 -or $rel -notcontains 'NANO-POS-Patch-2.0.18-to-2.0.19-MOTHERBOARD-ID-RECOVERY.zip'){throw 'v2.0.19 release asset is missing'}
+          Write-Host 'PASS: v2.0.19 is published, its patch hash matches the manifest, and the update is available.'
