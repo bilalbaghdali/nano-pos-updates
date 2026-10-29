@@ -265,7 +265,7 @@ def main():
             src = blob.decode("utf-8")
             if "getHardwareInstallationId" in src:
                 raise AssertionError("Hardware-ID API already exists in the native preload")
-            pat = re.compile(r"(contextBridge\.exposeInMainWorld\(\s*['\"]nanoNative['\"]\s*,\s*\{)")
+            pat = re.compile(r"(contextBridge\.exposeInMainWorld\(\s*['\"]nanoNative['\"]\s*,\s*(?:Object\.freeze\(\s*)?\{)")
             match = pat.search(src)
             if not match:
                 raise AssertionError("Could not find nanoNative exposed object safely; preload prefix=" + repr(src[:1400]))
