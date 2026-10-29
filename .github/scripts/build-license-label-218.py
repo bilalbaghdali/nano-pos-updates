@@ -81,7 +81,26 @@ def main():
                 target.write_bytes(blob)
 
     assert found_package, "package.json was not found"
-    assert found_label > 0, "The expected Arabic label was not found; refusing to publish an unchanged app"
+    if found_label == 0:
+        candidates = []
+        for path, ent, blob in entries:
+            try:
+                src = blob.decode("utf-8")
+            except UnicodeDecodeError:
+                continue
+            snippets = []
+            for needle in ("الترخيص", "ترخيص", "المتصفح", "license", "browser", "التفعيل"):
+                pos = 0
+                while len(snippets) < 8:
+                    pos = src.lower().find(needle.lower(), pos)
+                    if pos < 0:
+                        break
+                    snippets.append(src[max(0, pos-160):min(len(src), pos+240)].replace("\\r", " ").replace("\\n", " "))
+                    pos += len(needle)
+            if snippets:
+                candidates.append({"path": path, "snippets": snippets[:8]})
+        print("LICENSE_LABEL_DISCOVERY=" + json.dumps(candidates[:80], ensure_ascii=False))
+    assert found_label > 0, "The expected Arabic label was not found; see LICENSE_LABEL_DISCOVERY above; refusing to publish an unchanged app"
     header = json.dumps(tree, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     padded = (len(header) + 7) & ~3
     final_asar = struct.pack("<4I", 4, padded + 4, padded, len(header)) + header + b"\0" * (padded - 4 - len(header)) + out_data
