@@ -160,33 +160,33 @@ def read_asar(raw):
 def patch_license_client(src):
     if MARKER in src:
         raise AssertionError("v2.0.19 hardware-ID marker already exists in license-client.js")
-    pattern = re.compile(r"function installationId\(\)\s*\{\s*let id = localStorage\.getItem\(installationKey\);\s*if \(!id\) \{\s*id = 'NANO-' \+ crypto\.randomUUID\(\);\s*localStorage\.setItem\(installationKey, id\);\s*\}\s*return id;\s*\}")
+    pattern = re.compile(r"function installationId\\(\\)\\s*\\{\\s*let id = localStorage\\.getItem\\(installationKey\\);\\s*if \\(!id\\) \\{\\s*id = 'NANO-' \\+ crypto\\.randomUUID\\(\\);\\s*localStorage\\.setItem\\(installationKey, id\\);\\s*\\}\\s*return id;\\s*\\}")
     match = pattern.search(src)
     if not match:
-        start = src.find("function installationId")
-        raise AssertionError("Could not match installationId() safely; context=" + repr(src[max(0,start-100):start+900]))
+        start_id = src.find("function installationId")
+        raise AssertionError("Could not match installationId() safely; context=" + repr(src[max(0,start_id-100):start_id+900]))
     src = src[:match.start()] + NEW_ID_FN + src[match.end():]
-    anchor = "  window.nanoLicense = { installationId, verify, verifyNano4, verifySimple, activate, status, trial, access, remove:"
-    if anchor not in src:
-        raise AssertionError("Could not safely attach recovery API to window.nanoLicense")
-    if "function exportRecovery()" in src:
+    if "function exportRecovery()" in src or "function restoreRecovery(" in src:
         raise AssertionError("Recovery API already present")
-    src = src.replace(anchor, RECOVERY_API + "\n" + anchor, 1)
-    src = src.replace("window.nanoLicense = { installationId, verify, verifyNano4, verifySimple, activate, status, trial, access, remove:", "window.nanoLicense = { installationId, hardwareInstallationId, exportRecovery, restoreRecovery, verify, verifyNano4, verifySimple, activate, status, trial, access, remove:", 1)
-    # The hardware ID helper is also used by installationId() before any license is active.
-    src = src.replace("function installationId() {", "function installationId() {", 1)
-    # Ensure the helper is defined before installationId().
-    src = src.replace(NEW_ID_FN, NEW_ID_FN, 1)
+    # Insert helpers immediately before the public API object, without depending on member order.
+    assignment = re.search(r"window\\.nanoLicense\\s*=\\s*\\{", src)
+    if not assignment:
+        raise AssertionError("Could not locate window.nanoLicense object; context=" + repr(src[max(0,src.find("nanoLicense")-200):src.find("nanoLicense")+1200]))
+    src = src[:assignment.start()] + RECOVERY_API + "\\n" + src[assignment.start():]
+    assignment = re.search(r"window\\.nanoLicense\\s*=\\s*\\{", src)
+    if not assignment:
+        raise AssertionError("window.nanoLicense object disappeared during recovery insertion")
+    src = src[:assignment.end()] + " hardwareInstallationId, exportRecovery, restoreRecovery," + src[assignment.end():]
+    # Keep the hardware ID helper before installationId for clear initialization ordering.
     helper = "  function hardwareInstallationId() {"
     if helper not in src:
         raise AssertionError("Hardware-ID helper did not install")
-    # Move helper definition before installationId so calls are clear and easy to audit.
-    start = src.index(helper)
-    end = src.index("\n  async function exportRecovery()", start)
-    hardware_fn = src[start:end]
-    src = src[:start] + src[end:]
+    helper_start = src.index(helper)
+    export_start = src.index("\\n  async function exportRecovery()", helper_start)
+    hardware_fn = src[helper_start:export_start]
+    src = src[:helper_start] + src[export_start:]
     point = src.index("function installationId()")
-    src = src[:point] + hardware_fn + "\n  " + src[point:]
+    src = src[:point] + hardware_fn + "\\n  " + src[point:]
     return src
 
 def patch_license_ui(src):
