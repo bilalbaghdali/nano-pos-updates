@@ -84,4 +84,4 @@ print(json.dumps({
     "sizeBytes": entry["sizeBytes"],
     "supportedSourceVersions": len(versions),
     "featuresAr": features["ar"]
-}, ensure_ascii=False))
+}, ensure_ascii=True))
