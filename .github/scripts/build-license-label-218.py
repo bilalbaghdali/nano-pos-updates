@@ -7,7 +7,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 EXPECTED_BASE_PATCH_SHA256 = "24ca28ed073d9a0a90f638080116e6c82214bb4d4e4997c632151b3f63ee86b5"
 EXPECTED_BASE_ASAR_SHA256 = "ae06246d24a9f28257f6bfe17a3e4b3dbf5e9dc836201de9255ab9021cecaf21"
-OLD_LABEL = re.compile(r"(?:إزالة|ازالة|أزل|ازل|أزالة|ازاله)\s+الترخيص\s+من\s+المتصفح")
+OLD_LABEL = re.compile(r"(?:إزالة|ازالة|أزل|ازل|أزالة|ازاله)\s+الترخيص\s+من\s+(?:هذا\s+)?المتصفح")
 NEW_LABEL = "ازل الترخيص من البرنامج"
 
 def sha(b): return hashlib.sha256(b).hexdigest()
