@@ -2,6 +2,8 @@
 """Create NANO POS v2.0.18 from the SHA-verified v2.0.17 app.asar; change only the Arabic license-button label."""
 import hashlib, json, re, struct, sys, zipfile
 from pathlib import Path
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 EXPECTED_BASE_PATCH_SHA256 = "24ca28ed073d9a0a90f638080116e6c82214bb4d4e4997c632151b3f63ee86b5"
 EXPECTED_BASE_ASAR_SHA256 = "ae06246d24a9f28257f6bfe17a3e4b3dbf5e9dc836201de9255ab9021cecaf21"
