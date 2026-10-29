@@ -29,7 +29,7 @@ jobs:
           node-version: '22'
       - name: Download and verify the official v2.0.18 base patch
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           New-Item -ItemType Directory -Force -Path source,work | Out-Null
@@ -68,14 +68,14 @@ jobs:
           '@ | Set-Content -Path RELEASE_NOTES.md -Encoding utf8
       - name: Publish verified v2.0.19 release patch
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           gh release create v2.0.19 NANO-POS-Patch-2.0.18-to-2.0.19-MOTHERBOARD-ID-RECOVERY.zip --repo bilalbaghdali/nano-pos-updates --title 'NANO POS v2.0.19 — تحسينات عامة' --notes-file RELEASE_NOTES.md
           if($LASTEXITCODE -ne 0){throw 'Could not publish v2.0.19 release; manifest will not be updated'}
       - name: Publish automatic-update manifest
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           $currentSha=gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha
@@ -89,7 +89,7 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'v2.0.19 manifest publication failed'}
       - name: Verify release asset and automatic update manifest
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
