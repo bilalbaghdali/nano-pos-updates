@@ -172,7 +172,7 @@ def patch_license_client(src):
     assignment = re.search(r"window\.nanoLicense\s*=\s*\{", src)
     if not assignment:
         raise AssertionError("Could not locate window.nanoLicense object; context=" + repr(src[max(0,src.find("nanoLicense")-200):src.find("nanoLicense")+1200]))
-    src = src[:assignment.start()] + RECOVERY_API + "\\n" + src[assignment.start():]
+    src = src[:assignment.start()] + RECOVERY_API + "\n" + src[assignment.start():]
     assignment = re.search(r"window\.nanoLicense\s*=\s*\{", src)
     if not assignment:
         raise AssertionError("window.nanoLicense object disappeared during recovery insertion")
@@ -182,11 +182,11 @@ def patch_license_client(src):
     if helper not in src:
         raise AssertionError("Hardware-ID helper did not install")
     helper_start = src.index(helper)
-    export_start = src.index("\\n  async function exportRecovery()", helper_start)
+    export_start = src.index("\n  async function exportRecovery()", helper_start)
     hardware_fn = src[helper_start:export_start]
     src = src[:helper_start] + src[export_start:]
     point = src.index("function installationId()")
-    src = src[:point] + hardware_fn + "\\n  " + src[point:]
+    src = src[:point] + hardware_fn + "\n  " + src[point:]
     return src
 
 def patch_license_ui(src):
