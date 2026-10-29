@@ -160,7 +160,7 @@ def read_asar(raw):
 def patch_license_client(src):
     if MARKER in src:
         raise AssertionError("v2.0.19 hardware-ID marker already exists in license-client.js")
-    pattern = re.compile(r"function installationId\\(\\)\\s*\\{\\s*let id = localStorage\\.getItem\\(installationKey\\);\\s*if \\(!id\\) \\{\\s*id = 'NANO-' \\+ crypto\\.randomUUID\\(\\);\\s*localStorage\\.setItem\\(installationKey, id\\);\\s*\\}\\s*return id;\\s*\\}")
+    pattern = re.compile(r"function installationId\(\)\s*\{\s*let id = localStorage\.getItem\(installationKey\);\s*if \(!id\) \{\s*id = 'NANO-' \+ crypto\.randomUUID\(\);\s*localStorage\.setItem\(installationKey, id\);\s*\}\s*return id;\s*\}")
     match = pattern.search(src)
     if not match:
         start_id = src.find("function installationId")
@@ -169,11 +169,11 @@ def patch_license_client(src):
     if "function exportRecovery()" in src or "function restoreRecovery(" in src:
         raise AssertionError("Recovery API already present")
     # Insert helpers immediately before the public API object, without depending on member order.
-    assignment = re.search(r"window\\.nanoLicense\\s*=\\s*\\{", src)
+    assignment = re.search(r"window\.nanoLicense\s*=\s*\{", src)
     if not assignment:
         raise AssertionError("Could not locate window.nanoLicense object; context=" + repr(src[max(0,src.find("nanoLicense")-200):src.find("nanoLicense")+1200]))
     src = src[:assignment.start()] + RECOVERY_API + "\\n" + src[assignment.start():]
-    assignment = re.search(r"window\\.nanoLicense\\s*=\\s*\\{", src)
+    assignment = re.search(r"window\.nanoLicense\s*=\s*\{", src)
     if not assignment:
         raise AssertionError("window.nanoLicense object disappeared during recovery insertion")
     src = src[:assignment.end()] + " hardwareInstallationId, exportRecovery, restoreRecovery," + src[assignment.end():]
