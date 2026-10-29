@@ -1,11 +1,5 @@
 name: NANO POS v2.0.20 — Motherboard ID and activation recovery
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/publish-hardware-id-219.yml'
-      - '.github/scripts/build-hardware-id-219.py'
-      - '.github/scripts/publish-manifest-219.py'
   workflow_dispatch:
 permissions:
   contents: write
@@ -95,7 +89,7 @@ jobs:
           $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
           if($m.version -ne '2.0.20' -or !$m.published){throw 'Published manifest version check failed'}
           $p=$m.patches[0]
-          if($p.id -ne 'nano-pos-v118-motherboard-id-recovery-v219' -or !($p.fromVersions -contains '2.0.18')){throw 'v2.0.20 patch entry is missing'}
+          if($p.id -ne 'nano-pos-v118-motherboard-id-recovery-v220' -or !($p.fromVersions -contains '2.0.18')){throw 'v2.0.20 patch entry is missing'}
           $verify=Join-Path $env:RUNNER_TEMP 'published-v219.zip'
           Invoke-WebRequest -Uri $p.directUrl -OutFile $verify
           $actual=(Get-FileHash $verify -Algorithm SHA256).Hash.ToLowerInvariant()
