@@ -25,8 +25,8 @@ versions.update(["1.0.118"] + [f"2.0.{i}" for i in range(18)])
 entry = {
     "id": "nano-pos-v118-license-label-program-v218",
     "fromVersions": sorted(versions, key=lambda v: tuple(map(int, v.split(".")))),
-    "directUrl": f"https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.18/{filename}",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.18",
+    "directUrl": f"https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/downloads/{filename}",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/blob/main/downloads/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip",
     "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
     "appAsarSha256": hashlib.sha256(asar).hexdigest(),
     "fileName": filename,
