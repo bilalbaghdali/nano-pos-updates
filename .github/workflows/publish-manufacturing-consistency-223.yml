@@ -1,0 +1,88 @@
+name: NANO POS v2.0.23 — Manufacturing UI Consistency
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-manufacturing-consistency-223.yml'
+      - '.github/scripts/build-manufacturing-consistency-223.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-v2.0.23
+  cancel-in-progress: false
+jobs:
+  build-test-publish:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download and verify current official v2.0.22 patch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path source | Out-Null
+          $patch='NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.1.zip'
+          gh release download v2.0.22 -R bilalbaghdali/nano-pos-updates --pattern $patch --dir source
+          if($LASTEXITCODE -ne 0){throw 'Could not download official v2.0.22 patch'}
+          python -c "import hashlib,zipfile; p=r'source/NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.1.zip'; z=zipfile.ZipFile(p); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(open(p,'rb').read()).hexdigest()=='65bf1a5acd75f582ca73a0c352a712874af167938329f0e1096f33c5d76139b2'; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='9fa8d7edc883bf860faf8dd9c7f156bf427fd2e54aae3fb1f95e546e088bc585a'"
+          if($LASTEXITCODE -ne 0){throw 'Official v2.0.22 package integrity verification failed'}
+      - name: Build, validate, and prepare v2.0.23
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/build-manufacturing-consistency-223.py source/NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.1.zip
+          if($LASTEXITCODE -ne 0){throw 'Manufacturing UI consistency build failed'}
+      - name: Publish v2.0.23 release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release view v2.0.23 -R bilalbaghdali/nano-pos-updates *> $null
+          if($LASTEXITCODE -eq 0){throw 'Release v2.0.23 already exists; refusing to overwrite it'}
+          @'
+          NANO POS v2.0.23 — تحسينات عامة
+
+          - توحيد ألوان نافذة التصنيع والحقول والأزرار والجداول مع واجهة NANO POS.
+          - تحسين المسافات والعناوين وحالات التركيز وإظهار الجداول بشكل أوضح.
+          - تحسين التوافق مع الشاشات الأصغر دون تغيير إجراءات التصنيع أو بيانات المخزون والتفعيل.
+          '@ | Set-Content -Path RELEASE_NOTES-223.md -Encoding utf8
+          gh release create v2.0.23 NANO-POS-Patch-2.0.22-to-2.0.23-MANUFACTURING-UI-CONSISTENCY.zip -R bilalbaghdali/nano-pos-updates --target $env:GITHUB_SHA --title 'NANO POS v2.0.23 — تحسينات عامة' --notes-file RELEASE_NOTES-223.md
+          if($LASTEXITCODE -ne 0){throw 'GitHub release creation or patch upload failed'}
+      - name: Publish manifest only after the patch upload succeeds
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $currentSha=gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha
+          if($LASTEXITCODE -ne 0 -or !$currentSha){throw 'Could not read manifest SHA'}
+          $bytes=[System.IO.File]::ReadAllBytes((Resolve-Path 'nano-pos-update.json'))
+          $content=[Convert]::ToBase64String($bytes)
+          $body=@{message='Publish NANO POS v2.0.23 manufacturing UI consistency update';sha=$currentSha;content=$content} | ConvertTo-Json -Compress
+          $bodyPath=Join-Path $env:RUNNER_TEMP 'manifest-publish-223.json'
+          [System.IO.File]::WriteAllText($bodyPath,$body,[System.Text.UTF8Encoding]::new($false))
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --input $bodyPath
+          if($LASTEXITCODE -ne 0){throw 'Manifest publication failed'}
+      - name: Verify published release and automatic-update manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
+          if($m.version -ne '2.0.23' -or !$m.published){throw 'Published manifest version is not 2.0.23'}
+          $p=$m.patches[0]
+          if($p.id -ne 'nano-pos-v223-manufacturing-ui-consistency' -or !($p.fromVersions -contains '2.0.22')){throw 'New manufacturing patch is not available for v2.0.22'}
+          $verify=Join-Path $env:RUNNER_TEMP 'published-manufacturing-patch.zip'
+          Invoke-WebRequest -Uri $p.directUrl -OutFile $verify
+          if((Get-FileHash $verify -Algorithm SHA256).Hash.ToLowerInvariant() -ne $p.sha256){throw 'Published ZIP SHA-256 mismatch'}
+          python -c "import hashlib,zipfile; p=r'$verify'; z=zipfile.ZipFile(p); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='$($p.appAsarSha256)'"
+          if($LASTEXITCODE -ne 0){throw 'Published app.asar payload integrity mismatch'}
+          gh release view v2.0.23 -R bilalbaghdali/nano-pos-updates
+          if($LASTEXITCODE -ne 0){throw 'Release v2.0.23 verification failed'}
+          Write-Host 'PASS: v2.0.23 release asset and automatic-update manifest verified.'
