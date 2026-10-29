@@ -1,10 +1,16 @@
-name: NANO POS v2.0.19 — Motherboard ID and activation recovery
+name: NANO POS v2.0.20 — Motherboard ID and activation recovery
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-hardware-id-219.yml'
+      - '.github/scripts/build-hardware-id-219.py'
+      - '.github/scripts/publish-manifest-219.py'
   workflow_dispatch:
 permissions:
   contents: write
 concurrency:
-  group: nano-pos-hardware-id-v2.0.19
+  group: nano-pos-hardware-id-v2.0.20
   cancel-in-progress: false
 jobs:
   build-test-publish:
@@ -35,7 +41,7 @@ jobs:
       - name: Build motherboard-derived ID and same-hardware recovery
         run: |
           $ErrorActionPreference='Stop'
-          python .github/scripts/build-hardware-id-219.py source/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip NANO-POS-Patch-2.0.18-to-2.0.19-MOTHERBOARD-ID-RECOVERY.zip work
+          python .github/scripts/build-hardware-id-219.py source/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip NANO-POS-Patch-2.0.18-to-2.0.20-MOTHERBOARD-ID-RECOVERY.zip work
           if($LASTEXITCODE -ne 0){throw 'Hardware ID patch build or integrity audit failed; nothing will be published'}
       - name: Syntax-check changed JavaScript
         run: |
@@ -46,13 +52,13 @@ jobs:
             node --check $path
             if($LASTEXITCODE -ne 0){throw "JavaScript syntax error in $f"}
           }
-      - name: Prepare v2.0.19 manifest and release notes
+      - name: Prepare v2.0.20 manifest and release notes
         run: |
           $ErrorActionPreference='Stop'
           python .github/scripts/publish-manifest-219.py
-          if($LASTEXITCODE -ne 0){throw 'Could not prepare the v2.0.19 manifest'}
+          if($LASTEXITCODE -ne 0){throw 'Could not prepare the v2.0.20 manifest'}
           @'
-          NANO POS v2.0.19 — تحسينات عامة
+          NANO POS v2.0.20 — تحسينات عامة
 
           - معرف جديد ثابت مشتق من الرقم التسلسلي للوحة الأم، مع UUID النظام كبديل عند غياب رقم صالح.
           - الحفاظ على معرّفات التفعيل القائمة أثناء التحديث، دون تغيير قاعدة البيانات أو النسخ الاحتياطية.
@@ -60,13 +66,13 @@ jobs:
           - يتطلب الاسترداد حفظ ملف .nano-recovery خارج الكمبيوتر (مثل USB أو MEGA) قبل الفورمات.
           - إبقاء التحقق من توقيع الترخيص وميزات الإصدار السابقة، بما فيها نطق الأسعار والإحصائيات.
           '@ | Set-Content -Path RELEASE_NOTES.md -Encoding utf8
-      - name: Publish verified v2.0.19 release patch
+      - name: Publish verified v2.0.20 release patch
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
-          gh release create v2.0.19 NANO-POS-Patch-2.0.18-to-2.0.19-MOTHERBOARD-ID-RECOVERY.zip --repo bilalbaghdali/nano-pos-updates --title 'NANO POS v2.0.19 — تحسينات عامة' --notes-file RELEASE_NOTES.md
-          if($LASTEXITCODE -ne 0){throw 'Could not publish v2.0.19 release; manifest will not be updated'}
+          gh release create v2.0.20 NANO-POS-Patch-2.0.18-to-2.0.20-MOTHERBOARD-ID-RECOVERY.zip --repo bilalbaghdali/nano-pos-updates --title 'NANO POS v2.0.20 — تحسينات عامة' --notes-file RELEASE_NOTES.md
+          if($LASTEXITCODE -ne 0){throw 'Could not publish v2.0.20 release; manifest will not be updated'}
       - name: Publish automatic-update manifest
         env:
           GH_TOKEN: ${{ github.token }}
@@ -76,24 +82,24 @@ jobs:
           if($LASTEXITCODE -ne 0 -or !$currentSha){throw 'Could not read current manifest SHA'}
           $bytes=[System.IO.File]::ReadAllBytes((Resolve-Path 'nano-pos-update.json'))
           $content=[Convert]::ToBase64String($bytes)
-          $body=@{message='Publish NANO POS v2.0.19 motherboard ID and activation recovery';sha=$currentSha;content=$content} | ConvertTo-Json -Compress
+          $body=@{message='Publish NANO POS v2.0.20 motherboard ID and activation recovery';sha=$currentSha;content=$content} | ConvertTo-Json -Compress
           $bodyPath=Join-Path $env:RUNNER_TEMP 'manifest-publish-219.json'
           [System.IO.File]::WriteAllText($bodyPath,$body,[System.Text.UTF8Encoding]::new($false))
           gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --input $bodyPath
-          if($LASTEXITCODE -ne 0){throw 'v2.0.19 manifest publication failed'}
+          if($LASTEXITCODE -ne 0){throw 'v2.0.20 manifest publication failed'}
       - name: Verify release asset and automatic update manifest
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
-          if($m.version -ne '2.0.19' -or !$m.published){throw 'Published manifest version check failed'}
+          if($m.version -ne '2.0.20' -or !$m.published){throw 'Published manifest version check failed'}
           $p=$m.patches[0]
-          if($p.id -ne 'nano-pos-v118-motherboard-id-recovery-v219' -or !($p.fromVersions -contains '2.0.18')){throw 'v2.0.19 patch entry is missing'}
+          if($p.id -ne 'nano-pos-v118-motherboard-id-recovery-v219' -or !($p.fromVersions -contains '2.0.18')){throw 'v2.0.20 patch entry is missing'}
           $verify=Join-Path $env:RUNNER_TEMP 'published-v219.zip'
           Invoke-WebRequest -Uri $p.directUrl -OutFile $verify
           $actual=(Get-FileHash $verify -Algorithm SHA256).Hash.ToLowerInvariant()
           if($actual -ne $p.sha256){throw 'Published patch SHA-256 does not match the manifest'}
-          $rel=gh release view v2.0.19 -R bilalbaghdali/nano-pos-updates --json assets --jq '.assets[].name'
-          if($LASTEXITCODE -ne 0 -or $rel -notcontains 'NANO-POS-Patch-2.0.18-to-2.0.19-MOTHERBOARD-ID-RECOVERY.zip'){throw 'v2.0.19 release asset is missing'}
-          Write-Host 'PASS: v2.0.19 is published, its patch hash matches the manifest, and the update is available.'
+          $rel=gh release view v2.0.20 -R bilalbaghdali/nano-pos-updates --json assets --jq '.assets[].name'
+          if($LASTEXITCODE -ne 0 -or $rel -notcontains 'NANO-POS-Patch-2.0.18-to-2.0.20-MOTHERBOARD-ID-RECOVERY.zip'){throw 'v2.0.20 release asset is missing'}
+          Write-Host 'PASS: v2.0.20 is published, its patch hash matches the manifest, and the update is available.'
