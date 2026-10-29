@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "published": false,
+  "published": true,
   "channel": "stable",
   "product": "NANO POS",
   "version": "2.0.22",
@@ -2718,11 +2718,11 @@
         "2.0.20",
         "2.0.21"
       ],
-      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.22/NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.zip",
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.22/NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.1.zip",
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.22",
       "sha256": "65bf1a5acd75f582ca73a0c352a712874af167938329f0e1096f33c5d76139b2",
       "appAsarSha256": "9fa8d7edc883bf860faf8dd9c7f156bf427fd2e54aae3fb1f95e546e088bc585a",
-      "fileName": "NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.zip",
+      "fileName": "NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.1.zip",
       "sizeBytes": 31475007,
       "payloadType": "app-asar"
     },
