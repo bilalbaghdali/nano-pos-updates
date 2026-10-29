@@ -281,13 +281,13 @@ def main():
             package["version"] = NEW_VERSION
             blob = (json.dumps(package, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
             changed = True
-        elif path.endswith("/license-client.js") or path == "license-client.js":
+        elif path == "license-client.js":
             blob = patch_license_client(blob.decode("utf-8")).encode("utf-8")
             changed = True
-        elif path.endswith("/license-ui.js") or path == "license-ui.js":
+        elif path == "license-ui.js":
             blob = patch_license_ui(blob.decode("utf-8")).encode("utf-8")
             changed = True
-        elif path.endswith("/electron-main.cjs") or path == "electron-main.cjs":
+        elif path == "electron-main.cjs":
             src = blob.decode("utf-8")
             if MARKER in src:
                 raise AssertionError("Hardware-ID marker already exists in electron-main.cjs")
@@ -297,7 +297,7 @@ def main():
             src = src[:imp.end()] + "\n" + MAIN_BLOCK + "\n" + src[imp.end():]
             blob = src.encode("utf-8")
             changed = True
-        elif path.endswith("/electron-native-preload.cjs") or path == "electron-native-preload.cjs":
+        elif path == "electron-native-preload.cjs":
             src = blob.decode("utf-8")
             if "getHardwareInstallationId" in src:
                 raise AssertionError("Hardware-ID API already exists in the native preload")
