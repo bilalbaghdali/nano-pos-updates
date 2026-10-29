@@ -56,4 +56,4 @@ data.setdefault("releaseHistory", {})["2.0.19"] = {
 }
 data["patches"] = [entry] + [old for old in data.get("patches", []) if old.get("id") != entry["id"]]
 Path("nano-pos-update.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-print(json.dumps({"version":"2.0.19","patch":PATCH.name,"patchSha256":entry["sha256"],"appAsarSha256":entry["appAsarSha256"],"sizeBytes":entry["sizeBytes"],"fromVersionCount":len(entry["fromVersions"]),"features":features["ar"]},ensure_ascii=False))
+print(json.dumps({"version":"2.0.19","patch":PATCH.name,"patchSha256":entry["sha256"],"appAsarSha256":entry["appAsarSha256"],"sizeBytes":entry["sizeBytes"],"fromVersionCount":len(entry["fromVersions"]),"features":features["ar"]},ensure_ascii=True))
