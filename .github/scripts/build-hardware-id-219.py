@@ -192,11 +192,13 @@ def patch_license_client(src):
 def patch_license_ui(src):
     if "nano-license-recovery-export" in src:
         raise AssertionError("v2.0.19 recovery button already exists")
-    marker = "id=\"nano-license-export\" class=\"nano-license-secondary\"></button></div><p id=\"nano-license-install-note\""
-    repl = "id=\"nano-license-export\" class=\"nano-license-secondary\"></button></div><div class=\"nano-license-actions\"><button type=\"button\" id=\"nano-license-recovery-export\" class=\"nano-license-secondary\"></button></div><p id=\"nano-license-install-note\""
-    if marker not in src:
-        raise AssertionError("Could not add the recovery button in license-ui.js")
-    src = src.replace(marker, repl, 1)
+    marker = re.compile(r'(<button\b(?=[^>]*\bid=["\']nano-license-export["\'])[^>]*>.*?</button>\s*</div>)(\s*<p\b(?=[^>]*\bid=["\']nano-license-install-note["\'])[^>]*>)', re.S)
+    match = marker.search(src)
+    if not match:
+        idx = src.find('nano-license-export')
+        raise AssertionError("Could not add the recovery button in license-ui.js; context=" + repr(src[max(0,idx-250):idx+850]))
+    repl = r'\1<div class="nano-license-actions"><button type="button" id="nano-license-recovery-export" class="nano-license-secondary"></button></div>\2'
+    src = src[:match.start()] + match.expand(repl) + src[match.end():]
     lang_anchor = "  const x=()=>T[language()];"
     lang_block = r"""
   const recoveryText = () => ({
