@@ -5,8 +5,8 @@ from pathlib import Path
 
 BASE_PATCH_SHA256 = "6848c73648740e7503aa4ef248e0deb79512367f5a0b0f0a3dd308e27e4351d6"
 BASE_ASAR_SHA256 = "b1fc5bceadfe4ae42cfdd145d7fef9fe3f45a4d18e182d598516c9d3d0e0987d"
-NEW_VERSION = "2.0.19"
-MARKER = "__NANO_POS_HARDWARE_ID_V219"
+NEW_VERSION = "2.0.20"
+MARKER = "__NANO_POS_HARDWARE_ID_V220"
 NEW_ID_FN = r"""function installationId() {
     let id = localStorage.getItem(installationKey);
     const hasSavedLicense = Boolean(localStorage.getItem(tokenKey) || localStorage.getItem(serverKey));
@@ -29,7 +29,7 @@ NEW_ID_FN = r"""function installationId() {
   }"""
 
 MAIN_BLOCK = r"""
-// __NANO_POS_HARDWARE_ID_V219: stable Windows computer identity; raw hardware serials never leave the PC.
+// __NANO_POS_HARDWARE_ID_V220: stable Windows computer identity; raw hardware serials never leave the PC.
 function nanoPosNormalizeHardwareValue(value) {
   const raw = String(value || '').replace(/[\u0000-\u001f\u007f]/g, '').trim().toUpperCase();
   const compact = raw.replace(/[^A-Z0-9]/g, '');
@@ -200,7 +200,7 @@ def patch_license_ui(src):
     buttons = r'''\1<div class="nano-license-actions"><button type="button" id="nano-license-recovery-export" class="nano-license-secondary"></button><button type="button" id="nano-license-recovery-import" class="nano-license-secondary"></button><input type="file" id="nano-license-recovery-file" accept=".nano-recovery,.json" hidden></div>\2'''
     src = src[:match.start()] + match.expand(buttons) + src[match.end():]
     block = r"""
-  // __NANO_POS_ACTIVATION_RECOVERY_UI_V219
+  // __NANO_POS_ACTIVATION_RECOVERY_UI_V220
   const __nanoRecoveryLabels = () => {
     const lang = String(window.NANOI18N?.current?.() || window.currentLanguage || document.documentElement.lang || 'ar').toLowerCase().split(/[-_]/)[0];
     const labels = {
