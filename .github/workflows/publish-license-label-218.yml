@@ -29,7 +29,7 @@ jobs:
           node-version: '22'
       - name: Download official v2.0.17 source patch
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           New-Item -ItemType Directory -Force -Path source,work | Out-Null
@@ -60,7 +60,7 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Manifest build failed'}
       - name: Publish v2.0.18 patch after tests
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           gh release view v2.0.18 -R bilalbaghdali/nano-pos-updates *> $null
@@ -72,7 +72,7 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Published patch asset could not be verified'}
       - name: Publish manifest using GitHub Contents API
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           $currentSha=gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha
@@ -86,7 +86,7 @@ jobs:
           if($LASTEXITCODE -ne 0){throw 'Manifest publication failed'}
       - name: Verify release and automatic update manifest
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
           $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
