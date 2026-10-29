@@ -192,7 +192,7 @@ def patch_license_client(src):
 def patch_license_ui(src):
     if "nano-license-recovery-export" in src:
         raise AssertionError("v2.0.19 recovery button already exists")
-    marker = re.compile(r'(<button\b(?=[^>]*\bid=["\']nano-license-export["\'])[^>]*>.*?</button>\s*</div>)(\s*<p\b(?=[^>]*\bid=["\']nano-license-install-note["\'])[^>]*>)', re.S)
+    marker = re.compile(r'(<button\b(?=[^>]*\bid=["\']nano-license-export["\'])[^>]*>.*?</button>\s*</div>)(\s*<p\b[^>]*>)', re.S)
     match = marker.search(src)
     if not match:
         idx = src.find('nano-license-export')
