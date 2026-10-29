@@ -28,8 +28,9 @@ jobs:
           python -c "import hashlib,zipfile; p='review-patch.zip'; z=zipfile.ZipFile(p); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='fa6442b369caeb29c8493e807341213b67c9c906523cdd6c526d6b464cc51f37'; print('PATCH_HASH_AND_ASAR_HASH_OK')"
           if($LASTEXITCODE -ne 0){throw 'Release asset hash verification failed'}
           @'
-          import json, struct, zipfile, hashlib, re
+          import json, struct, zipfile, hashlib, re, sys
           from pathlib import Path
+          sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
           z=zipfile.ZipFile("review-patch.zip")
           raw=z.read("payload/app.asar")
