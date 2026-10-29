@@ -1,0 +1,102 @@
+name: NANO POS v2.0.21 — Manufacturing Center
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-manufacturing-center-221.yml'
+      - '.github/scripts/build-manufacturing-center-221.py'
+      - '.github/scripts/publish-manifest-221.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-release-v2.0.21
+  cancel-in-progress: false
+jobs:
+  build-test-publish:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile publisher scripts and download official v2.0.20 base
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          python -m py_compile .github/scripts/build-manufacturing-center-221.py .github/scripts/publish-manifest-221.py
+          if($LASTEXITCODE -ne 0){throw 'Publisher scripts failed Python compilation'}
+          New-Item -ItemType Directory -Force -Path source,work | Out-Null
+          $baseName='NANO-POS-Patch-2.0.18-to-2.0.20-MOTHERBOARD-ID-RECOVERY.zip'
+          gh release download v2.0.20 -R bilalbaghdali/nano-pos-updates --pattern $baseName --dir source
+          if($LASTEXITCODE -ne 0){throw 'Could not download the official v2.0.20 base patch'}
+          python -c "import hashlib,zipfile; p=r'source/NANO-POS-Patch-2.0.18-to-2.0.20-MOTHERBOARD-ID-RECOVERY.zip'; z=zipfile.ZipFile(p); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(open(p,'rb').read()).hexdigest()=='c11937ee352f67616d4c529f6eb5034e81460497a0e72dfc1fbbc8753d8c0202'; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='fa6442b369caeb29c8493e807341213b67c9c906523cdd6c526d6b464cc51f37'"
+          if($LASTEXITCODE -ne 0){throw 'Published v2.0.20 base package integrity verification failed'}
+      - name: Build v2.0.21 and validate the ASAR payload
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/build-manufacturing-center-221.py source/NANO-POS-Patch-2.0.18-to-2.0.20-MOTHERBOARD-ID-RECOVERY.zip NANO-POS-Patch-2.0.20-to-2.0.21-MANUFACTURING-CENTER.zip work
+          if($LASTEXITCODE -ne 0){throw 'Manufacturing screen patch builder failed; nothing will be published'}
+          node --check work/renderer.js
+          if($LASTEXITCODE -ne 0){throw 'Renderer JavaScript syntax check failed'}
+      - name: Generate manifest with actual SHA-256 values
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/publish-manifest-221.py
+          if($LASTEXITCODE -ne 0){throw 'Could not generate the automatic-update manifest'}
+      - name: Publish release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release view v2.0.21 -R bilalbaghdali/nano-pos-updates *> $null
+          if($LASTEXITCODE -eq 0){throw 'Release v2.0.21 already exists; refusing to overwrite an existing published version'}
+          @'
+          NANO POS v2.0.21 — تحسينات عامة
+
+          - شاشة تصنيع مطوّرة بلوحة تشغيل مختصرة واختصارات للتركيبات وأوامر الإنتاج والمكونات والدفعات.
+          - بحث فوري داخل جداول التصنيع، مع مؤشرات مبنية على الصفوف المعروضة وقائمة تحقق قبل تأكيد الإنتاج.
+          - تصميم متجاوب للكمبيوتر والهاتف، مع الحفاظ على إجراءات الإنتاج الحالية والتفعيل والمخزون والنسخ الاحتياطي.
+          '@ | Set-Content -Path RELEASE_NOTES.md -Encoding utf8
+          gh release create v2.0.21 NANO-POS-Patch-2.0.20-to-2.0.21-MANUFACTURING-CENTER.zip -R bilalbaghdali/nano-pos-updates --target $env:GITHUB_SHA --title 'NANO POS v2.0.21 — تحسينات عامة' --notes-file RELEASE_NOTES.md
+          if($LASTEXITCODE -ne 0){throw 'GitHub release creation or patch upload failed'}
+      - name: Publish automatic-update manifest after asset upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $currentSha=gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha
+          if($LASTEXITCODE -ne 0 -or !$currentSha){throw 'Could not read current manifest SHA'}
+          $bytes=[System.IO.File]::ReadAllBytes((Resolve-Path 'nano-pos-update.json'))
+          $content=[Convert]::ToBase64String($bytes)
+          $body=@{message='Publish NANO POS v2.0.21 manufacturing center update';sha=$currentSha;content=$content} | ConvertTo-Json -Compress
+          $bodyPath=Join-Path $env:RUNNER_TEMP 'manifest-publish-221.json'
+          [System.IO.File]::WriteAllText($bodyPath,$body,[System.Text.UTF8Encoding]::new($false))
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --input $bodyPath
+          if($LASTEXITCODE -ne 0){throw 'Automatic-update manifest publication failed'}
+      - name: Verify release asset, hash and published update manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
+          if($m.version -ne '2.0.21' -or !$m.published){throw 'The published manifest version is not v2.0.21'}
+          $p=$m.patches[0]
+          if($p.id -ne 'nano-pos-v221-manufacturing-center' -or !($p.fromVersions -contains '2.0.20')){throw 'Manufacturing update is not the first patch or lacks v2.0.20 support'}
+          $verify=Join-Path $env:RUNNER_TEMP 'published-manufacturing-patch.zip'
+          Invoke-WebRequest -Uri $p.directUrl -OutFile $verify
+          $actual=(Get-FileHash $verify -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($actual -ne $p.sha256){throw 'Published patch SHA-256 does not match the manifest'}
+          python -c "import hashlib,zipfile; p=r'$verify'; z=zipfile.ZipFile(p); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='$($p.appAsarSha256)'"
+          if($LASTEXITCODE -ne 0){throw 'Published app.asar payload integrity verification failed'}
+          gh release view v2.0.21 -R bilalbaghdali/nano-pos-updates
+          if($LASTEXITCODE -ne 0){throw 'Published release could not be retrieved'}
+          Write-Host 'PASS: NANO POS v2.0.21 release, app.asar hash, and automatic-update manifest are verified.'
