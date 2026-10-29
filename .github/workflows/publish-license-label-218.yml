@@ -1,0 +1,98 @@
+name: NANO POS v2.0.18 — Correct Arabic license button label
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-license-label-218.yml'
+      - '.github/scripts/build-license-label-218.py'
+      - '.github/scripts/publish-manifest-218.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nano-pos-license-label-v2.0.18
+  cancel-in-progress: false
+jobs:
+  build-test-publish:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download official v2.0.17 source patch
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force -Path source,work | Out-Null
+          $patch='NANO-POS-Patch-1.0.118-to-2.0.17-STATISTICS-CHARTS-AUTOMATIC.zip'
+          gh release download v2.0.17 -R bilalbaghdali/nano-pos-updates --pattern $patch --dir source
+          if($LASTEXITCODE -ne 0){throw 'Could not download official v2.0.17 patch'}
+          python -c "import hashlib,zipfile; p=r'source/NANO-POS-Patch-1.0.118-to-2.0.17-STATISTICS-CHARTS-AUTOMATIC.zip'; z=zipfile.ZipFile(p); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='ae06246d24a9f28257f6bfe17a3e4b3dbf5e9dc836201de9255ab9021cecaf21'"
+          if($LASTEXITCODE -ne 0){throw 'Official v2.0.17 ASAR verification failed'}
+      - name: Replace only the Arabic label and build v2.0.18
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/build-license-label-218.py source/NANO-POS-Patch-1.0.118-to-2.0.17-STATISTICS-CHARTS-AUTOMATIC.zip NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip work
+          if($LASTEXITCODE -ne 0){throw 'License label patch build failed; no release will be published'}
+          $jsFiles=@(Get-ChildItem work -Recurse -File | Where-Object {$_.Extension -in '.js','.cjs','.mjs'})
+          foreach($f in $jsFiles){
+            node --check $f.FullName
+            if($LASTEXITCODE -ne 0){throw "JavaScript syntax check failed: $($f.FullName)"}
+          }
+      - name: Check the final ASAR and exact text change
+        run: |
+          $ErrorActionPreference='Stop'
+          python -c "import hashlib,json,struct,zipfile; z=zipfile.ZipFile('NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip'); assert z.namelist()==['payload/app.asar']; b=z.read('payload/app.asar'); m,bl,hs,n=struct.unpack_from('<4I',b); tree=json.loads(b[16:16+n]); start=8+bl; files={}; walk=lambda node,prefix='': [(files.__setitem__(prefix+k,b[start+int(e['offset']):start+int(e['offset'])+int(e['size'])]) if 'offset' in e and 'size' in e else None) if 'files' not in e else walk(e,prefix+k+'/') for k,e in node.get('files',{}).items()]; walk(tree); p=json.loads(files['package.json']); assert p['version']=='2.0.18'; alltext='\\n'.join(v.decode('utf-8','ignore') for v in files.values()); assert 'ازل الترخيص من البرنامج' in alltext; assert not any(x in alltext for x in ['إزالة الترخيص من المتصفح','ازالة الترخيص من المتصفح','أزل الترخيص من المتصفح','ازل الترخيص من المتصفح']); assert '__nanoCartSpeechV202' in files['renderer.js'].decode('utf-8','ignore'); assert '__nanoOperationalAnalyticsV217' in files['renderer.js'].decode('utf-8','ignore'); print('PASS: v2.0.18, new license label, no old label, base features preserved')"
+          if($LASTEXITCODE -ne 0){throw 'Final ASAR audit failed'}
+      - name: Prepare release manifest
+        run: |
+          $ErrorActionPreference='Stop'
+          python .github/scripts/publish-manifest-218.py
+          if($LASTEXITCODE -ne 0){throw 'Manifest build failed'}
+      - name: Publish v2.0.18 patch after tests
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          gh release view v2.0.18 -R bilalbaghdali/nano-pos-updates *> $null
+          if($LASTEXITCODE -eq 0){throw 'v2.0.18 already exists; refusing to overwrite an existing release'}
+          $notes='تعديل عبارة زر الترخيص إلى «ازل الترخيص من البرنامج» بدلًا من «ازل الترخيص من المتصفح». تغيير النص الظاهر فقط دون تعديل منطق التفعيل أو معرّف الجهاز أو بيانات المتجر. الحفاظ على ميزات الإصدار 2.0.17.'
+          gh release create v2.0.18 NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip -R bilalbaghdali/nano-pos-updates --target $env:GITHUB_SHA --title 'NANO POS v2.0.18 — تعديل عبارة الترخيص' --notes $notes
+          if($LASTEXITCODE -ne 0){throw 'GitHub release creation failed'}
+          gh release view v2.0.18 -R bilalbaghdali/nano-pos-updates --json assets --jq '.assets[].name' | Select-String -SimpleMatch 'NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip'
+          if($LASTEXITCODE -ne 0){throw 'Published patch asset could not be verified'}
+      - name: Publish manifest using GitHub Contents API
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $currentSha=gh api repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --jq .sha
+          if($LASTEXITCODE -ne 0 -or !$currentSha){throw 'Could not read current manifest SHA'}
+          $bytes=[System.IO.File]::ReadAllBytes((Resolve-Path 'nano-pos-update.json'))
+          $content=[Convert]::ToBase64String($bytes)
+          $body=@{message='Publish NANO POS v2.0.18 license label update';sha=$currentSha;content=$content} | ConvertTo-Json -Compress
+          $bodyPath=Join-Path $env:RUNNER_TEMP 'manifest-publish.json'
+          [System.IO.File]::WriteAllText($bodyPath,$body,[System.Text.UTF8Encoding]::new($false))
+          gh api --method PUT repos/bilalbaghdali/nano-pos-updates/contents/nano-pos-update.json --input $bodyPath
+          if($LASTEXITCODE -ne 0){throw 'Manifest publication failed'}
+      - name: Verify release and automatic update manifest
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $m=Invoke-RestMethod 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/nano-pos-update.json'
+          if($m.version -ne '2.0.18' -or !$m.published){throw 'Published manifest verification failed'}
+          $p=$m.patches[0]
+          if($p.id -ne 'nano-pos-v118-license-label-program-v218' -or !($p.fromVersions -contains '2.0.17')){throw 'v2.0.18 license label patch missing from automatic manifest'}
+          gh release view v2.0.18 -R bilalbaghdali/nano-pos-updates
+          if($LASTEXITCODE -ne 0){throw 'Published release verification failed'}
+          Write-Host 'PASS: v2.0.18 patch and automatic-update manifest are published.'
