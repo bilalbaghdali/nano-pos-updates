@@ -32,7 +32,7 @@ jobs:
           $patch='NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.1.zip'
           gh release download v2.0.22 -R bilalbaghdali/nano-pos-updates --pattern $patch --dir source
           if($LASTEXITCODE -ne 0){throw 'Could not download official v2.0.22 patch'}
-          python -c "import hashlib,zipfile; p=r'source/NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.1.zip'; z=zipfile.ZipFile(p); assert z.namelist()==['payload/app.asar']; assert hashlib.sha256(open(p,'rb').read()).hexdigest()=='65bf1a5acd75f582ca73a0c352a712874af167938329f0e1096f33c5d76139b2'; assert hashlib.sha256(z.read('payload/app.asar')).hexdigest()=='9fa8d7edc883bf860faf8dd9c7f156bf427fd2e54aae3fb1f95e546e088bc585a'"
+          python -c "import hashlib,zipfile; p=r'source/NANO-POS-Patch-2.0.21-to-2.0.22-MANUFACTURING-ACTIVATION.1.zip'; z=zipfile.ZipFile(p); n=z.namelist(); member='payload/app.asar' if 'payload/app.asar' in n else 'app.asar'; assert n==[member]; assert hashlib.sha256(open(p,'rb').read()).hexdigest()=='65bf1a5acd75f582ca73a0c352a712874af167938329f0e1096f33c5d76139b2'; assert hashlib.sha256(z.read(member)).hexdigest()=='9fa8d7edc883bf860faf8dd9c7f156bf427fd2e54aae3fb1f95e546e088bc585a'"
           if($LASTEXITCODE -ne 0){throw 'Official v2.0.22 package integrity verification failed'}
       - name: Build, validate, and prepare v2.0.23
         run: |
