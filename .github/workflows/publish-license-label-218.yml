@@ -58,18 +58,32 @@ jobs:
           $ErrorActionPreference='Stop'
           python .github/scripts/publish-manifest-218.py
           if($LASTEXITCODE -ne 0){throw 'Manifest build failed'}
-      - name: Publish v2.0.18 patch after tests
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Publish verified patch artifact to repository downloads
         run: |
           $ErrorActionPreference='Stop'
-          gh release view v2.0.18 -R bilalbaghdali/nano-pos-updates *> $null
-          if($LASTEXITCODE -eq 0){throw 'v2.0.18 already exists; refusing to overwrite an existing release'}
-          $notes='تعديل عبارة زر الترخيص إلى «ازل الترخيص من البرنامج» بدلًا من «ازل الترخيص من المتصفح». تغيير النص الظاهر فقط دون تعديل منطق التفعيل أو معرّف الجهاز أو بيانات المتجر. الحفاظ على ميزات الإصدار 2.0.17.'
-          gh release create v2.0.18 NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip -R bilalbaghdali/nano-pos-updates --target $env:GITHUB_SHA --title 'NANO POS v2.0.18 — تعديل عبارة الترخيص' --notes $notes
-          if($LASTEXITCODE -ne 0){throw 'GitHub release creation failed'}
-          gh release view v2.0.18 -R bilalbaghdali/nano-pos-updates --json assets --jq '.assets[].name' | Select-String -SimpleMatch 'NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip'
-          if($LASTEXITCODE -ne 0){throw 'Published patch asset could not be verified'}
+          $manifestBackup=Join-Path $env:RUNNER_TEMP 'nano-pos-update-v218.json'
+          Copy-Item 'nano-pos-update.json' $manifestBackup -Force
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          if($LASTEXITCODE -ne 0){throw 'Could not fetch latest main before publishing the patch'}
+          git reset --hard origin/main
+          if($LASTEXITCODE -ne 0){throw 'Could not synchronize main before publishing the patch'}
+          New-Item -ItemType Directory -Force -Path downloads | Out-Null
+          Copy-Item 'NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip' 'downloads/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip' -Force
+          git add 'downloads/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip'
+          git commit -m 'Publish NANO POS v2.0.18 license label patch'
+          if($LASTEXITCODE -ne 0){throw 'Could not commit v2.0.18 patch'}
+          git push origin HEAD:main
+          if($LASTEXITCODE -ne 0){throw 'Could not publish v2.0.18 patch to main'}
+          Copy-Item $manifestBackup 'nano-pos-update.json' -Force
+          $raw='https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/downloads/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip'
+          $verify=Join-Path $env:RUNNER_TEMP 'published-license-label-v218.zip'
+          Invoke-WebRequest -Uri $raw -OutFile $verify
+          if($LASTEXITCODE -ne 0){throw 'Could not verify published patch URL'}
+          $publishedSha=(Get-FileHash $verify -Algorithm SHA256).Hash.ToLowerInvariant()
+          $localSha=(Get-FileHash 'NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip' -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($publishedSha -ne $localSha){throw 'Published patch checksum mismatch'}
       - name: Publish manifest using GitHub Contents API
         env:
           GH_TOKEN: ${{ github.token }}
@@ -93,6 +107,10 @@ jobs:
           if($m.version -ne '2.0.18' -or !$m.published){throw 'Published manifest verification failed'}
           $p=$m.patches[0]
           if($p.id -ne 'nano-pos-v118-license-label-program-v218' -or !($p.fromVersions -contains '2.0.17')){throw 'v2.0.18 license label patch missing from automatic manifest'}
-          gh release view v2.0.18 -R bilalbaghdali/nano-pos-updates
-          if($LASTEXITCODE -ne 0){throw 'Published release verification failed'}
-          Write-Host 'PASS: v2.0.18 patch and automatic-update manifest are published.'
+          if($p.directUrl -ne 'https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/main/downloads/NANO-POS-Patch-2.0.17-to-2.0.18-LICENSE-LABEL-FIX.zip'){throw 'Unexpected v2.0.18 patch URL'}
+          $verify=Join-Path $env:RUNNER_TEMP 'published-license-label-v218-final.zip'
+          Invoke-WebRequest -Uri $p.directUrl -OutFile $verify
+          if($LASTEXITCODE -ne 0){throw 'Published patch URL verification failed'}
+          $actual=(Get-FileHash $verify -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($actual -ne $p.sha256){throw 'Published manifest checksum mismatch'}
+          Write-Host 'PASS: v2.0.18 patch is public and the automatic-update manifest is published.'
