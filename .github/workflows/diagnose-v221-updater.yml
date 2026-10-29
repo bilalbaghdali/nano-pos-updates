@@ -44,7 +44,7 @@ jobs:
           print('PACKAGE FILE COUNT',len(files))
           print('PACKAGE VERSION',json.loads(files['package.json']))
           print('UPDATER PATHS',[k for k in files if re.search(r'update|electron-main|preload',k,re.I)])
-          needles=['nano-pos-update.json','checkForUpdates','getCurrentAppVersion','fromVersions','raw.githubusercontent.com','github.com/bilalbaghdali/nano-pos-updates','manifest.version','versionCompare','semver','isUpdateAvailable','available =','published']
+          needles=['nano-pos-update.json','nano-update-check','nano-update-download','getCurrentAppVersion','fromVersions','raw.githubusercontent.com','github.com/bilalbaghdali/nano-pos-updates','update-config.json','manifest.version','releaseHistory','versionCompare','semver','isUpdateAvailable','available =','published','MANIFEST','manifestUrl','parseVersion','compareVersions','currentVersion','gitHub']
           for path in [k for k in files if re.search(r'electron-main|electron-native-preload|update-manager|update-client|main\.cjs|preload',k,re.I)]:
               text=files[path].decode('utf-8','ignore')
               print('\\n===== FILE',path,'len',len(text),'sha256',hashlib.sha256(files[path]).hexdigest(),'=====')
