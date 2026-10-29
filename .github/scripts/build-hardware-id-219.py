@@ -192,39 +192,73 @@ def patch_license_client(src):
 def patch_license_ui(src):
     if "nano-license-recovery-export" in src:
         raise AssertionError("v2.0.19 recovery button already exists")
-    marker = re.compile(r'(<button\b(?=[^>]*\bid=["\']nano-license-export["\'])[^>]*>.*?</button>\s*</div>)(\s*<p\b[^>]*>)', re.S)
+    marker = re.compile(r'(<button\b(?=[^>]*\bid=["\']nano-license-export["\'])[^>]*>.*?</button>\s*</div>)(\s*<p\b)', re.S)
     match = marker.search(src)
     if not match:
-        idx = src.find('nano-license-export')
-        raise AssertionError("Could not add the recovery button in license-ui.js; context=" + repr(src[max(0,idx-250):idx+850]))
-    repl = r'\1<div class="nano-license-actions"><button type="button" id="nano-license-recovery-export" class="nano-license-secondary"></button></div>\2'
-    src = src[:match.start()] + match.expand(repl) + src[match.end():]
-    lang_anchor = "  const x=()=>T[language()];"
-    lang_block = r"""
-  const recoveryText = () => ({
-    ar: { button: 'حفظ نسخة احتياطية للتفعيل', exported: 'تم حفظ نسخة الاسترداد. احتفظ بها خارج الكمبيوتر قبل تهيئة Windows.', restored: 'تم استرداد التفعيل بنجاح على الكمبيوتر نفسه.' },
-    fr: { button: 'Sauvegarder la licence', exported: 'Sauvegarde créée. Conservez-la hors du PC avant de réinstaller Windows.', restored: 'Licence restaurée sur le même ordinateur.' },
-    en: { button: 'Back up activation', exported: 'Recovery file saved. Keep it off this PC before reinstalling Windows.', restored: 'Activation restored on the same computer.' }
-  })[language()] || { button: 'Back up activation', exported: 'Recovery file saved.', restored: 'Activation restored.' };
+        idx = src.find("nano-license-export")
+        raise AssertionError("Could not locate the end of the current program-ID button area; context=" + repr(src[max(0,idx-250):idx+1000]))
+    buttons = r'''\1<div class="nano-license-actions"><button type="button" id="nano-license-recovery-export" class="nano-license-secondary"></button><button type="button" id="nano-license-recovery-import" class="nano-license-secondary"></button><input type="file" id="nano-license-recovery-file" accept=".nano-recovery,.json" hidden></div>\2'''
+    src = src[:match.start()] + match.expand(buttons) + src[match.end():]
+    block = r"""
+  // __NANO_POS_ACTIVATION_RECOVERY_UI_V219
+  const __nanoRecoveryLabels = () => {
+    const lang = String(window.NANOI18N?.current?.() || window.currentLanguage || document.documentElement.lang || 'ar').toLowerCase().split(/[-_]/)[0];
+    const labels = {
+      ar: { save: 'حفظ نسخة احتياطية للتفعيل', restore: 'استعادة التفعيل', saved: 'تم حفظ نسخة الاسترداد. احتفظ بها خارج الكمبيوتر قبل تهيئة Windows.', restored: 'تم استرداد التفعيل على الكمبيوتر نفسه.', failed: 'تعذر استرداد التفعيل.' },
+      fr: { save: 'Sauvegarder l’activation', restore: 'Restaurer l’activation', saved: 'Sauvegarde créée. Conservez-la hors du PC avant de réinstaller Windows.', restored: 'Activation restaurée sur le même ordinateur.', failed: 'Échec de la restauration de l’activation.' },
+      en: { save: 'Back up activation', restore: 'Restore activation', saved: 'Recovery file saved. Keep it off this PC before reinstalling Windows.', restored: 'Activation restored on the same computer.', failed: 'Activation recovery failed.' }
+    };
+    const text = labels[lang] || labels.ar;
+    const save = document.getElementById('nano-license-recovery-export');
+    const restore = document.getElementById('nano-license-recovery-import');
+    if (save) save.textContent = text.save;
+    if (restore) restore.textContent = text.restore;
+    return text;
+  };
+  const __nanoRecoveryMessage = (text, failed = false) => {
+    const node = document.getElementById('nano-license-message');
+    if (node) { node.textContent = text; node.className = failed ? 'nano-license-error' : 'nano-license-success'; }
+    else if (failed) console.error(text);
+  };
+  __nanoRecoveryLabels();
+  window.addEventListener('nano-language-synchronized', __nanoRecoveryLabels);
+  window.addEventListener('languagechange', __nanoRecoveryLabels);
+  document.getElementById('nano-license-recovery-export')?.addEventListener('click', async () => {
+    try {
+      if (!window.nanoLicense?.exportRecovery) throw new Error('ميزة استرداد التفعيل غير متاحة في هذه النسخة.');
+      const data = await window.nanoLicense.exportRecovery();
+      const url = URL.createObjectURL(new Blob([data], { type: 'application/json;charset=utf-8' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'NANO-POS-activation-recovery.nano-recovery';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      __nanoRecoveryMessage(__nanoRecoveryLabels().saved);
+    } catch (error) { __nanoRecoveryMessage(error?.message || __nanoRecoveryLabels().failed, true); }
+  });
+  const __nanoRecoveryFile = document.getElementById('nano-license-recovery-file');
+  document.getElementById('nano-license-recovery-import')?.addEventListener('click', () => __nanoRecoveryFile?.click());
+  __nanoRecoveryFile?.addEventListener('change', async () => {
+    const file = __nanoRecoveryFile.files?.[0];
+    if (!file) return;
+    try {
+      if (file.size > 1048576) throw new Error('ملف الاسترداد أكبر من الحد المسموح.');
+      const content = await file.text();
+      if (!window.nanoLicense?.restoreRecovery) throw new Error('ميزة استرداد التفعيل غير متاحة في هذه النسخة.');
+      await window.nanoLicense.restoreRecovery(content);
+      if (typeof refresh === 'function') await refresh(true);
+      __nanoRecoveryMessage(__nanoRecoveryLabels().restored);
+    } catch (error) { __nanoRecoveryMessage(error?.message || __nanoRecoveryLabels().failed, true); }
+    finally { __nanoRecoveryFile.value = ''; }
+  });
 """
-    if lang_anchor not in src:
-        raise AssertionError("Could not locate language helper in license-ui.js")
-    src = src.replace(lang_anchor, lang_anchor + "\n" + lang_block, 1)
-    paint_anchor = "$('export').textContent=a.export;"
-    if paint_anchor not in src:
-        raise AssertionError("Could not locate static button paint logic")
-    src = src.replace(paint_anchor, paint_anchor + "$('recovery-export').textContent=recoveryText().button;", 1)
-    src = src.replace('accept=\".nano-license,.txt\"', 'accept=\".nano-license,.txt,.nano-recovery,.json\"', 1)
-    old_change = "$('file').addEventListener('change',async()=>{const file=$('file').files[0];if(!file)return;try{if(file.size>32768)throw new Error(x().fileBig);$('token').value=(await file.text()).trim();message(x().loaded);$('submit').focus();}catch(error){message(error.message,true);}finally{$('file').value='';}});"
-    new_change = r"""$('file').addEventListener('change',async()=>{const file=$('file').files[0];if(!file)return;try{if(file.size>32768)throw new Error(x().fileBig);const content=await file.text();if(file.name.toLowerCase().endsWith('.nano-recovery')){await window.nanoLicense.restoreRecovery(content);$('token').value='';await refresh(true);message(recoveryText().restored);return;}$('token').value=content.trim();message(x().loaded);$('submit').focus();}catch(error){message(error.message,true);}finally{$('file').value='';}});"""
-    if old_change not in src:
-        raise AssertionError("Could not safely update the license import handler")
-    src = src.replace(old_change, new_change, 1)
-    export_anchor = "$('export').addEventListener('click',()=>{const id=window.nanoLicense.installationId(),url=URL.createObjectURL(new Blob([id+'\\n'],{type:'text/plain'})),link=document.createElement('a');link.href=url;link.download='nano-program-id.nano-id';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);message(x().exported);});"
-    if export_anchor not in src:
-        raise AssertionError("Could not locate program-ID export handler")
-    recovery_handler = r"""$('recovery-export').addEventListener('click',async()=>{try{const text=await window.nanoLicense.exportRecovery();const url=URL.createObjectURL(new Blob([text],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download='NANO-POS-activation-recovery.nano-recovery';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);message(recoveryText().exported);}catch(error){message(error.message||'تعذر حفظ نسخة الاسترداد.',true);}});"""
-    src = src.replace(export_anchor, export_anchor + "\n  " + recovery_handler, 1)
+    end_match = re.search(r"\}\);\s*$", src)
+    if not end_match:
+        raise AssertionError("Could not identify the end of license-ui.js safely; tail=" + repr(src[-500:]))
+    src = src[:end_match.start()] + block + "\n" + src[end_match.start():]
+    assert src.count("nano-license-recovery-export") >= 2, "Recovery export control was not injected"
+    assert "NANO-POS-activation-recovery.nano-recovery" in src, "Recovery export handler is missing"
+    assert "restoreRecovery(content)" in src, "Recovery restore handler is missing"
     return src
 
 def main():
