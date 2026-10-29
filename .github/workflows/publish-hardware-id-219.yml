@@ -1,11 +1,5 @@
 name: NANO POS v2.0.19 — Motherboard ID and activation recovery
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/publish-hardware-id-219.yml'
-      - '.github/scripts/build-hardware-id-219.py'
-      - '.github/scripts/publish-manifest-219.py'
   workflow_dispatch:
 permissions:
   contents: write
