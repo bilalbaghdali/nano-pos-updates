@@ -112,7 +112,7 @@ def main():
     with OUT_ASAR.open("wb") as f:
         f.write(struct.pack("<IIII", 4, header_size, len(header_json), len(header_json)))
         f.write(header_json)
-        f.write(b'\\x00\\x00')  # ASAR header requires two padding bytes before payload data.
+        f.write(bytes(2))  # ASAR header requires two padding bytes before payload data.
         for chunk in chunks:
             f.write(chunk)
     # Read back the ASAR header and verify the actual modified files.
