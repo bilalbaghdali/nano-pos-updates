@@ -84,8 +84,9 @@ def walk_repack(node, root, chunks):
 
 def main():
     with zipfile.ZipFile(SOURCE) as z:
-        assert z.namelist() == ["payload/app.asar"], "Unexpected source ZIP structure"
-        original = z.read("payload/app.asar")
+        member = "payload/app.asar" if "payload/app.asar" in z.namelist() else "app.asar"
+        assert z.namelist() == [member], "Unexpected source ZIP structure"
+        original = z.read(member)
     tree, raw, base = read_asar(original)
     work = Path("work-asar")
     if work.exists():
