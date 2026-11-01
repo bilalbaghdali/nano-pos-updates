@@ -3,23 +3,23 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.23",
-  "releaseDate": "2026-10-29",
+  "version": "2.0.24",
+  "releaseDate": "2026-11-01",
   "mandatory": false,
   "importance": "normal",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "توحيد ألوان وتنسيق نافذة التصنيع مع واجهة NANO POS.",
-      "تحسين تناسق الحقول والأزرار والجداول والاستجابة للشاشات الصغيرة مع الحفاظ على وظائف التصنيع."
+      "إصلاح البحث اليدوي عن التحديثات عند فتح مركز التحديثات من الإعدادات.",
+      "تحسين عرض التحديثات والتحقق من توفرها قبل بدء التنزيل."
     ],
     "fr": [
-      "Harmonisation des couleurs et de la présentation de la fenêtre de fabrication avec NANO POS.",
-      "Amélioration de la cohérence des champs, boutons, tableaux et de l’affichage sur petits écrans, sans modifier les fonctions de fabrication."
+      "Correction de la recherche manuelle des mises à jour à l’ouverture du centre depuis les paramètres.",
+      "Amélioration de l’affichage des mises à jour et vérification de leur disponibilité avant le téléchargement."
     ],
     "en": [
-      "Aligned manufacturing-window colors and styling with the NANO POS interface.",
-      "Improved consistency of fields, buttons, tables, and small-screen layout while preserving manufacturing behavior."
+      "Fixed manual update checks when opening the Update Center from Settings.",
+      "Improved update display and availability verification before downloading."
     ]
   },
   "releaseHistory": {
@@ -2615,9 +2615,39 @@
           "Improved consistency of fields, buttons, tables, and small-screen layout while preserving manufacturing behavior."
         ]
       }
+    },
+    "2.0.24": {
+      "releaseDate": "2026-11-01",
+      "features": {
+        "ar": [
+          "إصلاح البحث اليدوي عن التحديثات عند فتح مركز التحديثات من الإعدادات.",
+          "تحسين عرض التحديثات والتحقق من توفرها قبل بدء التنزيل."
+        ],
+        "fr": [
+          "Correction de la recherche manuelle des mises à jour à l’ouverture du centre depuis les paramètres.",
+          "Amélioration de l’affichage des mises à jour et vérification de leur disponibilité avant le téléchargement."
+        ],
+        "en": [
+          "Fixed manual update checks when opening the Update Center from Settings.",
+          "Improved update display and availability verification before downloading."
+        ]
+      }
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v224-update-center-fix",
+      "fromVersions": [
+        "2.0.22"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.24/NANO-POS-Patch-2.0.22-to-2.0.24-UPDATE-CENTER-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.24",
+      "sha256": "a6367fdab3d99a9ed1adc88427864f4dc30169e012ed455e61b6eb0d1d5e16c5",
+      "appAsarSha256": "3d263b58d30ed1b973d2aade6d4c30068066927bea44e5a1b31775d1590aff31",
+      "fileName": "NANO-POS-Patch-2.0.22-to-2.0.24-UPDATE-CENTER-FIX.zip",
+      "sizeBytes": 31475482,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v223-manufacturing-ui-consistency",
       "fromVersions": [
@@ -3642,8 +3672,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح موضع زر اللغة بجانب التواصل مع الدعم في الشريط العلوي فقط وإزالة نسخته من الشريط الجانبي.",
-    "fr": "Correction du sélecteur de langue à côté du contact du support dans la barre supérieure, sans doublon dans le panneau latéral.",
-    "en": "Fixed language selector beside Contact Support in the top toolbar only; removed the sidebar copy and prevented duplicates."
+    "ar": "إصلاح البحث اليدوي عن التحديثات من الإعدادات وتحسين التحقق من توفر حزمة التحديث.",
+    "fr": "Correction de la recherche manuelle des mises à jour depuis les paramètres et amélioration de la vérification du paquet.",
+    "en": "Fixed manual update checks from Settings and improved update-package availability verification."
   }
 }
