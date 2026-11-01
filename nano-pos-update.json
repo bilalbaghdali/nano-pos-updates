@@ -2637,8 +2637,10 @@
   "patches": [
     {
       "id": "nano-pos-v224-update-center-fix",
-      "fromVersions": [
-        "2.0.22"
+            "fromVersions": [
+        "2.0.21",
+        "2.0.22",
+        "2.0.23"
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.24/NANO-POS-Patch-2.0.22-to-2.0.24-UPDATE-CENTER-FIX.zip",
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.24",
