@@ -1,34 +1,29 @@
 {
   "schema": 1,
-  "published": true,
+  "published": false,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.34",
+  "version": "2.0.35",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "مواقيت الصلاة تظهر في الشاشة الرئيسية فوق الآية أو الحديث.",
-      "عداد مباشر للصلاة القادمة.",
-      "عرض التاريخ الميلادي والهجري.",
-      "تنبيه مرئي قبل الصلاة بعشر دقائق وتنبيه مرئي عند دخول وقت الصلاة.",
-      "حساب محلي خفيف مع خيار تحديد الموقع واستخدام الجزائر العاصمة افتراضياً."
+      "اعتماد مصدر جداول وزارة الشؤون الدينية والأوقاف الجزائرية.",
+      "اختيار أقرب مدينة وجدول رسمي بواسطة GPS.",
+      "وميض التاريخ عند المناسبة الوطنية أو التاريخية أو الدينية.",
+      "إظهار مصدر الجدول والتمييز الواضح للحالة الاحتياطية."
     ],
     "fr": [
-      "Les horaires de prière apparaissent sur l’accueil au-dessus du verset ou du hadith.",
-      "Compte à rebours en direct vers la prochaine prière.",
-      "Affichage des dates grégorienne et hégirienne.",
-      "Alerte visuelle dix minutes avant et alerte à l’entrée de l’heure.",
-      "Calcul local léger avec localisation optionnelle et Alger par défaut."
+      "Source des tableaux du ministère algérien.",
+      "Choix de la ville la plus proche par GPS.",
+      "Clignotement de la date lors des fêtes et événements."
     ],
     "en": [
-      "Prayer times appear on the home screen above the ayah or hadith.",
-      "Live countdown to the next prayer.",
-      "Gregorian and Hijri dates are displayed.",
-      "Visual alert ten minutes before prayer and at prayer time.",
-      "Light offline calculation with optional location and Algiers as the default."
+      "Algerian Ministry schedule source.",
+      "GPS selects the nearest city and official table.",
+      "Date blinks on national, historical, or religious occasions."
     ]
   },
   "releaseHistory": {
@@ -2950,6 +2945,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v235-ministry-prayer",
+      "fromVersions": [
+        "2.0.34"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.35/NANO-POS-Patch-2.0.34-to-2.0.35-MINISTRY-PRAYER.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.35",
+      "sha256": "16e715cb65b4f80522a77174bde7e416702218025c7c6a75b4598005f8228c31",
+      "appAsarSha256": "b19163357e670a9c3e4e46337dd8611610d5b09971a3e3f11bf0032a57e36fbd",
+      "fileName": "NANO-POS-Patch-2.0.34-to-2.0.35-MINISTRY-PRAYER.zip",
+      "sizeBytes": 31148564,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v234-prayer-times",
       "fromVersions": [
         "1.0.28",
@@ -5313,8 +5321,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "مواقيت الصلاة والعدّاد والتاريخان والتنبيهات المرئية في الشاشة الرئيسية.",
-    "fr": "Horaires de prière, compte à rebours, deux calendriers et alertes visuelles sur l’accueil.",
-    "en": "Prayer times, countdown, both calendars, and visual alerts on the home screen."
+    "ar": "مواقيت الصلاة الرسمية، تحديد المدينة بالموقع، ومناسبات وميض التاريخ.",
+    "fr": "Horaires officiels, ville GPS et événements avec date clignotante.",
+    "en": "Official prayer schedules, GPS city selection, and occasion date blink."
   }
 }
