@@ -4,26 +4,26 @@
   "manifestRevision": "2.0.48-restore-243-final",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.50",
+  "version": "2.0.51",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح ظهور مواقيت الصلاة داخل الشاشة الرئيسية.",
-      "إصلاح العد التنازلي وتحديثه كل ثانية.",
-      "تحديث مواقيت Aladhan عند تغيير الولاية وتقليل عرض شريط العداد."
+      "تصميم احترافي جديد لمواقيت الصلاة.",
+      "استخدام خلفية ساعة مسجد داخل بطاقة المواقيت.",
+      "عرض أرقام التاريخ الميلادي والهجري بالأرقام اللاتينية مع الحفاظ على الإعدادات السابقة."
     ],
     "fr": [
-      "Correction de l’affichage des horaires sur l’accueil.",
-      "Correction du compte à rebours avec mise à jour chaque seconde.",
-      "Actualisation Aladhan lors du changement de wilaya et barre réduite."
+      "Nouveau design professionnel des horaires de prière.",
+      "Fond de tour d’horloge de mosquée dans la carte.",
+      "Dates grégorienne et hégirienne en chiffres latins, réglages conservés."
     ],
     "en": [
-      "Fix prayer-time visibility on the home screen.",
-      "Fix the countdown and update it every second.",
-      "Refresh Aladhan times when changing wilaya and reduce the countdown bar width."
+      "New professional prayer-times design.",
+      "Mosque clock-tower background in the prayer card.",
+      "Gregorian and Hijri dates use Latin digits while preserving existing settings."
     ]
   },
   "releaseHistory": {
@@ -2945,6 +2945,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v251-mosque-clock-ui",
+      "fromVersions": [
+        "2.0.50"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.51/NANO-POS-Patch-2.0.50-to-2.0.51-MOSQUE-CLOCK-UI.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.51",
+      "sha256": "bed44829163975cf181a5688f950e420e334ce858715e46ab4de40c5ae6ec4bf",
+      "appAsarSha256": "b56d5be057b69d08e612a6efc4cedf3cced6a81701994f9d2c8e55289341d067",
+      "fileName": "NANO-POS-Patch-2.0.50-to-2.0.51-MOSQUE-CLOCK-UI.zip",
+      "sizeBytes": 31157691,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v250-prayer-fix",
       "fromVersions": [
         "2.0.49"
@@ -5517,8 +5530,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح المواقيت والعداد وتناسق شريط العرض.",
-    "fr": "Correction des horaires, du compte à rebours et de la barre.",
-    "en": "Prayer times, countdown and display bar fixed."
+    "ar": "تصميم ساعة مسجد وأرقام لاتينية للتاريخين.",
+    "fr": "Design horloge de mosquée et chiffres latins.",
+    "en": "Mosque clock design and Latin date digits."
   }
 }
