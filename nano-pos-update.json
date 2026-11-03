@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.44",
+  "version": "2.0.45",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "دمج تطبيق الأذان داخل الشاشة الرئيسية للبرنامج.",
-      "تصميم الشاشة الرئيسية وفق نموذج NANO POS المرسل.",
-      "عرض الصلاة القادمة والعداد والتاريخ وشريط المواقيت داخل لوحة التحكم."
+      "إعادة تصميم الشاشة الرئيسية بالكامل وفق الصورة المرجعية.",
+      "وضع لوحة الأذان بجانب لوحات المؤشرات والاختصارات.",
+      "إضافة بطاقة حالة النظام مع الحفاظ على وظائف المبيعات والإحصائيات."
     ],
     "fr": [
-      "Intégration de l’adhan dans l’écran d’accueil.",
-      "Nouvelle présentation inspirée du modèle NANO POS fourni.",
-      "Prochaine prière, compte à rebours, date et horaires dans le tableau de bord."
+      "Refonte complète de l’accueil selon la référence fournie.",
+      "Panneau de l’adhan placé avec les indicateurs et raccourcis.",
+      "Carte d’état du système avec les fonctions existantes conservées."
     ],
     "en": [
-      "Integrate the adhan app into the main home screen.",
-      "Restyle the home screen after the provided NANO POS reference.",
-      "Show next prayer, countdown, date and prayer strip in the dashboard."
+      "Rebuild the home screen layout based on the provided reference.",
+      "Place the adhan dashboard beside metrics and shortcuts.",
+      "Add a system-status card while preserving existing POS functions."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v245-home-exact",
+      "fromVersions": [
+        "2.0.44"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.45/NANO-POS-Patch-2.0.44-to-2.0.45-HOME-EXACT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.45",
+      "sha256": "63473ae7cd8b9033348ef9ce0a552beee3053bca483bc2ecf91821858b44292e",
+      "appAsarSha256": "a9f3009a8617c9bb17544d961957009861c2e1107e58a0566c254b59a661f428",
+      "fileName": "NANO-POS-Patch-2.0.44-to-2.0.45-HOME-EXACT.zip",
+      "sizeBytes": 31155144,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v244-home-azan",
       "fromVersions": [
         "2.0.43"
@@ -5438,8 +5451,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تم دمج واجهة الأذان داخل الشاشة الرئيسية.",
-    "fr": "L’interface de l’adhan est intégrée à l’accueil.",
-    "en": "The adhan interface is integrated into the home dashboard."
+    "ar": "الشاشة الرئيسية أصبحت مطابقة لتخطيط الصورة المرجعية.",
+    "fr": "L’accueil suit maintenant la mise en page de référence.",
+    "en": "The home screen now follows the reference layout."
   }
 }
