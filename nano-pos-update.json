@@ -4,26 +4,26 @@
   "manifestRevision": "2.0.48-restore-243-final",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.49",
+  "version": "2.0.50",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تنسيق بطاقة الأذان مع الشاشة الرئيسية بشكل مدمج ومتناسق.",
-      "إظهار مواقيت الصلاة دائماً داخل البطاقة.",
-      "تحديث المواقيت فور تغيير الولاية مع إبراز الصلاة القادمة."
+      "إصلاح ظهور مواقيت الصلاة داخل الشاشة الرئيسية.",
+      "إصلاح العد التنازلي وتحديثه كل ثانية.",
+      "تحديث مواقيت Aladhan عند تغيير الولاية وتقليل عرض شريط العداد."
     ],
     "fr": [
-      "Carte de l’adhan harmonisée avec l’accueil.",
-      "Horaires toujours visibles dans la carte.",
-      "Actualisation immédiate lors du changement de wilaya et mise en avant de la prochaine prière."
+      "Correction de l’affichage des horaires sur l’accueil.",
+      "Correction du compte à rebours avec mise à jour chaque seconde.",
+      "Actualisation Aladhan lors du changement de wilaya et barre réduite."
     ],
     "en": [
-      "Harmonize the adhan card with the home screen.",
-      "Keep prayer times always visible in the card.",
-      "Refresh times immediately when changing wilaya and highlight the next prayer."
+      "Fix prayer-time visibility on the home screen.",
+      "Fix the countdown and update it every second.",
+      "Refresh Aladhan times when changing wilaya and reduce the countdown bar width."
     ]
   },
   "releaseHistory": {
@@ -2945,6 +2945,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v250-prayer-fix",
+      "fromVersions": [
+        "2.0.49"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.50/NANO-POS-Patch-2.0.49-to-2.0.50-PRAYER-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.50",
+      "sha256": "76a388fd3ec7c61f2dace845d312b6dbe08d84cf91b9973934fa513d818f4b79",
+      "appAsarSha256": "1e076653eb777ec9ca9b5fb3e073ebaaa41f276756fe0df33426e64ebd37a890",
+      "fileName": "NANO-POS-Patch-2.0.49-to-2.0.50-PRAYER-FIX.zip",
+      "sizeBytes": 31155658,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v249-prayer-home-sync",
       "fromVersions": [
         "2.0.48"
@@ -5504,8 +5517,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "بطاقة أذان متناسقة مع تحديث المواقيت حسب الولاية.",
-    "fr": "Carte adhan harmonisée avec horaires selon la wilaya.",
-    "en": "Consistent adhan card with wilaya-based prayer times."
+    "ar": "إصلاح المواقيت والعداد وتناسق شريط العرض.",
+    "fr": "Correction des horaires, du compte à rebours et de la barre.",
+    "en": "Prayer times, countdown and display bar fixed."
   }
 }
