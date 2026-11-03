@@ -1,6 +1,7 @@
 {
   "schema": 1,
   "published": true,
+  "manifestRevision": "2.0.48-restore-243-final",
   "channel": "stable",
   "product": "NANO POS",
   "version": "2.0.48",
