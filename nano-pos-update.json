@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.45",
+  "version": "2.0.46",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إعادة تصميم الشاشة الرئيسية بالكامل وفق الصورة المرجعية.",
-      "وضع لوحة الأذان بجانب لوحات المؤشرات والاختصارات.",
-      "إضافة بطاقة حالة النظام مع الحفاظ على وظائف المبيعات والإحصائيات."
+      "إضافة آية قرآنية أسفل واجهة الأذان.",
+      "إزالة بطاقة حالة النظام من الشاشة الرئيسية.",
+      "ضبط المسافات والتناسق بعد إزالة البطاقة."
     ],
     "fr": [
-      "Refonte complète de l’accueil selon la référence fournie.",
-      "Panneau de l’adhan placé avec les indicateurs et raccourcis.",
-      "Carte d’état du système avec les fonctions existantes conservées."
+      "Ajout d’un verset coranique sous l’adhan.",
+      "Suppression de la carte d’état du système.",
+      "Espacement rééquilibré de l’accueil."
     ],
     "en": [
-      "Rebuild the home screen layout based on the provided reference.",
-      "Place the adhan dashboard beside metrics and shortcuts.",
-      "Add a system-status card while preserving existing POS functions."
+      "Add a Quran verse below the adhan panel.",
+      "Remove the system-status card from the home screen.",
+      "Rebalance the home layout spacing."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v246-quran-quote",
+      "fromVersions": [
+        "2.0.45"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.46/NANO-POS-Patch-2.0.45-to-2.0.46-QURAN-QUOTE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.46",
+      "sha256": "d38c851ce67ee0620dd4c98e5ba818ff2ebdeac54bce3110489fcd93a4546b22",
+      "appAsarSha256": "bd5038f8b8f4143900610c51864bf3cecea6b68f7b5cd69c7d03c7cd1ac946e2",
+      "fileName": "NANO-POS-Patch-2.0.45-to-2.0.46-QURAN-QUOTE.zip",
+      "sizeBytes": 31155345,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v245-home-exact",
       "fromVersions": [
         "2.0.44"
@@ -5451,8 +5464,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "الشاشة الرئيسية أصبحت مطابقة لتخطيط الصورة المرجعية.",
-    "fr": "L’accueil suit maintenant la mise en page de référence.",
-    "en": "The home screen now follows the reference layout."
+    "ar": "آية قرآنية أسفل الأذان وإزالة حالة النظام.",
+    "fr": "Verset coranique sous l’adhan et état système supprimé.",
+    "en": "Quran verse below adhan and system status removed."
   }
 }
