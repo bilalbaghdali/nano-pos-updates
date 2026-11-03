@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.38",
+  "version": "2.0.39",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "اختيار الولاية يدوياً وتغيير مواقيت Aladhan حسب إحداثياتها.",
-      "اختيار صوت الأذان.",
-      "مفتاح صامت مستقل أمام كل صلاة مع حفظ الإعدادات."
+      "نقل إعدادات الولاية وصوت الأذان والصمت إلى الإعدادات العامة.",
+      "واجهة المواقيت تعرض الأوقات والتاريخين فقط.",
+      "عرض التاريخ بالأرقام العربية عند العربية وبحسب لغة الواجهة عند تغييرها."
     ],
     "fr": [
-      "Choix manuel de la wilaya et horaires Aladhan selon ses coordonnées.",
-      "Choix du son de l’adhan.",
-      "Mode silencieux indépendant pour chaque prière."
+      "Réglages de wilaya, son et silence déplacés vers les paramètres.",
+      "Interface des horaires simplifiée avec heures et dates uniquement.",
+      "Dates adaptées à la langue de l’interface."
     ],
     "en": [
-      "Manual wilaya selection with Aladhan coordinates.",
-      "Adhan sound selection.",
-      "Per-prayer silent switch with saved settings."
+      "Move wilaya, adhan sound and silence settings to General Settings.",
+      "Simplify the prayer panel to times and dates only.",
+      "Localize date digits and calendar text with the interface language."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v239-prayer-settings",
+      "fromVersions": [
+        "2.0.38"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.39/NANO-POS-Patch-2.0.38-to-2.0.39-SETTINGS-ARABIC-DATE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.39",
+      "sha256": "e28c31fb424136b518310ba23f0bcccbf918a5a431a7f7ef85740a72aa377cd4",
+      "appAsarSha256": "09188b3011380b92e3ca58d27529e1a8aa68843a8d384d42ba243dda3efb2f75",
+      "fileName": "NANO-POS-Patch-2.0.38-to-2.0.39-SETTINGS-ARABIC-DATE.zip",
+      "sizeBytes": 31151091,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v238-wilaya-adhan",
       "fromVersions": [
         "2.0.37"
@@ -5360,8 +5373,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "اختيار الولاية وصوت الأذان والصمت لكل صلاة.",
-    "fr": "Wilaya, son de l’adhan et silence par prière.",
-    "en": "Wilaya selection, adhan sound and per-prayer silence."
+    "ar": "إعدادات الأذان داخل الإعدادات وواجهة مواقيت مختصرة.",
+    "fr": "Réglages de l’adhan dans Paramètres et interface simplifiée.",
+    "en": "Adhan settings in Settings and a simplified prayer panel."
   }
 }
