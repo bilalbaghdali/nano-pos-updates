@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.42",
+  "version": "2.0.43",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تصميم إسلامي عصري لواجهة الأذان.",
-      "إضافة الولايات الجزائرية الـ58 إلى قائمة الاختيار.",
-      "تغيير مواقيت Aladhan حسب مركز الولاية المختارة."
+      "مطابقة واجهة المواقيت لتصميم آذان الجزائر المرفق.",
+      "إبراز الصلاة القادمة والوقت المتبقي في بطاقة عصرية.",
+      "عرض المواقيت في شبكة بطاقات خضراء إسلامية مع الحفاظ على الولايات والأذان."
     ],
     "fr": [
-      "Nouvelle interface islamique moderne.",
-      "Ajout des 58 wilayas algériennes.",
-      "Horaires Aladhan selon le centre de la wilaya."
+      "Interface des horaires inspirée du modèle fourni.",
+      "Mise en avant de la prochaine prière et du compte à rebours.",
+      "Cartes vertes modernes avec wilayas et adhan conservés."
     ],
     "en": [
-      "Modern Islamic prayer interface.",
-      "All 58 Algerian wilayas added.",
-      "Aladhan times use the selected wilaya centre."
+      "Prayer interface styled after the provided Algerian Azan reference.",
+      "Highlight the next prayer and remaining-time countdown.",
+      "Modern Islamic green prayer cards while retaining wilayas and adhan controls."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v243-azan-ui",
+      "fromVersions": [
+        "2.0.42"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.43/NANO-POS-Patch-2.0.42-to-2.0.43-AZAN-UI.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.43",
+      "sha256": "554ba268b60b62ea98d0be1ac74483f1592a40cd9368e7734caeae4d86ff8455",
+      "appAsarSha256": "e5777c54f1f7aa5482a23090959f6de309b5896f525389a53145f204524b6b16",
+      "fileName": "NANO-POS-Patch-2.0.42-to-2.0.43-AZAN-UI.zip",
+      "sizeBytes": 31154290,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v242-islamic-wilayas",
       "fromVersions": [
         "2.0.41"
@@ -5412,8 +5425,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "واجهة أذان إسلامية عصرية وجميع الولايات الجزائرية.",
-    "fr": "Interface islamique moderne et 58 wilayas.",
-    "en": "Modern Islamic interface and all Algerian wilayas."
+    "ar": "تحديث الواجهة الأمامية للمواقيت وفق الصورة المرجعية.",
+    "fr": "Mise à jour de l’interface selon la référence fournie.",
+    "en": "Prayer UI updated to match the provided reference."
   }
 }
