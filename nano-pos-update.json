@@ -3,24 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.41",
+  "version": "2.0.42",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إرجاع إعدادات الولاية وصوت الأذان والصمت إلى واجهة المواقيت الرئيسية.",
-      "الحفاظ على مزامنة الإعدادات مع مواقيت Aladhan.",
-      "تبقى الشاشة الرئيسية تعرض الخيارات السابقة للأذان مع الأوقات والتاريخين."
+      "تصميم إسلامي عصري لواجهة الأذان.",
+      "إضافة الولايات الجزائرية الـ58 إلى قائمة الاختيار.",
+      "تغيير مواقيت Aladhan حسب مركز الولاية المختارة."
     ],
     "fr": [
-      "Retour des réglages wilaya, son et silence dans le panneau principal.",
-      "Synchronisation Aladhan conservée."
+      "Nouvelle interface islamique moderne.",
+      "Ajout des 58 wilayas algériennes.",
+      "Horaires Aladhan selon le centre de la wilaya."
     ],
     "en": [
-      "Restore wilaya, adhan sound and silence controls to the main prayer panel.",
-      "Keep Aladhan settings synchronization."
+      "Modern Islamic prayer interface.",
+      "All 58 Algerian wilayas added.",
+      "Aladhan times use the selected wilaya centre."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v242-islamic-wilayas",
+      "fromVersions": [
+        "2.0.41"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.42/NANO-POS-Patch-2.0.41-to-2.0.42-ISLAMIC-WILAYAS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.42",
+      "sha256": "17049113030687051e8b0382718565aeffc2cdc181ec0d66a42803b3ebd26bcf",
+      "appAsarSha256": "d228571189a0d8fa203d76c9b1abb56d403e9f838bcd74eec2c6a7de2c2def49",
+      "fileName": "NANO-POS-Patch-2.0.41-to-2.0.42-ISLAMIC-WILAYAS.zip",
+      "sizeBytes": 31153151,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v241-adhan-main",
       "fromVersions": [
         "2.0.40"
@@ -5397,8 +5412,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إعدادات الأذان والولاية داخل واجهة المواقيت الرئيسية.",
-    "fr": "Réglages de l’adhan dans le panneau principal.",
-    "en": "Adhan and wilaya settings in the main prayer panel."
+    "ar": "واجهة أذان إسلامية عصرية وجميع الولايات الجزائرية.",
+    "fr": "Interface islamique moderne et 58 wilayas.",
+    "en": "Modern Islamic interface and all Algerian wilayas."
   }
 }
