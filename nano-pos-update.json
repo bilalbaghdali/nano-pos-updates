@@ -2944,6 +2944,7 @@
     {
       "id": "nano-pos-v236-ministry-rows",
       "fromVersions": [
+        "2.0.34",
         "2.0.35"
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.36/NANO-POS-Patch-2.0.35-to-2.0.36-MINISTRY-ROWS.zip",
