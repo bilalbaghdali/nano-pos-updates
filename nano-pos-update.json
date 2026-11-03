@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "published": false,
+  "published": true,
   "channel": "stable",
   "product": "NANO POS",
   "version": "2.0.35",
