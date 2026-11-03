@@ -4,26 +4,26 @@
   "manifestRevision": "2.0.48-restore-243-final",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.48",
+  "version": "2.0.49",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إرجاع الشاشة الرئيسية إلى تصميم الإصدار 2.0.43 حرفياً.",
-      "الحفاظ على ظهور مواقيت الصلاة داخل واجهة الأذان.",
-      "الإبقاء على الولايات الـ58 وإعدادات الأذان والمزامنة."
+      "تنسيق بطاقة الأذان مع الشاشة الرئيسية بشكل مدمج ومتناسق.",
+      "إظهار مواقيت الصلاة دائماً داخل البطاقة.",
+      "تحديث المواقيت فور تغيير الولاية مع إبراز الصلاة القادمة."
     ],
     "fr": [
-      "Retour exact à l’écran d’accueil de la version 2.0.43.",
-      "Horaires de prière visibles dans l’interface de l’adhan.",
-      "Wilayas, réglages et synchronisation conservés."
+      "Carte de l’adhan harmonisée avec l’accueil.",
+      "Horaires toujours visibles dans la carte.",
+      "Actualisation immédiate lors du changement de wilaya et mise en avant de la prochaine prière."
     ],
     "en": [
-      "Restore the home screen exactly to version 2.0.43.",
-      "Keep prayer times visible in the adhan interface.",
-      "Retain all wilayas, settings and synchronization."
+      "Harmonize the adhan card with the home screen.",
+      "Keep prayer times always visible in the card.",
+      "Refresh times immediately when changing wilaya and highlight the next prayer."
     ]
   },
   "releaseHistory": {
@@ -2945,6 +2945,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v249-prayer-home-sync",
+      "fromVersions": [
+        "2.0.48"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.49/NANO-POS-Patch-2.0.48-to-2.0.49-PRAYER-HOME-SYNC.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.49",
+      "sha256": "194bc9d8d839d67148f7c75b6c9fa01c26fb621823f2b95e5e073c942837c72c",
+      "appAsarSha256": "d5e04c933ae779b7ac2aba005841c8859aceac3492aa559e68c6b0dd960cc5a3",
+      "fileName": "NANO-POS-Patch-2.0.48-to-2.0.49-PRAYER-HOME-SYNC.zip",
+      "sizeBytes": 31155464,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v248-restore-243",
       "fromVersions": [
         "2.0.47"
@@ -5491,8 +5504,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "استعادة الشاشة الرئيسية مثل الإصدار 2.0.43.",
-    "fr": "Écran d’accueil restauré comme en 2.0.43.",
-    "en": "Home screen restored to version 2.0.43."
+    "ar": "بطاقة أذان متناسقة مع تحديث المواقيت حسب الولاية.",
+    "fr": "Carte adhan harmonisée avec horaires selon la wilaya.",
+    "en": "Consistent adhan card with wilaya-based prayer times."
   }
 }
