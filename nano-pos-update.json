@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.37",
+  "version": "2.0.38",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "اعتماد واجهة Aladhan عبر الإنترنت كمصدر أساسي لمواقيت الصلاة.",
-      "إرسال موقع GPS والطريقة ومعاملات تعديل الدقائق إلى Aladhan.",
-      "استخدام الحساب المحلي كاحتياط عند انقطاع الإنترنت فقط."
+      "اختيار الولاية يدوياً وتغيير مواقيت Aladhan حسب إحداثياتها.",
+      "اختيار صوت الأذان.",
+      "مفتاح صامت مستقل أمام كل صلاة مع حفظ الإعدادات."
     ],
     "fr": [
-      "Aladhan devient la source principale en ligne.",
-      "Coordonnées GPS et réglages de minutes transmis à Aladhan.",
-      "Calcul local uniquement comme secours hors ligne."
+      "Choix manuel de la wilaya et horaires Aladhan selon ses coordonnées.",
+      "Choix du son de l’adhan.",
+      "Mode silencieux indépendant pour chaque prière."
     ],
     "en": [
-      "Use the online Aladhan API as the primary prayer-time source.",
-      "Send GPS coordinates, method and minute adjustments to Aladhan.",
-      "Use local calculation only as an offline fallback."
+      "Manual wilaya selection with Aladhan coordinates.",
+      "Adhan sound selection.",
+      "Per-prayer silent switch with saved settings."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v238-wilaya-adhan",
+      "fromVersions": [
+        "2.0.37"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.38/NANO-POS-Patch-2.0.37-to-2.0.38-WILAYA-ADHAN.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.38",
+      "sha256": "715df780709ae72354b8eaee16aac39962ad98dbecb8421ec50f640f9af89ba9",
+      "appAsarSha256": "dd5bf18364a9ef3802455ec2b61de7852314e4044fab96fd210c75dec1910f2c",
+      "fileName": "NANO-POS-Patch-2.0.37-to-2.0.38-WILAYA-ADHAN.zip",
+      "sizeBytes": 31150554,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v237-aladhan-api",
       "fromVersions": [
         "2.0.36"
@@ -5347,8 +5360,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "مواقيت الصلاة عبر Aladhan API مع دعم GPS والتعديلات.",
-    "fr": "Horaires via Aladhan API avec GPS et réglages.",
-    "en": "Prayer times via Aladhan API with GPS and adjustments."
+    "ar": "اختيار الولاية وصوت الأذان والصمت لكل صلاة.",
+    "fr": "Wilaya, son de l’adhan et silence par prière.",
+    "en": "Wilaya selection, adhan sound and per-prayer silence."
   }
 }
