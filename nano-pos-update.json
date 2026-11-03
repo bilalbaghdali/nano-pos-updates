@@ -3,24 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.36",
+  "version": "2.0.37",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تطبيق صف رسمي فعلي من جدول الوزارة بدلاً من نسب الحساب الفلكي إلى الوزارة.",
-      "تمييز واضح بين الصف الرسمي والحساب الاحتياطي.",
-      "الاحتفاظ بتحديد المدينة والمناسبات ووميض التاريخ."
+      "اعتماد واجهة Aladhan عبر الإنترنت كمصدر أساسي لمواقيت الصلاة.",
+      "إرسال موقع GPS والطريقة ومعاملات تعديل الدقائق إلى Aladhan.",
+      "استخدام الحساب المحلي كاحتياط عند انقطاع الإنترنت فقط."
     ],
     "fr": [
-      "Application de lignes officielles du tableau ministériel.",
-      "Distinction claire entre ligne officielle et calcul de secours."
+      "Aladhan devient la source principale en ligne.",
+      "Coordonnées GPS et réglages de minutes transmis à Aladhan.",
+      "Calcul local uniquement comme secours hors ligne."
     ],
     "en": [
-      "Use an actual Ministry table row instead of labeling astronomy as official.",
-      "Clearly distinguish official rows from fallback calculations."
+      "Use the online Aladhan API as the primary prayer-time source.",
+      "Send GPS coordinates, method and minute adjustments to Aladhan.",
+      "Use local calculation only as an offline fallback."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v237-aladhan-api",
+      "fromVersions": [
+        "2.0.36"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.37/NANO-POS-Patch-2.0.36-to-2.0.37-ALADHAN-API.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.37",
+      "sha256": "7062a70bdf19b08f95df5eb15947d8b0322a8c4e357965810b09d6f68bb8067b",
+      "appAsarSha256": "34895546bbb9520f95978ee413c7af014a241ad86348d57ae07bada7dfa1764d",
+      "fileName": "NANO-POS-Patch-2.0.36-to-2.0.37-ALADHAN-API.zip",
+      "sizeBytes": 31149498,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v236-ministry-rows",
       "fromVersions": [
         "2.0.34",
@@ -5332,8 +5347,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تطبيق صفوف المواقيت الرسمية وتمييز الحساب الاحتياطي.",
-    "fr": "Lignes officielles et distinction du calcul de secours.",
-    "en": "Official schedule rows and explicit fallback status."
+    "ar": "مواقيت الصلاة عبر Aladhan API مع دعم GPS والتعديلات.",
+    "fr": "Horaires via Aladhan API avec GPS et réglages.",
+    "en": "Prayer times via Aladhan API with GPS and adjustments."
   }
 }
