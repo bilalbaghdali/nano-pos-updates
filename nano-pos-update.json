@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.39",
+  "version": "2.0.40",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "نقل إعدادات الولاية وصوت الأذان والصمت إلى الإعدادات العامة.",
-      "واجهة المواقيت تعرض الأوقات والتاريخين فقط.",
-      "عرض التاريخ بالأرقام العربية عند العربية وبحسب لغة الواجهة عند تغييرها."
+      "إصلاح التزامن الفوري بين إعدادات الولاية ومواقيت الصلاة المعروضة.",
+      "إلغاء الطلبات القديمة عند تغيير الولاية أو GPS.",
+      "تحديث المواقيت والواجهة فوراً بعد حفظ الإعدادات."
     ],
     "fr": [
-      "Réglages de wilaya, son et silence déplacés vers les paramètres.",
-      "Interface des horaires simplifiée avec heures et dates uniquement.",
-      "Dates adaptées à la langue de l’interface."
+      "Synchronisation immédiate entre la wilaya et les horaires affichés.",
+      "Annulation des anciennes requêtes lors du changement de wilaya ou GPS.",
+      "Actualisation immédiate après l’enregistrement."
     ],
     "en": [
-      "Move wilaya, adhan sound and silence settings to General Settings.",
-      "Simplify the prayer panel to times and dates only.",
-      "Localize date digits and calendar text with the interface language."
+      "Fix immediate synchronization between wilaya settings and displayed prayer times.",
+      "Cancel stale requests when wilaya or GPS changes.",
+      "Refresh times and UI immediately after saving settings."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v240-settings-sync",
+      "fromVersions": [
+        "2.0.39"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.40/NANO-POS-Patch-2.0.39-to-2.0.40-SYNC-SETTINGS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.40",
+      "sha256": "50363beb64dd009dccfac393fd1419dbcc1b656fee67258b8a1a39d3d1eafe61",
+      "appAsarSha256": "065c5719f2f21a01b71d3e8ca6c4fb1b1d2d269124f128b180adec62a6e9d9fd",
+      "fileName": "NANO-POS-Patch-2.0.39-to-2.0.40-SYNC-SETTINGS.zip",
+      "sizeBytes": 31151337,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v239-prayer-settings",
       "fromVersions": [
         "2.0.38"
@@ -5373,8 +5386,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إعدادات الأذان داخل الإعدادات وواجهة مواقيت مختصرة.",
-    "fr": "Réglages de l’adhan dans Paramètres et interface simplifiée.",
-    "en": "Adhan settings in Settings and a simplified prayer panel."
+    "ar": "إصلاح مزامنة إعدادات الولاية مع مواقيت الصلاة.",
+    "fr": "Correction de la synchronisation de la wilaya.",
+    "en": "Fix wilaya settings synchronization."
   }
 }
