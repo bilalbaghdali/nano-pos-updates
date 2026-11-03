@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.46",
+  "version": "2.0.47",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة آية قرآنية أسفل واجهة الأذان.",
-      "إزالة بطاقة حالة النظام من الشاشة الرئيسية.",
-      "ضبط المسافات والتناسق بعد إزالة البطاقة."
+      "إلغاء تعديلات الشاشة الرئيسية الأخيرة والعودة للتخطيط السابق.",
+      "إزالة الآية وبطاقة حالة النظام.",
+      "إصلاح عرض أوقات الصلاة داخل بطاقة الأذان."
     ],
     "fr": [
-      "Ajout d’un verset coranique sous l’adhan.",
-      "Suppression de la carte d’état du système.",
-      "Espacement rééquilibré de l’accueil."
+      "Annulation des dernières modifications de l’accueil.",
+      "Suppression du verset et de la carte d’état système.",
+      "Correction de l’affichage des horaires de prière."
     ],
     "en": [
-      "Add a Quran verse below the adhan panel.",
-      "Remove the system-status card from the home screen.",
-      "Rebalance the home layout spacing."
+      "Undo the latest home-screen changes and restore the previous layout.",
+      "Remove the verse and system-status card.",
+      "Fix displayed prayer times in the adhan panel."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v247-restore-home",
+      "fromVersions": [
+        "2.0.46"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.47/NANO-POS-Patch-2.0.46-to-2.0.47-RESTORE-HOME.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.47",
+      "sha256": "7818ec977bf0757bf153be85b5a500a04c07fbebebff33498108f111297910a4",
+      "appAsarSha256": "5da84b502de17b249bc34fb31d1fdf112c676fc1f7805f9b92f515f097e3a343",
+      "fileName": "NANO-POS-Patch-2.0.46-to-2.0.47-RESTORE-HOME.zip",
+      "sizeBytes": 31155144,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v246-quran-quote",
       "fromVersions": [
         "2.0.45"
@@ -5464,8 +5477,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "آية قرآنية أسفل الأذان وإزالة حالة النظام.",
-    "fr": "Verset coranique sous l’adhan et état système supprimé.",
-    "en": "Quran verse below adhan and system status removed."
+    "ar": "عودة الشاشة الرئيسية للتخطيط السابق مع إظهار المواقيت.",
+    "fr": "Retour à l’ancien accueil avec horaires visibles.",
+    "en": "Previous home layout restored with visible prayer times."
   }
 }
