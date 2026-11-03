@@ -3,27 +3,24 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.35",
+  "version": "2.0.36",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "اعتماد مصدر جداول وزارة الشؤون الدينية والأوقاف الجزائرية.",
-      "اختيار أقرب مدينة وجدول رسمي بواسطة GPS.",
-      "وميض التاريخ عند المناسبة الوطنية أو التاريخية أو الدينية.",
-      "إظهار مصدر الجدول والتمييز الواضح للحالة الاحتياطية."
+      "تطبيق صف رسمي فعلي من جدول الوزارة بدلاً من نسب الحساب الفلكي إلى الوزارة.",
+      "تمييز واضح بين الصف الرسمي والحساب الاحتياطي.",
+      "الاحتفاظ بتحديد المدينة والمناسبات ووميض التاريخ."
     ],
     "fr": [
-      "Source des tableaux du ministère algérien.",
-      "Choix de la ville la plus proche par GPS.",
-      "Clignotement de la date lors des fêtes et événements."
+      "Application de lignes officielles du tableau ministériel.",
+      "Distinction claire entre ligne officielle et calcul de secours."
     ],
     "en": [
-      "Algerian Ministry schedule source.",
-      "GPS selects the nearest city and official table.",
-      "Date blinks on national, historical, or religious occasions."
+      "Use an actual Ministry table row instead of labeling astronomy as official.",
+      "Clearly distinguish official rows from fallback calculations."
     ]
   },
   "releaseHistory": {
@@ -2945,6 +2942,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v236-ministry-rows",
+      "fromVersions": [
+        "2.0.35"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.36/NANO-POS-Patch-2.0.35-to-2.0.36-MINISTRY-ROWS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.36",
+      "sha256": "d8ee7d7b936de67f68ff8b31665d01621a844b3647e8d1470c5ade6a5ddc312f",
+      "appAsarSha256": "2433c3bc14c2496b963ba6198c6495f8ccda15eca7ae44492afa2f66d0e4c40a",
+      "fileName": "NANO-POS-Patch-2.0.35-to-2.0.36-MINISTRY-ROWS.zip",
+      "sizeBytes": 31148870,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v235-ministry-prayer",
       "fromVersions": [
         "2.0.34"
@@ -5321,8 +5331,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "مواقيت الصلاة الرسمية، تحديد المدينة بالموقع، ومناسبات وميض التاريخ.",
-    "fr": "Horaires officiels, ville GPS et événements avec date clignotante.",
-    "en": "Official prayer schedules, GPS city selection, and occasion date blink."
+    "ar": "تطبيق صفوف المواقيت الرسمية وتمييز الحساب الاحتياطي.",
+    "fr": "Lignes officielles et distinction du calcul de secours.",
+    "en": "Official schedule rows and explicit fallback status."
   }
 }
