@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.43",
+  "version": "2.0.44",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "مطابقة واجهة المواقيت لتصميم آذان الجزائر المرفق.",
-      "إبراز الصلاة القادمة والوقت المتبقي في بطاقة عصرية.",
-      "عرض المواقيت في شبكة بطاقات خضراء إسلامية مع الحفاظ على الولايات والأذان."
+      "دمج تطبيق الأذان داخل الشاشة الرئيسية للبرنامج.",
+      "تصميم الشاشة الرئيسية وفق نموذج NANO POS المرسل.",
+      "عرض الصلاة القادمة والعداد والتاريخ وشريط المواقيت داخل لوحة التحكم."
     ],
     "fr": [
-      "Interface des horaires inspirée du modèle fourni.",
-      "Mise en avant de la prochaine prière et du compte à rebours.",
-      "Cartes vertes modernes avec wilayas et adhan conservés."
+      "Intégration de l’adhan dans l’écran d’accueil.",
+      "Nouvelle présentation inspirée du modèle NANO POS fourni.",
+      "Prochaine prière, compte à rebours, date et horaires dans le tableau de bord."
     ],
     "en": [
-      "Prayer interface styled after the provided Algerian Azan reference.",
-      "Highlight the next prayer and remaining-time countdown.",
-      "Modern Islamic green prayer cards while retaining wilayas and adhan controls."
+      "Integrate the adhan app into the main home screen.",
+      "Restyle the home screen after the provided NANO POS reference.",
+      "Show next prayer, countdown, date and prayer strip in the dashboard."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v244-home-azan",
+      "fromVersions": [
+        "2.0.43"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.44/NANO-POS-Patch-2.0.43-to-2.0.44-HOME-AZAN.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.44",
+      "sha256": "b2fcfb91db82bab38701fc39c2441cb76237f8e79c223fe0b27773974870b6f9",
+      "appAsarSha256": "5d53ff2e559e9500566dc9085cf336820ef02a126101538365cc49e62c0f754f",
+      "fileName": "NANO-POS-Patch-2.0.43-to-2.0.44-HOME-AZAN.zip",
+      "sizeBytes": 31154627,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v243-azan-ui",
       "fromVersions": [
         "2.0.42"
@@ -5425,8 +5438,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحديث الواجهة الأمامية للمواقيت وفق الصورة المرجعية.",
-    "fr": "Mise à jour de l’interface selon la référence fournie.",
-    "en": "Prayer UI updated to match the provided reference."
+    "ar": "تم دمج واجهة الأذان داخل الشاشة الرئيسية.",
+    "fr": "L’interface de l’adhan est intégrée à l’accueil.",
+    "en": "The adhan interface is integrated into the home dashboard."
   }
 }
