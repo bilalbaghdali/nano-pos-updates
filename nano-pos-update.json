@@ -3,26 +3,26 @@
   "published": true,
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.47",
+  "version": "2.0.48",
   "releaseDate": "2026-11-03",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إلغاء تعديلات الشاشة الرئيسية الأخيرة والعودة للتخطيط السابق.",
-      "إزالة الآية وبطاقة حالة النظام.",
-      "إصلاح عرض أوقات الصلاة داخل بطاقة الأذان."
+      "إرجاع الشاشة الرئيسية إلى تصميم الإصدار 2.0.43 حرفياً.",
+      "الحفاظ على ظهور مواقيت الصلاة داخل واجهة الأذان.",
+      "الإبقاء على الولايات الـ58 وإعدادات الأذان والمزامنة."
     ],
     "fr": [
-      "Annulation des dernières modifications de l’accueil.",
-      "Suppression du verset et de la carte d’état système.",
-      "Correction de l’affichage des horaires de prière."
+      "Retour exact à l’écran d’accueil de la version 2.0.43.",
+      "Horaires de prière visibles dans l’interface de l’adhan.",
+      "Wilayas, réglages et synchronisation conservés."
     ],
     "en": [
-      "Undo the latest home-screen changes and restore the previous layout.",
-      "Remove the verse and system-status card.",
-      "Fix displayed prayer times in the adhan panel."
+      "Restore the home screen exactly to version 2.0.43.",
+      "Keep prayer times visible in the adhan interface.",
+      "Retain all wilayas, settings and synchronization."
     ]
   },
   "releaseHistory": {
@@ -2944,6 +2944,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v248-restore-243",
+      "fromVersions": [
+        "2.0.47"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.48/NANO-POS-Patch-2.0.47-to-2.0.48-RESTORE-243.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.48",
+      "sha256": "d516ffebef36c52d89913610c9f2c2e12f0fd522b1c67ae0b7405f5bf4a14f3a",
+      "appAsarSha256": "5671201b744916a75e6983ceae0c507398aa387c290ae7e1fb0b3c0c61b5d6e0",
+      "fileName": "NANO-POS-Patch-2.0.47-to-2.0.48-RESTORE-243.zip",
+      "sizeBytes": 31154627,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v247-restore-home",
       "fromVersions": [
         "2.0.46"
@@ -5477,8 +5490,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "عودة الشاشة الرئيسية للتخطيط السابق مع إظهار المواقيت.",
-    "fr": "Retour à l’ancien accueil avec horaires visibles.",
-    "en": "Previous home layout restored with visible prayer times."
+    "ar": "استعادة الشاشة الرئيسية مثل الإصدار 2.0.43.",
+    "fr": "Écran d’accueil restauré comme en 2.0.43.",
+    "en": "Home screen restored to version 2.0.43."
   }
 }
