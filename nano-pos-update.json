@@ -1,26 +1,26 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.53",
+  "manifestRevision": "2.0.54",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.53",
+  "version": "2.0.54",
   "releaseDate": "2026-11-04",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "دفع كامل (افتراضي) + كريدي (يشمل الدفع الجزئي) مع طلب تسجيل الزبون.",
-      "إصلاح تمدد نافذة الدفع واختفاء زر التأكيد عند الدفع فوق القيمة."
+      "خيار \"دفع كامل\" (افتراضي) + \"كريدي\" (يشمل الدفع الجزئي) مع طلب تسجيل الزبون.",
+      "إصلاح تمدد نافذة الدفع واختفاء زر التأكيد."
     ],
     "fr": [
-      "Paiement intégral (par défaut) + crédit (y compris partiel) avec client requis.",
-      "Correction de l’agrandissement de la fenêtre de paiement et disparition du bouton de confirmation."
+      "Option \"Paiement intégral\" (par défaut) + \"Crédit\" (y compris partiel) avec client requis.",
+      "Correction de l’agrandissement de la fenêtre et disparition du bouton."
     ],
     "en": [
-      "Full payment (default) + credit (including partial) requiring customer registration.",
-      "Fixed payment window expansion and disappearing confirm button on overpayment."
+      "\"Full payment\" (default) + \"Credit\" (including partial) requiring customer registration.",
+      "Fixed payment window expansion and disappearing confirm button."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2942,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v254-payment-options",
+      "fromVersions": [
+        "2.0.53"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.54/NANO-POS-Patch-2.0.53-to-2.0.54-PAYMENT-OPTIONS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.54",
+      "sha256": "a293969b1c610d3ae233d2f7ec900be4dbe4bdabae70408886d3df2f64c0b49d",
+      "appAsarSha256": "dd3979ca558e1eb1a452bdeca93edefd474e7128fce9fb88b5f423fd2b02c0c9",
+      "fileName": "NANO-POS-Patch-2.0.53-to-2.0.54-PAYMENT-OPTIONS.zip",
+      "sizeBytes": 31519331,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v253-payment-ui-fix",
       "fromVersions": [
         "2.0.52"
@@ -5553,8 +5566,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح خيارات الدفع وواجهة الدفع.",
-    "fr": "Correction des options de paiement et de l’interface.",
-    "en": "Fixed payment options and payment UI."
+    "ar": "تحسينات خيارات الدفع والواجهة.",
+    "fr": "Améliorations des options de paiement et de l’interface.",
+    "en": "Improved payment options and UI."
   }
 }
