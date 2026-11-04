@@ -1,29 +1,26 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.48-restore-243-final",
+  "manifestRevision": "2.0.52",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.51",
-  "releaseDate": "2026-11-03",
+  "version": "2.0.52",
+  "releaseDate": "2026-11-04",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تصميم احترافي جديد لمواقيت الصلاة.",
-      "استخدام خلفية ساعة مسجد داخل بطاقة المواقيت.",
-      "عرض أرقام التاريخ الميلادي والهجري بالأرقام اللاتينية مع الحفاظ على الإعدادات السابقة."
+      "دعم الدفع الجزئي في سلة البيع: دفع كامل أو كريدي (يشمل الدفع الجزئي).",
+      "رسائل حالة واضحة (دفع كامل/جزئي/كريدي) بعد إتمام البيع."
     ],
     "fr": [
-      "Nouveau design professionnel des horaires de prière.",
-      "Fond de tour d’horloge de mosquée dans la carte.",
-      "Dates grégorienne et hégirienne en chiffres latins, réglages conservés."
+      "Paiement partiel dans le panier de vente : paiement intégral ou crédit (y compris partiel).",
+      "Messages de statut clairs (payé/partiel/crédit) après la vente."
     ],
     "en": [
-      "New professional prayer-times design.",
-      "Mosque clock-tower background in the prayer card.",
-      "Gregorian and Hijri dates use Latin digits while preserving existing settings."
+      "Partial payment support in sales cart: full payment or credit (including partial).",
+      "Clear status messages (paid/partial/credit) after sale completion."
     ]
   },
   "releaseHistory": {
@@ -2945,6 +2942,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v252-partial-payment",
+      "fromVersions": [
+        "2.0.51"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.52/NANO-POS-Patch-2.0.51-to-2.0.52-PAYMENT-PARTIAL.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.52",
+      "sha256": "b685d6d8b8f1b891ad8e4d7b75af3d3a81525ad4ee783741ba757717e3f77484",
+      "appAsarSha256": "3da162c7e520e0a5245a7de8a20e411833fe4a9f54326f8c4fbdc43c06744ea4",
+      "fileName": "NANO-POS-Patch-2.0.51-to-2.0.52-PAYMENT-PARTIAL.zip",
+      "sizeBytes": 31519885,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v251-mosque-clock-ui",
       "fromVersions": [
         "2.0.50"
@@ -5530,8 +5540,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تصميم ساعة مسجد وأرقام لاتينية للتاريخين.",
-    "fr": "Design horloge de mosquée et chiffres latins.",
-    "en": "Mosque clock design and Latin date digits."
+    "ar": "إصلاح منطق الدفع للسماح بالدفع الجزئي.",
+    "fr": "Correction de la logique de paiement pour le paiement partiel.",
+    "en": "Fixed payment logic to allow partial payments."
   }
 }
