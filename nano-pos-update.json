@@ -1,26 +1,26 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.52",
+  "manifestRevision": "2.0.53",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.52",
+  "version": "2.0.53",
   "releaseDate": "2026-11-04",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "دعم الدفع الجزئي في سلة البيع: دفع كامل أو كريدي (يشمل الدفع الجزئي).",
-      "رسائل حالة واضحة (دفع كامل/جزئي/كريدي) بعد إتمام البيع."
+      "دفع كامل (افتراضي) + كريدي (يشمل الدفع الجزئي) مع طلب تسجيل الزبون.",
+      "إصلاح تمدد نافذة الدفع واختفاء زر التأكيد عند الدفع فوق القيمة."
     ],
     "fr": [
-      "Paiement partiel dans le panier de vente : paiement intégral ou crédit (y compris partiel).",
-      "Messages de statut clairs (payé/partiel/crédit) après la vente."
+      "Paiement intégral (par défaut) + crédit (y compris partiel) avec client requis.",
+      "Correction de l’agrandissement de la fenêtre de paiement et disparition du bouton de confirmation."
     ],
     "en": [
-      "Partial payment support in sales cart: full payment or credit (including partial).",
-      "Clear status messages (paid/partial/credit) after sale completion."
+      "Full payment (default) + credit (including partial) requiring customer registration.",
+      "Fixed payment window expansion and disappearing confirm button on overpayment."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2942,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v253-payment-ui-fix",
+      "fromVersions": [
+        "2.0.52"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.53/NANO-POS-Patch-2.0.52-to-2.0.53-PAYMENT-UI-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.53",
+      "sha256": "984e42bfcb386be6ca6561eef50cad47fa4198bfe2889d22689dca55c1a00f34",
+      "appAsarSha256": "dd15f8dc54b1ebc9aa72a6791426dac1f064acb944971b4bacc05b2843789a29",
+      "fileName": "NANO-POS-Patch-2.0.52-to-2.0.53-PAYMENT-UI-FIX.zip",
+      "sizeBytes": 31519331,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v252-partial-payment",
       "fromVersions": [
         "2.0.51"
@@ -5540,8 +5553,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح منطق الدفع للسماح بالدفع الجزئي.",
-    "fr": "Correction de la logique de paiement pour le paiement partiel.",
-    "en": "Fixed payment logic to allow partial payments."
+    "ar": "إصلاح خيارات الدفع وواجهة الدفع.",
+    "fr": "Correction des options de paiement et de l’interface.",
+    "en": "Fixed payment options and payment UI."
   }
 }
