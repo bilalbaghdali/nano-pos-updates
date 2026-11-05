@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.69",
+  "manifestRevision": "2.0.70",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.69",
+  "version": "2.0.70",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3207,9 +3207,70 @@
         ]
       },
       "label": "إصلاح الباركودات"
+    },
+    "2.0.70": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "إزالة وحدة الباركود المعطلة (nano-barcode-fix.js) التي كانت تضيف زراً غير عامل.",
+          "تحسين حفظ الباركودات الإضافية في بيانات المنتج عبر update-product و add-product-barcode.",
+          "البحث عن المنتجات بالباركود الإضافي عبر get-products.",
+          "إضافة المنتج إلى السلة مباشرة عند مسح الباركود الإضافي في نقطة البيع.",
+          "الحفاظ على جميع التحسينات (2.0.62–2.0.69): العمل السلس، تسريع الدخول، بطاقة الصلاة، خلفية إسلامية، تتبع الحركات، كفاءة التتبع، تتبع عبر backend، إصلاح الباركودات.",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Suppression du module de code-barres défectueux (nano-barcode-fix.js) qui ajoutait un bouton non fonctionnel.",
+          "Amélioration de l'enregistrement des codes-barres supplémentaires dans les données produit via update-product et add-product-barcode.",
+          "Recherche des produits par code-barres supplémentaire via get-products.",
+          "Ajout direct du produit au panier lors du scan du code-barres supplémentaire en point de vente.",
+          "Conservation de toutes les améliorations (2.0.62–2.0.69).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Removed faulty barcode module (nano-barcode-fix.js) that added a non-working button.",
+          "Improved extra barcode saving in product data via update-product and add-product-barcode.",
+          "Search products by extra barcode via get-products.",
+          "Add product directly to cart on extra barcode scan in POS.",
+          "Keeps all improvements (2.0.62–2.0.69).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "إصلاح الباركودات (إزالة الوحدة المعطلة)"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v270-barcode-cleanup",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.70/NANO-POS-Patch-2.0.69-to-2.0.70-BARCODE-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.70",
+      "sha256": "2E0F25884591813F28FA518F8382CCFD009621A663CDACCB902159FECE373272",
+      "appAsarSha256": "CA77059B173852FFA634A15B8A97BEFE666B9BA2D6DC76141AB02E21D82226E3",
+      "fileName": "NANO-POS-Patch-2.0.69-to-2.0.70-BARCODE-FIX.zip",
+      "sizeBytes": 31534465,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v269-barcode-fix",
       "fromVersions": [
@@ -6147,8 +6208,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح الباركودات الإضافية: حفظها في المنتج، البحث بها، وإضافتها للسلة مباشرة عند المسح.",
-    "fr": "Correction des codes-barres supplémentaires : sauvegarde, recherche et ajout direct au panier lors du scan.",
-    "en": "Fixed extra barcodes: saved to product, searchable, and added directly to cart on scan."
+    "ar": "إزالة وحدة الباركود المعطلة وتحسين منطق الباركودات الإضافية في بيانات المنتج.",
+    "fr": "Suppression du module de code-barres défectueux et amélioration de la logique des codes-barres supplémentaires dans les données produit.",
+    "en": "Removed faulty barcode module and improved extra barcode logic in product data."
   }
 }
