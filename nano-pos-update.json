@@ -1,29 +1,26 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.57",
+  "manifestRevision": "2.0.58",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.57",
+  "version": "2.0.58",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تتبع حركة المنتج: مبيعات/مشتريات/كميات/أسعار/ مرجع.",
-      "تتبع حركة الزبون: فواتير/مبالغ/متبقي.",
-      "تتبع حركة المورد: مشتريات/مبالغ."
+      "تتبع الحركات: زر في الشريط الجانبي + زر \"حركات المنتج\" في قسم المخزون.",
+      "إزالة الزر العائم."
     ],
     "fr": [
-      "Suivi des mouvements de produit.",
-      "Suivi des mouvements client.",
-      "Suivi des mouvements fournisseur."
+      "Suivi des mouvements: bouton sidebar + bouton section.",
+      "Suppression du bouton flottant."
     ],
     "en": [
-      "Product movement tracking.",
-      "Customer movement tracking.",
-      "Supplier movement tracking."
+      "Movement tracking: sidebar button + section button.",
+      "Removed floating button."
     ]
   },
   "releaseHistory": {
@@ -2945,6 +2942,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v258-movement-ui",
+      "fromVersions": [
+        "2.0.57"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.58/NANO-POS-Patch-2.0.57-to-2.0.58-MOVEMENT-UI.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.58",
+      "sha256": "09b3a2390391b1c8d650457228b92031d02194d9974ce508f52fb89319903d68",
+      "appAsarSha256": "b96bcb0793ce0ba9d4a4a9d6c36229b8c1ffac7ddca48de5116ecf16481e3bda",
+      "fileName": "NANO-POS-Patch-2.0.57-to-2.0.58-MOVEMENT-UI.zip",
+      "sizeBytes": 31523139,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v257-movement-tracking",
       "fromVersions": [
         "2.0.56"
@@ -5608,8 +5618,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إضافة تتبع الحركات.",
-    "fr": "Ajout du suivi des mouvements.",
-    "en": "Added movement tracking."
+    "ar": "تحسينات تتبع الحركات.",
+    "fr": "Améliorations suivi mouvements.",
+    "en": "Movement tracking improvements."
   }
 }
