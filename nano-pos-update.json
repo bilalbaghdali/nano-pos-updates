@@ -3081,10 +3081,10 @@
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.65/NANO-POS-Patch-2.0.64-to-2.0.65-PRAYER-BG.zip",
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.65",
-      "sha256": "7736B8C0D4CB048242E233DD1459D172DDD24706DE89DD5C8607C8679FF2C8E9",
-      "appAsarSha256": "C1622CF103AE6BC5B34F0CBD7532B19363CA7C8A1026C971F658848BF1EE51FB",
+      "sha256": "5FD0D619B5E254B350AF4C1373DC43BBA730DB3F8F0188C1B497D333E815574F",
+      "appAsarSha256": "A14C849D7D18FE57C94F41C1999CCB2FD558A73BB373A298E050920B6E88687A",
       "fileName": "NANO-POS-Patch-2.0.64-to-2.0.65-PRAYER-BG.zip",
-      "sizeBytes": 31531166,
+      "sizeBytes": 31531164,
       "payloadType": "app-asar"
     },
     {
