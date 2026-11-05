@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.68",
+  "manifestRevision": "2.0.69",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.68",
+  "version": "2.0.69",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3174,9 +3174,72 @@
         ]
       },
       "label": "كفاءة تتبع الحركات (Backend)"
+    },
+    "2.0.69": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "إصلاح حفظ الباركودات الإضافية للمنتجات - الآن تُحفظ وتظهر في بطاقة المنتج.",
+          "البحث عن المنتجات بالباركود الإضافي عبر البحث في البرنامج.",
+          "إضافة المنتج إلى السلة مباشرة عند مسح الباركود (الرئيسي أو الإضافي) في نقطة البيع.",
+          "زر \"إدارة الباركودات\" في نافذة تعديل المنتج لإضافة/حذف الباركودات الإضافية.",
+          "تأكيد الحذف للباركودات الإضافية.",
+          "الحفاظ على جميع التحسينات (2.0.62–2.0.68): العمل السلس، تسريع الدخول، بطاقة الصلاة، خلفية إسلامية، تتبع الحركات، كفاءة التتبع، تتبع عبر الخادم.",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Correction de l'enregistrement des codes-barres supplémentaires des produits - désormais sauvegardés et affichés dans la fiche produit.",
+          "Recherche des produits par code-barres supplémentaire via la recherche dans le programme.",
+          "Ajout direct du produit au panier lors du scan du code-barres (principal ou supplémentaire) en point de vente.",
+          "Bouton \"Gérer codes-barres\" dans la fenêtre de modification du produit pour ajouter/supprimer les codes supplémentaires.",
+          "Confirmation de suppression des codes supplémentaires.",
+          "Conservation de toutes les améliorations (2.0.62–2.0.68).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Fixed saving extra barcodes for products - now saved and shown in product card.",
+          "Search products by extra barcode via program search.",
+          "Add product directly to cart on barcode scan (main or extra) in POS.",
+          "\"Manage Barcodes\" button in product edit window to add/delete extra barcodes.",
+          "Delete confirmation for extra barcodes.",
+          "Keeps all improvements (2.0.62–2.0.68).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "إصلاح الباركودات"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v269-barcode-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.69/NANO-POS-Patch-2.0.68-to-2.0.69-BARCODE-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.69",
+      "sha256": "913551C7BF880FAFCF6AF4C7E8DBF63770C9F07BE9B55BCF218ED6E3AF9590FD",
+      "appAsarSha256": "E2DC96A4A52C45CF6CE96938D1B52EB511CDAABA1E3D38E45B642530B56AA6F2",
+      "fileName": "NANO-POS-Patch-2.0.68-to-2.0.69-BARCODE-FIX.zip",
+      "sizeBytes": 31538363,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v268-backend-tracking",
       "fromVersions": [
@@ -6084,8 +6147,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسين كفاءة تتبع الحركات: backend-driven — بدون تحميل جميع البيانات.",
-    "fr": "Amélioration de l’efficacité du suivi : backend-driven — sans charger toutes les données.",
-    "en": "Improved movement tracking efficiency: backend-driven — no full data loading."
+    "ar": "إصلاح الباركودات الإضافية: حفظها في المنتج، البحث بها، وإضافتها للسلة مباشرة عند المسح.",
+    "fr": "Correction des codes-barres supplémentaires : sauvegarde, recherche et ajout direct au panier lors du scan.",
+    "en": "Fixed extra barcodes: saved to product, searchable, and added directly to cart on scan."
   }
 }
