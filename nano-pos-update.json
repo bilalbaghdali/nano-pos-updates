@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.61",
+  "manifestRevision": "2.0.62",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.61",
+  "version": "2.0.62",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -2941,9 +2941,71 @@
           "Light offline calculation with optional location and Algiers as the default."
         ]
       }
+    },
+    "2.0.62": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "وضع العمل السلس (Smooth Mode) مفعل افتراضياً لجعل البرنامج يعمل بسلاسة على جميع الأجهزة.",
+          "إزالة التأثيرات الزخرفية (backdrop-filter/ضبابية، ظلال الصناديق، الظلال النصية، الحركات الزخرفية) لتقليل تكلفة الرسم.",
+          "تخزين مؤقت للمنتجات المعالَمة حتى يتغير رقم مراجعة قاعدة البيانات، مما يمنع إعادة معالجة الكتالوج بأكمله عند كل تحديث.",
+          "جلب مخزون نقطة البيع كقائمة تحمل أزواج الدفعات (batchId, productId, stock) ورقم المراجعة للتحديث التدريجي.",
+          "تصفية المنتجات المعروضة في نقطة البيع (forSale) قبل الاستنساخ لتقليل البيانات المنقولة.",
+          "تجاوز أخذnapshot النسخ الاحتياطي الكامل كل 30 ثانية عندما لا تتغير البيانات.",
+          "تقليل عرض بطاقة مواقيت الصلاة إلى مرة كل 20 ثانية مع تحديث العد التنازلي كل ثانية.",
+          "تبديل يدوي بوضع السلاسة عبر Ctrl+Shift+S أو window.NanoSmooth.toggle().",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Mode fluide activé par défaut pour faire fonctionner le programme sans à-coups sur tous les appareils.",
+          "Suppression des effets décoratifs (backdrop-filter/flou, ombres portées, ombres de texte, animations) pour réduire le coût de rendu.",
+          "Mise en cache des produits traités jusqu'à changement de la révision de la base de données.",
+          "Chargement du stock du point de vente sous forme de listes de tuples (batchId, productId, stock) avec révision pour mise à jour incrémentale.",
+          "Filtrage des produits en vente (forSale) avant clonage pour réduire les données transférées.",
+          "Saut de la snapshot de sauvegarde complète toutes les 30 secondes quand rien n'a changé.",
+          "Affichage de la carte des heures de prière une fois toutes les 20 secondes avec compte à rebours chaque seconde.",
+          "Basculement manuel du mode fluide via Ctrl+Shift+S ou window.NanoSmooth.toggle().",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Smooth Mode enabled by default so the program runs smoothly on every machine.",
+          "Removes decorative paint effects (backdrop-filter/blur, box-shadow, text-shadow, animations) to reduce rendering cost.",
+          "Caches normalized products until the database revision changes, avoiding full catalog re-normalization on every refresh.",
+          "POS stock returned as batch tuples (batchId, productId, stock) with revision for incremental updates.",
+          "Filters forSale products before cloning to reduce transferred data.",
+          "Skips the 30-second full backup snapshot when nothing changed.",
+          "Prayer-times card redrawn only every 20s with a per-second countdown.",
+          "Manual smooth toggle via Ctrl+Shift+S or window.NanoSmooth.toggle().",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "الأداء والسلاسة"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v262-smooth",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.62/NANO-POS-Patch-2.0.61-to-2.0.62-SMOOTH.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.62",
+      "sha256": "F06CC0132B62C79C69E2D26CA5415D7D93E87DDBA067EB347CA78906A0F150CF",
+      "appAsarSha256": "320A1FDD6D3117923E703B69FB499B03451D82668A7964D9F85BD3A8B16D8630",
+      "fileName": "NANO-POS-Patch-2.0.61-to-2.0.62-SMOOTH.zip",
+      "sizeBytes": 31529068,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v261-product-movement-table",
       "fromVersions": [
@@ -5669,8 +5731,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح عدم ظهور حركة المنتج وإضافة تفاصيل الزبون/المورد والفاتورة.",
-    "fr": "Correction de l’affichage des mouvements produit avec détails client/fournisseur et facture.",
-    "en": "Fixed product movement display with customer/supplier and invoice details."
+    "ar": "وضع العمل السلس افتراضياً: إزالة التأثيرات الزخرفية وتسريع تحميل المنتجات والمخزون مع تخزين مؤقت وتجاوز النسخ الاحتياطي عند عدم التغير.",
+    "fr": "Mode fluide par défaut : suppression des effets décoratifs et accélération du chargement produits/stock, avec mise en cache et omission de la sauvegarde complète quand rien ne change.",
+    "en": "Smooth mode on by default: removes decorative paint effects and speeds up product/stock loading, with caching and skipping full backup snapshots when nothing changed."
   }
 }
