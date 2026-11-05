@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.66",
+  "manifestRevision": "2.0.67",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.66",
+  "version": "2.0.67",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3103,9 +3103,69 @@
         ]
       },
       "label": "تحسين تتبع الحركات"
+    },
+    "2.0.67": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "فهرسة بيانات (Indexed Data Store): Map للبحث O(1) بدلاً من O(n) filter — salesByCustomer, purchasesBySupplier.",
+          "Memoization: حفظ نتائج حركات كل كيان (product/customer/supplier) في Map لتجنب إعادة الحساب.",
+          "استبدال forEach بـ for loops (أسرع ~2-3x في V8).",
+          "تجنب متغيرات وسيطة unnecessary (direct push to array).",
+          "تقليل polling زر شريط الأدوات من 8×1.5s إلى 5×2s.",
+          "الحفاظ على all improvements (2.0.62-2.0.66): smooth mode, fast login, prayer card, Islamic bg, movement tracking.",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Stockage indexé (Indexed Data Store) : Map pour recherche O(1) au lieu de O(n) filter.",
+          "Mémoïsation : sauvegarde des résultats de mouvements par entité dans une Map.",
+          "Remplacement de forEach par des boucles for (2-3x plus rapide dans V8).",
+          "Réduction du polling du bouton de la barre d’outils de 8×1.5s à 5×2s.",
+          "Conservation de toutes les améliorations (2.0.62-2.0.66).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Indexed data store: Map for O(1) lookup instead of O(n) filter — salesByCustomer, purchasesBySupplier.",
+          "Memoization: cache movement results per entity in a Map to avoid recomputation.",
+          "Replaced forEach with for loops (2-3x faster in V8).",
+          "Avoided unnecessary intermediate variables (direct array push).",
+          "Reduced toolbar button polling from 8×1.5s to 5×2s.",
+          "Keeps all improvements (2.0.62-2.0.66): smooth mode, fast login, prayer card, Islamic bg, movement tracking.",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "كفاءة تتبع الحركات"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v267-movement-efficiency",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.67/NANO-POS-Patch-2.0.66-to-2.0.67-MOVEMENT-EFFICIENCY.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.67",
+      "sha256": "8E265C10B9CFB672C46997997E6FB20267F68259DB04368BA8873B0FA140DEEA",
+      "appAsarSha256": "D0C6905743B66F67D7FBC9A62A8D5B8854072F7B7D1C68A365247F3C09B13582",
+      "fileName": "NANO-POS-Patch-2.0.66-to-2.0.67-MOVEMENT-EFFICIENCY.zip",
+      "sizeBytes": 31534869,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v266-movement-tracking",
       "fromVersions": [
@@ -5956,8 +6016,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسين نظام تتبع الحركات: تخزين مؤقت، تصفية بالتواريخ، بحث مُؤجَّل، إحصائيات، تصدير CSV، ترقيم صفحات، party name، مرتجعات.",
-    "fr": "Amélioration du suivi des mouvements : cache, filtre par dates, recherche différée, statistiques, export CSV, pagination, nom du tiers, retours.",
-    "en": "Improved movement tracking: cache, date filter, debounced search, stats, CSV export, pagination, party name, returns."
+    "ar": "تحسين كفاءة نظام تتبع الحركات: فهرسة (O(1) lookup)، memoization، for loops، تقليل polling.",
+    "fr": "Amélioration de l’efficacité du suivi des mouvements : indexation (O(1)), mémoïsation, boucles for, réduction du polling.",
+    "en": "Improved movement tracking efficiency: indexing (O(1) lookup), memoization, for loops, reduced polling."
   }
 }
