@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.64",
+  "manifestRevision": "2.0.65",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.64",
+  "version": "2.0.65",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3034,9 +3034,59 @@
         ]
       },
       "label": "إصلاح بطاقة الصلاة"
+    },
+    "2.0.65": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "خلفية إسلامية لبطاقة مواقيت الصلاة: نقوش هندسية (8 نقاط)، هلال ذهبي، مئذنة، تدرج teal→midnight blue.",
+          "النص يبقى مقروءاً (text-shadow، ألوان متباينة).",
+          "الحفاظ على وضع العمل السلس (2.0.62) وتسريع الدخول (2.0.63) وبطاقة الصلاة (2.0.64).",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Fond islamique pour la carte des prières : motifs géométriques (8 points), croissant doré, minaret, dégradé teal→bleu nuit.",
+          "Texte reste lisible (text-shadow, couleurs contrastées).",
+          "Conservation du mode fluide (2.0.62), du démarrage rapide (2.0.63) et de la carte des prières (2.0.64).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Islamic-themed background for the prayer card: geometric patterns (8-point), golden crescent, minaret, teal→midnight blue gradient.",
+          "Text remains readable (text-shadow, contrasting colors).",
+          "Keeps Smooth Mode (2.0.62), fast login (2.0.63) and prayer card (2.0.64).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "خلفية إسلامية"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v265-prayer-bg",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.65/NANO-POS-Patch-2.0.64-to-2.0.65-PRAYER-BG.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.65",
+      "sha256": "7736B8C0D4CB048242E233DD1459D172DDD24706DE89DD5C8607C8679FF2C8E9",
+      "appAsarSha256": "C1622CF103AE6BC5B34F0CBD7532B19363CA7C8A1026C971F658848BF1EE51FB",
+      "fileName": "NANO-POS-Patch-2.0.64-to-2.0.65-PRAYER-BG.zip",
+      "sizeBytes": 31531166,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v264-prayer-card",
       "fromVersions": [
@@ -5834,8 +5884,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إعادة إظهار بطاقة مواقيت الصلاة (الأذان) في الشاشة الرئيسية — كانت غير محملة منذ 2.0.53.",
-    "fr": "Réaffichage de la carte des horaires de prière (Adhan) sur l’écran d’accueil — non chargée depuis 2.0.53.",
-    "en": "Restored the prayer-times (Adhan) card on the home screen — was not loaded since 2.0.53."
+    "ar": "خلفية إسلامية لبطاقة مواقيت الصلاة (الأذان): نقوش هندسية، هلال، مئذنة، ألوان teal/gold.",
+    "fr": "Fond islamique pour la carte des prières (Adhan) : motifs géométriques, croissant, minaret, couleurs teal/or.",
+    "en": "Islamic-themed background for the prayer-times (Adhan) card: geometric patterns, crescent, minaret, teal/gold colors."
   }
 }
