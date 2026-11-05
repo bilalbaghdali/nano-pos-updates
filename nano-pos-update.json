@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.63",
+  "manifestRevision": "2.0.64",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.63",
+  "version": "2.0.64",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3010,9 +3010,58 @@
         ]
       },
       "label": "تسريع الدخول"
+    },
+    "2.0.64": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "إعادة تضمين ملفات مواقيت الصلاة (nano-prayer-times.js / .css) في index.html — كانت غير محملة منذ الإصدار 2.0.53.",
+          "بطاقة مواقيت الصلاة (الأذان) تظهر مجدداً في الشاشة الرئيسية مع العد التنازلي والتواريخ الميلادي/الهجري.",
+          "الحفاظ على وضع العمل السلس (2.0.62) وتسريع الدخول (2.0.63) وجميع تحسينات الأداء.",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Réinclusion des fichiers des horaires de prière (nano-prayer-times.js / .css) dans index.html — non chargés depuis 2.0.53.",
+          "La carte des horaires de prière (Adhan) réapparaît sur l’écran d’accueil avec compte à rebours et dates grégorienne/hégirienne.",
+          "Conservation du mode fluide (2.0.62), du démarrage rapide (2.0.63) et de toutes les améliorations de performance.",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Re-included prayer-times files (nano-prayer-times.js / .css) in index.html — not loaded since 2.0.53.",
+          "Prayer-times (Adhan) card reappears on the home screen with countdown and Gregorian/Hijri dates.",
+          "Keeps Smooth Mode (2.0.62), fast login (2.0.63) and all performance improvements.",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "إصلاح بطاقة الصلاة"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v264-prayer-card",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.64/NANO-POS-Patch-2.0.63-to-2.0.64-PRAYER-CARD.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.64",
+      "sha256": "DF682FF2A723BF2865AB1C404A5474873FA434E52D781270E33C8885F61CD0FF",
+      "appAsarSha256": "9FCE2BF091D682EE606F143828A11FB93024B6BA29E8E2E55B182EEF3FB01A00",
+      "fileName": "NANO-POS-Patch-2.0.63-to-2.0.64-PRAYER-CARD.zip",
+      "sizeBytes": 31529500,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v263-fast-login",
       "fromVersions": [
@@ -5785,8 +5834,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تسريع الدخول والعمل: تخزين مؤقت لفحص الترخيص، عرض شاشة الدخول فوراً، تقليل مراقبات DOM، تبديل 250ms→500ms.",
-    "fr": "Démarrage et connexion plus rapides : cache de vérification de licence, affichage immédiat de la connexion, observateurs DOM réduits.",
-    "en": "Faster startup and login: license-check cache, instant login screen, reduced DOM observers, 250ms→500ms polling."
+    "ar": "إعادة إظهار بطاقة مواقيت الصلاة (الأذان) في الشاشة الرئيسية — كانت غير محملة منذ 2.0.53.",
+    "fr": "Réaffichage de la carte des horaires de prière (Adhan) sur l’écran d’accueil — non chargée depuis 2.0.53.",
+    "en": "Restored the prayer-times (Adhan) card on the home screen — was not loaded since 2.0.53."
   }
 }
