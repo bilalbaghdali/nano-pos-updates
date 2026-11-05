@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.67",
+  "manifestRevision": "2.0.68",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.67",
+  "version": "2.0.68",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3135,9 +3135,77 @@
         ]
       },
       "label": "كفاءة تتبع الحركات"
+    },
+    "2.0.68": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "Backend-driven movement tracking: no full data loading.",
+          "Only loads product/customer/supplier lists (for dropdowns).",
+          "Product movements: uses get-product-analytics (backend returns movement[]).",
+          "Customer movements: uses get-customer-movements (backend-filtered).",
+          "Supplier movements: uses get-supplier-movements (backend-filtered).",
+          "New backend endpoints: get-customer-movements, get-supplier-movements.",
+          "New preload methods: getProductAnalytics, getCustomerMovements, getSupplierMovements.",
+          "Keeps all improvements (2.0.62-2.0.67).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ],
+        "fr": [
+          "Suppression du chargement complet des données : le suivi utilise maintenant les endpoints backend.",
+          "Chargement uniquement des listes produits/clients/fournisseurs (pour les listes déroulantes).",
+          "Mouvements produit : utilise get-product-analytics (le backend retourne déjà movement[]).",
+          "Mouvements client : utilise get-customer-movements (filtrage backend).",
+          "Mouvements fournisseur : utilise get-supplier-movements (filtrage backend).",
+          "Nouveaux endpoints backend : get-customer-movements, get-supplier-movements.",
+          "Nouvelles méthodes preload : getProductAnalytics, getCustomerMovements, getSupplierMovements.",
+          "Conservation de toutes les améliorations (2.0.62-2.0.67).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Removed full data loading: movement tracking now uses backend endpoints.",
+          "Only loads product/customer/supplier lists (for dropdowns).",
+          "Product movements: uses get-product-analytics (backend already returns movement[]).",
+          "Customer movements: uses get-customer-movements (backend-filtered).",
+          "Supplier movements: uses get-supplier-movements (backend-filtered).",
+          "New backend endpoints: get-customer-movements, get-supplier-movements.",
+          "New preload methods: getProductAnalytics, getCustomerMovements, getSupplierMovements.",
+          "Keeps all improvements (2.0.62-2.0.67).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "كفاءة تتبع الحركات (Backend)"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v268-backend-tracking",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.68/NANO-POS-Patch-2.0.67-to-2.0.68-BACKEND-TRACKING.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.68",
+      "sha256": "54A2C5688536A0C5E1193FBD4EFC8630671F539472E4262D4A7D957F840873FD",
+      "appAsarSha256": "5C31D630AE8C10CE383329406FC58268A11E2496770D0351077E598B44AAD808",
+      "fileName": "NANO-POS-Patch-2.0.67-to-2.0.68-BACKEND-TRACKING.zip",
+      "sizeBytes": 31534397,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v267-movement-efficiency",
       "fromVersions": [
@@ -6016,8 +6084,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسين كفاءة نظام تتبع الحركات: فهرسة (O(1) lookup)، memoization، for loops، تقليل polling.",
-    "fr": "Amélioration de l’efficacité du suivi des mouvements : indexation (O(1)), mémoïsation, boucles for, réduction du polling.",
-    "en": "Improved movement tracking efficiency: indexing (O(1) lookup), memoization, for loops, reduced polling."
+    "ar": "تحسين كفاءة تتبع الحركات: backend-driven — بدون تحميل جميع البيانات.",
+    "fr": "Amélioration de l’efficacité du suivi : backend-driven — sans charger toutes les données.",
+    "en": "Improved movement tracking efficiency: backend-driven — no full data loading."
   }
 }
