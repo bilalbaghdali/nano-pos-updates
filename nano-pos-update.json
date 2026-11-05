@@ -3031,10 +3031,10 @@
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.63/NANO-POS-Patch-2.0.62-to-2.0.63-FAST-LOGIN.zip",
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.63",
-      "sha256": "3D69093192811F8924C7A7122C702D7967BBD6923A613EF695DB09B41044DDF4",
+      "sha256": "435652896838DE917FA525C83D1BB4E0D7B427362078625B905D0174E9751796",
       "appAsarSha256": "443600B4BDB4C38DE9276CD68D06ACF241407F49801BD6CFA380C2D022FD4474",
       "fileName": "NANO-POS-Patch-2.0.62-to-2.0.63-FAST-LOGIN.zip",
-      "sizeBytes": 31529442,
+      "sizeBytes": 31529458,
       "payloadType": "app-asar"
     },
     {
@@ -3054,10 +3054,10 @@
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.62/NANO-POS-Patch-2.0.61-to-2.0.62-SMOOTH.zip",
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.62",
-      "sha256": "F06CC0132B62C79C69E2D26CA5415D7D93E87DDBA067EB347CA78906A0F150CF",
+      "sha256": "79CFB7AB116F83F1003CFAF619785666D92842E651634BC75AEF2C33A637CA6C",
       "appAsarSha256": "320A1FDD6D3117923E703B69FB499B03451D82668A7964D9F85BD3A8B16D8630",
       "fileName": "NANO-POS-Patch-2.0.61-to-2.0.62-SMOOTH.zip",
-      "sizeBytes": 31529068,
+      "sizeBytes": 31529084,
       "payloadType": "app-asar"
     },
     {
