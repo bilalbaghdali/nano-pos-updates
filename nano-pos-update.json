@@ -1,26 +1,26 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.55",
+  "manifestRevision": "2.0.56",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.55",
+  "version": "2.0.56",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إضافة خيار \"تذكرني\" في شاشة الدخول لحفظ اسم المستخدم وكلمة المرور.",
-      "تصاميم طباعة جديدة: كلاسيكي (A4/A5) و حراري مضغوط (58/80mm)."
+      "مراجعة منطق اللغات (الفواتير/الوصل) وتحسين الترجمة.",
+      "تصاميم طباعة جديدة + إصلاح اختيار التصميم."
     ],
     "fr": [
-      "Option \"Se souvenir de moi\" à la connexion.",
-      "Nouveaux designs d’impression : Classique et Thermique compact."
+      "Révision de la logique linguistique (factures/reçus).",
+      "Nouveaux designs d’impression."
     ],
     "en": [
-      "\"Remember me\" option on login screen.",
-      "New print designs: Classic and Thermal compact."
+      "Reviewed language logic (invoices/receipts).",
+      "New print designs."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2942,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v256-print-lang-fix",
+      "fromVersions": [
+        "2.0.55"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.56/NANO-POS-Patch-2.0.55-to-2.0.56-PRINT-LANG-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.56",
+      "sha256": "f9facabc7db70a16d6781165596527b7e13c9d5e326c3beca00268b92963160f",
+      "appAsarSha256": "2f9245dcd2b1d128e86740011678312f973156edf459c66f24c2c0e6abe5c312",
+      "fileName": "NANO-POS-Patch-2.0.55-to-2.0.56-PRINT-LANG-FIX.zip",
+      "sizeBytes": 31520482,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v255-remember-print",
       "fromVersions": [
         "2.0.54"
@@ -5579,8 +5592,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسينات الدخول والطباعة.",
-    "fr": "Améliorations connexion et impression.",
-    "en": "Login and printing improvements."
+    "ar": "تحسينات اللغة والطباعة.",
+    "fr": "Améliorations langue et impression.",
+    "en": "Language and printing improvements."
   }
 }
