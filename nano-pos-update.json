@@ -1,26 +1,23 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.58",
+  "manifestRevision": "2.0.59",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.58",
+  "version": "2.0.59",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تتبع الحركات: زر في الشريط الجانبي + زر \"حركات المنتج\" في قسم المخزون.",
-      "إزالة الزر العائم."
+      "إظهار حركة المنتج في \"تحليلات المنتج\" (أداء المتغيرات) مع التاريخ/النوع/الكمية/السعر/المرجع."
     ],
     "fr": [
-      "Suivi des mouvements: bouton sidebar + bouton section.",
-      "Suppression du bouton flottant."
+      "Affichage du mouvement produit dans les analyses."
     ],
     "en": [
-      "Movement tracking: sidebar button + section button.",
-      "Removed floating button."
+      "Product movement shown in Product Analytics."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2939,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v259-analytics-movement",
+      "fromVersions": [
+        "2.0.58"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.59/NANO-POS-Patch-2.0.58-to-2.0.59-ANALYTICS-MOVEMENT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.59",
+      "sha256": "51a676bf6d4797141502795874244619ae352f8cdbc2ecd31ea236c09dd9cd8a",
+      "appAsarSha256": "f179e619665dd82c9401ca22321d1da21d2a1b5e42eaa87260c7479cc49f47a9",
+      "fileName": "NANO-POS-Patch-2.0.58-to-2.0.59-ANALYTICS-MOVEMENT.zip",
+      "sizeBytes": 31523768,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v258-movement-ui",
       "fromVersions": [
         "2.0.57"
@@ -5618,8 +5628,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسينات تتبع الحركات.",
-    "fr": "Améliorations suivi mouvements.",
-    "en": "Movement tracking improvements."
+    "ar": "تحسين تتبع حركة المنتج.",
+    "fr": "Amélioration du suivi produit.",
+    "en": "Improved product movement tracking."
   }
 }
