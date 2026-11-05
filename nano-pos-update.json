@@ -1,26 +1,26 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.54",
+  "manifestRevision": "2.0.55",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.54",
-  "releaseDate": "2026-11-04",
+  "version": "2.0.55",
+  "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "خيار \"دفع كامل\" (افتراضي) + \"كريدي\" (يشمل الدفع الجزئي) مع طلب تسجيل الزبون.",
-      "إصلاح تمدد نافذة الدفع واختفاء زر التأكيد."
+      "إضافة خيار \"تذكرني\" في شاشة الدخول لحفظ اسم المستخدم وكلمة المرور.",
+      "تصاميم طباعة جديدة: كلاسيكي (A4/A5) و حراري مضغوط (58/80mm)."
     ],
     "fr": [
-      "Option \"Paiement intégral\" (par défaut) + \"Crédit\" (y compris partiel) avec client requis.",
-      "Correction de l’agrandissement de la fenêtre et disparition du bouton."
+      "Option \"Se souvenir de moi\" à la connexion.",
+      "Nouveaux designs d’impression : Classique et Thermique compact."
     ],
     "en": [
-      "\"Full payment\" (default) + \"Credit\" (including partial) requiring customer registration.",
-      "Fixed payment window expansion and disappearing confirm button."
+      "\"Remember me\" option on login screen.",
+      "New print designs: Classic and Thermal compact."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2942,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v255-remember-print",
+      "fromVersions": [
+        "2.0.54"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.55/NANO-POS-Patch-2.0.54-to-2.0.55-REMEMBER-PRINT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.55",
+      "sha256": "304211c87e72f9ded16372c6e6419cc0b35c61854372ca59e081cd9c241f3212",
+      "appAsarSha256": "78abcc31b1e64c00ba0e26b6e220fcc6397b5837e654f6d80025d2fb1f1f0d3d",
+      "fileName": "NANO-POS-Patch-2.0.54-to-2.0.55-REMEMBER-PRINT.zip",
+      "sizeBytes": 31519362,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v254-payment-options",
       "fromVersions": [
         "2.0.53"
@@ -5566,8 +5579,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسينات خيارات الدفع والواجهة.",
-    "fr": "Améliorations des options de paiement et de l’interface.",
-    "en": "Improved payment options and UI."
+    "ar": "تحسينات الدخول والطباعة.",
+    "fr": "Améliorations connexion et impression.",
+    "en": "Login and printing improvements."
   }
 }
