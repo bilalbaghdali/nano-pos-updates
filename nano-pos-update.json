@@ -1,23 +1,26 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.59",
+  "manifestRevision": "2.0.60",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.59",
+  "version": "2.0.60",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إظهار حركة المنتج في \"تحليلات المنتج\" (أداء المتغيرات) مع التاريخ/النوع/الكمية/السعر/المرجع."
+      "إظهار \"تتبع الحركات\" (زر في الشريط + قسم المخزون).",
+      "تحسين ظهور الحركة في تحليلات المنتج."
     ],
     "fr": [
-      "Affichage du mouvement produit dans les analyses."
+      "Affichage du suivi des mouvements.",
+      "Amélioration de l’affichage."
     ],
     "en": [
-      "Product movement shown in Product Analytics."
+      "Movement tracking visible (toolbar + inventory).",
+      "Improved analytics movement display."
     ]
   },
   "releaseHistory": {
@@ -2939,6 +2942,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v260-movement-visible",
+      "fromVersions": [
+        "2.0.59"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.60/NANO-POS-Patch-2.0.59-to-2.0.60-MOVEMENT-VISIBLE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.60",
+      "sha256": "2a9e5eacb6c6cbe5f932ae0cf2e851f4563ce0b73887a1b4e7dbbd73f9f42acf",
+      "appAsarSha256": "09434ecf844ea76de8c43dfef5463a28cdb698231e87f2849fd2f241e19a5f5a",
+      "fileName": "NANO-POS-Patch-2.0.59-to-2.0.60-MOVEMENT-VISIBLE.zip",
+      "sizeBytes": 31524221,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v259-analytics-movement",
       "fromVersions": [
         "2.0.58"
@@ -5628,8 +5644,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسين تتبع حركة المنتج.",
-    "fr": "Amélioration du suivi produit.",
-    "en": "Improved product movement tracking."
+    "ar": "إصلاح ظهور الحركات.",
+    "fr": "Correction affichage mouvements.",
+    "en": "Fixed movement display."
   }
 }
