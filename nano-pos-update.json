@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.65",
+  "manifestRevision": "2.0.66",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.65",
+  "version": "2.0.66",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3058,9 +3058,81 @@
         ]
       },
       "label": "خلفية إسلامية"
+    },
+    "2.0.66": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "تخزين مؤقت (30 ثانية) لبيانات الحركات لتجنب إعادة جلب جميع المبيعات/المشتريات при كل عرض.",
+          "بحث مُؤجَّل (300ms) لتجنب إعادة التصيير при كل ضغطة.",
+          "تصفية بالتواريخ (من/إلى) لعرض حركات فترة محددة.",
+          "إحصائيات سريعة: عدد الحركات، بيع/شراء/مرتجع، صافي الكمية، الإجمالي.",
+          "اسم الزبون/المورد (party) في حركات المنتج.",
+          "تتبع المرتجعات (sales_returns) في حركات المنتج.",
+          "ترقيم صفحات (25 لكل صفحة) لتحسين الأداء مع بيانات كبيرة.",
+          "تصدير إلى CSV مع BOM UTF-8 (Excel-compatible).",
+          "تقليل polling زر شريط الأدوات من 20×1s إلى 8×1.5s.",
+          "الحفاظ على وضع العمل السلس (2.0.62) وتسريع الدخول (2.0.63) وبطاقة الصلاة (2.0.64) والخلفية (2.0.65).",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Cache de 30 secondes pour les données de mouvements.",
+          "Recherche différée (300 ms) pour éviter le re-rendu à chaque frappe.",
+          "Filtre par dates (du/au) pour une période donnée.",
+          "Statistiques rapides : nombre de mouvements, ventes/achats/retours, quantité nette, total.",
+          "Nom du client/fournisseur (tiers) dans les mouvements produit.",
+          "Suivi des retours (sales_returns) dans les mouvements produit.",
+          "Pagination (25 par page) pour améliorer les performances avec de grandes données.",
+          "Export CSV avec BOM UTF-8 (compatible Excel).",
+          "Réduction du polling du bouton de la barre d’outils de 20×1s à 8×1.5s.",
+          "Conservation du mode fluide (2.0.62), du démarrage rapide (2.0.63), de la carte des prières (2.0.64) et du fond (2.0.65).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "30-second cache for movement data to avoid re-fetching all sales/purchases on every render.",
+          "Debounced search (300 ms) to avoid re-rendering on every keystroke.",
+          "Date range filter (from/to) for a specific period.",
+          "Quick stats: movement count, sales/purchases/returns, net quantity, total.",
+          "Customer/supplier name (party) in product movements.",
+          "Returns tracking (sales_returns) in product movements.",
+          "Pagination (25 per page) for better performance with large datasets.",
+          "CSV export with UTF-8 BOM (Excel-compatible).",
+          "Reduced toolbar button polling from 20×1s to 8×1.5s.",
+          "Keeps Smooth Mode (2.0.62), fast login (2.0.63), prayer card (2.0.64) and Islamic background (2.0.65).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "تحسين تتبع الحركات"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v266-movement-tracking",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.66/NANO-POS-Patch-2.0.65-to-2.0.66-MOVEMENT-TRACKING.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.66",
+      "sha256": "C6E7869CB9BB4697A51A8CC9D00CF0B84E3CC789F94C3AE67B64BF36AF9A82CE",
+      "appAsarSha256": "EDC4D28A8461DE947DF34F4A29831DC86B6396E73F21196B94E3157A7485101C",
+      "fileName": "NANO-POS-Patch-2.0.65-to-2.0.66-MOVEMENT-TRACKING.zip",
+      "sizeBytes": 31533756,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v265-prayer-bg",
       "fromVersions": [
@@ -5884,8 +5956,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "خلفية إسلامية لبطاقة مواقيت الصلاة (الأذان): نقوش هندسية، هلال، مئذنة، ألوان teal/gold.",
-    "fr": "Fond islamique pour la carte des prières (Adhan) : motifs géométriques, croissant, minaret, couleurs teal/or.",
-    "en": "Islamic-themed background for the prayer-times (Adhan) card: geometric patterns, crescent, minaret, teal/gold colors."
+    "ar": "تحسين نظام تتبع الحركات: تخزين مؤقت، تصفية بالتواريخ، بحث مُؤجَّل، إحصائيات، تصدير CSV، ترقيم صفحات، party name، مرتجعات.",
+    "fr": "Amélioration du suivi des mouvements : cache, filtre par dates, recherche différée, statistiques, export CSV, pagination, nom du tiers, retours.",
+    "en": "Improved movement tracking: cache, date filter, debounced search, stats, CSV export, pagination, party name, returns."
   }
 }
