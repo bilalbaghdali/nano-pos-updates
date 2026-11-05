@@ -1,26 +1,29 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.60",
+  "manifestRevision": "2.0.61",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.60",
+  "version": "2.0.61",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إظهار \"تتبع الحركات\" (زر في الشريط + قسم المخزون).",
-      "تحسين ظهور الحركة في تحليلات المنتج."
+      "جدول حركة المنتج داخل تحليلات المنتج (أداء المتغيرات): التاريخ، النوع (بيع/شراء/مرتجع)، الكمية، السعر، رقم الفاتورة، والزبون أو المورد.",
+      "يظهر الجدول دائماً حتى عندما لا توجد متغيرات للمنتج (تم إصلاح عدم الظهور).",
+      "بيانات الحركة تُجلب من قاعدة البيانات المحلية مباشرة عبر خادم البرنامج (سريع وبدون تحميل قوائم ضخمة)."
     ],
     "fr": [
-      "Affichage du suivi des mouvements.",
-      "Amélioration de l’affichage."
+      "Tableau des mouvements du produit dans les analyses (performance des variantes) : date, type (vente/achat/retour), quantité, prix, facture, client ou fournisseur.",
+      "Le tableau s’affiche même si le produit n’a pas de variantes.",
+      "Données lues directement depuis la base locale (rapide, sans charger de longues listes)."
     ],
     "en": [
-      "Movement tracking visible (toolbar + inventory).",
-      "Improved analytics movement display."
+      "Product movement table inside Product Analytics (variants performance): date, type (sale/purchase/return), quantity, price, invoice, and customer or supplier.",
+      "The table now appears even when the product has no variants (display bug fixed).",
+      "Movement data comes straight from the local database through the app server (fast, no huge list downloads)."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2945,28 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v261-product-movement-table",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.61/NANO-POS-Patch-2.0.60-to-2.0.61-PRODUCT-MOVEMENT.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.61",
+      "sha256": "8f5922511a61e70cbb119c18485b58c14cd8e58b76e080a658b44a5eb3ee04fd",
+      "appAsarSha256": "23912b0d6e49975c90050d3a90f4c7b653b672138d34794b135fd747cbcb7550",
+      "fileName": "NANO-POS-Patch-2.0.60-to-2.0.61-PRODUCT-MOVEMENT.zip",
+      "sizeBytes": 31526175,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v260-movement-visible",
       "fromVersions": [
         "2.0.59"
@@ -5644,8 +5669,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح ظهور الحركات.",
-    "fr": "Correction affichage mouvements.",
-    "en": "Fixed movement display."
+    "ar": "إصلاح عدم ظهور حركة المنتج وإضافة تفاصيل الزبون/المورد والفاتورة.",
+    "fr": "Correction de l’affichage des mouvements produit avec détails client/fournisseur et facture.",
+    "en": "Fixed product movement display with customer/supplier and invoice details."
   }
 }
