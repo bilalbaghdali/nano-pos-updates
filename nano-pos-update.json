@@ -1,26 +1,29 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.56",
+  "manifestRevision": "2.0.57",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.56",
+  "version": "2.0.57",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "مراجعة منطق اللغات (الفواتير/الوصل) وتحسين الترجمة.",
-      "تصاميم طباعة جديدة + إصلاح اختيار التصميم."
+      "تتبع حركة المنتج: مبيعات/مشتريات/كميات/أسعار/ مرجع.",
+      "تتبع حركة الزبون: فواتير/مبالغ/متبقي.",
+      "تتبع حركة المورد: مشتريات/مبالغ."
     ],
     "fr": [
-      "Révision de la logique linguistique (factures/reçus).",
-      "Nouveaux designs d’impression."
+      "Suivi des mouvements de produit.",
+      "Suivi des mouvements client.",
+      "Suivi des mouvements fournisseur."
     ],
     "en": [
-      "Reviewed language logic (invoices/receipts).",
-      "New print designs."
+      "Product movement tracking.",
+      "Customer movement tracking.",
+      "Supplier movement tracking."
     ]
   },
   "releaseHistory": {
@@ -2942,6 +2945,19 @@
   },
   "patches": [
     {
+      "id": "nano-pos-v257-movement-tracking",
+      "fromVersions": [
+        "2.0.56"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.57/NANO-POS-Patch-2.0.56-to-2.0.57-MOVEMENT-TRACKING.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.57",
+      "sha256": "263b600a8b82b153a7bb9dbea2fa91ebcdb276503c77fdd012ba8a5792c641f6",
+      "appAsarSha256": "9fbd37c146be8e44c1b5d5d3664834b9e84bbaa2edd103d3a7ea589a615479da",
+      "fileName": "NANO-POS-Patch-2.0.56-to-2.0.57-MOVEMENT-TRACKING.zip",
+      "sizeBytes": 31522771,
+      "payloadType": "app-asar"
+    },
+    {
       "id": "nano-pos-v256-print-lang-fix",
       "fromVersions": [
         "2.0.55"
@@ -5592,8 +5608,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسينات اللغة والطباعة.",
-    "fr": "Améliorations langue et impression.",
-    "en": "Language and printing improvements."
+    "ar": "إضافة تتبع الحركات.",
+    "fr": "Ajout du suivi des mouvements.",
+    "en": "Added movement tracking."
   }
 }
