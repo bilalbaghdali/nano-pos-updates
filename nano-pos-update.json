@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.62",
+  "manifestRevision": "2.0.63",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.62",
+  "version": "2.0.63",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -2980,9 +2980,63 @@
         ]
       },
       "label": "الأداء والسلاسة"
+    },
+    "2.0.63": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "تخزين مؤقت (5 ثوانٍ) لنتيجة فحص الترخيص (access) لتجنب إعادة حساب معرف الجهاز وقراءة الملفات في كل استدعاء.",
+          "عرض شاشة الدخول فوراً عند بدء التشغيل بدل انتظار أول دورة تحقق (250 مللي ثانية).",
+          "تقليل مراقب DOM في \"تذكرني\" إلى requestAnimationFrame لتجنب معالجة كل تغيير في المستند.",
+          "تقليل تكرار فحص جاهزية الدخول من 250 مللي ثانية إلى 500 مللي ثانية لتقليل استهلاك CPU أثناء شاشة الدخول.",
+          "الحفاظ على وضع العمل السلس (2.0.62) وجميع تحسينات الأداء (التخزين المؤقت للمنتجات، tuples المخزون، تجاوز النسخ الاحتياطي).",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Cache de 5 secondes pour le résultat de vérification de licence (access) afin d’éviter le recalcul de l’identifiant matériel et la lecture des fichiers à chaque appel.",
+          "Affichage immédiat de l’écran de connexion au démarrage au lieu d’attendre le premier cycle de vérification (250 ms).",
+          "Réduction de l’observateur DOM dans « Se souvenir de moi » via requestAnimationFrame pour éviter le traitement de chaque changement du document.",
+          "Réduction de la fréquence de vérification de la connexion de 250 ms à 500 ms pour diminuer l’utilisation CPU pendant l’écran de connexion.",
+          "Conservation du mode fluide (2.0.62) et de toutes les améliorations de performance (cache produits, tuples de stock, omission de sauvegarde).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "5-second cache for the license access check result to avoid recomputing the hardware ID and reading files on every call.",
+          "Show the login screen immediately at startup instead of waiting for the first 250 ms polling tick.",
+          "Reduce the “Remember me” DOM observer overhead using requestAnimationFrame to avoid processing every document change.",
+          "Reduce login-readiness polling from 250 ms to 500 ms to lower CPU usage on the login screen.",
+          "Keeps Smooth Mode (2.0.62) and all performance improvements (product cache, stock tuples, backup skip).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "تسريع الدخول"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v263-fast-login",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.63/NANO-POS-Patch-2.0.62-to-2.0.63-FAST-LOGIN.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.63",
+      "sha256": "3D69093192811F8924C7A7122C702D7967BBD6923A613EF695DB09B41044DDF4",
+      "appAsarSha256": "443600B4BDB4C38DE9276CD68D06ACF241407F49801BD6CFA380C2D022FD4474",
+      "fileName": "NANO-POS-Patch-2.0.62-to-2.0.63-FAST-LOGIN.zip",
+      "sizeBytes": 31529442,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v262-smooth",
       "fromVersions": [
@@ -5731,8 +5785,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "وضع العمل السلس افتراضياً: إزالة التأثيرات الزخرفية وتسريع تحميل المنتجات والمخزون مع تخزين مؤقت وتجاوز النسخ الاحتياطي عند عدم التغير.",
-    "fr": "Mode fluide par défaut : suppression des effets décoratifs et accélération du chargement produits/stock, avec mise en cache et omission de la sauvegarde complète quand rien ne change.",
-    "en": "Smooth mode on by default: removes decorative paint effects and speeds up product/stock loading, with caching and skipping full backup snapshots when nothing changed."
+    "ar": "تسريع الدخول والعمل: تخزين مؤقت لفحص الترخيص، عرض شاشة الدخول فوراً، تقليل مراقبات DOM، تبديل 250ms→500ms.",
+    "fr": "Démarrage et connexion plus rapides : cache de vérification de licence, affichage immédiat de la connexion, observateurs DOM réduits.",
+    "en": "Faster startup and login: license-check cache, instant login screen, reduced DOM observers, 250ms→500ms polling."
   }
 }
