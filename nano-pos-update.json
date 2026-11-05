@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.72",
+  "manifestRevision": "2.0.73",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.72",
+  "version": "2.0.73",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3270,9 +3270,79 @@
         ]
       },
       "label": "إصلاح الباركودات (تحسينات)"
+    },
+    "2.0.73": {
+      "releaseDate": "2026-11-05",
+      "features": {
+        "ar": [
+          "إصلاح حفظ الباركودات الإضافية: تم حل مشكلة حفظ الباركود كـ [object Object]، الآن يُحفظ كنص صحيح.",
+          "البحث عن المنتجات بالباركود الإضافي يعمل بشكل صحيح.",
+          "إضافة المنتج إلى السلة مباشرة عند مسح الباركود الإضافي في نقطة البيع.",
+          "إزالة وحدة الباركود المعطلة التي كانت تضيف زراً غير عامل.",
+          "قبول الباركود مهما كانت لغة ويندوز (دعم ترميز NumPad لجميع اللغات).",
+          "إصلاح مشكلة توقف النوافذ في الإصدار 2.0.72.",
+          "الحفاظ على جميع التحسينات (2.0.62–2.0.72).",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Correction de la sauvegarde des codes-barres supplémentaires: problème [object Object] résolu, maintenant sauvegardé comme texte correct.",
+          "Recherche des produits par code-barres supplémentaire fonctionne correctement.",
+          "Ajout direct du produit au panier lors du scan du code-barres supplémentaire en point de vente.",
+          "Suppression du module de code-barres défectueux qui ajoutait un bouton non fonctionnel.",
+          "Acceptation des codes-barres quelle que soit la langue Windows (support encodage NumPad toutes langues).",
+          "Correction du problème de fermeture des fenêtres dans la version 2.0.72.",
+          "Conservation de toutes les améliorations (2.0.62–2.0.72).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Fixed extra barcode saving: [object Object] issue resolved, now saved as correct text.",
+          "Product search by extra barcode works correctly.",
+          "Add product directly to cart on extra barcode scan in POS.",
+          "Removed faulty barcode module that added a non-working button.",
+          "Accept barcodes regardless of Windows language (NumPad encoding support for all languages).",
+          "Fixed windows not opening issue in version 2.0.72.",
+          "Keeps all improvements (2.0.62–2.0.72).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "إصلاح الباركودات (تحسينات)"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v273-barcode-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.73/NANO-POS-Patch-2.0.72-to-2.0.73-BARCODE-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.73",
+      "sha256": "85F607771E7433EE971EA5D128598EA33ACC51947F6041D9B0279763F7E83658",
+      "appAsarSha256": "35C2D7E0D0A0626A844EB909B42E3B9F8A6E34C9FCE685BBA2C0D94AFC8CC2DA",
+      "fileName": "NANO-POS-Patch-2.0.72-to-2.0.73-BARCODE-FIX.zip",
+      "sizeBytes": 31534527,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v272-barcode-fix",
       "fromVersions": [
@@ -6274,8 +6344,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح الباركودات: حفظها كنص وليس ككائن Object، وقبول الباركود مهما كانت لغة ويندوز.",
-    "fr": "Correction des codes-barres: sauvegarde comme texte et non comme objet Object, acceptation des codes-barres quelle que soit la langue Windows.",
-    "en": "Fixed barcodes: saved as text not Object Object, accept barcodes regardless of Windows language."
+    "ar": "إصلاح الباركودات: حفظها كنص وليس ككائن Object، وقبول الباركود مهما كانت لغة ويندوز، وإصلاح مشكلة توقف النوافذ.",
+    "fr": "Correction des codes-barres: sauvegarde comme texte et non comme objet Object, acceptation des codes-barres quelle que soit la langue Windows, correction du problème de fermeture des fenêtres.",
+    "en": "Fixed barcodes: saved as text not Object Object, accept barcodes regardless of Windows language, fixed windows not opening issue."
   }
 }
