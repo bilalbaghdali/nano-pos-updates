@@ -3372,10 +3372,10 @@
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.75/NANO-POS-Patch-2.0.74-to-2.0.75-COMPREHENSIVE-FIX.zip",
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.75",
-      "sha256": "a76feaac9df742082ea19457119689f3508d169dd4080c8640f415d842611416",
+      "sha256": "b571df0c97c06ec9fae7e99399dd713f688856ea6229af8f9b97be54ad2c7c1e",
       "appAsarSha256": "3c63ae3086265923b525fc2beb8d267d437e7f85f76408040eeb216a2e6ce5c3",
       "fileName": "NANO-POS-Patch-2.0.74-to-2.0.75-COMPREHENSIVE-FIX.zip",
-      "sizeBytes": 31168907,
+      "sizeBytes": 31169051,
       "payloadType": "app-asar"
     },
     {
