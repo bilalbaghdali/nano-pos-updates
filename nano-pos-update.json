@@ -3311,6 +3311,7 @@
       "releaseDate": "2026-11-06",
       "features": {
         "ar": [
+          "تحسينات عامة",
           "مراجعة شاملة للبرنامج: إصلاح 8 قنوات مكسورة في browser-preload.js (getCustomers, getSettings, getNotifications, importDatabaseBackup, downloadInventoryTemplate, exportSuppliersToExcel, downloadCustomersTemplate, downloadSuppliersTemplate).",
           "إصلاح الباركودات: حفظها كنص وليس ككائن Object، وقبول الباركود مهما كانت لغة ويندوز.",
           "إصلاح maybeDecodeAltNumpad: قبول الباركود مهما كانت لغة ويندوز.",
@@ -3319,6 +3320,7 @@
           "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
         ],
         "fr": [
+          "Améliorations générales",
           "Révision complète du programme: correction de 8 canaux cassés dans browser-preload.js (getCustomers, getSettings, getNotifications, importDatabaseBackup, downloadInventoryTemplate, exportSuppliersToExcel, downloadCustomersTemplate, downloadSuppliersTemplate).",
           "Correction des codes-barres: sauvegarde comme texte et non comme objet, acceptation quelle que soit la langue Windows.",
           "Correction de maybeDecodeAltNumpad: acceptation des codes-barres quelle que soit la langue Windows.",
@@ -3327,6 +3329,7 @@
           "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
         ],
         "en": [
+          "General improvements",
           "Comprehensive program review: fixed 8 broken channels in browser-preload.js (getCustomers, getSettings, getNotifications, importDatabaseBackup, downloadInventoryTemplate, exportSuppliersToExcel, downloadCustomersTemplate, downloadSuppliersTemplate).",
           "Fixed barcodes: saved as text not Object, accept regardless of Windows language.",
           "Fixed maybeDecodeAltNumpad: accept barcodes regardless of Windows language.",
@@ -6445,8 +6448,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "مراجعة شاملة: إصلاح 8 قنوات مكسورة (getCustomers, getSettings, إلخ)، إصلاح الباركودات، إصلاح maybeDecodeAltNumpad.",
-    "fr": "Révision complète: correction de 8 canaux cassés (getCustomers, getSettings, etc.), correction des codes-barres, correction de maybeDecodeAltNumpad.",
-    "en": "Comprehensive review: fixed 8 broken channels (getCustomers, getSettings, etc.), fixed barcodes, fixed maybeDecodeAltNumpad."
+    "ar": "تحسينات عامة: إصلاحات شاملة في قنوات browser-preload.js، باركودات، تتبع الحركات، وتحسين الأداء.",
+    "fr": "Améliorations générales: corrections complètes des canaux browser-preload.js, codes-barres, suivi des mouvements et performance.",
+    "en": "General improvements: comprehensive fixes for browser-preload.js channels, barcodes, movement tracking and performance."
   }
 }
