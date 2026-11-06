@@ -1,11 +1,11 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.74",
+  "manifestRevision": "2.0.75",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.74",
-  "releaseDate": "2026-11-05",
+  "version": "2.0.75",
+  "releaseDate": "2026-11-06",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
@@ -3306,9 +3306,75 @@
         ]
       },
       "label": "إصلاح الباركودات (تحسينات)"
+    },
+    "2.0.75": {
+      "releaseDate": "2026-11-06",
+      "features": {
+        "ar": [
+          "مراجعة شاملة للبرنامج: إصلاح 8 قنوات مكسورة في browser-preload.js (getCustomers, getSettings, getNotifications, importDatabaseBackup, downloadInventoryTemplate, exportSuppliersToExcel, downloadCustomersTemplate, downloadSuppliersTemplate).",
+          "إصلاح الباركودات: حفظها كنص وليس ككائن Object، وقبول الباركود مهما كانت لغة ويندوز.",
+          "إصلاح maybeDecodeAltNumpad: قبول الباركود مهما كانت لغة ويندوز.",
+          "إصلاح الباركودات الإضافية: البحث بها، وإضافتها للسلة مباشرة.",
+          "الحفاظ على جميع التحسينات (2.0.62–2.0.74).",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Révision complète du programme: correction de 8 canaux cassés dans browser-preload.js (getCustomers, getSettings, getNotifications, importDatabaseBackup, downloadInventoryTemplate, exportSuppliersToExcel, downloadCustomersTemplate, downloadSuppliersTemplate).",
+          "Correction des codes-barres: sauvegarde comme texte et non comme objet, acceptation quelle que soit la langue Windows.",
+          "Correction de maybeDecodeAltNumpad: acceptation des codes-barres quelle que soit la langue Windows.",
+          "Correction des codes-barres supplémentaires: recherche et ajout direct au panier.",
+          "Conservation de toutes les améliorations (2.0.62–2.0.74).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "Comprehensive program review: fixed 8 broken channels in browser-preload.js (getCustomers, getSettings, getNotifications, importDatabaseBackup, downloadInventoryTemplate, exportSuppliersToExcel, downloadCustomersTemplate, downloadSuppliersTemplate).",
+          "Fixed barcodes: saved as text not Object, accept regardless of Windows language.",
+          "Fixed maybeDecodeAltNumpad: accept barcodes regardless of Windows language.",
+          "Fixed extra barcodes: search and direct add to cart.",
+          "Keeps all improvements (2.0.62–2.0.74).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "مراجعة شاملة"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v275-comprehensive-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.75/NANO-POS-Patch-2.0.74-to-2.0.75-COMPREHENSIVE-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.75",
+      "sha256": "a76feaac9df742082ea19457119689f3508d169dd4080c8640f415d842611416",
+      "appAsarSha256": "3c63ae3086265923b525fc2beb8d267d437e7f85f76408040eeb216a2e6ce5c3",
+      "fileName": "NANO-POS-Patch-2.0.74-to-2.0.75-COMPREHENSIVE-FIX.zip",
+      "sizeBytes": 31168907,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v274-barcode-scan-sale",
       "fromVersions": [
@@ -6379,8 +6445,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "إصلاح الباركودات: حفظها كنص وليس ككائن Object، وقبول الباركود مهما كانت لغة ويندوز، وإصلاح مشكلة توقف النوافذ.",
-    "fr": "Correction des codes-barres: sauvegarde comme texte et non comme objet Object, acceptation des codes-barres quelle que soit la langue Windows, correction du problème de fermeture des fenêtres.",
-    "en": "Fixed barcodes: saved as text not Object Object, accept barcodes regardless of Windows language, fixed windows not opening issue."
+    "ar": "مراجعة شاملة: إصلاح 8 قنوات مكسورة (getCustomers, getSettings, إلخ)، إصلاح الباركودات، إصلاح maybeDecodeAltNumpad.",
+    "fr": "Révision complète: correction de 8 canaux cassés (getCustomers, getSettings, etc.), correction des codes-barres, correction de maybeDecodeAltNumpad.",
+    "en": "Comprehensive review: fixed 8 broken channels (getCustomers, getSettings, etc.), fixed barcodes, fixed maybeDecodeAltNumpad."
   }
 }
