@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.73",
+  "manifestRevision": "2.0.74",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.73",
+  "version": "2.0.74",
   "releaseDate": "2026-11-05",
   "mandatory": false,
   "importance": "recommended",
@@ -3309,6 +3309,41 @@
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v274-barcode-scan-sale",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.74/NANO-POS-Patch-2.0.73-to-2.0.74-BARCODE-SCAN-SALE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.74",
+      "sha256": "062d2c6752758e66837352d18401a6d59f06af230a2b34bd206bdb45b20402d5",
+      "appAsarSha256": "ac6d49a13b3a208b25ee0d75ef7c75dd1e802de3a5b363116d7f0fa3da2c7d0c",
+      "fileName": "NANO-POS-Patch-2.0.73-to-2.0.74-BARCODE-SCAN-SALE.zip",
+      "sizeBytes": 31169135,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v273-barcode-fix",
       "fromVersions": [
