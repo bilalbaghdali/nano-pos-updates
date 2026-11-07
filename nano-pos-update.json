@@ -6622,8 +6622,8 @@
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.78/NANO-POS-Patch-2.0.77-to-2.0.78-UI-FIX.zip",
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.78",
-      "sha256": "24d1727c6aadb0aa3b20b955ca100ececbce3c6d7cd93b0db7deb18402553d64",
-      "appAsarSha256": "eba52d41291ccc236a2d53f8cea155a2ab6162cf37fccedcae95c141b7048556",
+      "sha256": "b09b466060bfed1715bea63f710a9836d574404c5e30975e9c0268b3bcbe439b",
+      "appAsarSha256": "36caa9b034bd17f19730a14a8e732fd7988d6235b771536b8bfec2550f572585",
       "fileName": "NANO-POS-Patch-2.0.77-to-2.0.78-UI-FIX.zip",
       "sizeBytes": 31181145,
       "payloadType": "app-asar"
