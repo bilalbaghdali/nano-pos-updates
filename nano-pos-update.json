@@ -1,11 +1,11 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.75",
+  "manifestRevision": "2.0.76",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.75",
-  "releaseDate": "2026-11-06",
+  "version": "2.0.76",
+  "releaseDate": "2026-11-07",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
@@ -3339,9 +3339,79 @@
         ]
       },
       "label": "مراجعة شاملة"
+    },
+    "2.0.76": {
+      "releaseDate": "2026-11-07",
+      "features": {
+        "ar": [
+          "تحسينات عامة",
+          "مراجعة شاملة: إصلاح 8 قنوات مكسورة في browser-preload.js.",
+          "إصلاح الباركودات: حفظها كنص وليس ككائن Object، وقبول الباركود مهما كانت لغة ويندوز.",
+          "إصلاح الباركودات الإضافية: البحث بها، وإضافتها للسلة مباشرة.",
+          "إصلاح قراءة الباركود عند البيع: إضافة المنتج مباشرة إلى السلة.",
+          "الحفاظ على جميع التحسينات (2.0.62–2.0.75).",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Améliorations générales",
+          "Révision complète: correction de 8 canaux cassés dans browser-preload.js.",
+          "Correction des codes-barres: sauvegarde comme texte, acceptation quelle que soit la langue Windows.",
+          "Correction des codes-barres supplémentaires: recherche et ajout direct au panier.",
+          "Correction de la lecture des codes-barres à la vente: ajout direct au panier.",
+          "Conservation de toutes les améliorations (2.0.62–2.0.75).",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "General improvements",
+          "Comprehensive review: fixed 8 broken channels in browser-preload.js.",
+          "Fixed barcodes: saved as text, accept regardless of Windows language.",
+          "Fixed extra barcodes: search and direct add to cart.",
+          "Fixed barcode reading at sale: direct add to cart.",
+          "Keeps all improvements (2.0.62–2.0.75).",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      },
+      "label": "تحسينات عامة"
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v276-comprehensive-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.76/NANO-POS-Patch-2.0.75-to-2.0.76-COMPREHENSIVE-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.76",
+      "sha256": "6c1b2c203eb08ebdbba066fdf7736fca8fc3f08f2eb2eb806579ac0eeb20aec7",
+      "appAsarSha256": "4f32b5e10c8437c0f462abd9b9851129359fbf1e52d23855751ab28c7b45dd7f",
+      "fileName": "NANO-POS-Patch-2.0.75-to-2.0.76-COMPREHENSIVE-FIX.zip",
+      "sizeBytes": 31169251,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v275-comprehensive-fix",
       "fromVersions": [
@@ -6448,8 +6518,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسينات عامة: إصلاحات شاملة في قنوات browser-preload.js، باركودات، تتبع الحركات، وتحسين الأداء.",
-    "fr": "Améliorations générales: corrections complètes des canaux browser-preload.js, codes-barres, suivi des mouvements et performance.",
-    "en": "General improvements: comprehensive fixes for browser-preload.js channels, barcodes, movement tracking and performance."
+    "ar": "تحسينات عامة: مراجعة شاملة، إصلاح 8 قنوات مكسورة، إصلاح الباركودات، إصلاح قراءة الباركود عند البيع.",
+    "fr": "Améliorations générales: révision complète, correction de 8 canaux cassés, correction des codes-barres, correction de la lecture des codes-barres à la vente.",
+    "en": "General improvements: comprehensive review, fixed 8 broken channels, fixed barcodes, fixed barcode reading at sale."
   }
 }
