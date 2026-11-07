@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.77",
+  "manifestRevision": "2.0.78",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.77",
+  "version": "2.0.78",
   "releaseDate": "2026-11-07",
   "mandatory": false,
   "importance": "recommended",
@@ -12,33 +12,23 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "إصلاح البحث عن المنتجات داخل قسم الحزم: كانت أي منتجات لها باركودات إضافية تُوقف البحث بالكامل.",
-      "البحث الآن يشمل الاسم، الباركود، الباركودات الإضافية، رمز PLU، المتغيرات، التصنيف والعائلة.",
-      "دعم البحث بالعربية مع أو بدون التشكيل واختلاف رسم الحروف (أ/إ/آ، ى/ي، ة/ه).",
-      "عرض كل منتجات المخزون عند إضافة منتج للحزمة، بما فيها المنتجات المخفية أو التي نفد مخزونها.",
-      "إمكانية إضافة المنتج للحزمة بمسح الباركود مباشرة ثم الضغط على Enter.",
-      "توحيد شكل الباركودات الإضافية في قاعدة البيانات (نص + خريطة السعر) لإصلاح البحث والمسح والبيع في جميع الشاشات.",
+      "إصلاح معرّفات الواجهة المكررة: إزالة تبويب المخزون المكرر في نموذج المنتج وإصلاح زر الطباعة التلقائية في نافذة الدفع.",
+      "ترجمة كاملة: إضافة 23 مفتاح ترجمة ناقص (تتبع الحركات، المزامنة، آجل، وحدة، من، تم الإضافة، إلخ) إلى العربية والإنجليزية والفرنسية.",
       "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
       "Améliorations générales",
-      "Correction de la recherche de produits dans la section des lots : les produits avec codes-barres supplémentaires bloquaient toute la recherche.",
-      "La recherche couvre désormais le nom, le code-barres, les codes-barres supplémentaires, le PLU, les variantes, la catégorie et la famille.",
-      "Recherche arabe tolérante aux diacritiques et aux variantes de lettres (أ/إ/آ، ى/ي، ة/ه).",
-      "Tous les produits du stock sont proposés lors de la composition d'un lot, y compris les produits masqués ou en rupture.",
-      "Ajout d'un produit au lot en scannant son code-barres puis en appuyant sur Entrée.",
-      "Format unifié des codes-barres supplémentaires en base (texte + table de prix) pour la recherche, le scan et la vente.",
+      "Correction des identifiants d'interface dupliqués : suppression de l'onglet stock redondant dans le formulaire produit et correction du bouton d'impression automatique dans la fenêtre de paiement.",
+      "Traduction complète : ajout de 23 clés de traduction manquantes (suivi des mouvements, synchronisation, crédit, unité, sur, ajouté, etc.) en arabe, anglais et français.",
+      "Correction du lien « Continuer vers l'écran de connexion » dans l'écran d'essai (pointait vers un identifiant inexistant).",
       "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "Fixed product search in the bundles section: any product with extra barcodes used to abort the whole search.",
-      "Search now covers name, barcode, extra barcodes, PLU, variants, category and family.",
-      "Arabic search tolerates diacritics and letter variants (أ/إ/آ، ى/ي، ة/ه).",
-      "Every inventory product is offered when composing a bundle, including hidden or out-of-stock items.",
-      "A product can be added to a bundle by scanning its barcode and pressing Enter.",
-      "Unified extra-barcode storage (text codes + price mappings) so search, scanning and sales work everywhere.",
-      "Preserves all store data, sales, inventory, invoices, activation and backups."
+      "Fixed duplicate UI identifiers: removed the redundant stock tab in the product form and fixed the auto-print button in the checkout modal.",
+      "Complete translations: added 23 missing translation keys (movement tracking, sync, credit, unit, of, added, etc.) in Arabic, English and French.",
+      "Fixed the « Continue to login screen » link in the trial screen (pointed to a nonexistent id).",
+      "Preservation of all store data, sales, inventory, invoices, activation and backups."
     ]
   },
   "releaseHistory": {
@@ -6597,6 +6587,45 @@
       "appAsarSha256": "6abfb4d81fe934334e9d8abdc96e2aaf55379391e53afef57e94b03ec0c2219c",
       "fileName": "NANO-POS-Patch-1.0.118-to-2.0.1-GENERAL-IMPROVEMENTS.zip",
       "sizeBytes": 31429039,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v278-ui-i18n-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.78/NANO-POS-Patch-2.0.77-to-2.0.78-UI-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.78",
+      "sha256": "24d1727c6aadb0aa3b20b955ca100ececbce3c6d7cd93b0db7deb18402553d64",
+      "appAsarSha256": "eba52d41291ccc236a2d53f8cea155a2ab6162cf37fccedcae95c141b7048556",
+      "fileName": "NANO-POS-Patch-2.0.77-to-2.0.78-UI-FIX.zip",
+      "sizeBytes": 31181145,
       "payloadType": "app-asar"
     }
   ],
