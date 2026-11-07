@@ -1,33 +1,28 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.78",
+  "manifestRevision": "2.0.79",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.78",
-  "releaseDate": "2026-11-07",
+  "version": "2.0.79",
+  "releaseDate": "2026-11-08",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
       "تحسينات عامة",
-      "إصلاح معرّفات الواجهة المكررة: إزالة تبويب المخزون المكرر في نموذج المنتج وإصلاح زر الطباعة التلقائية في نافذة الدفع.",
-      "ترجمة كاملة: إضافة 23 مفتاح ترجمة ناقص (تتبع الحركات، المزامنة، آجل، وحدة، من، تم الإضافة، إلخ) إلى العربية والإنجليزية والفرنسية.",
+      "في سلة البيع: آخر منتج يتم مسحه/إضافته (بالباركود) يصبح هو السطر القابل للتعديل في الكمية (التحريك/التعديل).",
       "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
       "Améliorations générales",
-      "Correction des identifiants d'interface dupliqués : suppression de l'onglet stock redondant dans le formulaire produit et correction du bouton d'impression automatique dans la fenêtre de paiement.",
-      "Traduction complète : ajout de 23 clés de traduction manquantes (suivi des mouvements, synchronisation, crédit, unité, sur, ajouté, etc.) en arabe, anglais et français.",
-      "Correction du lien « Continuer vers l'écran de connexion » dans l'écran d'essai (pointait vers un identifiant inexistant).",
+      "Dans le panier de vente : le dernier produit scanné/ajouté (par code-barres) devient la ligne modifiable pour la quantité.",
       "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "Fixed duplicate UI identifiers: removed the redundant stock tab in the product form and fixed the auto-print button in the checkout modal.",
-      "Complete translations: added 23 missing translation keys (movement tracking, sync, credit, unit, of, added, etc.) in Arabic, English and French.",
-      "Fixed the « Continue to login screen » link in the trial screen (pointed to a nonexistent id).",
+      "In the sales cart: the last scanned/added product (by barcode) becomes the line whose quantity is edited.",
       "Preservation of all store data, sales, inventory, invoices, activation and backups."
     ]
   },
@@ -6626,6 +6621,46 @@
       "appAsarSha256": "36caa9b034bd17f19730a14a8e732fd7988d6235b771536b8bfec2550f572585",
       "fileName": "NANO-POS-Patch-2.0.77-to-2.0.78-UI-FIX.zip",
       "sizeBytes": 31181145,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v279-cart-cursor-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.79/NANO-POS-Patch-2.0.78-to-2.0.79-CART-CURSOR.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.79",
+      "sha256": "4aae553a687ba10634aae89cbabaf6ae479bd6add9165c75108d671551d367b3",
+      "appAsarSha256": "451dddf36906436b88a62bff6be9a52cbcc8959deb728e6e9691b85c4d97427d",
+      "fileName": "NANO-POS-Patch-2.0.78-to-2.0.79-CART-CURSOR.zip",
+      "sizeBytes": 31181717,
       "payloadType": "app-asar"
     }
   ],
