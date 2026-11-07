@@ -1,29 +1,44 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.76",
+  "manifestRevision": "2.0.77",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.76",
+  "version": "2.0.77",
   "releaseDate": "2026-11-07",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "جدول حركة المنتج داخل تحليلات المنتج (أداء المتغيرات): التاريخ، النوع (بيع/شراء/مرتجع)، الكمية، السعر، رقم الفاتورة، والزبون أو المورد.",
-      "يظهر الجدول دائماً حتى عندما لا توجد متغيرات للمنتج (تم إصلاح عدم الظهور).",
-      "بيانات الحركة تُجلب من قاعدة البيانات المحلية مباشرة عبر خادم البرنامج (سريع وبدون تحميل قوائم ضخمة)."
+      "تحسينات عامة",
+      "إصلاح البحث عن المنتجات داخل قسم الحزم: كانت أي منتجات لها باركودات إضافية تُوقف البحث بالكامل.",
+      "البحث الآن يشمل الاسم، الباركود، الباركودات الإضافية، رمز PLU، المتغيرات، التصنيف والعائلة.",
+      "دعم البحث بالعربية مع أو بدون التشكيل واختلاف رسم الحروف (أ/إ/آ، ى/ي، ة/ه).",
+      "عرض كل منتجات المخزون عند إضافة منتج للحزمة، بما فيها المنتجات المخفية أو التي نفد مخزونها.",
+      "إمكانية إضافة المنتج للحزمة بمسح الباركود مباشرة ثم الضغط على Enter.",
+      "توحيد شكل الباركودات الإضافية في قاعدة البيانات (نص + خريطة السعر) لإصلاح البحث والمسح والبيع في جميع الشاشات.",
+      "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
-      "Tableau des mouvements du produit dans les analyses (performance des variantes) : date, type (vente/achat/retour), quantité, prix, facture, client ou fournisseur.",
-      "Le tableau s’affiche même si le produit n’a pas de variantes.",
-      "Données lues directement depuis la base locale (rapide, sans charger de longues listes)."
+      "Améliorations générales",
+      "Correction de la recherche de produits dans la section des lots : les produits avec codes-barres supplémentaires bloquaient toute la recherche.",
+      "La recherche couvre désormais le nom, le code-barres, les codes-barres supplémentaires, le PLU, les variantes, la catégorie et la famille.",
+      "Recherche arabe tolérante aux diacritiques et aux variantes de lettres (أ/إ/آ، ى/ي، ة/ه).",
+      "Tous les produits du stock sont proposés lors de la composition d'un lot, y compris les produits masqués ou en rupture.",
+      "Ajout d'un produit au lot en scannant son code-barres puis en appuyant sur Entrée.",
+      "Format unifié des codes-barres supplémentaires en base (texte + table de prix) pour la recherche, le scan et la vente.",
+      "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
-      "Product movement table inside Product Analytics (variants performance): date, type (sale/purchase/return), quantity, price, invoice, and customer or supplier.",
-      "The table now appears even when the product has no variants (display bug fixed).",
-      "Movement data comes straight from the local database through the app server (fast, no huge list downloads)."
+      "General improvements",
+      "Fixed product search in the bundles section: any product with extra barcodes used to abort the whole search.",
+      "Search now covers name, barcode, extra barcodes, PLU, variants, category and family.",
+      "Arabic search tolerates diacritics and letter variants (أ/إ/آ، ى/ي، ة/ه).",
+      "Every inventory product is offered when composing a bundle, including hidden or out-of-stock items.",
+      "A product can be added to a bundle by scanning its barcode and pressing Enter.",
+      "Unified extra-barcode storage (text codes + price mappings) so search, scanning and sales work everywhere.",
+      "Preserves all store data, sales, inventory, invoices, activation and backups."
     ]
   },
   "releaseHistory": {
@@ -3372,9 +3387,83 @@
         ]
       },
       "label": "تحسينات عامة"
+    },
+    "2.0.77": {
+      "releaseDate": "2026-11-07",
+      "label": "تحسينات عامة",
+      "features": {
+        "ar": [
+          "تحسينات عامة",
+          "إصلاح البحث عن المنتجات داخل قسم الحزم: كانت أي منتجات لها باركودات إضافية تُوقف البحث بالكامل.",
+          "البحث الآن يشمل الاسم، الباركود، الباركودات الإضافية، رمز PLU، المتغيرات، التصنيف والعائلة.",
+          "دعم البحث بالعربية مع أو بدون التشكيل واختلاف رسم الحروف (أ/إ/آ، ى/ي، ة/ه).",
+          "عرض كل منتجات المخزون عند إضافة منتج للحزمة، بما فيها المنتجات المخفية أو التي نفد مخزونها.",
+          "إمكانية إضافة المنتج للحزمة بمسح الباركود مباشرة ثم الضغط على Enter.",
+          "توحيد شكل الباركودات الإضافية في قاعدة البيانات (نص + خريطة السعر) لإصلاح البحث والمسح والبيع في جميع الشاشات.",
+          "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+        ],
+        "fr": [
+          "Améliorations générales",
+          "Correction de la recherche de produits dans la section des lots : les produits avec codes-barres supplémentaires bloquaient toute la recherche.",
+          "La recherche couvre désormais le nom, le code-barres, les codes-barres supplémentaires, le PLU, les variantes, la catégorie et la famille.",
+          "Recherche arabe tolérante aux diacritiques et aux variantes de lettres (أ/إ/آ، ى/ي، ة/ه).",
+          "Tous les produits du stock sont proposés lors de la composition d'un lot, y compris les produits masqués ou en rupture.",
+          "Ajout d'un produit au lot en scannant son code-barres puis en appuyant sur Entrée.",
+          "Format unifié des codes-barres supplémentaires en base (texte + table de prix) pour la recherche, le scan et la vente.",
+          "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+        ],
+        "en": [
+          "General improvements",
+          "Fixed product search in the bundles section: any product with extra barcodes used to abort the whole search.",
+          "Search now covers name, barcode, extra barcodes, PLU, variants, category and family.",
+          "Arabic search tolerates diacritics and letter variants (أ/إ/آ، ى/ي، ة/ه).",
+          "Every inventory product is offered when composing a bundle, including hidden or out-of-stock items.",
+          "A product can be added to a bundle by scanning its barcode and pressing Enter.",
+          "Unified extra-barcode storage (text codes + price mappings) so search, scanning and sales work everywhere.",
+          "Preserves all store data, sales, inventory, invoices, activation and backups."
+        ]
+      }
     }
   },
   "patches": [
+    {
+      "id": "nano-pos-v277-bundles-search-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.77/NANO-POS-Patch-2.0.76-to-2.0.77-BUNDLES-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.77",
+      "sha256": "856b32acc750709c44e6c443f9637a83215b73013df75e019b4264f6502bb84c",
+      "appAsarSha256": "a8fc404e41d3f2b73323e77b29bad93a440927a23795522e5edebed916aed4fb",
+      "fileName": "NANO-POS-Patch-2.0.76-to-2.0.77-BUNDLES-FIX.zip",
+      "sizeBytes": 31177771,
+      "payloadType": "app-asar"
+    },
     {
       "id": "nano-pos-v276-comprehensive-fix",
       "fromVersions": [
@@ -6518,8 +6607,8 @@
     "fileName": "NANO-POS-Setup-2.0.17-x64.exe"
   },
   "notes": {
-    "ar": "تحسينات عامة: مراجعة شاملة، إصلاح 8 قنوات مكسورة، إصلاح الباركودات، إصلاح قراءة الباركود عند البيع.",
-    "fr": "Améliorations générales: révision complète, correction de 8 canaux cassés, correction des codes-barres, correction de la lecture des codes-barres à la vente.",
-    "en": "General improvements: comprehensive review, fixed 8 broken channels, fixed barcodes, fixed barcode reading at sale."
+    "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
+    "fr": "Améliorations générales : correction de la recherche de produits dans la section des lots. Les produits ayant des codes-barres supplémentaires n'apparaissaient pas car l'ancien format (objet au lieu de texte) bloquait la recherche. Le format des codes-barres supplémentaires est désormais unifié pour la recherche et le scan dans toutes les sections.",
+    "en": "General improvements: fixed product search in the bundles section. Products with extra barcodes were missing because the legacy shape (object instead of text) aborted the search. Extra barcodes are now normalised so search and scanning work across sections."
   }
 }
