@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.86",
+  "manifestRevision": "2.0.87",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.86",
+  "version": "2.0.87",
   "releaseDate": "2026-11-08",
   "mandatory": false,
   "importance": "recommended",
@@ -12,18 +12,21 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "إصلاح تنزيل التحديث التلقائي: عدة مصادر (github.com / api.github.com / raw.githubusercontent.com) مع تبديل تلقائي عند فشل المصدر.",
-      "إعادة المحاولة التلقائية بعد فشل التنزيل، والحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطي."
+      "سرعة البرنامج مع قواعد البيانات الكبيرة: الكتابة إلى التخزين أصبحت مجمّعة وغير معيقة للواجهة، ولم يعد يتم تحويل القاعدة كاملة عند كل إضافة منتج.",
+      "إصلاح بطء إضافة واستيراد المنتجات (فهرسة الباركود والأسماء) وإزالة التجميد الدوري في قراءة اسم المتجر والنسخ الاحتياطي.",
+      "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطي."
     ],
     "fr": [
       "Améliorations générales",
-      "Correction du téléchargement automatique des mises à jour : plusieurs sources (github.com / api.github.com / raw.githubusercontent.com) avec bascule automatique en cas d'échec.",
-      "Nouvelle tentative automatique après un échec de téléchargement ; préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+      "Performance avec de grosses bases : écritures groupées non bloquantes, plus de sérialisation complète de la base à chaque ajout de produit.",
+      "Correction de la lenteur d'ajout/import des produits (indexation code-barres/noms) et suppression des blocages périodiques (nom du magasin, sauvegarde).",
+      "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "Fixed automatic update download: multiple sources (github.com / api.github.com / raw.githubusercontent.com) with automatic failover.",
-      "Automatic retry after a failed download; all store data, sales, inventory, invoices, activation and backups preserved."
+      "Performance with large databases: coalesced non-blocking storage writes; the full snapshot is no longer serialized on every product change.",
+      "Fixed slow product add/import (barcode and name indexing) and removed periodic freezes in shop-name lookup and backups.",
+      "All store data, sales, inventory, invoices, activation and backups preserved."
     ]
   },
   "releaseHistory": {
@@ -6925,7 +6928,7 @@
       "payloadType": "app-asar"
     },
     {
-      "id": "nano-pos-v286-update-fix",
+      "id": "nano-pos-v287-perf-save-fix",
       "fromVersions": [
         "2.0.51",
         "2.0.52",
@@ -6961,20 +6964,21 @@
         "2.0.82",
         "2.0.83",
         "2.0.84",
-        "2.0.85"
+        "2.0.85",
+        "2.0.86"
       ],
-      "directUrl": "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.86-latest.zip",
-      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/723581930",
+      "directUrl": "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.87-latest.zip",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/723626464",
       "mirrors": [
-        "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.86-latest.zip",
-        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/723581930",
-        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.86/NANO-POS-Patch-2.0.85-to-2.0.86-UPDATE-FIX.zip"
+        "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.87-latest.zip",
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/723626464",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.87/NANO-POS-Patch-2.0.86-to-2.0.87-PERF-SAVE-FIX.zip"
       ],
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.86",
-      "sha256": "a782ef9178a43b62bb1f642d7fa0f4c1b4f59f68406cc9593fc52a91aa96ce1e",
-      "appAsarSha256": "d4fbd68e5cc69f42fb60f800514b8c0290785023b5682a0bc6920cb8f379a5c0",
-      "fileName": "NANO-POS-Patch-2.0.85-to-2.0.86-UPDATE-FIX.zip",
-      "sizeBytes": 31192724,
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.87",
+      "sha256": "6ba2649ef3cb270279a7d2ca0add60611d9f05c6b6d704d2468b159eb1c9e19b",
+      "appAsarSha256": "f1fcec7ea587ff3a5bdd1065e4a94d1f74df0c3b647018586f6fbe515678ac72",
+      "fileName": "NANO-POS-Patch-2.0.86-to-2.0.87-PERF-SAVE-FIX.zip",
+      "sizeBytes": 31196172,
       "payloadType": "app-asar"
     }
   ],
