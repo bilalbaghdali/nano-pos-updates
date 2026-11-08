@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.84",
+  "manifestRevision": "2.0.85",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.84",
+  "version": "2.0.85",
   "releaseDate": "2026-11-08",
   "mandatory": false,
   "importance": "recommended",
@@ -12,17 +12,17 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "الانتقال إلى IndexedDB (تخزين غير متزامن + ترحيل من localStorage) لدعم قواعد بيانات كبيرة وتسريع الإقلاع/الحفظ.",
+      "تحسين الأداء: تأجيل التهيئة الثقيلة (MFG, filters, bundles) وdebounce لفلاتر POS (boot/search أسرع).",
       "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
       "Améliorations générales",
-      "Migration vers IndexedDB (stockage asynchrone + migration depuis localStorage) pour supporter de grosses bases et accélérer le démarrage/sauvegarde.",
+      "Optimisation des performances : report de l'initialisation lourde (MFG, filtres, packs) et debounce des filtres POS (démarrage/recherche plus rapides).",
       "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "Migration to IndexedDB (async storage + migration from localStorage) to support large databases and speed up startup/save.",
+      "Performance: defer heavy init (MFG, filters, bundles) and debounce POS filters (faster boot/search).",
       "Preservation of all store data, sales, inventory, invoices, activation and backups."
     ]
   },
@@ -6876,6 +6876,52 @@
       "appAsarSha256": "e022d925833564028c3588571d54af72ea2e31b7768f8f47b555481d59562bee",
       "fileName": "NANO-POS-Patch-2.0.83-to-2.0.84-IDB-MIGRATION.zip",
       "sizeBytes": 31191470,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v285-perf-defer",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.85/NANO-POS-Patch-2.0.84-to-2.0.85-PERF-DEFER.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.85",
+      "sha256": "53e8966475710dee4926cc06c817c7ade9f615a54d183e5746649f07afde8c25",
+      "appAsarSha256": "3ae9bdded1d5c5c31f6d2c2d5bd1ddd538416cfec262899c596d2d2af8f9ed57",
+      "fileName": "NANO-POS-Patch-2.0.84-to-2.0.85-PERF-DEFER.zip",
+      "sizeBytes": 31191868,
       "payloadType": "app-asar"
     }
   ],
