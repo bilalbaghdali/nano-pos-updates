@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.85",
+  "manifestRevision": "2.0.86",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.85",
+  "version": "2.0.86",
   "releaseDate": "2026-11-08",
   "mandatory": false,
   "importance": "recommended",
@@ -12,18 +12,18 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "تحسين الأداء: تأجيل التهيئة الثقيلة (MFG, filters, bundles) وdebounce لفلاتر POS (boot/search أسرع).",
-      "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
+      "إصلاح تنزيل التحديث التلقائي: عدة مصادر (github.com / api.github.com / raw.githubusercontent.com) مع تبديل تلقائي عند فشل المصدر.",
+      "إعادة المحاولة التلقائية بعد فشل التنزيل، والحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطي."
     ],
     "fr": [
       "Améliorations générales",
-      "Optimisation des performances : report de l'initialisation lourde (MFG, filtres, packs) et debounce des filtres POS (démarrage/recherche plus rapides).",
-      "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+      "Correction du téléchargement automatique des mises à jour : plusieurs sources (github.com / api.github.com / raw.githubusercontent.com) avec bascule automatique en cas d'échec.",
+      "Nouvelle tentative automatique après un échec de téléchargement ; préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "Performance: defer heavy init (MFG, filters, bundles) and debounce POS filters (faster boot/search).",
-      "Preservation of all store data, sales, inventory, invoices, activation and backups."
+      "Fixed automatic update download: multiple sources (github.com / api.github.com / raw.githubusercontent.com) with automatic failover.",
+      "Automatic retry after a failed download; all store data, sales, inventory, invoices, activation and backups preserved."
     ]
   },
   "releaseHistory": {
@@ -6922,6 +6922,59 @@
       "appAsarSha256": "3ae9bdded1d5c5c31f6d2c2d5bd1ddd538416cfec262899c596d2d2af8f9ed57",
       "fileName": "NANO-POS-Patch-2.0.84-to-2.0.85-PERF-DEFER.zip",
       "sizeBytes": 31191868,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v286-update-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84",
+        "2.0.85"
+      ],
+      "directUrl": "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.86-latest.zip",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/723581930",
+      "mirrors": [
+        "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.86-latest.zip",
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/723581930",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.86/NANO-POS-Patch-2.0.85-to-2.0.86-UPDATE-FIX.zip"
+      ],
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.86",
+      "sha256": "a782ef9178a43b62bb1f642d7fa0f4c1b4f59f68406cc9593fc52a91aa96ce1e",
+      "appAsarSha256": "d4fbd68e5cc69f42fb60f800514b8c0290785023b5682a0bc6920cb8f379a5c0",
+      "fileName": "NANO-POS-Patch-2.0.85-to-2.0.86-UPDATE-FIX.zip",
+      "sizeBytes": 31192724,
       "payloadType": "app-asar"
     }
   ],
