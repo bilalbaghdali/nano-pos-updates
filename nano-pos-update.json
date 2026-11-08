@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.79",
+  "manifestRevision": "2.0.80",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.79",
+  "version": "2.0.80",
   "releaseDate": "2026-11-08",
   "mandatory": false,
   "importance": "recommended",
@@ -12,17 +12,20 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "في سلة البيع: آخر منتج يتم مسحه/إضافته (بالباركود) يصبح هو السطر القابل للتعديل في الكمية (التحريك/التعديل).",
+      "الحزم: إمكانية إضافة أكثر من باركود (باركودات إضافية) لكل حزمة، مع مسح أي منها في نقطة البيع.",
+      "الحزم: تحسين تعديل كميات المنتجات (تحديث فوري) في نافذة الحزمة.",
       "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
       "Améliorations générales",
-      "Dans le panier de vente : le dernier produit scanné/ajouté (par code-barres) devient la ligne modifiable pour la quantité.",
+      "Packs : possibilité d'ajouter plusieurs codes-barres (codes-barres supplémentaires) par pack, scannables en caisse.",
+      "Packs : amélioration de l'édition des quantités (mise à jour instantanée) dans la fenêtre du pack.",
       "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "In the sales cart: the last scanned/added product (by barcode) becomes the line whose quantity is edited.",
+      "Bundles: support for multiple barcodes (extra barcodes) per bundle, scannable at POS.",
+      "Bundles: improved quantity editing (instant update) in the bundle modal.",
       "Preservation of all store data, sales, inventory, invoices, activation and backups."
     ]
   },
@@ -6661,6 +6664,47 @@
       "appAsarSha256": "451dddf36906436b88a62bff6be9a52cbcc8959deb728e6e9691b85c4d97427d",
       "fileName": "NANO-POS-Patch-2.0.78-to-2.0.79-CART-CURSOR.zip",
       "sizeBytes": 31181717,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v280-bundles-multibarcode",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.80/NANO-POS-Patch-2.0.79-to-2.0.80-BUNDLES-MULTIBARCODE.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.80",
+      "sha256": "34f180d5bd9dc322f152abc21be56c0e1fe890f82db57085d9ff56eda454aea3",
+      "appAsarSha256": "1e65a82ada083a54106917ae035fc3df39555ed2cfa9e00dd30aaa76b9478e9c",
+      "fileName": "NANO-POS-Patch-2.0.79-to-2.0.80-BUNDLES-MULTIBARCODE.zip",
+      "sizeBytes": 31183827,
       "payloadType": "app-asar"
     }
   ],
