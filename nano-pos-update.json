@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.81",
+  "manifestRevision": "2.0.82",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.81",
+  "version": "2.0.82",
   "releaseDate": "2026-11-08",
   "mandatory": false,
   "importance": "recommended",
@@ -12,17 +12,17 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "قسم الاستيراد: إصلاح زر/اختيار الملف (فتح متصفح الملفات) لاستيراد المنتجات/العملاء/الموردين من CSV/Excel.",
+      "قسم الاستيراد: شريط تقدم (نسبة %) وتحديث فوري أثناء الاستيراد، مع معالجة على دفعات لسلاسة UI.",
       "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
       "Améliorations générales",
-      "Section d'importation : correction du bouton/sélecteur de fichier (ouverture de l'explorateur) pour importer produits/clients/fournisseurs depuis CSV/Excel.",
+      "Section d'importation : barre de progression (pourcentage) et mise à jour en temps réel pendant l'import, traitement par lots pour la fluidité.",
       "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "Import section: fixed file selection button (opens file picker) to import products/customers/suppliers from CSV/Excel.",
+      "Import section: progress bar (percentage) with live updates during import, batched processing for UI smoothness.",
       "Preservation of all store data, sales, inventory, invoices, activation and backups."
     ]
   },
@@ -6744,6 +6744,49 @@
       "appAsarSha256": "3436885cdc46b3de6c58b6c2a93a460fcb6310c3d778061938346b892f472554",
       "fileName": "NANO-POS-Patch-2.0.80-to-2.0.81-IMPORT-FIX.zip",
       "sizeBytes": 31189319,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v282-import-progress",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.82/NANO-POS-Patch-2.0.81-to-2.0.82-IMPORT-PROGRESS.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.82",
+      "sha256": "b40de389be50e335dcb193ca7f05742babcac3d1bbf869079c8b1720e9c4a5c6",
+      "appAsarSha256": "7caac7dcc2dc2f3454ec682a7adc849dfacb28d04f7df954d14542691a143fbc",
+      "fileName": "NANO-POS-Patch-2.0.81-to-2.0.82-IMPORT-PROGRESS.zip",
+      "sizeBytes": 31190538,
       "payloadType": "app-asar"
     }
   ],
