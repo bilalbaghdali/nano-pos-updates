@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.87",
+  "manifestRevision": "2.0.88",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.87",
+  "version": "2.0.88",
   "releaseDate": "2026-11-08",
   "mandatory": false,
   "importance": "recommended",
@@ -12,20 +12,20 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "سرعة البرنامج مع قواعد البيانات الكبيرة: الكتابة إلى التخزين أصبحت مجمّعة وغير معيقة للواجهة، ولم يعد يتم تحويل القاعدة كاملة عند كل إضافة منتج.",
-      "إصلاح بطء إضافة واستيراد المنتجات (فهرسة الباركود والأسماء) وإزالة التجميد الدوري في قراءة اسم المتجر والنسخ الاحتياطي.",
+      "حل جذري لثقل البرنامج مع 34,000 منتج: بيانات المتجر الأساسية تُحمّل فوراً عند الدخول، والمنتجات تُحمّل كسولاً في الخلفية — تسجيل الدخول والتنقل فوري.",
+      "إصلاح تجميد الدفع عند البيع (لا إعادة تحويل للقاعدة كاملة)، وقوائم منتجات خفيفة مع فهرس بحث وترقيم صفحات، وحفظ تدريجي للمنتجات.",
       "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطي."
     ],
     "fr": [
       "Améliorations générales",
-      "Performance avec de grosses bases : écritures groupées non bloquantes, plus de sérialisation complète de la base à chaque ajout de produit.",
-      "Correction de la lenteur d'ajout/import des produits (indexation code-barres/noms) et suppression des blocages périodiques (nom du magasin, sauvegarde).",
+      "Solution radicale pour 34 000 produits : données boutique chargées immédiatement à la connexion, produits en chargement paresseux en arrière-plan — connexion et navigation instantanées.",
+      "Correction du blocage de l'encaissement (plus de sérialisation complète), listes produits allégées avec index de recherche et pagination, écritures produits incrémentales.",
       "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "Performance with large databases: coalesced non-blocking storage writes; the full snapshot is no longer serialized on every product change.",
-      "Fixed slow product add/import (barcode and name indexing) and removed periodic freezes in shop-name lookup and backups.",
+      "Radical fix for 34,000 products: core store data loads instantly at login, products lazy-load in the background — fast login and navigation.",
+      "Fixed checkout freeze (no full snapshot stringify), lightweight product lists with search index and pagination, incremental product writes.",
       "All store data, sales, inventory, invoices, activation and backups preserved."
     ]
   },
@@ -6928,7 +6928,7 @@
       "payloadType": "app-asar"
     },
     {
-      "id": "nano-pos-v287-perf-save-fix",
+      "id": "nano-pos-v288-perf-34k-fix",
       "fromVersions": [
         "2.0.51",
         "2.0.52",
@@ -6965,20 +6965,21 @@
         "2.0.83",
         "2.0.84",
         "2.0.85",
-        "2.0.86"
+        "2.0.86",
+        "2.0.87"
       ],
-      "directUrl": "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.87-latest.zip",
-      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/723626464",
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/725297220",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/725297220",
       "mirrors": [
-        "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.87-latest.zip",
-        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/723626464",
-        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.87/NANO-POS-Patch-2.0.86-to-2.0.87-PERF-SAVE-FIX.zip"
+        "https://raw.githubusercontent.com/bilalbaghdali/nano-pos-updates/assets/NANO-POS-Patch-2.0.88-latest.zip",
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/725297220",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.88/NANO-POS-Patch-2.0.87-to-2.0.88-PERF-34K-FIX.zip"
       ],
-      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.87",
-      "sha256": "6ba2649ef3cb270279a7d2ca0add60611d9f05c6b6d704d2468b159eb1c9e19b",
-      "appAsarSha256": "f1fcec7ea587ff3a5bdd1065e4a94d1f74df0c3b647018586f6fbe515678ac72",
-      "fileName": "NANO-POS-Patch-2.0.86-to-2.0.87-PERF-SAVE-FIX.zip",
-      "sizeBytes": 31196172,
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.88",
+      "sha256": "959b62079c029bc3a6f9e99303cae7ef7f3c7b79399c8afc1e61adf5b222ae9d",
+      "appAsarSha256": "8d2b68c6ea9bab3936003ffcce283e26a9df6a8c089dedc560b877a0f6e074bd",
+      "fileName": "NANO-POS-Patch-2.0.87-to-2.0.88-PERF-34K-FIX.zip",
+      "sizeBytes": 31201130,
       "payloadType": "app-asar"
     }
   ],
