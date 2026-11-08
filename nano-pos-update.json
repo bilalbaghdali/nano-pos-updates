@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.80",
+  "manifestRevision": "2.0.81",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.80",
+  "version": "2.0.81",
   "releaseDate": "2026-11-08",
   "mandatory": false,
   "importance": "recommended",
@@ -12,20 +12,17 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "الحزم: إمكانية إضافة أكثر من باركود (باركودات إضافية) لكل حزمة، مع مسح أي منها في نقطة البيع.",
-      "الحزم: تحسين تعديل كميات المنتجات (تحديث فوري) في نافذة الحزمة.",
+      "قسم الاستيراد: إصلاح زر/اختيار الملف (فتح متصفح الملفات) لاستيراد المنتجات/العملاء/الموردين من CSV/Excel.",
       "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطية."
     ],
     "fr": [
       "Améliorations générales",
-      "Packs : possibilité d'ajouter plusieurs codes-barres (codes-barres supplémentaires) par pack, scannables en caisse.",
-      "Packs : amélioration de l'édition des quantités (mise à jour instantanée) dans la fenêtre du pack.",
+      "Section d'importation : correction du bouton/sélecteur de fichier (ouverture de l'explorateur) pour importer produits/clients/fournisseurs depuis CSV/Excel.",
       "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
     ],
     "en": [
       "General improvements",
-      "Bundles: support for multiple barcodes (extra barcodes) per bundle, scannable at POS.",
-      "Bundles: improved quantity editing (instant update) in the bundle modal.",
+      "Import section: fixed file selection button (opens file picker) to import products/customers/suppliers from CSV/Excel.",
       "Preservation of all store data, sales, inventory, invoices, activation and backups."
     ]
   },
@@ -6705,6 +6702,48 @@
       "appAsarSha256": "1e65a82ada083a54106917ae035fc3df39555ed2cfa9e00dd30aaa76b9478e9c",
       "fileName": "NANO-POS-Patch-2.0.79-to-2.0.80-BUNDLES-MULTIBARCODE.zip",
       "sizeBytes": 31183827,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v281-import-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80"
+      ],
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.81/NANO-POS-Patch-2.0.80-to-2.0.81-IMPORT-FIX.zip",
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.81",
+      "sha256": "30601a436bd22ce67258a1b73eaafaabd4e98c47df6c6c705f608f89b2d4c732",
+      "appAsarSha256": "3436885cdc46b3de6c58b6c2a93a460fcb6310c3d778061938346b892f472554",
+      "fileName": "NANO-POS-Patch-2.0.80-to-2.0.81-IMPORT-FIX.zip",
+      "sizeBytes": 31189319,
       "payloadType": "app-asar"
     }
   ],
