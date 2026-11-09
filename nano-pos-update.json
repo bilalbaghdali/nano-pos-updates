@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.89",
+  "manifestRevision": "2.0.90",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.89",
+  "version": "2.0.90",
   "releaseDate": "2026-11-09",
   "mandatory": false,
   "importance": "recommended",
@@ -12,18 +12,21 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "إصلاح إعادة ضبط المصنع: زر إعادة الضبط يمسح الآن قاعدة IndexedDB بالكامل بما فيها المنتجات والفئات والأصناف والموردون والعملاء والمبيعات والمشتريات والفواتير والإعدادات والمستخدمون.",
-      "إعادة تشغيل البرنامج بعد مسح كل البيانات ليبدأ من وضع المصنع دون عودة المنتجات القديمة، مع الحفاظ على التفعيل ومعرّف التثبيت."
+      "إصلاح الباركودات الإضافية للحزم في نقطة البيع: أصبحت تُحفظ مع الحزمة وتظهر عند فتح نموذج تعديل الحزمة.",
+      "إصلاح البحث عن الحزم في سلة البيع بالباركود الإضافي والباركود الرئيسي والاسم، وإضافة الحزمة عند مسح أي باركود مرتبط بها.",
+      "الحفاظ على بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل."
     ],
     "fr": [
       "Améliorations générales",
-      "Correction de la réinitialisation usine : le bouton efface désormais toute la base IndexedDB, produits, catégories, fournisseurs, clients, ventes, achats, factures, paramètres et utilisateurs.",
-      "Redémarrage après effacement complet, sans retour des anciens produits, tout en conservant l’activation et l’identifiant d’installation."
+      "Correction des codes-barres supplémentaires des packs au point de vente : ils sont conservés avec le pack et affichés dans le formulaire.",
+      "Correction de la recherche des packs dans le panier par code-barre supplémentaire, code-barre principal ou nom, avec ajout au scan.",
+      "Préservation des données boutique, ventes, stocks, factures et activation."
     ],
     "en": [
       "General improvements",
-      "Fixed factory reset: the reset button now wipes the complete IndexedDB database, including products, categories, suppliers, customers, sales, purchases, invoices, settings, and users.",
-      "The app restarts in factory state without old products returning, while preserving activation and installation identity."
+      "Fixed extra barcodes for bundles at the point of sale: they are preserved with the bundle and shown in the bundle form.",
+      "Fixed bundle search in the sales cart by extra barcode, main barcode, or name, including adding the bundle on scan.",
+      "All store data, sales, inventory, invoices, and activation preserved."
     ]
   },
   "releaseHistory": {
@@ -7032,6 +7035,62 @@
       "appAsarSha256": "96a5573669af7700ca2084ae915490cf9f5b21110010571e5f269ba9deef96e5",
       "fileName": "NANO-POS-Patch-2.0.88-to-2.0.89-FACTORY-RESET.zip",
       "sizeBytes": 31202238,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v290-bundle-barcode-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84",
+        "2.0.85",
+        "2.0.86",
+        "2.0.87",
+        "2.0.88",
+        "2.0.89"
+      ],
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/726644908",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/726644908",
+      "mirrors": [
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/726644908",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.90/NANO-POS-Patch-2.0.89-to-2.0.90-BUNDLE-BARCODE-FIX.zip"
+      ],
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.90",
+      "sha256": "2ce2bfa1563941af843d70f6cb2e980178f6769fdb745e1c5ca87d4e61b4b0ca",
+      "appAsarSha256": "7d415ec80489f20bf91174c500f156133bf82e15788d68c522048eaa80fce2e8",
+      "fileName": "NANO-POS-Patch-2.0.89-to-2.0.90-BUNDLE-BARCODE-FIX.zip",
+      "sizeBytes": 31202656,
       "payloadType": "app-asar"
     }
   ],
