@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.97",
+  "manifestRevision": "2.0.98",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.97",
+  "version": "2.0.98",
   "releaseDate": "2026-11-09",
   "mandatory": false,
   "importance": "recommended",
@@ -12,24 +12,21 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "المخزون: يحدّث الجدول فورًا مع كل تغيير في البحث والفلاتر (التصنيف / العائلة / المورد / حالة المخزون / الترتيب).",
-      "إصلاح حالة المخزون: متوفر / منخفض / نافد / منتهي كانت لا تُطبق من قبل.",
-      "إصلاح الترتيب: الاسم والمخزون والانتهاء يعيدان ترتيب الجدول فعلًا.",
-      "البحث يغطي الآن الاسم والباركود والتصنيف والعائلة والمورد."
+      "التأثير المرئي عند نجاح الدخول يظهر الآن فور تسجيل بيانات دخول صحيحة.",
+      "يعمل التأثير أيضًا عند فك القفل وعند الإعداد الأول.",
+      "أُضيفت ملفات التأثير المفقودة إلى نسخة الهاتف."
     ],
     "fr": [
       "Améliorations générales",
-      "Stock : le tableau se met à jour dès chaque changement de recherche ou de filtres.",
-      "Correctif statut de stock (disponible / faible / rupture / périmé) désormais appliqué.",
-      "Correctif tri (nom / stock / péremption) désormais appliqué.",
-      "Recherche élargie au nom, code-barres, catégorie, famille et fournisseur."
+      "L’effet visuel de connexion réussie s’affiche désormais dès la validation des identifiants.",
+      "Il fonctionne aussi au déverrouillage et à la première configuration.",
+      "Ajout des fichiers d’effet manquants sur la version mobile."
     ],
     "en": [
       "General improvements",
-      "Inventory: the table now updates on every search/filter change (category / family / supplier / status / sort).",
-      "Fixed stock status filter (in-stock / low / out / expired) now applied.",
-      "Fixed sort (name / stock / expiry) now reorders the table.",
-      "Search now covers name, barcode, category, family and supplier."
+      "Login success veil now appears immediately after valid credentials are entered.",
+      "Works for main login, lock-screen unlock, and first-run setup.",
+      "Added missing effect files to the mobile build."
     ]
   },
   "releaseHistory": {
@@ -7514,6 +7511,70 @@
       "appAsarSha256": "3b5bc86f3a4f84535985960e4bfe010f02c819eab94b6e23b93829717886939f",
       "fileName": "NANO-POS-Patch-2.0.96-to-2.0.97-INV-FILTER.zip",
       "sizeBytes": 31218538,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v298-login-effect",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84",
+        "2.0.85",
+        "2.0.86",
+        "2.0.87",
+        "2.0.88",
+        "2.0.89",
+        "2.0.90",
+        "2.0.91",
+        "2.0.92",
+        "2.0.93",
+        "2.0.94",
+        "2.0.95",
+        "2.0.96",
+        "2.0.97"
+      ],
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727599505",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727599505",
+      "mirrors": [
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727599505",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.98/NANO-POS-Patch-2.0.97-to-2.0.98-LOGIN-EFFECT.zip"
+      ],
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.98",
+      "sha256": "e0537b6a83c17fbcb28b979ce2423b6b49ebea74705eb977d810704e1e2e48fd",
+      "appAsarSha256": "6e7e6108062549bb389f520d8d2efdd76bdbb962968d7f57fe66543095a9601f",
+      "fileName": "NANO-POS-Patch-2.0.97-to-2.0.98-LOGIN-EFFECT.zip",
+      "sizeBytes": 31221419,
       "payloadType": "app-asar"
     }
   ],
