@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.99",
+  "manifestRevision": "2.0.100",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.99",
+  "version": "2.0.100",
   "releaseDate": "2026-11-09",
   "mandatory": false,
   "importance": "recommended",
@@ -12,21 +12,27 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "إصلاح فعلي: التأثير المرئي عند نجاح الدخول كان لا يُشغَّل أبدًا في شاشة الدخول المستخدمة.",
-      "عند تسجيل بيانات دخول صحيحة يظهر التأثير فورًا ثم تفتح الواجهة.",
-      "يغطي سطح المكتب والمحمول، إضافة إلى فك القفل والإعداد الأول."
+      "الاستيراد يستخرج الآن من أي ملف مخزون: Excel (.xlsx/.xls) وJSON وCSV/TSV/TXT مهما كان نوعه.",
+      "ملفات Excel تُقرأ مباشرة دون حفظ كـ CSV (الورقة الأولى).",
+      "دعم JSON: مصفوفة كائنات أو {products/data/items}.",
+      "اكتشاف صف العناوين تلقائيًا وتجاوز صفوف العنوان/التقرير.",
+      "عناوين عربية وفرنسية وإنجليزية مع فاصل تلقائي (، ؛ Tab |)."
     ],
     "fr": [
       "Améliorations générales",
-      "Correctif réel : l’effet de connexion ne s’affichait jamais sur l’écran de connexion utilisé.",
-      "À la validation des identifiants, l’effet apparaît immédiatement puis l’interface s’ouvre.",
-      "Couvre bureau et mobile, verrouillage et première configuration."
+      "Import : extraction depuis tout fichier de stock : Excel (.xlsx/.xls), JSON, CSV/TSV/TXT.",
+      "Fichiers Excel lus directement sans conversion CSV (première feuille).",
+      "Support JSON : tableau d’objets ou {products/data/items}.",
+      "Détection auto de la ligne d’en-têtes et des lignes de titre.",
+      "En-têtes AR/FR/EN et séparateur automatique."
     ],
     "en": [
       "General improvements",
-      "Real fix: the login success veil never played on the actual login screen.",
-      "On valid credentials the veil appears immediately, then the interface opens.",
-      "Covers desktop, mobile, unlock, and first-run setup."
+      "Import now extracts from any inventory file: Excel (.xlsx/.xls), JSON, CSV/TSV/TXT.",
+      "Native XLSX/XLS reading without CSV conversion (first sheet).",
+      "JSON support: array of objects or {products/data/items}.",
+      "Auto header-row detection skipping title rows.",
+      "Multilingual headers with auto delimiter."
     ]
   },
   "releaseHistory": {
@@ -7640,6 +7646,72 @@
       "appAsarSha256": "11bfcd156dc0d6aec500df904ede4d5b465082a30c61b3d2f4b8b287ab6b7ff8",
       "fileName": "NANO-POS-Patch-2.0.98-to-2.0.99-LOGIN-VEIL.zip",
       "sizeBytes": 31221688,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v2100-any-file",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84",
+        "2.0.85",
+        "2.0.86",
+        "2.0.87",
+        "2.0.88",
+        "2.0.89",
+        "2.0.90",
+        "2.0.91",
+        "2.0.92",
+        "2.0.93",
+        "2.0.94",
+        "2.0.95",
+        "2.0.96",
+        "2.0.97",
+        "2.0.98",
+        "2.0.99"
+      ],
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727663959",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727663959",
+      "mirrors": [
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727663959",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.100/NANO-POS-Patch-2.0.99-to-2.0.100-ANY-FILE.zip"
+      ],
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.100",
+      "sha256": "2ad7f7ed592ffcdac31f1ad19b17fa3bf5e64f34825c01d6111402dc8a7d108b",
+      "appAsarSha256": "e35dc3d53f7f60e72998090675c12f49dd94ec05227e70851ccb802ba80c52db",
+      "fileName": "NANO-POS-Patch-2.0.99-to-2.0.100-ANY-FILE.zip",
+      "sizeBytes": 31874190,
       "payloadType": "app-asar"
     }
   ],
