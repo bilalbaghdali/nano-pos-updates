@@ -1,32 +1,29 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.88",
+  "manifestRevision": "2.0.89",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.88",
-  "releaseDate": "2026-11-08",
+  "version": "2.0.89",
+  "releaseDate": "2026-11-09",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
       "تحسينات عامة",
-      "حل جذري لثقل البرنامج مع 34,000 منتج: بيانات المتجر الأساسية تُحمّل فوراً عند الدخول، والمنتجات تُحمّل كسولاً في الخلفية — تسجيل الدخول والتنقل فوري.",
-      "إصلاح تجميد الدفع عند البيع (لا إعادة تحويل للقاعدة كاملة)، وقوائم منتجات خفيفة مع فهرس بحث وترقيم صفحات، وحفظ تدريجي للمنتجات.",
-      "الحفاظ على جميع بيانات المتجر والمبيعات والمخزون والفواتير والتفعيل والنسخ الاحتياطي."
+      "إصلاح إعادة ضبط المصنع: زر إعادة الضبط يمسح الآن قاعدة IndexedDB بالكامل بما فيها المنتجات والفئات والأصناف والموردون والعملاء والمبيعات والمشتريات والفواتير والإعدادات والمستخدمون.",
+      "إعادة تشغيل البرنامج بعد مسح كل البيانات ليبدأ من وضع المصنع دون عودة المنتجات القديمة، مع الحفاظ على التفعيل ومعرّف التثبيت."
     ],
     "fr": [
       "Améliorations générales",
-      "Solution radicale pour 34 000 produits : données boutique chargées immédiatement à la connexion, produits en chargement paresseux en arrière-plan — connexion et navigation instantanées.",
-      "Correction du blocage de l'encaissement (plus de sérialisation complète), listes produits allégées avec index de recherche et pagination, écritures produits incrémentales.",
-      "Préservation de toutes les données boutique, ventes, stock, factures, activation et sauvegardes."
+      "Correction de la réinitialisation usine : le bouton efface désormais toute la base IndexedDB, produits, catégories, fournisseurs, clients, ventes, achats, factures, paramètres et utilisateurs.",
+      "Redémarrage après effacement complet, sans retour des anciens produits, tout en conservant l’activation et l’identifiant d’installation."
     ],
     "en": [
       "General improvements",
-      "Radical fix for 34,000 products: core store data loads instantly at login, products lazy-load in the background — fast login and navigation.",
-      "Fixed checkout freeze (no full snapshot stringify), lightweight product lists with search index and pagination, incremental product writes.",
-      "All store data, sales, inventory, invoices, activation and backups preserved."
+      "Fixed factory reset: the reset button now wipes the complete IndexedDB database, including products, categories, suppliers, customers, sales, purchases, invoices, settings, and users.",
+      "The app restarts in factory state without old products returning, while preserving activation and installation identity."
     ]
   },
   "releaseHistory": {
@@ -6980,6 +6977,61 @@
       "appAsarSha256": "8d2b68c6ea9bab3936003ffcce283e26a9df6a8c089dedc560b877a0f6e074bd",
       "fileName": "NANO-POS-Patch-2.0.87-to-2.0.88-PERF-34K-FIX.zip",
       "sizeBytes": 31201130,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v289-factory-reset",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84",
+        "2.0.85",
+        "2.0.86",
+        "2.0.87",
+        "2.0.88"
+      ],
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/725738825",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/725738825",
+      "mirrors": [
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/725738825",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.89/NANO-POS-Patch-2.0.88-to-2.0.89-FACTORY-RESET.zip"
+      ],
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.89",
+      "sha256": "52b300787359a06c2299686b2c359936e070e6dc167991e414bf1e02765950e7",
+      "appAsarSha256": "96a5573669af7700ca2084ae915490cf9f5b21110010571e5f269ba9deef96e5",
+      "fileName": "NANO-POS-Patch-2.0.88-to-2.0.89-FACTORY-RESET.zip",
+      "sizeBytes": 31202238,
       "payloadType": "app-asar"
     }
   ],
