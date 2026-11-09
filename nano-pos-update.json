@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.95",
+  "manifestRevision": "2.0.96",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.95",
+  "version": "2.0.96",
   "releaseDate": "2026-11-09",
   "mandatory": false,
   "importance": "recommended",
@@ -12,21 +12,24 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "عند تعديل المنتج: قسم الأسعار ظاهر الآن وقابل للتغيير (التكلفة / البيع تجزئة / الجملة).",
-      "الأسعار المعدّلة تُحفظ على المنتج ودفعته الأساسية وتبقى بعد تحديث الكتالوج.",
-      "المخزون وتاريخ الانتهاء للقراءة فقط عند التعديل — يُعدَّلان من المشتريات والجرد والدفعات."
+      "الاستيراد يتعرّف الآن على عمود الباركود بالعربية والفرنسية والإنجليزية (باركود / كود الباركود / Code barre / Barcode).",
+      "يدعم عناوين الاسم، التصنيف، المخزون، سعر التكلفة وسعر البيع، ثمن الشراء وثمن البيع.",
+      "تنظيف قيم الباركود من .0 والصيغة العلمية والأقواس التي يضيفها Excel.",
+      "إصلاح التباس سعر التكلفة وسعر البيع عند الاستيراد."
     ],
     "fr": [
       "Améliorations générales",
-      "Édition produit : les champs prix (coût / détail / gros) sont modifiables.",
-      "Les prix modifiés sont persistés sur le produit et son lot principal.",
-      "Stock et péremption en lecture seule à l’édition (modifiés via achats/inventaire)."
+      "Import : la colonne code-barres est reconnue en arabe, français et anglais.",
+      "En-têtes reconnus : nom, catégorie, stock, prix d’achat et prix de vente.",
+      "Nettoyage des codes-barres (.0, notation scientifique, guillemets).",
+      "Correction de la confusion prix d’achat / prix de vente à l’import."
     ],
     "en": [
       "General improvements",
-      "Product edit: cost / retail / wholesale prices are now editable.",
-      "Edited prices persist on the product and its primary batch.",
-      "Stock and expiry stay read-only on edit (change via purchases / stocktake)."
+      "Import: the barcode column is now recognized in Arabic, French and English.",
+      "Recognized headers: name, category, stock, cost and selling price.",
+      "Barcode values cleaned (.0, scientific notation, quotes from Excel).",
+      "Fixed cost vs selling price column mix-up on import."
     ]
   },
   "releaseHistory": {
@@ -7386,6 +7389,68 @@
       "appAsarSha256": "a1062457f6b5975e9c24c5824a72359b8dafd6a8c40dcd51c4bdd0f41717df6d",
       "fileName": "NANO-POS-Patch-2.0.94-to-2.0.95-PRICE-EDIT.zip",
       "sizeBytes": 31214484,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v296-barcode-import",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84",
+        "2.0.85",
+        "2.0.86",
+        "2.0.87",
+        "2.0.88",
+        "2.0.89",
+        "2.0.90",
+        "2.0.91",
+        "2.0.92",
+        "2.0.93",
+        "2.0.94",
+        "2.0.95"
+      ],
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727477015",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727477015",
+      "mirrors": [
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727477015",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.96/NANO-POS-Patch-2.0.95-to-2.0.96-BARCODE-IMPORT.zip"
+      ],
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.96",
+      "sha256": "6523ae40d6763a59f6bc396c4d9b2978afcd2fd933879b4b5d9e4b152d388ab7",
+      "appAsarSha256": "1b8f56b581b55afc2f81d30129a14f2c01a43408b9e056147ee146efe3509e87",
+      "fileName": "NANO-POS-Patch-2.0.95-to-2.0.96-BARCODE-IMPORT.zip",
+      "sizeBytes": 31216004,
       "payloadType": "app-asar"
     }
   ],
