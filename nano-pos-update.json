@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.92",
+  "manifestRevision": "2.0.93",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.92",
+  "version": "2.0.93",
   "releaseDate": "2026-11-09",
   "mandatory": false,
   "importance": "recommended",
@@ -12,21 +12,27 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "في المخزون، تُعرض كمية المنتج بالحزم وعدد القطع معاً.",
-      "مثال: مخزون 30 قطعة وحزمة تحتوي 3 قطع تظهر: 10 حزم × 3 و30 قطعة.",
-      "تُعرض أيضاً القطع الشاذة المتبقية بعد تكوين الحزم، مع تحديثها عند تغير المخزون."
+      "الأداء: لم تعد عملية البيع تنسخ قاعدة البيانات كاملة (34,000 منتج) عند كل فاتورة.",
+      "الوصول إلى الدفعات بالباركود/الدفعة صار فوريًا عبر فهرس بدون مسح كل المنتجات.",
+      "حفظ يُكتب للمنتجات المعدّلة فقط دون فحص الكتالوج كاملًا.",
+      "مخزون نقطة البيع يُرجع من ذاكرة مؤقتة ويتحدّث بسرعة بين العمليات.",
+      "صور بطاقات المنتجات تحمّل بشكل كسول لتقليل السحب والعرض."
     ],
     "fr": [
       "Améliorations générales",
-      "Dans l’inventaire, la quantité du produit s’affiche maintenant en packs et en pièces.",
-      "Exemple : stock de 30 pièces avec un pack de 3 → 10 packs × 3 et 30 pièces.",
-      "Les pièces restantes après formation des packs sont aussi affichées et mises à jour avec le stock."
+      "Performance : la vente ne clone plus toute la base (34 000 produits) à chaque ticket.",
+      "La recherche de lots est instantanée via un index, sans balayage du catalogue.",
+      "La sauvegarde n’écrit que les produits modifiés.",
+      "Le stock POS est servi depuis un cache par révision.",
+      "Chargement paresseux des images des cartes produits."
     ],
     "en": [
       "General improvements",
-      "Inventory now displays product quantity as bundles and pieces together.",
-      "Example: 30 pieces with a bundle quantity of 3 shows 10 bundles × 3 and 30 pieces.",
-      "Remaining loose pieces after complete bundles are also shown and updated with stock."
+      "Performance: checkout no longer clones the whole database (34,000 products) per sale.",
+      "Batch lookup is O(1) via an index instead of scanning every product.",
+      "Persistence writes only dirty products instead of fingerprinting the full catalog.",
+      "POS stock is cached per revision instead of full renormalization on every poll.",
+      "Product card images are lazy-loaded to reduce render work."
     ]
   },
   "releaseHistory": {
@@ -7206,6 +7212,65 @@
       "appAsarSha256": "6bb6e60657a85754cb3adcb55bd9793a0a147f1b8a0f66f607f6fb9dc83a75be",
       "fileName": "NANO-POS-Patch-2.0.91-to-2.0.92-INVENTORY-BUNDLE-STOCK.zip",
       "sizeBytes": 31205554,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v293-perf-b",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84",
+        "2.0.85",
+        "2.0.86",
+        "2.0.87",
+        "2.0.88",
+        "2.0.89",
+        "2.0.90",
+        "2.0.91",
+        "2.0.92"
+      ],
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727148084",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727148084",
+      "mirrors": [
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727148084",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.93/NANO-POS-Patch-2.0.92-to-2.0.93-PERF-B.zip"
+      ],
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.93",
+      "sha256": "e2ae4290c16632cb520ea0b5345b93678c7cf9e5e2c09cb21275a2c97a45741c",
+      "appAsarSha256": "262e780d6fd519e8e18f6c042877c81cb8b17e419a37928a8cf5892847db9f4a",
+      "fileName": "NANO-POS-Patch-2.0.92-to-2.0.93-PERF-B.zip",
+      "sizeBytes": 31208502,
       "payloadType": "app-asar"
     }
   ],
