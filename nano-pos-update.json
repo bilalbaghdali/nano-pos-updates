@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.93",
+  "manifestRevision": "2.0.94",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.93",
+  "version": "2.0.94",
   "releaseDate": "2026-11-09",
   "mandatory": false,
   "importance": "recommended",
@@ -12,27 +12,27 @@
   "features": {
     "ar": [
       "تحسينات عامة",
-      "الأداء: لم تعد عملية البيع تنسخ قاعدة البيانات كاملة (34,000 منتج) عند كل فاتورة.",
-      "الوصول إلى الدفعات بالباركود/الدفعة صار فوريًا عبر فهرس بدون مسح كل المنتجات.",
-      "حفظ يُكتب للمنتجات المعدّلة فقط دون فحص الكتالوج كاملًا.",
-      "مخزون نقطة البيع يُرجع من ذاكرة مؤقتة ويتحدّث بسرعة بين العمليات.",
-      "صور بطاقات المنتجات تحمّل بشكل كسول لتقليل السحب والعرض."
+      "إصلاح تجميد الاستيراد الكبير (42,000 منتج): التقدم كل 500 صف مع فترات استجابة.",
+      "المنتجات المستوردة تُطبّع وتُفهرس فورًا وتُحفظ دون إعادة كتابة كل الكتالوج.",
+      "كشف تلقائي لفاصل ملف CSV (، ؛ Tab |) لملفات Excel العربية.",
+      "رسالة واضحة لملفات XLSX الثنائية تطلب الحفظ كـ CSV UTF-8.",
+      "تخفيف الثقل بعد الاستيراد: كاش الفئات/العائلات/الموردين وتقليم الوصف في القوائم، وتخفيف حساب توفر الحزم."
     ],
     "fr": [
       "Améliorations générales",
-      "Performance : la vente ne clone plus toute la base (34 000 produits) à chaque ticket.",
-      "La recherche de lots est instantanée via un index, sans balayage du catalogue.",
-      "La sauvegarde n’écrit que les produits modifiés.",
-      "Le stock POS est servi depuis un cache par révision.",
-      "Chargement paresseux des images des cartes produits."
+      "Correctif du blocage sur import volumineux (42 000 produits).",
+      "Produits normalisés/indexés pendant l’import, sauvegarde incrémentale.",
+      "Détection auto du séparateur CSV (virgule, point-virgule, tabulation, |).",
+      "Message clair pour les fichiers XLSX binaires.",
+      "Allègement après import : cache catégories/familles/fournisseurs et rafraîchissement packs allégé."
     ],
     "en": [
       "General improvements",
-      "Performance: checkout no longer clones the whole database (34,000 products) per sale.",
-      "Batch lookup is O(1) via an index instead of scanning every product.",
-      "Persistence writes only dirty products instead of fingerprinting the full catalog.",
-      "POS stock is cached per revision instead of full renormalization on every poll.",
-      "Product card images are lazy-loaded to reduce render work."
+      "Fixed freeze on bulk import (42,000 products): progress every 500 rows with yields.",
+      "Imported products are normalized/indexed inline and persisted incrementally.",
+      "Auto-detect CSV delimiter (comma, semicolon, tab, pipe) for Arabic Excel files.",
+      "Clear guidance for binary XLSX — save as CSV UTF-8 first.",
+      "Post-import heaviness reduced: category/family/supplier cache, trimmed list descriptions, throttled bundle refresh."
     ]
   },
   "releaseHistory": {
@@ -7271,6 +7271,66 @@
       "appAsarSha256": "262e780d6fd519e8e18f6c042877c81cb8b17e419a37928a8cf5892847db9f4a",
       "fileName": "NANO-POS-Patch-2.0.92-to-2.0.93-PERF-B.zip",
       "sizeBytes": 31208502,
+      "payloadType": "app-asar"
+    },
+    {
+      "id": "nano-pos-v294-import-fix",
+      "fromVersions": [
+        "2.0.51",
+        "2.0.52",
+        "2.0.53",
+        "2.0.54",
+        "2.0.55",
+        "2.0.56",
+        "2.0.57",
+        "2.0.58",
+        "2.0.59",
+        "2.0.60",
+        "2.0.61",
+        "2.0.62",
+        "2.0.63",
+        "2.0.64",
+        "2.0.65",
+        "2.0.66",
+        "2.0.67",
+        "2.0.68",
+        "2.0.69",
+        "2.0.70",
+        "2.0.71",
+        "2.0.72",
+        "2.0.73",
+        "2.0.74",
+        "2.0.75",
+        "2.0.76",
+        "2.0.77",
+        "2.0.78",
+        "2.0.79",
+        "2.0.80",
+        "2.0.81",
+        "2.0.82",
+        "2.0.83",
+        "2.0.84",
+        "2.0.85",
+        "2.0.86",
+        "2.0.87",
+        "2.0.88",
+        "2.0.89",
+        "2.0.90",
+        "2.0.91",
+        "2.0.92",
+        "2.0.93"
+      ],
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727349386",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727349386",
+      "mirrors": [
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/727349386",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.94/NANO-POS-Patch-2.0.93-to-2.0.94-IMPORT-FIX.zip"
+      ],
+      "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.94",
+      "sha256": "4c7f70f9839fd848a8b9efc3681d2df3daf023080dc8887e05d49d393fbfb1d0",
+      "appAsarSha256": "7514b1d36b638e8cf6822d630bd65011de72cf7f3fab114cf00df8f12ee93fe6",
+      "fileName": "NANO-POS-Patch-2.0.93-to-2.0.94-IMPORT-FIX.zip",
+      "sizeBytes": 31210922,
       "payloadType": "app-asar"
     }
   ],
