@@ -3756,11 +3756,11 @@
         "2.0.138",
         "2.0.139"
       ],
-      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/undefined",
-      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/undefined",
+      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/760385268",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/760385268",
       "mirrors": [
-        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/undefined",
-        null
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/760385268",
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.140/NANO-POS-Patch-2.0.139-to-2.0.140-SCANNER-PRICE-QTY-SUPPLIER.zip"
       ],
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.140",
       "sha256": "f264053e5b4de2294ee6d7379d8765a246b482c5d4a0b3463772c667e2414c8c",
