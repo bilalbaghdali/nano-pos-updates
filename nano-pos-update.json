@@ -3762,16 +3762,16 @@
         "2.0.144"
       ],
       "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.145/NANO-POS-Patch-2.0.144-to-2.0.145-COLORFUL-HOME-ICONS.zip",
-      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/762410595",
+      "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/762473693",
       "mirrors": [
         "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.145/NANO-POS-Patch-2.0.144-to-2.0.145-COLORFUL-HOME-ICONS.zip",
-        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/762410595"
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/762473693"
       ],
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.145",
-      "sha256": "b8412907c31250e8d86c8a7e6f088e1eb50bed3ed4704f464e6a133c4664eaba",
-      "appAsarSha256": "fcfcd34ce73968c079b25e8739e8b9797fd39bdcebd10ce9a253f3e8384bdc77",
+      "sha256": "472c507b9c619869b69b96da5abaa99b0ec54a67591601a3cefb7d0237f1a3d6",
+      "appAsarSha256": "1d498cf837338ce5f3f555555f8d9d3b674c8c668b6cf6ebba1ea8d82438e539",
       "fileName": "NANO-POS-Patch-2.0.144-to-2.0.145-COLORFUL-HOME-ICONS.zip",
-      "sizeBytes": 44784978,
+      "sizeBytes": 44784973,
       "payloadType": "app-asar"
     },
     {
