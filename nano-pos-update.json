@@ -3770,10 +3770,10 @@
         "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/762951044"
       ],
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.147",
-      "sha256": "04d03cb3d70f22e6ac48c4e039067f1ae54d08584f4309ee3a9e095105ca2f54",
+      "sha256": "b2c349766c86d69fd8827c7eec6d92ade0e68039370170f798774e0d74d89711",
       "appAsarSha256": "277245f5c2d2684ce492d1b37644ad9cbd11e40b204be32f055084fad25f3047",
       "fileName": "NANO-POS-Patch-2.0.146-to-2.0.147-USER-BARCODE-LOGIN.zip",
-      "sizeBytes": 44784992,
+      "sizeBytes": 44785137,
       "payloadType": "app-asar"
     },
     {
