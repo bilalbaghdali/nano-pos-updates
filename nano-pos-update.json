@@ -3764,11 +3764,12 @@
         "2.0.140",
         "2.0.141"
       ],
-      "directUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/760479461",
+      "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.142/NANO-POS-Patch-2.0.141-to-2.0.142-PERSISTENT-PRICE-DISPLAY.zip",
       "assetApiUrl": "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/760479461",
       "mirrors": [
+        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.142/NANO-POS-Patch-2.0.141-to-2.0.142-PERSISTENT-PRICE-DISPLAY.zip",
         "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/760479461",
-        "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.142/NANO-POS-Patch-2.0.141-to-2.0.142-PERSISTENT-PRICE-DISPLAY.zip"
+        "https://api.github.com/repos/bilalbaghdali/nano-pos-updates/releases/assets/760479461"
       ],
       "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.142",
       "sha256": "d5ca29da3d109a2eb450856814b78b568b08cc31ee314ebb8b1f757899a58e3b",
