@@ -1,18 +1,19 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.162",
+  "manifestRevision": "2.0.163",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.162",
+  "version": "2.0.163",
   "releaseDate": "2026-11-19",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "فتح البرنامج في وضع ملء الشاشة تلقائياً عند التشغيل.",
-      "جعل شاشة القفل تستخدم ألوان البرنامج وخطوطه وبطاقته، مع خلفية معتمة بالكامل لا تظهر ما خلفها.",
+      "التراجع عن فتح البرنامج في وضع ملء الشاشة: يعود للوضع العادي.",
+      "إعادة تصميم شاشة القفل بتخطيط عرضي واسع بدون بطاقة، بألوان البرنامج وخطوطه، وخلفية معتمة بالكامل لا تظهر ما خلفها.",
+      "تفعيل خيار «استخدم كلمة المرور بدلاً من ذلك» في شاشة القفل والانتقال الفعلي إلى نموذج كلمة المرور.",
       "نقل زر «قفل الشاشة» من شريط الأدوات إلى قائمة الحساب بجانب «تسجيل الخروج / تغيير المستخدم».",
       "تقليل زمن مراقبة التحديثات إلى 15 ثانية، مع اعتماد طريقة التحديث بالمثبّت فقط.",
       "تحديث كامل للبرنامج عبر برنامج تثبيت حقيقي: بعد انتهاء التحميل يُشغَّل المثبّت تلقائياً، ويغلق NANO POS، ثم يثبّت النسخة الجديدة ويعيد تشغيلها دون أي تدخل.",
@@ -22,8 +23,9 @@
       "تحسينات عامة"
     ],
     "fr": [
-      "Ouverture du programme en plein écran au démarrage.",
-      "Écran de verrouillage harmonisé avec les couleurs, polices et cartes du programme, avec un fond totalement opaque.",
+      "Annulation du plein écran au démarrage : retour au mode normal.",
+      "Écran de verrouillage redessiné en format paysage large, sans carte, avec les couleurs et polices du programme et un fond totalement opaque.",
+      "Activation de l’option «Utiliser le mot de passe» avec ouverture réelle du formulaire de mot de passe.",
       "Déplacement du bouton «Verrouiller l’écran» de la barre d’outils vers le menu du compte, à côté de «Déconnexion / Changer d’utilisateur».",
       "Intervalle de vérification des mises à jour réduit à 15 secondes, avec mise à jour exclusivement via le programme d’installation.",
       "Mise à jour complète via un vrai programme d’installation : une fois le téléchargement terminé, le programme d’installation démarre automatiquement, ferme NANO POS, installe la nouvelle version et le relance sans intervention.",
@@ -33,8 +35,9 @@
       "Améliorations générales"
     ],
     "en": [
-      "The app now opens in fullscreen mode at startup.",
-      "Lock screen restyled with the app colors, fonts and cards, with a fully opaque background.",
+      "Reverted fullscreen startup: the app now opens in normal window mode.",
+      "Lock screen redesigned as a wide landscape layout without a card, using the app colors and fonts, with a fully opaque background.",
+      "Fixed \"Use password instead\" so it actually opens the password form.",
       "Moved the \"Lock screen\" button from the toolbar into the account menu next to Logout / Switch user.",
       "Update check interval reduced to 15 seconds, with installer-only updates.",
       "Full update through a real installer: once the download finishes, the installer starts automatically, closes NANO POS, installs the new version and relaunches it with no user action.",
@@ -3430,11 +3433,11 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.162/NANO-POS-Setup-2.0.162-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.162",
-    "sha256": "180237e181f98e937ba2c7a18e946e099e5e774a90c23354f6f6dc92047ce9a8",
-    "fileName": "NANO-POS-Setup-2.0.162-x64.exe",
-    "sizeBytes": 123313152
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.163/NANO-POS-Setup-2.0.163-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.163",
+    "sha256": "05c07ec334a71160f1e5a41e2c682cf232ebd8c460db96acba8ab9b0dbcbe23d",
+    "fileName": "NANO-POS-Setup-2.0.163-x64.exe",
+    "sizeBytes": 123312640
   },
   "notes": {
     "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
