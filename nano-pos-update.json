@@ -1,16 +1,17 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.160",
+  "manifestRevision": "2.0.161",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.160",
+  "version": "2.0.161",
   "releaseDate": "2026-11-19",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
+      "نقل زر «قفل الشاشة» من شريط الأدوات إلى قائمة الحساب بجانب «تسجيل الخروج / تغيير المستخدم».",
       "تحديث كامل للبرنامج عبر برنامج تثبيت حقيقي: بعد انتهاء التحميل يُشغَّل المثبّت تلقائياً، ويغلق NANO POS، ثم يثبّت النسخة الجديدة ويعيد تشغيلها دون أي تدخل.",
       "إصلاح كتابة رمز القفل: لوحة أرقام على الشاشة واستقبال مباشر لمفاتيح لوحة المفاتيح بغض النظر عن تركيز الحقل.",
       "تصميم شاشة القفل كقرص دائري حلقي مطابق للفيديو: 6 خانات حول حلقة تقدّم، رمز خاطئ يهتز ويعيد الضبط، ورمز صحيح يدور ويتحول إلى شارة تحقق.",
@@ -18,6 +19,7 @@
       "تحسينات عامة"
     ],
     "fr": [
+      "Déplacement du bouton «Verrouiller l’écran» de la barre d’outils vers le menu du compte, à côté de «Déconnexion / Changer d’utilisateur».",
       "Mise à jour complète via un vrai programme d’installation : une fois le téléchargement terminé, le programme d’installation démarre automatiquement, ferme NANO POS, installe la nouvelle version et le relance sans intervention.",
       "Correction de la saisie du code : pavé numérique à l’écran et capture directe des touches du clavier, quelle que soit le focus du champ.",
       "Nouveau cadran circulaire conforme à la vidéo : 6 cases autour d’un anneau de progression ; code erroné = secousse et réinitialisation, bon code = rotation puis badge de vérification.",
@@ -25,6 +27,7 @@
       "Améliorations générales"
     ],
     "en": [
+      "Moved the \"Lock screen\" button from the toolbar into the account menu next to Logout / Switch user.",
       "Full update through a real installer: once the download finishes, the installer starts automatically, closes NANO POS, installs the new version and relaunches it with no user action.",
       "Fixed lock-code entry: on-screen keypad plus direct keyboard capture regardless of input focus.",
       "Dial redesign matching the video: 6 slots around a progress ring, wrong code wobbles and resets, correct code spins into a verified badge.",
@@ -3418,10 +3421,10 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.160/NANO-POS-Setup-2.0.160-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.160",
-    "sha256": "7eade5dc8a72bd9690f65f7fd4799ac81bcf7a05f75b851c739a2fb99df9430b",
-    "fileName": "NANO-POS-Setup-2.0.160-x64.exe",
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.161/NANO-POS-Setup-2.0.161-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.161",
+    "sha256": "4155634b2fa44a80a50c72bdb0d846b9c6a74e1a009030a80bdf43f90b719ae2",
+    "fileName": "NANO-POS-Setup-2.0.161-x64.exe",
     "sizeBytes": 123313152
   },
   "notes": {
