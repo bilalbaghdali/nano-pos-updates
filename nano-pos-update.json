@@ -1,32 +1,32 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.164",
+  "manifestRevision": "2.0.165",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.164",
+  "version": "2.0.165",
   "releaseDate": "2026-11-19",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "تضمين تصميم قرص التحقق من الفيديو داخل شاشة القفل: مؤشر برتقالي، أرقام 0-9 دوّارة حول حلقة علامات، ومركز داكن يعرض الرقم المضغوط.",
-      "رمز خاطئ (6 أرقام) يهتز القرص ويتوهج بالأحمر ثم يعيد الضبط، والرمز الصحيح يدور القرص ويتحول إلى شارة ✓ مع ACCESS GRANTED.",
-      "الحفاظ على رمز التحقق المكوّن من 6 أرقام ولوحة الأرقام واستقبال مفاتيح لوحة المفاتيح وخيار كلمة المرور البديلة.",
-      "تحسينات عامة"
+      "إصلاح مشكلة الطباعة على الطابعات الحرارية: تحديد أقصى ارتفاع لصفحة الورق الحراري بـ300 مم بدل 1000 مم، والرجوع لمقاس الورق الاعتيادي عند قياس غير منطقي.",
+      "تعطيل القياس التلقائي لارتفاع الورق الحراري (58/80 مم) لمنع التغذية المستمرة للورق عند خطأ في قياس المستند.",
+      "الحفاظ على كل قوالب الفواتير والوصول وتنسيقات الطباعة ولغة الواجهة وبيانات المتجر دون تغيير.",
+      "ملاحظة: يجب استخدام تعريف Xprinter الرسمي للطابعة (وليس Generic/Text Only) وتشغيل خدمة Print Spooler في Windows."
     ],
     "fr": [
-      "Intégration du cadran de vérification de la vidéo dans l’écran de verrouillage : pointeur orange, chiffres 0-9 rotatifs autour d’un anneau de graduations et centre sombre affichant le chiffre saisi.",
-      "Code erroné (6 chiffres) = secousse du cadran, lueur rouge puis réinitialisation ; bon code = rotation du cadran puis badge ✓ avec ACCESS GRANTED.",
-      "Conservation du code à 6 chiffres, du pavé numérique, de la saisie au clavier et de l’option «Utiliser le mot de passe».",
-      "Améliorations générales"
+      "Correction de l’impression sur les imprimantes thermiques : hauteur maximale de la page limitée à 300 mm au lieu de 1000 mm, avec retour au format nominal si la mesure est incohérente.",
+      "Désactivation de la hauteur automatique pour le papier thermique (58/80 mm) afin d’éviter l’avance continue du papier en cas de mauvaise mesure du document.",
+      "Tous les modèles de factures/reçus, mises en page et langues restent inchangés.",
+      "Remarque : utiliser le pilote Xprinter officiel (pas «Generic / Text Only») et garder le service Print Spooler de Windows actif."
     ],
     "en": [
-      "Embedded the verification dial from the video into the lock screen: orange pointer, rotating 0-9 digits around a tick ring, and a dark hub showing the pressed digit.",
-      "Wrong 6-digit code wobbles the dial with a red glow and resets; the correct code spins it into a ✓ badge with ACCESS GRANTED.",
-      "Keeps the 6-digit code, on-screen keypad, keyboard capture, and the \"Use password instead\" option.",
-      "General improvements"
+      "Thermal printing fix: cap the roll page height at 300 mm instead of 1000 mm, and fall back to the nominal paper size when a measurement is implausible.",
+      "Disabled auto-height for 58/80 mm thermal paper to prevent continuous paper feed when the document height is mis-measured.",
+      "All invoice/receipt templates, print layouts, languages and store data are unchanged.",
+      "Note: use the official Xprinter driver (not Generic / Text Only) and keep the Windows Print Spooler service running."
     ]
   },
   "releaseHistory": {
@@ -3415,11 +3415,11 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.164/NANO-POS-Setup-2.0.164-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.164",
-    "sha256": "172562e896dd8458c22b140d62a46ab1ca58b4a786d698c5267790a09783ea39",
-    "fileName": "NANO-POS-Setup-2.0.164-x64.exe",
-    "sizeBytes": 123312640
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.165/NANO-POS-Setup-2.0.165-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.165",
+    "sha256": "a0754b37559edd76e09efc3b1ed27abb5a39f88640c837f6e1cc6dccfc416f7e",
+    "fileName": "NANO-POS-Setup-2.0.165-x64.exe",
+    "sizeBytes": 123313664
   },
   "notes": {
     "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
