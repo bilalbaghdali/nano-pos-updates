@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.173",
+  "manifestRevision": "2.0.173-wholesale-fix",
   "channel": "stable",
   "product": "NANO POS",
   "version": "2.0.173",
@@ -10,29 +10,20 @@
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
-    "en": [
-      "Definitive cart-flicker fix.",
-      "After scanning, the new line is immediately editable.",
-      "Clicking any cart line activates editing.",
-      "More forgiving typing.",
-      "Repricing grouped.",
-      "Keeps earlier fixes."
+    "ar": [
+      "إصلاح تسعير الجملة في سلة البيع: عند وصول كمية المنتج إلى حد الجملة (مثلاً 24 قطعة) يتحول السعر تلقائياً إلى سعر الجملة.",
+      "إضافة حقل \"سعر الجملة\" في نافذة المنتج بجانب الكمية الأساسية، ويُستخدم كسعر افتراضي عند تفعيل الجملة في السلة.",
+      "حقل \"الدين الابتدائي\" في نافذة إضافة/تعديل المورد، مثل حقل العميل، مع حفظه في بيانات المورد."
     ],
     "fr": [
-      "Correction definitive du scintillement du panier.",
-      "Apres un scan, la ligne est immediatement modifiable.",
-      "Clic sur une ligne active son edition.",
-      "Meilleure tolerance de saisie.",
-      "Recalculs groupes.",
-      "Conserve les correctifs precedents."
+      "Correction du prix de gros dans le panier: quand la quantité atteint le seuil (ex. 24), le prix passe automatiquement au prix de gros.",
+      "Ajout du champ \"Prix de gros\" dans la fiche produit, à côté de la quantité de gros, utilisé comme prix par défaut dans le panier.",
+      "Champ \"Dette initiale\" dans la fenêtre fournisseur, comme pour le client, avec enregistrement."
     ],
-    "ar": [
-      "إصلاح جذري لوميض سلة البيع: لا تُعاد بناؤها إلا عندما يتغيّر محتواها فعلاً، بدل إعادة الرسم عدة مرات بعد كل إضافة.",
-      "بعد مسح الباركود أو إضافة منتج، يُصبح المنتج المضاف جاهزاً للتعديل فوراً بالأرقام (الكمية/السعر) دون الحاجة للضغط على الأسهم أولاً.",
-      "النقر على أي منتج في السلة يفعّل التعديل عليه مباشرة، مع بقاء التنقل بالأسهم بين المنتجات.",
-      "تحسين حساسية الكتابة: الأرقام تُقبل بسرعة الكتابة الطبيعية، وقراءة الباركود السريعة ما زالت تُلتقط تلقائياً.",
-      "تقليل تحديثات إعادة التسعير إلى تحديث واحد بدل ثلاثة متتالية.",
-      "الاحتفاظ بجميع الإصلاحات السابقة: شاشة قفل قرص التحقق، الطباعة الحرارية، وتشغيل المثبّت بأمان."
+    "en": [
+      "Fixed wholesale pricing in cart: when item quantity reaches the wholesale threshold (e.g. 24), price switches to wholesale automatically.",
+      "Added \"Wholesale price\" field in product form next to wholesale quantity; used as default wholesale price in cart.",
+      "Added \"Initial debt\" field in supplier create/edit modal, like customer, and saved with supplier data."
     ]
   },
   "releaseHistory": {
