@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.171",
+  "manifestRevision": "2.0.172",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.171",
+  "version": "2.0.172",
   "releaseDate": "2026-11-22",
   "mandatory": false,
   "importance": "recommended",
@@ -3421,10 +3421,10 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.171/NANO-POS-Setup-2.0.171-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.171",
-    "sha256": "28518299f260cb4f43d95bd98aade66b0f104c4aa384a9d3ae8b82a9aec645a5",
-    "fileName": "NANO-POS-Setup-2.0.171-x64.exe",
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.172/NANO-POS-Setup-2.0.172-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.172",
+    "sha256": "5f2de605377bbb1691d72eb1058b37c66571cbb5c082fc7e0e98bb9cffe02704",
+    "fileName": "NANO-POS-Setup-2.0.172-x64.exe",
     "sizeBytes": 123315712
   },
   "notes": {
