@@ -3423,7 +3423,7 @@
   "download": {
     "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.173/NANO-POS-Setup-2.0.173-x64.exe",
     "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.173",
-    "sha256": "cf98d22b89174a64703c7854c4b2b2e546dd94d00aff4e56a1c275e206360e6a",
+    "sha256": "acddf53524b128a036ed5cfec83c216bd9e29bcaf184d59b4d827d5c6e4e85a1",
     "fileName": "NANO-POS-Setup-2.0.173-x64.exe",
     "sizeBytes": 123316224
   },
