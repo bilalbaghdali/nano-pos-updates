@@ -1,30 +1,30 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.169",
+  "manifestRevision": "2.0.170",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.169",
+  "version": "2.0.170",
   "releaseDate": "2026-11-22",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح جذري لميض سلة البيع: لم تعد السلة تُعاد بناؤها إلا عندما يتغيّر محتواها فعلاً، بدل إعادة الرسم عدة مرات بعد كل إضافة.",
-      "بعد مسح الباركود أو إضافة منتج، يُصبح المنتج المضاف جاهزاً للتعديل فوراً بالأرقام (الكمية/السعر) دون الحاجة للضغط على الأسهم أولاً.",
-      "النقر على أي منتج في السلة يفعّل التعديل عليه مباشرة، مع بقاء التنقل بالأسهم بين المنتجات.",
-      "تحسين حساسية الكتابة: الأرقام تُقبل بسرعة الكتابة الطبيعية، وقراءة الباركود السريعة ما زالت تُلتقط تلقائياً.",
-      "تقليل تحديثات إعادة التسعير إلى تحديث واحد بدل ثلاثة متتالية.",
-      "الاحتفاظ بجميع الإصلاحات السابقة: شاشة قفل قرص التحقق، الطباعة الحرارية، وتشغيل المثبّت بأمان."
+      "Ø¥ØµÙ„Ø§Ø­ Ø¬Ø°Ø±ÙŠ Ù„Ù…ÙŠØ¶ Ø³Ù„Ø© Ø§Ù„Ø¨ÙŠØ¹: Ù„Ù… ØªØ¹Ø¯ Ø§Ù„Ø³Ù„Ø© ØªÙØ¹Ø§Ø¯ Ø¨Ù†Ø§Ø¤Ù‡Ø§ Ø¥Ù„Ø§ Ø¹Ù†Ø¯Ù…Ø§ ÙŠØªØºÙŠÙ‘Ø± Ù…Ø­ØªÙˆØ§Ù‡Ø§ ÙØ¹Ù„Ø§Ù‹ØŒ Ø¨Ø¯Ù„ Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ø±Ø³Ù… Ø¹Ø¯Ø© Ù…Ø±Ø§Øª Ø¨Ø¹Ø¯ ÙƒÙ„ Ø¥Ø¶Ø§ÙØ©.",
+      "Ø¨Ø¹Ø¯ Ù…Ø³Ø­ Ø§Ù„Ø¨Ø§Ø±ÙƒÙˆØ¯ Ø£Ùˆ Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬ØŒ ÙŠÙØµØ¨Ø­ Ø§Ù„Ù…Ù†ØªØ¬ Ø§Ù„Ù…Ø¶Ø§Ù Ø¬Ø§Ù‡Ø²Ø§Ù‹ Ù„Ù„ØªØ¹Ø¯ÙŠÙ„ ÙÙˆØ±Ø§Ù‹ Ø¨Ø§Ù„Ø£Ø±Ù‚Ø§Ù… (Ø§Ù„ÙƒÙ…ÙŠØ©/Ø§Ù„Ø³Ø¹Ø±) Ø¯ÙˆÙ† Ø§Ù„Ø­Ø§Ø¬Ø© Ù„Ù„Ø¶ØºØ· Ø¹Ù„Ù‰ Ø§Ù„Ø£Ø³Ù‡Ù… Ø£ÙˆÙ„Ø§Ù‹.",
+      "Ø§Ù„Ù†Ù‚Ø± Ø¹Ù„Ù‰ Ø£ÙŠ Ù…Ù†ØªØ¬ ÙÙŠ Ø§Ù„Ø³Ù„Ø© ÙŠÙØ¹Ù‘Ù„ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ Ø¹Ù„ÙŠÙ‡ Ù…Ø¨Ø§Ø´Ø±Ø©ØŒ Ù…Ø¹ Ø¨Ù‚Ø§Ø¡ Ø§Ù„ØªÙ†Ù‚Ù„ Ø¨Ø§Ù„Ø£Ø³Ù‡Ù… Ø¨ÙŠÙ† Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª.",
+      "ØªØ­Ø³ÙŠÙ† Ø­Ø³Ø§Ø³ÙŠØ© Ø§Ù„ÙƒØªØ§Ø¨Ø©: Ø§Ù„Ø£Ø±Ù‚Ø§Ù… ØªÙÙ‚Ø¨Ù„ Ø¨Ø³Ø±Ø¹Ø© Ø§Ù„ÙƒØªØ§Ø¨Ø© Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠØ©ØŒ ÙˆÙ‚Ø±Ø§Ø¡Ø© Ø§Ù„Ø¨Ø§Ø±ÙƒÙˆØ¯ Ø§Ù„Ø³Ø±ÙŠØ¹Ø© Ù…Ø§ Ø²Ø§Ù„Øª ØªÙÙ„ØªÙ‚Ø· ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹.",
+      "ØªÙ‚Ù„ÙŠÙ„ ØªØ­Ø¯ÙŠØ«Ø§Øª Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„ØªØ³Ø¹ÙŠØ± Ø¥Ù„Ù‰ ØªØ­Ø¯ÙŠØ« ÙˆØ§Ø­Ø¯ Ø¨Ø¯Ù„ Ø«Ù„Ø§Ø«Ø© Ù…ØªØªØ§Ù„ÙŠØ©.",
+      "Ø§Ù„Ø§Ø­ØªÙØ§Ø¸ Ø¨Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø¥ØµÙ„Ø§Ø­Ø§Øª Ø§Ù„Ø³Ø§Ø¨Ù‚Ø©: Ø´Ø§Ø´Ø© Ù‚ÙÙ„ Ù‚Ø±Øµ Ø§Ù„ØªØ­Ù‚Ù‚ØŒ Ø§Ù„Ø·Ø¨Ø§Ø¹Ø© Ø§Ù„Ø­Ø±Ø§Ø±ÙŠØ©ØŒ ÙˆØªØ´ØºÙŠÙ„ Ø§Ù„Ù…Ø«Ø¨Ù‘Øª Ø¨Ø£Ù…Ø§Ù†."
     ],
     "fr": [
-      "Correction définitive du scintillement du panier : le panier n’est reconstruit que lorsque son contenu change réellement, au lieu de plusieurs redessins après chaque ajout.",
-      "Après un scan ou un ajout, le produit ajouté est immédiatement modifiable au clavier (quantité/prix) sans devoir appuyer d’abord sur les flèches.",
-      "Un clic sur n’importe quel produit du panier active directement son édition ; la navigation par flèches reste disponible.",
-      "Meilleure tolérance de saisie : les chiffres sont acceptés à une vitesse de frappe normale et les scans rapides restent détectés automatiquement.",
-      "Les recalculs de prix sont regroupés en une seule mise à jour au lieu de trois successives.",
-      "Conserve tous les correctifs précédents : écran de verrouillage, impression thermique et lancement sûr de l’installateur."
+      "Correction dÃ©finitive du scintillement du panier : le panier nâ€™est reconstruit que lorsque son contenu change rÃ©ellement, au lieu de plusieurs redessins aprÃ¨s chaque ajout.",
+      "AprÃ¨s un scan ou un ajout, le produit ajoutÃ© est immÃ©diatement modifiable au clavier (quantitÃ©/prix) sans devoir appuyer dâ€™abord sur les flÃ¨ches.",
+      "Un clic sur nâ€™importe quel produit du panier active directement son Ã©dition ; la navigation par flÃ¨ches reste disponible.",
+      "Meilleure tolÃ©rance de saisie : les chiffres sont acceptÃ©s Ã  une vitesse de frappe normale et les scans rapides restent dÃ©tectÃ©s automatiquement.",
+      "Les recalculs de prix sont regroupÃ©s en une seule mise Ã  jour au lieu de trois successives.",
+      "Conserve tous les correctifs prÃ©cÃ©dents : Ã©cran de verrouillage, impression thermique et lancement sÃ»r de lâ€™installateur."
     ],
     "en": [
       "Definitive cart-flicker fix: the cart is only rebuilt when its content actually changes, instead of several redraws after every add.",
@@ -3421,11 +3421,11 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.169/NANO-POS-Setup-2.0.169-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.169",
-    "sha256": "f7f7a6da24730bc678d0cd39d36c911a878fe155da5c692a73377eec305e5aac",
-    "fileName": "NANO-POS-Setup-2.0.169-x64.exe",
-    "sizeBytes": 123314688
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.170/NANO-POS-Setup-2.0.170-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.170",
+    "sha256": "81696f3ea2fd29128be819cb75fc1d45d648f795536d0b5a532dcc544a7bce00",
+    "fileName": "NANO-POS-Setup-2.0.170-x64.exe",
+    "sizeBytes": 123307008
   },
   "notes": {
     "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
