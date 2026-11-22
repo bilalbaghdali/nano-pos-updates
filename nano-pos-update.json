@@ -1,32 +1,38 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.168",
+  "manifestRevision": "2.0.169",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.168",
+  "version": "2.0.169",
   "releaseDate": "2026-11-22",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إلغاء نافذة الكمية التي أُضيفت في 2.0.167: مسح الباركود أو اختيار المنتج يُضاف مباشرة إلى سلة البيع كما كان.",
-      "إصلاح وميض سلة البيع: منع إعادة بناء كل صفوف السلة أثناء كتابة الكمية أو السعر، وتقليل تحديثات إعادة التسعير إلى تحديث واحد بدل عدة تحديثات متتالية.",
-      "منع محرر الكمية السريع من استبدال الخلية أثناء استخدام تحرير السلة بلوحة المفاتيح، مع الحفاظ على التنقل بالأسهم بين المنتجات.",
-      "الاحتفاظ بجميع الإصلاحات السابقة: تشغيل المثبّت بأمان، إصلاح الطباعة الحرارية، وشاشة قفل قرص التحقق."
+      "إصلاح جذري لميض سلة البيع: لم تعد السلة تُعاد بناؤها إلا عندما يتغيّر محتواها فعلاً، بدل إعادة الرسم عدة مرات بعد كل إضافة.",
+      "بعد مسح الباركود أو إضافة منتج، يُصبح المنتج المضاف جاهزاً للتعديل فوراً بالأرقام (الكمية/السعر) دون الحاجة للضغط على الأسهم أولاً.",
+      "النقر على أي منتج في السلة يفعّل التعديل عليه مباشرة، مع بقاء التنقل بالأسهم بين المنتجات.",
+      "تحسين حساسية الكتابة: الأرقام تُقبل بسرعة الكتابة الطبيعية، وقراءة الباركود السريعة ما زالت تُلتقط تلقائياً.",
+      "تقليل تحديثات إعادة التسعير إلى تحديث واحد بدل ثلاثة متتالية.",
+      "الاحتفاظ بجميع الإصلاحات السابقة: شاشة قفل قرص التحقق، الطباعة الحرارية، وتشغيل المثبّت بأمان."
     ],
     "fr": [
-      "Annulation de la fenêtre de quantité ajoutée en 2.0.167 : le scan ou la sélection d’un produit l’ajoute directement au panier, comme avant.",
-      "Correction du scintillement du panier : plus de reconstruction complète des lignes pendant la saisie de la quantité ou du prix, et une seule mise à jour de recalcul au lieu de plusieurs.",
-      "L’éditeur rapide de quantité ne remplace plus la cellule pendant l’édition au clavier ; la navigation par flèches reste inchangée.",
-      "Conservation des correctifs précédents : lancement sûr du programme d’installation, impression thermique et écran de verrouillage."
+      "Correction définitive du scintillement du panier : le panier n’est reconstruit que lorsque son contenu change réellement, au lieu de plusieurs redessins après chaque ajout.",
+      "Après un scan ou un ajout, le produit ajouté est immédiatement modifiable au clavier (quantité/prix) sans devoir appuyer d’abord sur les flèches.",
+      "Un clic sur n’importe quel produit du panier active directement son édition ; la navigation par flèches reste disponible.",
+      "Meilleure tolérance de saisie : les chiffres sont acceptés à une vitesse de frappe normale et les scans rapides restent détectés automatiquement.",
+      "Les recalculs de prix sont regroupés en une seule mise à jour au lieu de trois successives.",
+      "Conserve tous les correctifs précédents : écran de verrouillage, impression thermique et lancement sûr de l’installateur."
     ],
     "en": [
-      "Removed the quantity dialog introduced in 2.0.167: scanning a barcode or selecting a product adds it directly to the sale cart again.",
-      "Fixed the sale-cart flicker: the full cart is no longer rebuilt while typing a quantity or price, and repricing now runs once instead of several times in a row.",
-      "The quick quantity editor no longer replaces the cell while keyboard cart editing is active; arrow-key navigation between items is unchanged.",
-      "Keeps all earlier fixes: safe installer launch, thermal printing fix and the verification-dial lock screen."
+      "Definitive cart-flicker fix: the cart is only rebuilt when its content actually changes, instead of several redraws after every add.",
+      "After scanning or adding a product, the new line is immediately editable with the number keys (quantity/price) without pressing the arrows first.",
+      "Clicking any cart line activates its inline editing, while arrow-key navigation between lines still works.",
+      "More forgiving typing: digits are accepted at normal typing speed, and fast barcode scans are still detected automatically.",
+      "Repricing is grouped into a single update instead of three successive ones.",
+      "Keeps all earlier fixes: verification-dial lock screen, thermal printing and safe installer launch."
     ]
   },
   "releaseHistory": {
@@ -3415,11 +3421,11 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.168/NANO-POS-Setup-2.0.168-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.168",
-    "sha256": "70c7d6443d362545af8bcad423f8d8465c9805fd73d88e08eeee07fe14e96089",
-    "fileName": "NANO-POS-Setup-2.0.168-x64.exe",
-    "sizeBytes": 123313664
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.169/NANO-POS-Setup-2.0.169-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.169",
+    "sha256": "f7f7a6da24730bc678d0cd39d36c911a878fe155da5c692a73377eec305e5aac",
+    "fileName": "NANO-POS-Setup-2.0.169-x64.exe",
+    "sizeBytes": 123314688
   },
   "notes": {
     "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
