@@ -1,35 +1,32 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.167",
+  "manifestRevision": "2.0.168",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.167",
+  "version": "2.0.168",
   "releaseDate": "2026-11-22",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "شاشة البيع: عند مسح الباركود أو اختيار منتج من البحث تظهر نافذة تعرض اسم المنتج وسعره، ويكون المؤشر مباشرة على حقل الكمية.",
-      "اكتب الكمية ثم اضغط Enter لإضافتها إلى سلة البيع؛ Enter مع حقل فارغ يضيف كمية 1، وEscape أو إغلاق النافذة يلغي الإضافة.",
-      "الكمية تُضاف إلى الكمية الموجودة أصلاً في السلة عند تكرار المنتج، مع الحفاظ على أسعار الزبائن والمنتجات ذات الوحدات العشرية والمجاميع.",
-      "منع قارئ الباركود من التقاط الأرقام المكتوبة في حقل الكمية أثناء ظهور النافذة.",
-      "الاحتفاظ بإصلاحات الإصدارات السابقة: تحديث آمن للمثبّت، إصلاح الطباعة الحرارية، وشاشة قفل قرص التحقق."
+      "إلغاء نافذة الكمية التي أُضيفت في 2.0.167: مسح الباركود أو اختيار المنتج يُضاف مباشرة إلى سلة البيع كما كان.",
+      "إصلاح وميض سلة البيع: منع إعادة بناء كل صفوف السلة أثناء كتابة الكمية أو السعر، وتقليل تحديثات إعادة التسعير إلى تحديث واحد بدل عدة تحديثات متتالية.",
+      "منع محرر الكمية السريع من استبدال الخلية أثناء استخدام تحرير السلة بلوحة المفاتيح، مع الحفاظ على التنقل بالأسهم بين المنتجات.",
+      "الاحتفاظ بجميع الإصلاحات السابقة: تشغيل المثبّت بأمان، إصلاح الطباعة الحرارية، وشاشة قفل قرص التحقق."
     ],
     "fr": [
-      "Écran de vente : après scan du code-barres ou sélection d’un produit dans la recherche, une fenêtre affiche le nom et le prix du produit, avec le curseur directement sur le champ Quantité.",
-      "Saisissez la quantité puis Entrée pour l’ajouter au panier ; Entrée sur un champ vide ajoute 1, et Échap / fermeture annule l’ajout.",
-      "La quantité s’ajoute à celle déjà présente dans le panier, avec conservation des prix clients, des unités décimales et des lots.",
-      "Le lecteur de code-barres ne capte plus les chiffres saisis dans le champ Quantité pendant l’affichage.",
-      "Conservation des correctifs précédents : mise à jour sûre du programme d’installation, impression thermique et écran de verrouillage."
+      "Annulation de la fenêtre de quantité ajoutée en 2.0.167 : le scan ou la sélection d’un produit l’ajoute directement au panier, comme avant.",
+      "Correction du scintillement du panier : plus de reconstruction complète des lignes pendant la saisie de la quantité ou du prix, et une seule mise à jour de recalcul au lieu de plusieurs.",
+      "L’éditeur rapide de quantité ne remplace plus la cellule pendant l’édition au clavier ; la navigation par flèches reste inchangée.",
+      "Conservation des correctifs précédents : lancement sûr du programme d’installation, impression thermique et écran de verrouillage."
     ],
     "en": [
-      "Sales screen: after scanning a barcode or choosing a product from search, a dialog shows the product name and price with the cursor placed directly in the quantity field.",
-      "Type the quantity and press Enter to add it to the sale cart; Enter with an empty field adds 1, and Escape or closing cancels.",
-      "Quantity is added to any quantity already in the cart, preserving customer pricing, decimal units and batch allocation.",
-      "The barcode scanner no longer captures digits typed into the quantity field while the dialog is open.",
-      "Keeps earlier fixes: safe installer launch, thermal printing fix and the verification-dial lock screen."
+      "Removed the quantity dialog introduced in 2.0.167: scanning a barcode or selecting a product adds it directly to the sale cart again.",
+      "Fixed the sale-cart flicker: the full cart is no longer rebuilt while typing a quantity or price, and repricing now runs once instead of several times in a row.",
+      "The quick quantity editor no longer replaces the cell while keyboard cart editing is active; arrow-key navigation between items is unchanged.",
+      "Keeps all earlier fixes: safe installer launch, thermal printing fix and the verification-dial lock screen."
     ]
   },
   "releaseHistory": {
@@ -3418,11 +3415,11 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.167/NANO-POS-Setup-2.0.167-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.167",
-    "sha256": "91e58839c98a4668125aa07321b5b5fe9444dc6265a5854853702b318d767ff2",
-    "fileName": "NANO-POS-Setup-2.0.167-x64.exe",
-    "sizeBytes": 123315200
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.168/NANO-POS-Setup-2.0.168-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.168",
+    "sha256": "70c7d6443d362545af8bcad423f8d8465c9805fd73d88e08eeee07fe14e96089",
+    "fileName": "NANO-POS-Setup-2.0.168-x64.exe",
+    "sizeBytes": 123313664
   },
   "notes": {
     "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
