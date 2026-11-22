@@ -1,29 +1,35 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.166",
+  "manifestRevision": "2.0.167",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.166",
-  "releaseDate": "2026-11-19",
+  "version": "2.0.167",
+  "releaseDate": "2026-11-22",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح خطأ «Uncaught Exception: spawn EACCES» الذي كان يظهر بعد تنزيل التحديث ويُغلق البرنامج: أصبح مُشغّل المثبّت يتعامل مع أخطاء Windows بأمان ويجرّب طرق تشغيل بديلة تلقائياً.",
-      "إذا منعت حماية Windows أو الصلاحيات التشغيل التلقائي، يعرض البرنامج رسالة واضحة ومسار المثبّت المحفوظ بدل إغلاق مفاجئ.",
-      "الاحتفاظ بإصلاح الطباعة الحرارية والإصدار 2.0.165 وتحسينات شاشة القفل السابقة."
+      "شاشة البيع: عند مسح الباركود أو اختيار منتج من البحث تظهر نافذة تعرض اسم المنتج وسعره، ويكون المؤشر مباشرة على حقل الكمية.",
+      "اكتب الكمية ثم اضغط Enter لإضافتها إلى سلة البيع؛ Enter مع حقل فارغ يضيف كمية 1، وEscape أو إغلاق النافذة يلغي الإضافة.",
+      "الكمية تُضاف إلى الكمية الموجودة أصلاً في السلة عند تكرار المنتج، مع الحفاظ على أسعار الزبائن والمنتجات ذات الوحدات العشرية والمجاميع.",
+      "منع قارئ الباركود من التقاط الأرقام المكتوبة في حقل الكمية أثناء ظهور النافذة.",
+      "الاحتفاظ بإصلاحات الإصدارات السابقة: تحديث آمن للمثبّت، إصلاح الطباعة الحرارية، وشاشة قفل قرص التحقق."
     ],
     "fr": [
-      "Correction de l’erreur «Uncaught Exception: spawn EACCES» qui apparaissait après le téléchargement de la mise à jour et fermait le programme : le lanceur gère désormais les erreurs Windows et essaie plusieurs méthodes de lancement.",
-      "Si la protection Windows ou les droits bloquent le lancement automatique, un message clair et le chemin du programme d’installation sont affichés au lieu d’un crash.",
-      "Conservation des corrections d’impression thermique de la 2.0.165 et des améliorations précédentes de l’écran de verrouillage."
+      "Écran de vente : après scan du code-barres ou sélection d’un produit dans la recherche, une fenêtre affiche le nom et le prix du produit, avec le curseur directement sur le champ Quantité.",
+      "Saisissez la quantité puis Entrée pour l’ajouter au panier ; Entrée sur un champ vide ajoute 1, et Échap / fermeture annule l’ajout.",
+      "La quantité s’ajoute à celle déjà présente dans le panier, avec conservation des prix clients, des unités décimales et des lots.",
+      "Le lecteur de code-barres ne capte plus les chiffres saisis dans le champ Quantité pendant l’affichage.",
+      "Conservation des correctifs précédents : mise à jour sûre du programme d’installation, impression thermique et écran de verrouillage."
     ],
     "en": [
-      "Fixed the \"Uncaught Exception: spawn EACCES\" crash after downloading an update: the installer launcher now handles Windows launch errors safely and tries alternative launch methods automatically.",
-      "If Windows protection or permissions block automatic launch, the app shows a clear message with the saved installer path instead of crashing.",
-      "Keeps the 2.0.165 thermal printing fix and all earlier lock-screen improvements."
+      "Sales screen: after scanning a barcode or choosing a product from search, a dialog shows the product name and price with the cursor placed directly in the quantity field.",
+      "Type the quantity and press Enter to add it to the sale cart; Enter with an empty field adds 1, and Escape or closing cancels.",
+      "Quantity is added to any quantity already in the cart, preserving customer pricing, decimal units and batch allocation.",
+      "The barcode scanner no longer captures digits typed into the quantity field while the dialog is open.",
+      "Keeps earlier fixes: safe installer launch, thermal printing fix and the verification-dial lock screen."
     ]
   },
   "releaseHistory": {
@@ -3412,11 +3418,11 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.166/NANO-POS-Setup-2.0.166-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.166",
-    "sha256": "f4c1964aba8588f31eb991e38a2e00bd0afe0a33d89b8ff48037e05765da5f8e",
-    "fileName": "NANO-POS-Setup-2.0.166-x64.exe",
-    "sizeBytes": 123313152
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.167/NANO-POS-Setup-2.0.167-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.167",
+    "sha256": "91e58839c98a4668125aa07321b5b5fe9444dc6265a5854853702b318d767ff2",
+    "fileName": "NANO-POS-Setup-2.0.167-x64.exe",
+    "sizeBytes": 123315200
   },
   "notes": {
     "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
