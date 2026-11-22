@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.170",
+  "manifestRevision": "2.0.171",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.170",
+  "version": "2.0.171",
   "releaseDate": "2026-11-22",
   "mandatory": false,
   "importance": "recommended",
@@ -3421,11 +3421,11 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.170/NANO-POS-Setup-2.0.170-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.170",
-    "sha256": "81696f3ea2fd29128be819cb75fc1d45d648f795536d0b5a532dcc544a7bce00",
-    "fileName": "NANO-POS-Setup-2.0.170-x64.exe",
-    "sizeBytes": 123307008
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.171/NANO-POS-Setup-2.0.171-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.171",
+    "sha256": "28518299f260cb4f43d95bd98aade66b0f104c4aa384a9d3ae8b82a9aec645a5",
+    "fileName": "NANO-POS-Setup-2.0.171-x64.exe",
+    "sizeBytes": 123315712
   },
   "notes": {
     "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
