@@ -1,29 +1,38 @@
 {
   "schema": 1,
   "published": true,
-  "manifestRevision": "2.0.173-wholesale-load-fix",
+  "manifestRevision": "2.0.174",
   "channel": "stable",
   "product": "NANO POS",
-  "version": "2.0.173",
-  "releaseDate": "2026-11-22",
+  "version": "2.0.174",
+  "releaseDate": "2026-11-23",
   "mandatory": false,
   "importance": "recommended",
   "minSupportedVersion": "1.0.34",
   "features": {
     "ar": [
-      "إصلاح تسعير الجملة في سلة البيع: عند وصول كمية المنتج إلى حد الجملة (مثلاً 24 قطعة) يتحول السعر تلقائياً إلى سعر الجملة.",
-      "إضافة حقل \"سعر الجملة\" في نافذة المنتج بجانب الكمية الأساسية، ويُستخدم كسعر افتراضي عند تفعيل الجملة في السلة.",
-      "حقل \"الدين الابتدائي\" في نافذة إضافة/تعديل المورد، مثل حقل العميل، مع حفظه في بيانات المورد."
+      "Ø¥ØµÙ„Ø§Ø­ Ø¬Ø°Ø±ÙŠ Ù„Ù…ÙŠØ¶ Ø³Ù„Ø© Ø§Ù„Ø¨ÙŠØ¹: Ù„Ù… ØªØ¹Ø¯ Ø§Ù„Ø³Ù„Ø© ØªÙØ¹Ø§Ø¯ Ø¨Ù†Ø§Ø¤Ù‡Ø§ Ø¥Ù„Ø§ Ø¹Ù†Ø¯Ù…Ø§ ÙŠØªØºÙŠÙ‘Ø± Ù…Ø­ØªÙˆØ§Ù‡Ø§ ÙØ¹Ù„Ø§Ù‹ØŒ Ø¨Ø¯Ù„ Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ø±Ø³Ù… Ø¹Ø¯Ø© Ù…Ø±Ø§Øª Ø¨Ø¹Ø¯ ÙƒÙ„ Ø¥Ø¶Ø§ÙØ©.",
+      "Ø¨Ø¹Ø¯ Ù…Ø³Ø­ Ø§Ù„Ø¨Ø§Ø±ÙƒÙˆØ¯ Ø£Ùˆ Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬ØŒ ÙŠÙØµØ¨Ø­ Ø§Ù„Ù…Ù†ØªØ¬ Ø§Ù„Ù…Ø¶Ø§Ù Ø¬Ø§Ù‡Ø²Ø§Ù‹ Ù„Ù„ØªØ¹Ø¯ÙŠÙ„ ÙÙˆØ±Ø§Ù‹ Ø¨Ø§Ù„Ø£Ø±Ù‚Ø§Ù… (Ø§Ù„ÙƒÙ…ÙŠØ©/Ø§Ù„Ø³Ø¹Ø±) Ø¯ÙˆÙ† Ø§Ù„Ø­Ø§Ø¬Ø© Ù„Ù„Ø¶ØºØ· Ø¹Ù„Ù‰ Ø§Ù„Ø£Ø³Ù‡Ù… Ø£ÙˆÙ„Ø§Ù‹.",
+      "Ø§Ù„Ù†Ù‚Ø± Ø¹Ù„Ù‰ Ø£ÙŠ Ù…Ù†ØªØ¬ ÙÙŠ Ø§Ù„Ø³Ù„Ø© ÙŠÙØ¹Ù‘Ù„ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ Ø¹Ù„ÙŠÙ‡ Ù…Ø¨Ø§Ø´Ø±Ø©ØŒ Ù…Ø¹ Ø¨Ù‚Ø§Ø¡ Ø§Ù„ØªÙ†Ù‚Ù„ Ø¨Ø§Ù„Ø£Ø³Ù‡Ù… Ø¨ÙŠÙ† Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª.",
+      "ØªØ­Ø³ÙŠÙ† Ø­Ø³Ø§Ø³ÙŠØ© Ø§Ù„ÙƒØªØ§Ø¨Ø©: Ø§Ù„Ø£Ø±Ù‚Ø§Ù… ØªÙÙ‚Ø¨Ù„ Ø¨Ø³Ø±Ø¹Ø© Ø§Ù„ÙƒØªØ§Ø¨Ø© Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠØ©ØŒ ÙˆÙ‚Ø±Ø§Ø¡Ø© Ø§Ù„Ø¨Ø§Ø±ÙƒÙˆØ¯ Ø§Ù„Ø³Ø±ÙŠØ¹Ø© Ù…Ø§ Ø²Ø§Ù„Øª ØªÙÙ„ØªÙ‚Ø· ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹.",
+      "ØªÙ‚Ù„ÙŠÙ„ ØªØ­Ø¯ÙŠØ«Ø§Øª Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„ØªØ³Ø¹ÙŠØ± Ø¥Ù„Ù‰ ØªØ­Ø¯ÙŠØ« ÙˆØ§Ø­Ø¯ Ø¨Ø¯Ù„ Ø«Ù„Ø§Ø«Ø© Ù…ØªØªØ§Ù„ÙŠØ©.",
+      "Ø§Ù„Ø§Ø­ØªÙØ§Ø¸ Ø¨Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø¥ØµÙ„Ø§Ø­Ø§Øª Ø§Ù„Ø³Ø§Ø¨Ù‚Ø©: Ø´Ø§Ø´Ø© Ù‚ÙÙ„ Ù‚Ø±Øµ Ø§Ù„ØªØ­Ù‚Ù‚ØŒ Ø§Ù„Ø·Ø¨Ø§Ø¹Ø© Ø§Ù„Ø­Ø±Ø§Ø±ÙŠØ©ØŒ ÙˆØªØ´ØºÙŠÙ„ Ø§Ù„Ù…Ø«Ø¨Ù‘Øª Ø¨Ø£Ù…Ø§Ù†."
     ],
     "fr": [
-      "Correction du prix de gros dans le panier: quand la quantité atteint le seuil (ex. 24), le prix passe automatiquement au prix de gros.",
-      "Ajout du champ \"Prix de gros\" dans la fiche produit, à côté de la quantité de gros, utilisé comme prix par défaut dans le panier.",
-      "Champ \"Dette initiale\" dans la fenêtre fournisseur, comme pour le client, avec enregistrement."
+      "Correction dÃ©finitive du scintillement du panier : le panier nâ€™est reconstruit que lorsque son contenu change rÃ©ellement, au lieu de plusieurs redessins aprÃ¨s chaque ajout.",
+      "AprÃ¨s un scan ou un ajout, le produit ajoutÃ© est immÃ©diatement modifiable au clavier (quantitÃ©/prix) sans devoir appuyer dâ€™abord sur les flÃ¨ches.",
+      "Un clic sur nâ€™importe quel produit du panier active directement son Ã©dition ; la navigation par flÃ¨ches reste disponible.",
+      "Meilleure tolÃ©rance de saisie : les chiffres sont acceptÃ©s Ã  une vitesse de frappe normale et les scans rapides restent dÃ©tectÃ©s automatiquement.",
+      "Les recalculs de prix sont regroupÃ©s en une seule mise Ã  jour au lieu de trois successives.",
+      "Conserve tous les correctifs prÃ©cÃ©dents : Ã©cran de verrouillage, impression thermique et lancement sÃ»r de lâ€™installateur."
     ],
     "en": [
-      "Fixed wholesale pricing in cart: when item quantity reaches the wholesale threshold (e.g. 24), price switches to wholesale automatically.",
-      "Added \"Wholesale price\" field in product form next to wholesale quantity; used as default wholesale price in cart.",
-      "Added \"Initial debt\" field in supplier create/edit modal, like customer, and saved with supplier data."
+      "Definitive cart-flicker fix: the cart is only rebuilt when its content actually changes, instead of several redraws after every add.",
+      "After scanning or adding a product, the new line is immediately editable with the number keys (quantity/price) without pressing the arrows first.",
+      "Clicking any cart line activates its inline editing, while arrow-key navigation between lines still works.",
+      "More forgiving typing: digits are accepted at normal typing speed, and fast barcode scans are still detected automatically.",
+      "Repricing is grouped into a single update instead of three successive ones.",
+      "Keeps all earlier fixes: verification-dial lock screen, thermal printing and safe installer launch."
     ]
   },
   "releaseHistory": {
@@ -3412,12 +3421,11 @@
   },
   "patches": [],
   "download": {
-    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.173/NANO-POS-Setup-2.0.173-x64.exe",
-    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.173",
-    "sha256": "3afae1ba5e833087a722bd450f08ca9043f8e48076b526d98e8e905f63c77f3c",
-    "fileName": "NANO-POS-Setup-2.0.173-x64.exe",
-    "sizeBytes": 123316224,
-    "url": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.173/NANO-POS-Setup-2.0.173-x64.exe"
+    "directUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/download/v2.0.174/NANO-POS-Setup-2.0.174-x64.exe",
+    "pageUrl": "https://github.com/bilalbaghdali/nano-pos-updates/releases/tag/v2.0.174",
+    "sha256": "89113365f8b37cdf565ce9bcf27aa2a5854422bb70cebd8897286d4d9a2b9693",
+    "fileName": "NANO-POS-Setup-2.0.174-x64.exe",
+    "sizeBytes": 123315200
   },
   "notes": {
     "ar": "تحسينات عامة: إصلاح البحث عن المنتجات في قسم الحزم. المنتجات التي تحتوي على باركودات إضافية لم تكن تظهر في البحث لأن شكل البيانات القديم (كائن بدل نص) كان يوقف البحث بالكامل. كما تم توحيد شكل الباركودات الإضافية ليعمل البحث والمسح الضوئي في جميع الأقسام.",
